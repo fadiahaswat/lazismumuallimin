@@ -10,7 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- PDF Libraries -->
@@ -25,11 +25,22 @@
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         arabic: ['Amiri', 'serif'],
+                        lato: ['Lato', 'sans-serif'],
                     },
                     colors: {
                         brand: {
                             orange: '#F15A22',
                             dark: '#1e293b',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -42,35 +53,60 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-font-smoothing: antialiased;
             background-color: #f8fafc;
+            /* Decorative Background for Glassmorphism */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(241, 90, 34, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* Animations */
+        /* Glassmorphism Utility Class */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Page Transitions */
         .page-section {
             display: none;
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            transition: opacity 0.4s ease-in-out;
         }
         .page-section.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        .fade-in-up {
-            animation: fadeInUp 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Staggered Animation for Lists */
+        .stagger-1 { animation-delay: 100ms; }
+        .stagger-2 { animation-delay: 200ms; }
+        .stagger-3 { animation-delay: 300ms; }
+        .stagger-4 { animation-delay: 400ms; }
+        .stagger-5 { animation-delay: 500ms; }
 
         /* Navigation */
         .nav-link.active {
             color: #F15A22;
             font-weight: 700;
-            background-color: #fff7ed;
+            background-color: rgba(241, 90, 34, 0.1);
         }
 
         /* Button Interactions */
@@ -82,10 +118,10 @@
         }
 
         /* Selection States */
-        .choice-button.selected { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); ring: 2px; }
-        .btn-fitrah.selected { background-color: #10b981; border-color: #10b981; color: white; }
-        .btn-maal.selected { background-color: #eab308; border-color: #eab308; color: white; }
-        .btn-infaq.selected { background-color: #F15A22; border-color: #F15A22; color: white; }
+        .choice-button.selected { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); ring: 2px; border-color: transparent; }
+        .btn-fitrah.selected { background-color: #10b981; color: white; }
+        .btn-maal.selected { background-color: #eab308; color: white; }
+        .btn-infaq.selected { background-color: #F15A22; color: white; }
         .btn-fitrah.selected i, .btn-maal.selected i, .btn-infaq.selected i { color: white; }
 
         /* Sub Selection States */
@@ -105,7 +141,9 @@
             position: fixed; top: 20px; right: 20px; z-index: 9999;
         }
         .toast {
-            background: white; padding: 16px 24px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 10px;
             display: flex; align-items: center; gap: 12px;
             animation: slideIn 0.3s ease-out forwards; border-left: 4px solid #333;
@@ -118,22 +156,21 @@
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
     </style>
 </head>
-<body class="text-slate-800 flex flex-col min-h-screen">
+<body class="text-slate-700 flex flex-col min-h-screen font-sans">
 
     <!-- TOAST CONTAINER -->
     <div id="toast-container"></div>
 
     <!-- MODAL HUBUNGI KAMI -->
-    <div id="hubungi-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in-up">
-            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+    <div id="hubungi-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-panel bg-white/90 rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in-up">
+            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-8 h-8 bg-gray-100/50 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors">
                 <i class="fas fa-times"></i>
             </button>
             <h3 class="text-2xl font-bold text-slate-800 mb-2 text-center">Pusat Bantuan</h3>
             <p class="text-center text-slate-500 mb-8">Silakan pilih layanan kebaikan yang Anda butuhkan.</p>
             <div class="space-y-4">
-                <!-- Konsultasi: Ke WA -->
-                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="flex items-center p-4 bg-green-50 border border-green-100 rounded-xl hover:bg-green-100 transition group">
+                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="flex items-center p-4 bg-green-50/80 border border-green-100 rounded-xl hover:bg-green-100 transition group cursor-pointer">
                     <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mr-4 group-hover:scale-110 transition-transform">
                         <i class="fab fa-whatsapp"></i>
                     </div>
@@ -142,8 +179,7 @@
                         <p class="text-sm text-slate-600">Tanya jawab seputar ZIS via WhatsApp.</p>
                     </div>
                 </a>
-                <!-- Konfirmasi: Ke Form Donasi -->
-                <button onclick="document.getElementById('hubungi-modal').classList.add('hidden'); showPage('donasi');" class="w-full flex items-center p-4 bg-orange-50 border border-orange-100 rounded-xl hover:bg-orange-100 transition group text-left">
+                <button onclick="document.getElementById('hubungi-modal').classList.add('hidden'); showPage('donasi');" class="w-full flex items-center p-4 bg-orange-50/80 border border-orange-100 rounded-xl hover:bg-orange-100 transition group text-left cursor-pointer">
                     <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl mr-4 group-hover:scale-110 transition-transform">
                         <i class="fas fa-clipboard-list"></i>
                     </div>
@@ -156,44 +192,43 @@
         </div>
     </div>
 
-    <!-- MODAL SUCCESS (Now just a notification, navigation handled in main view) -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform scale-100 transition-transform duration-300">
+    <!-- MODAL SUCCESS -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-panel bg-white/95 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform scale-100 transition-transform duration-300 animate-fade-in-up">
             <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
                 <i class="fas fa-check text-4xl text-green-500"></i>
             </div>
             <h3 class="text-2xl font-bold text-slate-800 mb-2">Alhamdulillah!</h3>
             <p class="text-slate-600 mb-6">Niat kebaikan Anda berhasil dicatat. Jazakumullah Khairan Katsiran.</p>
-            <button id="success-modal-continue" class="w-full bg-green-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-colors shadow-lg shadow-green-500/30">
+            <button id="success-modal-continue" class="w-full bg-green-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-colors shadow-lg shadow-green-500/30 cursor-pointer">
                 Lanjut Pembayaran <i class="fas fa-arrow-right ml-2"></i>
             </button>
         </div>
     </div>
 
     <!-- NAVBAR -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
-        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-            <a href="#home" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-300">
-                    <i class="fas fa-hand-holding-heart text-xl"></i>
+    <header class="bg-white/80 backdrop-blur-xl border-b border-white/50 sticky top-0 z-50 transition-all duration-300">
+        <nav class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <!-- LOGO -->
+            <a href="#home" class="flex flex-col items-center group cursor-pointer" onclick="showPage('home')">
+                <div class="flex items-baseline leading-none">
+                    <span class="text-4xl md:text-5xl font-black text-[#2d2d2d]" style="font-family: 'Lato', sans-serif;">lazis</span>
+                    <span class="text-4xl md:text-5xl font-black text-[#F15A22]" style="font-family: 'Lato', sans-serif;">mu</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-xl font-extrabold text-slate-800 leading-tight tracking-tight">LAZIS<span class="text-orange-500">MU</span></span>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Mu'allimin</span>
-                </div>
+                <span class="text-sm md:text-base font-bold text-slate-500 mt-0.5" style="font-family: 'Lato', sans-serif;">mu'allimin</span>
             </a>
             
             <!-- Mobile Menu Button -->
-            <button id="menu-toggle" class="md:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 rounded-lg">
+            <button id="menu-toggle" class="md:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-100/50 rounded-lg transition">
                 <i class="fas fa-bars text-xl"></i>
             </button>
 
             <!-- Desktop Menu -->
-            <div id="menu-links" class="hidden md:flex md:items-center gap-2 absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent shadow-2xl md:shadow-none p-4 md:p-0 flex-col md:flex-row border-b md:border-0 border-gray-100 rounded-b-3xl md:rounded-none transition-all duration-300">
-                <a href="#home" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Beranda</a>
-                <a href="#riwayat" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Laporan & Statistik</a>
-                <a href="#rekapitulasi" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Rekapitulasi</a>
-                <a href="#donasi" class="mt-2 md:mt-0 bg-slate-900 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 w-full md:w-auto">
+            <div id="menu-links" class="hidden md:flex md:items-center gap-2 absolute md:relative top-full left-0 w-full md:w-auto bg-white/95 md:bg-transparent shadow-2xl md:shadow-none p-4 md:p-0 flex-col md:flex-row border-b md:border-0 border-gray-100 rounded-b-3xl md:rounded-none transition-all duration-300 backdrop-blur-md md:backdrop-blur-none">
+                <a href="#home" onclick="showPage('home'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto text-center">Beranda</a>
+                <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto text-center">Laporan & Statistik</a>
+                <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto text-center">Rekapitulasi</a>
+                <a href="#donasi" onclick="showPage('donasi'); return false;" class="mt-2 md:mt-0 bg-slate-900 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 w-full md:w-auto text-center cursor-pointer">
                     <i class="fas fa-heart text-orange-500"></i> Donasi Sekarang
                 </a>
             </div>
@@ -204,32 +239,32 @@
         <!-- === HOME SECTION === -->
         <section id="page-home" class="page-section">
             <!-- Hero -->
-            <div class="relative bg-slate-900 overflow-hidden rounded-b-[3rem] mb-12">
+            <div class="relative bg-slate-900 overflow-hidden rounded-b-[3rem] mb-12 shadow-2xl shadow-slate-900/20">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                 <div class="absolute -top-24 -right-24 w-96 h-96 bg-orange-500 rounded-full blur-[100px] opacity-20"></div>
                 <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-slate-900 to-transparent"></div>
                 
                 <div class="container mx-auto px-4 py-16 md:py-28 text-center relative z-10">
-                    <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold tracking-wider mb-6 border border-orange-500/30">LEMBAGA AMIL ZAKAT TERPERCAYA</span>
-                    <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
+                    <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold tracking-wider mb-6 border border-orange-500/30 glass-panel">LEMBAGA AMIL ZAKAT TERPERCAYA</span>
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-2xl animate-fade-in-up">
                         Amanah Mengelola,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Memberdaya Sesama</span>
                     </h1>
-                    <p class="text-slate-400 text-base md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed px-4">
+                    <p class="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto mb-10 font-light leading-relaxed px-4 animate-fade-in-up stagger-1">
                         Salurkan Zakat, Infaq, dan Shodaqoh Anda melalui Lazismu Mu'allimin Yogyakarta untuk menebar kebaikan bagi pendidikan kader umat.
                     </p>
                     
                     <!-- 4 Main Buttons Grid -->
-                    <div class="flex flex-wrap justify-center gap-4 mb-8 max-w-4xl mx-auto px-2">
-                        <a href="#donasi" class="bg-orange-500 text-white px-6 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                    <div class="flex flex-wrap justify-center gap-4 mb-8 max-w-5xl mx-auto px-2 relative z-30 animate-fade-in-up stagger-2">
+                        <button onclick="showPage('donasi')" class="bg-orange-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-600 transition shadow-xl shadow-orange-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto ring-4 ring-orange-500/30 cursor-pointer">
                             <i class="fas fa-hand-holding-heart"></i> Tunaikan ZIS
-                        </a>
-                        <a href="#donasi-rekening" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                        </button>
+                        <button onclick="scrollToSection('donasi-rekening')" class="glass-card bg-white/10 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto cursor-pointer border border-white/20">
                             <i class="fas fa-wallet"></i> Daftar Rekening
-                        </a>
-                        <a href="#qris-section" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                        </button>
+                        <button onclick="scrollToSection('qris-section')" class="glass-card bg-white/10 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto cursor-pointer border border-white/20">
                             <i class="fas fa-qrcode"></i> Scan QRIS
-                        </a>
-                        <button id="btn-hubungi-hero" class="bg-slate-700/50 hover:bg-slate-700 text-white px-6 py-3 rounded-full font-bold transition border border-slate-600 backdrop-blur-sm flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                        </button>
+                        <button id="btn-hubungi-hero" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full font-bold text-lg transition border border-green-500 shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto cursor-pointer">
                             <i class="far fa-comments"></i> Hubungi Kami
                         </button>
                     </div>
@@ -238,26 +273,28 @@
 
             <!-- ORDER: 1. Capaian Kebaikan -->
             <div class="container mx-auto px-4 -mt-20 relative z-20 mb-8">
-                <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100">
+                <div class="glass-panel bg-white/90 p-6 md:p-8 rounded-3xl shadow-2xl">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6">
-                        <div class="mb-4 md:mb-0">
-                            <h2 class="text-2xl font-bold text-slate-800">Capaian Kebaikan</h2>
-                            <p class="text-slate-500 text-sm">Update Real-time</p>
+                        <div class="mb-2 md:mb-0">
+                            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-chart-pie text-orange-500"></i> Capaian Kebaikan
+                            </h2>
+                            <p class="text-slate-500 text-sm ml-8">Update Real-time</p>
                         </div>
-                        <a href="#riwayat" class="text-orange-500 font-semibold text-sm hover:underline">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="text-orange-500 font-semibold text-sm hover:underline cursor-pointer">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></a>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <!-- Total -->
-                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="glass-card p-5 rounded-2xl cursor-default">
                             <div class="flex items-center gap-4 mb-2">
                                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i class="fas fa-chart-line"></i></div>
                                 <span class="text-slate-500 text-sm font-medium">Total Donasi</span>
                             </div>
-                            <h3 id="stat-total-donasi" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                            <h3 id="stat-total-donasi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
                         </div>
                         <!-- Transaksi -->
-                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="glass-card p-5 rounded-2xl cursor-default">
                             <div class="flex items-center gap-4 mb-2">
                                 <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600"><i class="fas fa-receipt"></i></div>
                                 <span class="text-slate-500 text-sm font-medium">Total Transaksi</span>
@@ -265,20 +302,21 @@
                             <h3 id="stat-total-transaksi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">0</h3>
                         </div>
                          <!-- Rata-rata -->
-                         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                         <div class="glass-card p-5 rounded-2xl cursor-default">
                             <div class="flex items-center gap-4 mb-2">
                                 <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-chart-pie"></i></div>
                                 <span class="text-slate-500 text-sm font-medium">Rata-rata</span>
                             </div>
-                            <h3 id="stat-donasi-rata" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                            <h3 id="stat-donasi-rata" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
                         </div>
-                        <!-- Hari Ini -->
-                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                         <!-- Tertinggi -->
+                         <div class="glass-card p-5 rounded-2xl cursor-default">
                             <div class="flex items-center gap-4 mb-2">
-                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"><i class="fas fa-calendar-day"></i></div>
-                                <span class="text-slate-500 text-sm font-medium">Hari Ini</span>
+                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"><i class="fas fa-trophy"></i></div>
+                                <span class="text-slate-500 text-sm font-medium">Tertinggi</span>
                             </div>
-                            <h3 id="stat-donasi-hari-ini" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                            <h3 id="stat-donasi-tertinggi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
+                            <p id="stat-donasi-tertinggi-nama" class="text-xs text-slate-500 mt-1 truncate font-semibold">-</p>
                         </div>
                     </div>
                 </div>
@@ -286,17 +324,16 @@
 
             <!-- ORDER: 2. Jejak Kebaikan Terbaru -->
             <div class="container mx-auto px-4 mb-20">
-                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 md:p-8 overflow-hidden">
-                    <div class="flex items-center justify-between mb-6 border-b border-slate-50 pb-4">
+                <div class="glass-panel bg-white/80 p-6 md:p-8 rounded-3xl shadow-xl overflow-hidden animate-fade-in-up">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-200/50 pb-4">
                         <h3 class="text-lg md:text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            Jejak Kebaikan Terbaru
+                            <i class="fas fa-history text-orange-500"></i> Jejak Kebaikan Terbaru
                         </h3>
-                        <span class="text-xs font-bold text-slate-400 uppercase">Realtime</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Realtime</span>
                     </div>
-                    <!-- Grid Modified for Better Responsiveness -->
+                    <!-- Grid Updated to accommodate more cards -->
                     <div id="home-latest-donations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        <!-- Content will be loaded here -->
+                        <!-- Content loaded via JS -->
                         <div class="text-center col-span-full py-4 text-slate-400 text-sm animate-pulse">
                             Memuat data kebaikan terbaru...
                         </div>
@@ -305,43 +342,45 @@
             </div>
 
             <!-- ORDER: 3. Statistik Santri (Top Kontributor) -->
-            <section class="py-10 bg-slate-50/50">
+            <section class="py-10">
                 <div class="container mx-auto px-4">
                     <div class="text-center mb-10">
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800">Top Kontributor Santri</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center justify-center gap-2">
+                            <i class="fas fa-medal text-orange-500"></i> Top Kontributor Santri
+                        </h2>
                         <p class="text-slate-500 text-sm md:text-base">Apresiasi untuk kelas dan santri dengan semangat berbagi kebaikan tertinggi.</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <!-- Kolom MTs -->
-                        <div class="space-y-4">
+                        <div class="space-y-4 animate-fade-in-up stagger-1">
                             <h3 class="text-xl font-bold text-teal-700 flex items-center gap-2"><i class="fas fa-school"></i> Tingkat MTs (1, 2, 3)</h3>
-                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                            <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-teal-500">
                                 <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Kelas Terbanyak</p><h4 id="stat-mts-kelas-max" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-mts-kelas-total" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
                             </div>
-                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                            <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-teal-500">
                                 <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Santri (Nominal Tertinggi)</p><h4 id="stat-mts-santri-max-donasi" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-mts-santri-total-donasi" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
                             </div>
-                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                            <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-teal-500">
                                 <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Santri (Paling Sering)</p><h4 id="stat-mts-santri-freq-nama" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Frekuensi</p><span id="stat-mts-santri-freq-val" class="font-bold text-slate-600" data-value="0">0x</span></div>
                             </div>
                         </div>
 
                         <!-- Kolom MA -->
-                        <div class="space-y-4">
+                        <div class="space-y-4 animate-fade-in-up stagger-2">
                             <h3 class="text-xl font-bold text-indigo-700 flex items-center gap-2"><i class="fas fa-graduation-cap"></i> Tingkat MA (4, 5, 6)</h3>
-                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                            <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-indigo-500">
                                 <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Kelas Terbanyak</p><h4 id="stat-ma-kelas-max" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-ma-kelas-total" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
                             </div>
-                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                            <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-indigo-500">
                                 <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Santri (Nominal Tertinggi)</p><h4 id="stat-ma-santri-max-donasi" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-ma-santri-total-donasi" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
                             </div>
-                             <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                             <div class="glass-card bg-white/70 p-5 rounded-xl flex items-center justify-between border-l-4 border-indigo-500">
                                 <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Santri (Paling Sering)</p><h4 id="stat-ma-santri-freq-nama" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
                                 <div class="text-right"><p class="text-xs text-slate-400">Frekuensi</p><span id="stat-ma-santri-freq-val" class="font-bold text-slate-600" data-value="0">0x</span></div>
                             </div>
@@ -351,58 +390,66 @@
             </section>
 
             <!-- ORDER: 4. Laporan Penyaluran (Jejak Kebaikan Ramadhan) -->
-            <section class="py-20 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
+            <section class="py-20 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden rounded-t-[3rem] shadow-inner border-t border-white/10">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
                 <div class="absolute top-0 left-0 w-64 h-64 bg-orange-500 rounded-full blur-[100px] opacity-10"></div>
                 
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="text-center max-w-3xl mx-auto mb-12">
-                        <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold tracking-wider mb-4 border border-orange-500/30">LAPORAN PENYALURAN</span>
-                        <h2 class="text-3xl md:text-4xl font-bold mb-4">Jejak Kebaikan Ramadhan 1446 H</h2>
-                        <p class="text-slate-300">Alhamdulillah, berkat amanah Anda, kami telah menghimpun dan menyalurkan kebaikan sebesar:</p>
+                        <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold tracking-wider mb-4 border border-orange-500/30 glass-panel">
+                            <i class="fas fa-file-invoice-dollar mr-2"></i> LAPORAN PENYALURAN
+                        </span>
+                        <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">Jejak Kebaikan Ramadhan 1446 H</h2>
+                        <p class="text-slate-300 text-base md:text-lg">Alhamdulillah, berkat amanah Anda, kami telah menghimpun dan menyalurkan kebaikan sebesar:</p>
                         <div class="my-8">
-                            <span class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Rp 708.996.037</span>
+                            <span class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 drop-shadow-lg">Rp 708.996.037</span>
                         </div>
-                        <p class="text-slate-400 text-sm">Dana kebaikan ini telah disalurkan untuk program-program berikut:</p>
+                        <p class="text-slate-400 text-sm uppercase font-bold tracking-widest">Dana kebaikan ini telah disalurkan untuk:</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 1 -->
+                        <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-university text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2">Pembangunan Kampus</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white">Pembangunan Kampus</h4>
                             <p class="text-slate-400 text-sm">Pembangunan Kampus Terpadu Mu'allimin.</p>
                         </div>
-                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 2 -->
+                        <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-chair text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2">Pengadaan Meubelair</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white">Pengadaan Meubelair</h4>
                             <p class="text-slate-400 text-sm">Fasilitas belajar santri yang nyaman.</p>
                         </div>
-                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 3 -->
+                        <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-chalkboard-teacher text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2">Program Peduli Guru</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white">Program Peduli Guru</h4>
                             <p class="text-slate-400 text-sm">Kado Ramadhan untuk ustadz & pamong.</p>
                         </div>
-                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 4 -->
+                        <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-user-graduate text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2">Beasiswa Pendidikan</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white">Beasiswa Pendidikan</h4>
                             <p class="text-slate-400 text-sm">Syafii Maarif Scholarship untuk kader.</p>
                         </div>
-                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 5 -->
+                        <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-hand-holding-heart text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2">Sumbangan AUM/Ortom</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white">Sumbangan AUM/Ortom</h4>
                             <p class="text-slate-400 text-sm">Dukungan untuk gerak langkah persyarikatan.</p>
                         </div>
-                         <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                        <!-- Card 6 -->
+                         <div class="glass-card bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition text-left hover:scale-105 duration-300">
                             <i class="fas fa-globe-asia text-orange-400 text-2xl mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2 leading-snug">Muballigh Hijrah Nasional & Internasional</h4>
+                            <h4 class="font-bold text-lg mb-2 text-white leading-snug">Muballigh Hijrah Nasional & Internasional</h4>
                             <p class="text-slate-400 text-sm">Dakwah santri di berbagai penjuru.</p>
                         </div>
                     </div>
 
                     <div class="text-center mt-12">
-                        <a href="#donasi" class="inline-flex items-center bg-orange-500 text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30">
+                        <button onclick="showPage('donasi')" class="inline-flex items-center bg-orange-500 text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 cursor-pointer transform hover:-translate-y-1 glass-panel border-none ring-2 ring-orange-400">
                             <i class="fas fa-heart mr-2"></i> Mari Lanjutkan Kebaikan Ini
-                        </a>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -411,31 +458,33 @@
             <section id="qris-section" class="py-20">
                 <div class="container mx-auto px-4">
                     <div class="text-center mb-12">
-                        <h2 class="text-3xl font-bold text-slate-800 mb-3">Metode Pembayaran</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-3 flex items-center justify-center gap-2">
+                            <i class="fas fa-wallet text-orange-500"></i> Metode Pembayaran
+                        </h2>
                         <p class="text-slate-500">Pilih metode yang paling memudahkan niat baik Anda.</p>
                     </div>
 
                     <!-- QRIS Card -->
-                    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mb-12 flex flex-col md:flex-row items-center gap-8">
+                    <div class="max-w-4xl mx-auto glass-panel bg-white/80 p-8 mb-12 rounded-3xl flex flex-col md:flex-row items-center gap-8">
                         <div class="flex-1 text-center md:text-left">
                             <div class="inline-block p-3 rounded-2xl bg-orange-100 text-orange-600 mb-4"><i class="fas fa-qrcode text-3xl"></i></div>
                             <h3 class="text-2xl font-bold text-slate-800 mb-2">Scan QRIS</h3>
                             <p class="text-slate-500 mb-6">Dukung pembayaran kebaikan melalui GoPay, OVO, Dana, LinkAja, ShopeePay, dan seluruh aplikasi Mobile Banking.</p>
                             <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                                <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-teal-600 text-white font-bold hover:bg-teal-700 transition text-sm">
+                                <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" target="_blank" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-teal-600 text-white font-bold hover:bg-teal-700 transition text-sm cursor-pointer hover:shadow-lg">
                                     <i class="fas fa-download mr-2"></i> QRIS BSI
                                 </a>
-                                <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800 transition text-sm">
+                                <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" target="_blank" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800 transition text-sm cursor-pointer hover:shadow-lg">
                                     <i class="fas fa-download mr-2"></i> QRIS BPD
                                 </a>
                             </div>
                         </div>
                         <div class="flex-1 grid grid-cols-2 gap-4">
-                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center group hover:border-teal-200 transition">
+                            <div class="glass-card bg-white p-4 rounded-2xl text-center group hover:border-teal-200 cursor-pointer hover:scale-105">
                                 <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" alt="QRIS BSI" class="w-full h-auto rounded-lg mb-2 object-contain group-hover:scale-105 transition-transform">
                                 <p class="text-xs font-bold text-slate-500">BSI</p>
                             </div>
-                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center group hover:border-blue-200 transition">
+                            <div class="glass-card bg-white p-4 rounded-2xl text-center group hover:border-blue-200 cursor-pointer hover:scale-105">
                                 <div class="relative mb-2">
                                     <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" alt="QRIS BPD" class="w-full h-auto rounded-lg object-contain group-hover:scale-105 transition-transform">
                                 </div>
@@ -447,7 +496,7 @@
                     <!-- Rekening Grid -->
                     <div id="donasi-rekening" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         <!-- BNI -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="glass-card bg-white/80 p-6 rounded-2xl transition hover:-translate-y-1">
                             <div class="flex justify-between items-start mb-4">
                                 <img src="https://placehold.co/100x40/F15A22/ffffff?text=BNI" alt="BNI" class="h-8 rounded">
                             </div>
@@ -460,7 +509,7 @@
                             <p class="text-sm font-bold text-slate-500 mt-3">a.n. Lazismu Madrasah Mu'allimin</p>
                         </div>
                         <!-- BSI -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="glass-card bg-white/80 p-6 rounded-2xl transition hover:-translate-y-1">
                             <div class="flex justify-between items-start mb-4">
                                 <img src="https://placehold.co/100x40/00a39e/ffffff?text=BSI" alt="BSI" class="h-8 rounded">
                             </div>
@@ -473,7 +522,7 @@
                             <p class="text-sm font-bold text-slate-500 mt-3">a.n. Lazismu Muallimin</p>
                         </div>
                         <!-- BPD DIY Syariah (Updated) -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="glass-card bg-white/80 p-6 rounded-2xl transition hover:-translate-y-1">
                             <div class="flex justify-between items-center mb-4">
                                 <div class="flex items-center gap-2">
                                     <img src="https://placehold.co/100x40/1e40af/ffffff?text=BPD" alt="BPD" class="h-8 rounded">
@@ -497,14 +546,57 @@
         <section id="page-riwayat" class="page-section bg-white min-h-screen py-20">
             <div class="container mx-auto px-4 md:px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Jejak Kebaikan</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4 flex items-center justify-center gap-3">
+                        <i class="fas fa-history text-orange-500"></i> Jejak Kebaikan
+                    </h2>
                     <p class="text-slate-500">Transparansi kebaikan adalah prioritas kami.</p>
+                </div>
+                
+                <!-- Stats Cards in Riwayat (DUPLICATED) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                    <div class="glass-card bg-white/70 p-5 rounded-2xl cursor-default">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i class="fas fa-chart-line"></i></div>
+                            <span class="text-slate-500 text-sm font-medium">Total Donasi</span>
+                        </div>
+                        <h3 id="stat-r-total" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
+                    </div>
+                     <div class="glass-card bg-white/70 p-5 rounded-2xl cursor-default">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600"><i class="fas fa-receipt"></i></div>
+                            <span class="text-slate-500 text-sm font-medium">Total Transaksi</span>
+                        </div>
+                        <h3 id="stat-r-transaksi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">0</h3>
+                    </div>
+                    <div class="glass-card bg-white/70 p-5 rounded-2xl cursor-default">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"><i class="fas fa-trophy"></i></div>
+                            <span class="text-slate-500 text-sm font-medium">Tertinggi</span>
+                        </div>
+                        <h3 id="stat-r-tertinggi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
+                    </div>
+                    <!-- Donasi Hari Ini (New Stat) -->
+                    <div class="glass-card bg-white/70 p-5 rounded-2xl cursor-default">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"><i class="fas fa-calendar-day"></i></div>
+                            <span class="text-slate-500 text-sm font-medium">Donasi Hari Ini</span>
+                        </div>
+                        <h3 id="stat-r-hari-ini" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">Rp 0</h3>
+                    </div>
+                </div>
+                
+                <!-- Tipe Terpopuler (Separate Card or integrated) -->
+                <div class="max-w-md mx-auto mb-8 glass-panel bg-white/50 p-4 rounded-2xl text-center">
+                     <div class="flex flex-col items-center justify-center gap-1">
+                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1"><i class="fas fa-star text-teal-500"></i> Tipe Donasi Terpopuler</span>
+                         <h3 id="stat-r-tipe-top" class="text-lg font-bold text-slate-700">Memuat...</h3>
+                     </div>
                 </div>
 
                 <!-- Filter Section -->
-                <div class="max-w-4xl mx-auto mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="max-w-5xl mx-auto mb-8 glass-panel bg-white/90 p-6 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center">
                      <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
-                        <select id="filter-jenis" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
+                        <select id="filter-jenis" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none cursor-pointer hover:border-orange-300 transition font-medium bg-slate-50">
                             <option value="all">Semua Jenis Donasi</option>
                             <option value="Zakat Fitrah">Zakat Fitrah</option>
                             <option value="Zakat Maal">Zakat Maal</option>
@@ -512,54 +604,31 @@
                             <option value="Infaq Beasiswa Pendidikan">Infaq Pendidikan</option>
                             <option value="Infaq Umum">Infaq Umum</option>
                         </select>
-                         <select id="filter-metode" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
+                         <select id="filter-metode" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none cursor-pointer hover:border-orange-300 transition font-medium bg-slate-50">
                             <option value="all">Semua Metode</option>
                             <option value="QRIS">QRIS</option>
                             <option value="Transfer">Transfer</option>
                             <option value="Tunai">Tunai</option>
                         </select>
-                        <select id="filter-waktu" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
-                            <option value="all">Semua Waktu</option>
-                            <option value="today">Hari Ini</option>
-                            <option value="month">Bulan Ini</option>
-                            <option value="year">Tahun Ini</option>
-                        </select>
+                        <!-- Date Range Filter -->
+                        <div class="flex items-center gap-2 bg-slate-50 rounded-xl border border-slate-200 p-2">
+                            <input type="date" id="filter-start-date" class="bg-transparent text-sm text-slate-600 outline-none w-32 cursor-pointer">
+                            <span class="text-slate-400">-</span>
+                            <input type="date" id="filter-end-date" class="bg-transparent text-sm text-slate-600 outline-none w-32 cursor-pointer">
+                        </div>
                      </div>
-                     <div class="text-xs text-slate-400 font-bold uppercase tracking-wider self-end md:self-center">
-                         <i class="fas fa-filter mr-1"></i> Filter Data
+                     <div class="flex gap-3 items-center w-full md:w-auto justify-end">
+                         <button id="btn-reset-filter" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-600 hover:bg-slate-300 transition text-sm font-bold flex items-center gap-2 cursor-pointer">
+                             <i class="fas fa-undo"></i> Reset
+                         </button>
+                         <div class="text-xs text-slate-400 font-bold uppercase tracking-wider flex items-center gap-2">
+                             <i class="fas fa-filter text-orange-500"></i> Filter Data
+                         </div>
                      </div>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 text-center border border-orange-100 shadow-sm">
-                        <h3 id="riwayat-summary-total" class="text-2xl font-black text-orange-600">Rp 0</h3>
-                        <p class="text-sm text-orange-800 font-medium">Total Kebaikan Terkumpul</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center border border-blue-100 shadow-sm">
-                        <h3 id="riwayat-summary-transaksi" class="text-2xl font-black text-blue-600">0</h3>
-                        <p class="text-sm text-blue-800 font-medium">Jumlah Transaksi</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center border border-green-100 shadow-sm">
-                         <h3 id="riwayat-summary-tertinggi" class="text-2xl font-black text-green-600">Rp 0</h3>
-                         <p class="text-sm text-green-800 font-medium">Donasi Tertinggi</p>
-                    </div>
                 </div>
 
                 <!-- Loading/Content -->
-                <div class="max-w-3xl mx-auto">
-                    <!-- Call to Action Card -->
-                    <div class="bg-slate-900 rounded-2xl p-8 text-center mb-10 shadow-xl relative overflow-hidden animate-fade-in-up">
-                        <div class="absolute top-0 right-0 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-bold text-white mb-2">Ingin Nama Anda Tercatat dalam Sejarah Kebaikan?</h3>
-                            <p class="text-slate-400 mb-6">Mari berlomba-lomba dalam kebaikan. Donasi Anda sangat berarti.</p>
-                            <a href="#donasi" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition shadow-lg shadow-orange-500/30">
-                                <i class="fas fa-plus-circle mr-2"></i> Mulai Berdonasi
-                            </a>
-                        </div>
-                    </div>
-
+                <div class="max-w-4xl mx-auto">
                     <div id="riwayat-loading" class="py-20 text-center">
                         <div class="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
                         <p class="text-slate-500 font-medium">Mengambil data kebaikan...</p>
@@ -571,11 +640,11 @@
 
                         <!-- Pagination -->
                         <div class="flex justify-between items-center pt-8 border-t border-slate-100 mt-6">
-                            <button id="riwayat-prev" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2">
+                            <button id="riwayat-prev" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2 cursor-pointer">
                                 <i class="fas fa-chevron-left"></i> Sebelumnya
                             </button>
                             <span id="riwayat-page-info" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Halaman 1</span>
-                            <button id="riwayat-next" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2">
+                            <button id="riwayat-next" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2 cursor-pointer">
                                 Selanjutnya <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -587,6 +656,18 @@
                         </div>
                         <p class="text-slate-500">Belum ada riwayat kebaikan yang tercatat sesuai filter.</p>
                     </div>
+                    
+                     <!-- Call to Action Card (at the bottom) -->
+                    <div class="mt-12 bg-slate-900 rounded-2xl p-8 text-center shadow-xl relative overflow-hidden animate-fade-in-up group hover:shadow-2xl transition-all duration-300">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-orange-500/30"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white mb-2">Ingin Nama Anda Tercatat dalam Sejarah Kebaikan?</h3>
+                            <p class="text-slate-400 mb-6">Mari berlomba-lomba dalam kebaikan. Donasi Anda sangat berarti.</p>
+                            <button onclick="showPage('donasi')" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition shadow-lg shadow-orange-500/30 cursor-pointer transform hover:-translate-y-1 hover:scale-105 glass-panel border-none ring-4 ring-orange-500/30">
+                                <i class="fas fa-plus-circle mr-2"></i> Mulai Berdonasi
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -595,19 +676,21 @@
         <section id="page-rekapitulasi" class="page-section bg-white min-h-screen py-20">
              <div class="container mx-auto px-4 md:px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Rekapitulasi Kelas</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4 flex items-center justify-center gap-3">
+                        <i class="fas fa-chalkboard-teacher text-orange-500"></i> Rekapitulasi Kelas
+                    </h2>
                     <p class="text-slate-500">Pantau perolehan kebaikan per kelas secara detail dan transparan.</p>
                 </div>
 
                 <div class="max-w-5xl mx-auto">
                     <!-- Filter Control -->
-                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mb-8 flex flex-col md:flex-row gap-6 items-center justify-between transform hover:scale-[1.01] transition-all duration-300">
+                    <div class="glass-panel bg-white/90 p-8 rounded-3xl shadow-xl mb-8 flex flex-col md:flex-row gap-6 items-center justify-between transform hover:scale-[1.01] transition-all duration-300">
                         <div class="w-full md:w-1/2">
                             <label class="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
                                 <i class="fas fa-users text-orange-500"></i> Pilih Kelas
                             </label>
                             <div class="relative">
-                                <select id="rekap-kelas-select" class="w-full p-4 pl-12 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-orange-500 transition appearance-none font-bold text-slate-700">
+                                <select id="rekap-kelas-select" class="w-full p-4 pl-12 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-orange-500 transition appearance-none font-bold text-slate-700 cursor-pointer hover:border-orange-300">
                                     <option value="">-- Silakan Pilih Kelas --</option>
                                     <!-- Options populated by JS -->
                                 </select>
@@ -618,7 +701,7 @@
                         </div>
                          <div class="w-full md:w-auto flex flex-col items-end">
                              <p class="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">Aksi Dokumen</p>
-                            <button id="btn-export-pdf" disabled class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg shadow-red-500/20">
+                            <button id="btn-export-pdf" disabled class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg shadow-red-500/20 cursor-pointer transform active:scale-95">
                                 <i class="fas fa-file-pdf text-xl"></i> <span>Unduh Laporan PDF</span>
                             </button>
                         </div>
@@ -626,38 +709,38 @@
 
                     <!-- Summary Cards (Hidden initially) -->
                     <div id="rekap-summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up">
-                        <div class="bg-white p-6 rounded-2xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition">
+                        <div class="glass-card bg-white/80 p-6 rounded-2xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition transform hover:-translate-y-1">
                             <div class="flex items-center gap-4 mb-3">
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fas fa-chalkboard-teacher"></i></div>
                                 <p class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Wali Kelas</p>
                             </div>
                             <h4 id="rekap-wali" class="text-lg font-bold text-slate-800 pl-14">-</h4>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl border-l-4 border-teal-500 shadow-sm hover:shadow-md transition">
+                        <div class="glass-card bg-white/80 p-6 rounded-2xl border-l-4 border-teal-500 shadow-sm hover:shadow-md transition transform hover:-translate-y-1">
                              <div class="flex items-center gap-4 mb-3">
                                 <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600"><i class="fas fa-user-tie"></i></div>
                                 <p class="text-xs font-bold text-teal-600 uppercase tracking-wide">Musyrif</p>
                             </div>
                             <h4 id="rekap-musyrif" class="text-lg font-bold text-slate-800 pl-14">-</h4>
                         </div>
-                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white shadow-lg shadow-orange-500/20">
+                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white shadow-lg shadow-orange-500/20 transform hover:-translate-y-1 transition">
                             <p class="text-xs font-bold text-orange-100 uppercase mb-1 tracking-wide">Total Perolehan Kelas</p>
                             <h4 id="rekap-total-kelas" class="text-3xl font-black tracking-tight">Rp 0</h4>
                         </div>
                     </div>
 
                     <!-- Table Container (Hidden initially) -->
-                    <div id="rekap-table-container" class="hidden bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in-up">
+                    <div id="rekap-table-container" class="hidden glass-panel bg-white/95 rounded-3xl shadow-xl overflow-hidden animate-fade-in-up">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-slate-600">
-                                <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-xs tracking-wider">
+                                <thead class="bg-slate-50/80 text-slate-700 font-bold uppercase text-xs tracking-wider backdrop-blur-sm">
                                     <tr>
                                         <th class="px-6 py-5 border-b border-slate-200">No</th>
                                         <th class="px-6 py-5 border-b border-slate-200">Nama Santri</th>
                                         <th class="px-6 py-5 text-right border-b border-slate-200">QRIS</th>
                                         <th class="px-6 py-5 text-right border-b border-slate-200">Transfer</th>
                                         <th class="px-6 py-5 text-right border-b border-slate-200">Tunai</th>
-                                        <th class="px-6 py-5 text-right border-b border-slate-200 bg-orange-50 text-orange-700">Total</th>
+                                        <th class="px-6 py-5 text-right border-b border-slate-200 bg-orange-50/50 text-orange-700">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody id="rekap-table-body" class="divide-y divide-slate-100">
@@ -667,7 +750,7 @@
                         </div>
                     </div>
                     
-                     <div id="rekap-placeholder" class="text-center py-24 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                     <div id="rekap-placeholder" class="text-center py-24 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 backdrop-blur-sm">
                         <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 text-4xl">
                             <i class="fas fa-chart-bar"></i>
                         </div>
@@ -682,11 +765,13 @@
         <section id="page-donasi" class="page-section bg-white py-20">
             <div class="container mx-auto px-4 md:px-6">
                 <div class="max-w-2xl mx-auto mb-10 text-center">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-3">Formulir Kebaikan</h2>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-3 flex items-center justify-center gap-3">
+                        <i class="fas fa-edit text-orange-500"></i> Formulir Kebaikan
+                    </h2>
                     <p class="text-slate-500">Lengkapi 5 langkah mudah berikut untuk berdonasi.</p>
                 </div>
 
-                <div id="donasi-wizard" class="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+                <div id="donasi-wizard" class="max-w-3xl mx-auto glass-panel bg-white/90 rounded-3xl shadow-2xl overflow-hidden relative">
                     <!-- Progress Bar -->
                     <div class="h-1.5 bg-slate-100 w-full">
                         <div id="wizard-progress-bar" class="h-full bg-orange-500 transition-all duration-500 ease-out" style="width: 20%"></div>
@@ -707,15 +792,15 @@
                         <!-- STEP 1: TIPE DONASI -->
                         <div id="donasi-step-1" class="donasi-step-container">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                <button data-type="Zakat Fitrah" class="choice-button btn-fitrah border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-emerald-400 bg-white">
+                                <button data-type="Zakat Fitrah" class="choice-button btn-fitrah border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-emerald-400 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md">
                                     <i class="fas fa-leaf text-3xl text-emerald-500"></i>
                                     <span class="font-bold text-slate-700">Zakat Fitrah</span>
                                 </button>
-                                <button data-type="Zakat Maal" class="choice-button btn-maal border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-yellow-400 bg-white">
+                                <button data-type="Zakat Maal" class="choice-button btn-maal border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-yellow-400 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md">
                                     <i class="fas fa-coins text-3xl text-yellow-500"></i>
                                     <span class="font-bold text-slate-700">Zakat Maal</span>
                                 </button>
-                                <button data-type="Infaq" class="choice-button btn-infaq border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-orange-400 bg-white">
+                                <button data-type="Infaq" class="choice-button btn-infaq border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-orange-400 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md">
                                     <i class="fas fa-hand-holding-heart text-3xl text-orange-500"></i>
                                     <span class="font-bold text-slate-700">Infaq</span>
                                 </button>
@@ -724,15 +809,15 @@
                             <!-- Pilihan Infaq -->
                             <div id="infaq-options" class="hidden space-y-3">
                                 <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Peruntukan Infaq</p>
-                                <button data-type-infaq="Infaq Pengembangan Kampus" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                <button data-type-infaq="Infaq Pengembangan Kampus" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left cursor-pointer hover:bg-orange-50 transition hover:shadow-sm">
                                     <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-xl shrink-0"><i class="fas fa-building"></i></div>
                                     <div><h5 class="font-bold text-slate-800">Pengembangan Kampus</h5><p class="text-xs text-slate-500">Pembangunan sarana & prasarana.</p></div>
                                 </button>
-                                <button data-type-infaq="Infaq Beasiswa Pendidikan" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                <button data-type-infaq="Infaq Beasiswa Pendidikan" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left cursor-pointer hover:bg-cyan-50 transition hover:shadow-sm">
                                     <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 text-xl shrink-0"><i class="fas fa-user-graduate"></i></div>
                                     <div><h5 class="font-bold text-slate-800">Beasiswa Pendidikan</h5><p class="text-xs text-slate-500">Bantuan bagi santri berprestasi & dhuafa.</p></div>
                                 </button>
-                                <button data-type-infaq="Infaq Umum" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                <button data-type-infaq="Infaq Umum" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left cursor-pointer hover:bg-indigo-50 transition hover:shadow-sm">
                                     <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl shrink-0"><i class="fas fa-globe"></i></div>
                                     <div><h5 class="font-bold text-slate-800">Infaq Umum</h5><p class="text-xs text-slate-500">Dana operasional & program kemanusiaan.</p></div>
                                 </button>
@@ -751,7 +836,7 @@
                                         <input type="text" id="fitrah-total" class="w-full p-3 rounded-xl bg-emerald-100 border-transparent font-bold text-emerald-800" value="Rp 0" readonly>
                                     </div>
                                 </div>
-                                <button id="btn-fitrah-next" class="mt-4 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20">Lanjut Data Diri <i class="fas fa-arrow-right ml-2"></i></button>
+                                <button id="btn-fitrah-next" class="mt-4 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20 cursor-pointer transform hover:-translate-y-0.5">Lanjut Data Diri <i class="fas fa-arrow-right ml-2"></i></button>
                             </div>
 
                             <!-- Checker Maal -->
@@ -766,19 +851,19 @@
                                         <label class="text-xs font-bold text-yellow-700 uppercase mb-1 block">Penghasilan Bulanan</label>
                                         <input type="text" id="penghasilan-bulanan" class="w-full p-3 rounded-xl border border-yellow-200 bg-white" placeholder="Rp 0">
                                     </div>
-                                    <button id="zakat-check-button" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg shadow-yellow-500/20">Hitung Zakat</button>
+                                    <button id="zakat-check-button" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg shadow-yellow-500/20 cursor-pointer transform hover:-translate-y-0.5">Hitung Zakat</button>
                                 </div>
                                 
                                 <div id="zakat-result" class="hidden mt-4 pt-4 border-t border-yellow-200 text-center">
                                     <p id="zakat-result-message" class="font-bold text-lg mb-3"></p>
-                                    <button id="btn-maal-next" class="hidden w-full bg-yellow-600 text-white py-3 rounded-xl font-bold hover:bg-yellow-700 transition">Bayar Zakat <i class="fas fa-arrow-right ml-2"></i></button>
-                                    <button id="zakat-lanjutkan-infaq" class="hidden w-full mt-2 border-2 border-yellow-500 text-yellow-700 py-2.5 rounded-xl font-bold hover:bg-yellow-100 transition">Tidak Wajib, Lanjut Infaq Saja</button>
+                                    <button id="btn-maal-next" class="hidden w-full bg-yellow-600 text-white py-3 rounded-xl font-bold hover:bg-yellow-700 transition cursor-pointer transform hover:-translate-y-0.5">Bayar Zakat <i class="fas fa-arrow-right ml-2"></i></button>
+                                    <button id="zakat-lanjutkan-infaq" class="hidden w-full mt-2 border-2 border-yellow-500 text-yellow-700 py-2.5 rounded-xl font-bold hover:bg-yellow-100 transition cursor-pointer">Tidak Wajib, Lanjut Infaq Saja</button>
                                 </div>
                             </div>
 
                             <!-- Next Button (General) -->
                             <div id="step-1-nav-default" class="hidden mt-8 flex justify-end">
-                                <button data-next-step="2" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">
+                                <button data-next-step="2" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg cursor-pointer transform hover:-translate-y-0.5">
                                     Tentukan Nominal <i class="fas fa-arrow-right ml-2"></i>
                                 </button>
                             </div>
@@ -787,20 +872,20 @@
                         <!-- STEP 2: NOMINAL -->
                         <div id="donasi-step-2" class="donasi-step-container hidden">
                             <div class="grid grid-cols-2 gap-3 mb-6">
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="50000">Rp 50.000</button>
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="100000">Rp 100.000</button>
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="250000">Rp 250.000</button>
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="500000">Rp 500.000</button>
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="1000000">Rp 1.000.000</button>
-                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="2000000">Rp 2.000.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="50000">Rp 50.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="100000">Rp 100.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="250000">Rp 250.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="500000">Rp 500.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="1000000">Rp 1.000.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white cursor-pointer hover:-translate-y-1 hover:shadow-md transition" data-nominal="2000000">Rp 2.000.000</button>
                             </div>
                             <div class="mb-8">
                                 <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nominal Kebaikan Lainnya</label>
                                 <input type="text" id="nominal-custom" class="w-full p-4 rounded-xl border border-slate-200 text-xl font-bold text-slate-800 focus:ring-2 focus:ring-orange-500" placeholder="Rp 0">
                             </div>
                             <div class="flex justify-between">
-                                <button data-prev-step="1" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
-                                <button data-next-step="3" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Isi Data Muzakki/Munfiq <i class="fas fa-arrow-right ml-2"></i></button>
+                                <button data-prev-step="1" class="text-slate-400 hover:text-slate-600 font-bold px-4 cursor-pointer transition hover:translate-x-[-4px]"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="3" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg cursor-pointer transform hover:-translate-y-0.5">Isi Data <i class="fas fa-arrow-right ml-2"></i></button>
                             </div>
                         </div>
 
@@ -823,7 +908,7 @@
                                 <div id="santri-details" class="bg-orange-50 p-5 rounded-2xl border border-orange-100 space-y-3 animate-fade-in-up">
                                     <h5 class="text-orange-800 font-bold text-sm flex items-center"><i class="fas fa-child mr-2"></i> Data Santri</h5>
                                     <div class="grid grid-cols-2 gap-3">
-                                        <select id="santri-level-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white">
+                                        <select id="santri-level-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white cursor-pointer focus:ring-2 focus:ring-orange-500">
                                             <option value="">Tingkat</option>
                                             <option value="1">Kelas 1</option>
                                             <option value="2">Kelas 2</option>
@@ -832,11 +917,11 @@
                                             <option value="5">Kelas 5</option>
                                             <option value="6">Kelas 6</option>
                                         </select>
-                                        <select id="santri-rombel-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white" disabled>
+                                        <select id="santri-rombel-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white cursor-pointer focus:ring-2 focus:ring-orange-500" disabled>
                                             <option value="">Rombel</option>
                                         </select>
                                     </div>
-                                    <select id="santri-nama-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white" disabled>
+                                    <select id="santri-nama-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white cursor-pointer focus:ring-2 focus:ring-orange-500" disabled>
                                         <option value="">Pilih Nama Santri</option>
                                     </select>
                                 </div>
@@ -844,7 +929,7 @@
                                 <!-- Nama Donatur -->
                                 <div>
                                     <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nama Donatur (Muzakki/Munfiq)</label>
-                                    <input type="text" id="nama-muzakki-input" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Nama Lengkap Anda" required>
+                                    <input type="text" id="nama-muzakki-input" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="Nama Lengkap Anda" required>
                                     
                                     <!-- Checkbox: Saya Juga Alumni (Moved Below Name) -->
                                     <div id="div-check-alumni" class="mt-2">
@@ -856,7 +941,7 @@
                                     
                                     <!-- Input Khusus Alumni -->
                                     <div id="input-alumni-tahun" class="hidden mt-2 animate-fade-in-up">
-                                        <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl border border-slate-200 text-sm bg-slate-50" placeholder="Masukkan Tahun Lulus (Contoh: 1998)">
+                                        <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl border border-slate-200 text-sm bg-slate-50 focus:ring-2 focus:ring-orange-500" placeholder="Masukkan Tahun Lulus (Contoh: 1998)">
                                     </div>
 
                                     <div class="flex flex-wrap gap-4 mt-3 text-sm">
@@ -879,32 +964,34 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">WhatsApp (Wajib)</label>
-                                        <input type="tel" id="no-hp" class="w-full p-3 rounded-xl border border-slate-200" placeholder="08..." required>
+                                        <input type="tel" id="no-hp" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="08..." required>
                                     </div>
                                     <div>
                                         <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Email</label>
-                                        <input type="email" id="email" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Opsional">
+                                        <input type="email" id="email" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="Opsional">
                                     </div>
                                 </div>
                                 
-                                <!-- Alamat & NIK (Updated) -->
+                                <!-- Alamat (New) -->
                                 <div>
                                     <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Alamat Lengkap (Wajib)</label>
-                                    <textarea id="alamat" rows="2" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Alamat domisili saat ini" required></textarea>
+                                    <textarea id="alamat" rows="2" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="Alamat domisili saat ini" required></textarea>
                                 </div>
+                                
+                                 <!-- NIK (New) -->
                                 <div>
                                     <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">No. KTP / NIK (Opsional)</label>
-                                    <input type="text" id="no-ktp" class="w-full p-3 rounded-xl border border-slate-200" placeholder="16 digit NIK">
+                                    <input type="text" id="no-ktp" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="16 digit NIK">
                                 </div>
 
                                 <div>
                                     <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Pesan dan Doa (Opsional)</label>
-                                    <textarea id="pesan-doa" rows="2" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Tuliskan doa atau pesan kebaikan Anda..."></textarea>
+                                    <textarea id="pesan-doa" rows="2" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500" placeholder="Tuliskan doa atau pesan kebaikan Anda..."></textarea>
                                 </div>
                             </div>
                             <div class="flex justify-between mt-8">
-                                <button data-prev-step="2" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
-                                <button data-next-step="4" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Metode Pembayaran <i class="fas fa-arrow-right ml-2"></i></button>
+                                <button data-prev-step="2" class="text-slate-400 hover:text-slate-600 font-bold px-4 cursor-pointer transition hover:translate-x-[-4px]"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="4" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg cursor-pointer transform hover:-translate-y-0.5">Metode Pembayaran <i class="fas fa-arrow-right ml-2"></i></button>
                             </div>
                         </div>
 
@@ -912,32 +999,32 @@
                         <div id="donasi-step-4" class="donasi-step-container hidden">
                             <div class="space-y-3">
                                 <input type="radio" name="payment-method" id="pay-qris" value="QRIS" class="hidden payment-radio">
-                                <label for="pay-qris" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                <label for="pay-qris" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white hover:shadow-md">
                                     <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-qrcode text-slate-600"></i></div>
                                     <div><h5 class="font-bold text-slate-800">QRIS</h5><p class="text-xs text-slate-500">Gopay, OVO, Dana, ShopeePay, M-Banking</p></div>
                                 </label>
 
                                 <input type="radio" name="payment-method" id="pay-transfer" value="Transfer" class="hidden payment-radio">
-                                <label for="pay-transfer" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                <label for="pay-transfer" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white hover:shadow-md">
                                     <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-university text-slate-600"></i></div>
                                     <div><h5 class="font-bold text-slate-800">Transfer Bank</h5><p class="text-xs text-slate-500">BSI, BNI, BPD DIY Syariah</p></div>
                                 </label>
 
                                 <input type="radio" name="payment-method" id="pay-tunai" value="Tunai" class="hidden payment-radio">
-                                <label for="pay-tunai" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                <label for="pay-tunai" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white hover:shadow-md">
                                     <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-money-bill-wave text-slate-600"></i></div>
                                     <div><h5 class="font-bold text-slate-800">Tunai (Cash)</h5><p class="text-xs text-slate-500">Serahkan langsung ke Kantor Layanan</p></div>
                                 </label>
                             </div>
                             <div class="flex justify-between mt-8">
-                                <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
-                                <button data-next-step="5" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Konfirmasi Akhir <i class="fas fa-arrow-right ml-2"></i></button>
+                                <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4 cursor-pointer transition hover:translate-x-[-4px]"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="5" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg cursor-pointer transform hover:-translate-y-0.5">Konfirmasi Akhir <i class="fas fa-arrow-right ml-2"></i></button>
                             </div>
                         </div>
 
                         <!-- STEP 5: RINGKASAN -->
                         <div id="donasi-step-5" class="donasi-step-container hidden">
-                            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
+                             <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
                                 <div class="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
                                     <div>
                                         <p class="text-xs text-slate-400 font-bold uppercase">Jenis Kebaikan</p>
@@ -964,8 +1051,8 @@
                             </div>
 
                             <div class="flex justify-between">
-                                <button data-prev-step="4" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
-                                <button id="btn-submit-final" class="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                <button data-prev-step="4" class="text-slate-400 hover:text-slate-600 font-bold px-4 cursor-pointer transition hover:translate-x-[-4px]"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button id="btn-submit-final" class="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
                                     <span class="default-text">Konfirmasi & Bayar <i class="fas fa-check-circle"></i></span>
                                     <span class="loading-text hidden"><i class="fas fa-spinner fa-spin"></i> Memproses...</span>
                                 </button>
@@ -996,7 +1083,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <button onclick="location.reload()" class="flex-1 inline-block bg-white border-2 border-slate-100 text-slate-600 hover:text-orange-600 hover:border-orange-200 px-8 py-6 rounded-2xl font-bold text-lg transition transform hover:-translate-y-1 hover:shadow-lg group">
+                            <button onclick="location.reload()" class="flex-1 inline-block bg-white border-2 border-slate-100 text-slate-600 hover:text-orange-600 hover:border-orange-200 px-8 py-6 rounded-2xl font-bold text-lg transition transform hover:-translate-y-1 hover:shadow-lg group cursor-pointer">
                                  <div class="flex items-center justify-center gap-3">
                                     <i class="fas fa-plus-circle text-3xl text-slate-300 group-hover:text-orange-500 transition-colors"></i>
                                     <div class="text-left leading-tight">
@@ -1034,7 +1121,7 @@
                         <div class="mt-1 w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-orange-500 shrink-0">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
-                        <span class="break-words w-full">Jalan Letjend S. Parman No. 68 Wirobrajan Yogyakarta 55252</span>
+                        <a href="https://maps.google.com/?q=Jalan+Letjend+S.+Parman+No.+68+Wirobrajan+Yogyakarta+55252" target="_blank" class="break-words w-full hover:text-orange-400 transition">Jalan Letjend S. Parman No. 68 Wirobrajan Yogyakarta 55252</a>
                     </p>
                     <!-- Embed Map -->
                     <div class="mt-4 rounded-xl overflow-hidden border border-slate-700 shadow-lg">
@@ -1267,7 +1354,7 @@
             setupWizardLogic();
             setupHistoryLogic();
             setupModalLogic();
-            setupRekapLogic(); // Added Rekap Logic
+            setupRekapLogic(); 
             handleInitialLoad();
         }
 
@@ -1374,17 +1461,34 @@
 
         // --- NAVIGATION ---
         function showPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.page-section').forEach(p => {
+                p.style.opacity = 0;
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
             const target = document.getElementById(`page-${pageId}`);
-            if (target) target.classList.add('active');
+            if (target) {
+                target.style.display = 'block';
+                void target.offsetWidth; 
+                target.style.opacity = 1;
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             
-            // Highlight Nav
             const navLink = document.querySelector(`a[href="#${pageId}"]`);
             if (navLink) navLink.classList.add('active');
 
             if (pageId === 'riwayat' || pageId === 'home' || pageId === 'rekapitulasi') loadRiwayat();
+        }
+        
+        function scrollToSection(sectionId) {
+            showPage('home');
+            setTimeout(() => {
+                const el = document.getElementById(sectionId);
+                if(el) el.scrollIntoView({behavior: 'smooth'});
+            }, 500);
         }
 
         function handleInitialLoad() {
@@ -1395,12 +1499,15 @@
         function setupNavigation() {
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
-                    const id = this.getAttribute('href').replace('#', '');
-                    if(document.getElementById(`page-${id}`)) {
+                    const href = this.getAttribute('href');
+                    if(href.startsWith('#')) {
                         e.preventDefault();
-                        showPage(id);
-                        history.pushState(null, null, `#${id}`);
-                        document.getElementById('menu-links').classList.add('hidden'); // Close mobile menu
+                        const id = href.replace('#', '');
+                        if(document.getElementById(`page-${id}`)) {
+                            showPage(id);
+                            history.pushState(null, null, `#${id}`);
+                            document.getElementById('menu-links').classList.add('hidden'); 
+                        }
                     }
                 });
             });
@@ -1417,10 +1524,25 @@
             if(btn) btn.onclick = () => modal.classList.remove('hidden');
             if(close) close.onclick = () => modal.classList.add('hidden');
             
-            // Close on outside click
             modal.onclick = (e) => {
                 if(e.target === modal) modal.classList.add('hidden');
             }
+        }
+        
+        // Reset Filter Logic
+        const btnReset = document.getElementById('btn-reset-filter');
+        if (btnReset) {
+            btnReset.onclick = () => {
+                document.getElementById('filter-jenis').value = 'all';
+                document.getElementById('filter-metode').value = 'all';
+                document.getElementById('filter-waktu').value = 'all';
+                document.getElementById('filter-start-date').value = '';
+                document.getElementById('filter-end-date').value = '';
+                
+                riwayatData.currentPage = 1;
+                renderRiwayatList();
+                renderPagination();
+            };
         }
 
         // --- REKAPITULASI LOGIC ---
@@ -1429,7 +1551,6 @@
              if(!select) return;
 
              // Populate Dropdown
-             // Flatten santriDB to get list of classes
              let allClasses = [];
              for(const level in santriDB) {
                  for(const rombel in santriDB[level]) {
@@ -1463,7 +1584,6 @@
              document.getElementById('btn-export-pdf').onclick = () => exportRekapPDF();
         }
 
-        // Mockup data for Walikelas & Musyrif (since not provided)
         const classMetaData = {
             '2A': { wali: 'Ust. Ahmad', musyrif: 'Ust. Budi' },
             '3B': { wali: 'Ust. Candra', musyrif: 'Ust. Dedi' },
@@ -1475,21 +1595,17 @@
             const tbody = document.getElementById('rekap-table-body');
             tbody.innerHTML = '';
 
-            // 1. Get base student list
             const level = cls.charAt(0);
             const students = santriDB[level] ? santriDB[level][cls] : [];
             
             if(!students) return;
 
-            // 2. Aggregate Data
             let totalKelas = 0;
             
             students.forEach((s, index) => {
                 let qris = 0, transfer = 0, tunai = 0;
 
-                // Find matching donations
                 riwayatData.allData.forEach(d => {
-                    // Check name match (simple inclusion check)
                     if(d.NamaSantri && d.NamaSantri.includes(s.nama) && (d.KelasSantri === cls || d.rombelSantri === cls)) {
                          const nom = parseInt(d.Nominal) || 0;
                          if(d.MetodePembayaran === 'QRIS') qris += nom;
@@ -1513,7 +1629,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Update Summary
             const meta = classMetaData[cls] || { wali: 'Belum Ditentukan', musyrif: 'Belum Ditentukan' };
             document.getElementById('rekap-wali').innerText = meta.wali;
             document.getElementById('rekap-musyrif').innerText = meta.musyrif;
@@ -1528,9 +1643,8 @@
             const date = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
             const meta = classMetaData[cls] || { wali: '-', musyrif: '-' };
             
-            // Header
             doc.setFontSize(18);
-            doc.setTextColor(241, 90, 34); // Orange
+            doc.setTextColor(241, 90, 34); 
             doc.text("REKAPITULASI PEROLEHAN ZIS", 14, 20);
             
             doc.setFontSize(12);
@@ -1540,7 +1654,6 @@
             doc.text(`Wali Kelas: ${meta.wali}`, 120, 30);
             doc.text(`Musyrif: ${meta.musyrif}`, 120, 36);
 
-            // Table
             doc.autoTable({
                 html: '#rekap-table-container table',
                 startY: 45,
@@ -1549,7 +1662,6 @@
                 styles: { fontSize: 8 },
             });
 
-            // Footer
             const total = document.getElementById('rekap-total-kelas').innerText;
             doc.setFontSize(12);
             doc.setTextColor(0);
@@ -1583,12 +1695,10 @@
             const target = document.getElementById(`donasi-step-${step}`);
             target.classList.remove('hidden');
             
-            // Trigger animation reset
             target.classList.remove('animate-fade-in-up');
-            void target.offsetWidth; // trigger reflow
+            void target.offsetWidth; 
             target.classList.add('animate-fade-in-up');
 
-            // Update progress & title
             document.getElementById('wizard-step-indicator').innerText = `Step ${step}/5`;
             document.getElementById('wizard-progress-bar').style.width = `${step * 20}%`;
             updateStepTitle(step);
@@ -1597,7 +1707,7 @@
         }
 
         function setupWizardLogic() {
-            // STEP 1: TYPE
+            // STEP 1
             document.querySelectorAll('.choice-button').forEach(btn => {
                 btn.onclick = () => {
                     document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
@@ -1607,7 +1717,6 @@
                     donasiData.type = type;
                     donasiData.subType = null;
 
-                    // Reset UI areas
                     document.getElementById('infaq-options').classList.add('hidden');
                     document.getElementById('zakat-fitrah-checker').classList.add('hidden');
                     document.getElementById('zakat-maal-checker').classList.add('hidden');
@@ -1619,17 +1728,15 @@
                 };
             });
 
-            // Infaq Sub-types
             document.querySelectorAll('.sub-choice-button').forEach(btn => {
                 btn.onclick = () => {
                     document.querySelectorAll('.sub-choice-button').forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
-                    donasiData.subType = btn.dataset.typeInfaq; // Simpan subtype
+                    donasiData.subType = btn.dataset.typeInfaq; 
                     document.getElementById('step-1-nav-default').classList.remove('hidden');
                 };
             });
 
-            // Zakat Logic - SAFEGUARDED
             const fitrahInput = document.getElementById('fitrah-jumlah-orang');
             if (fitrahInput) {
                 fitrahInput.oninput = (e) => {
@@ -1683,7 +1790,6 @@
                 };
             }
 
-            // General Nav Step 1
             const btnNextStep2 = document.querySelector('[data-next-step="2"]');
             if (btnNextStep2) {
                 btnNextStep2.onclick = () => {
@@ -1692,7 +1798,7 @@
                 };
             }
 
-            // STEP 2: NOMINAL
+            // STEP 2
             document.querySelectorAll('.nominal-btn').forEach(btn => {
                 btn.onclick = () => {
                     document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
@@ -1720,7 +1826,7 @@
                 };
             }
 
-            // STEP 3: DATA DIRI (CASCADING DROPDOWN)
+            // STEP 3
             const santriLevel = document.getElementById('santri-level-select');
             const santriRombel = document.getElementById('santri-rombel-select');
             const santriNama = document.getElementById('santri-nama-select');
@@ -1777,35 +1883,30 @@
                 };
             }
 
-            // Tipe Donatur Radio Logic
             document.querySelectorAll('input[name="donatur-tipe"]').forEach(r => {
                 r.onchange = (e) => {
                     donasiData.donaturTipe = e.target.value;
                     const santriDetails = document.getElementById('santri-details');
                     const alumniInput = document.getElementById('input-alumni-tahun');
                     const radioAnSantri = document.getElementById('radio-an-santri');
-                    const checkAlumniDiv = document.getElementById('div-check-alumni'); // New container
+                    const checkAlumniDiv = document.getElementById('div-check-alumni'); 
 
-                    // Reset some states
                     if (radioAnSantri) radioAnSantri.disabled = true;
                     if(radioAnSantri && radioAnSantri.checked) {
                          document.querySelector('input[name="nama-choice"][value="manual"]').click();
                     }
 
-                    // Show/Hide Logic
                     if(e.target.value === 'santri') {
                         santriDetails.classList.remove('hidden');
-                        checkAlumniDiv.classList.remove('hidden'); // Show checkbox
-                        // Year input visibility depends on checkbox state
+                        checkAlumniDiv.classList.remove('hidden'); 
                         if(document.getElementById('check-also-alumni').checked) {
                             alumniInput.classList.remove('hidden');
                         } else {
                             alumniInput.classList.add('hidden');
                         }
                     } else {
-                        // Umum
                         santriDetails.classList.add('hidden');
-                        checkAlumniDiv.classList.remove('hidden'); // Show checkbox
+                        checkAlumniDiv.classList.remove('hidden'); 
                         if(document.getElementById('check-also-alumni').checked) {
                             alumniInput.classList.remove('hidden');
                         } else {
@@ -1815,7 +1916,6 @@
                 };
             });
 
-            // Checkbox "Saya juga Alumni" Logic
             const checkAlsoAlumni = document.getElementById('check-also-alumni');
             if(checkAlsoAlumni) {
                 checkAlsoAlumni.onchange = (e) => {
@@ -1828,8 +1928,6 @@
                 };
             }
 
-
-            // Nama Choice Logic
             document.querySelectorAll('input[name="nama-choice"]').forEach(r => {
                 r.onchange = (e) => {
                     const input = document.getElementById('nama-muzakki-input');
@@ -1852,7 +1950,6 @@
                 };
             });
 
-            // Nav Step 3
             const btnNextStep4 = document.querySelector('[data-next-step="4"]');
             if (btnNextStep4) {
                 btnNextStep4.onclick = () => {
@@ -1860,19 +1957,16 @@
                     const hp = document.getElementById('no-hp').value;
                     const alamat = document.getElementById('alamat').value;
                     const isAlsoAlumni = document.getElementById('check-also-alumni') ? document.getElementById('check-also-alumni').checked : false;
-                    const NIKInput = document.getElementById('no-ktp'); // ADDED NIK
+                    const NIKInput = document.getElementById('no-ktp'); 
 
-                    // Validation
                     if(donasiData.donaturTipe === 'santri' && !donasiData.namaSantri) return showToast("Wajib memilih data santri");
                     
-                    // Alumni validation
                     if(isAlsoAlumni && !document.getElementById('alumni-tahun').value) {
                         return showToast("Tahun lulus wajib diisi bagi Alumni");
                     }
                     
                     if(!nama) return showToast("Nama donatur wajib diisi");
                     if(!hp) return showToast("Nomor WhatsApp wajib diisi");
-                    // Alamat & NIK Optional now based on user preference or keep mandatory? Keeping mandatory as per prev instruction, except NIK.
                     if(!alamat) return showToast("Alamat wajib diisi"); 
 
                     donasiData.nama = nama;
@@ -1880,7 +1974,7 @@
                     donasiData.alamat = alamat;
                     donasiData.email = document.getElementById('email').value;
                     donasiData.doa = document.getElementById('pesan-doa').value;
-                    donasiData.nik = NIKInput ? NIKInput.value : ''; // Capture NIK
+                    donasiData.nik = NIKInput ? NIKInput.value : ''; 
                     
                     if(isAlsoAlumni) {
                         donasiData.isAlumni = true;
@@ -1894,7 +1988,7 @@
                 };
             }
 
-            // STEP 4: PAYMENT
+            // STEP 4
             const btnNextStep5 = document.querySelector('[data-next-step="5"]');
             if (btnNextStep5) {
                 btnNextStep5.onclick = () => {
@@ -1903,7 +1997,6 @@
                     
                     donasiData.metode = method.value;
                     
-                    // Render Summary
                     document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
                     document.getElementById('summary-nominal').innerText = formatRupiah(donasiData.nominal);
                     document.getElementById('summary-nama').innerText = donasiData.nama;
@@ -1950,7 +2043,7 @@
                         "namaSantri": donasiData.namaSantri || "",
                         "nisSantri": donasiData.nisSantri || "",
                         "rombelSantri": donasiData.rombelSantri || "",
-                        "NoKTP": donasiData.nik || "" // Adding NIK to payload
+                        "NoKTP": donasiData.nik || "" 
                     };
 
                     try {
@@ -1965,10 +2058,7 @@
                         const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
                         document.getElementById('btn-wa-confirm').href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
 
-                        // Render Instructions with Prayer
                         let instr = '';
-                        
-                        // The Prayer
                         const prayerHTML = `
                             <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
                                 <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
@@ -2004,7 +2094,6 @@
                 };
             }
 
-            // Modal Logic
             const successContinue = document.getElementById('success-modal-continue');
             if(successContinue) {
                 successContinue.onclick = () => {
@@ -2013,7 +2102,6 @@
                 };
             }
 
-            // Back Buttons
             document.querySelectorAll('[data-prev-step]').forEach(btn => {
                 btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
             });
@@ -2044,14 +2132,25 @@
                 };
             }
 
-            // Add event listeners for filters
             ['filter-jenis', 'filter-metode', 'filter-waktu'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.onchange = () => {
-                    riwayatData.currentPage = 1; // Reset page
+                    riwayatData.currentPage = 1; 
                     renderRiwayatList();
-                    renderPagination(); // Update pagination buttons
+                    renderPagination(); 
                 };
+            });
+            
+            // Add reset date filter logic
+            ['filter-start-date', 'filter-end-date'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.onchange = () => {
+                        riwayatData.currentPage = 1;
+                        renderRiwayatList();
+                        renderPagination();
+                    };
+                }
             });
         }
 
@@ -2094,17 +2193,19 @@
             const container = document.getElementById('home-latest-donations');
             if(!container) return;
 
-            const latest = riwayatData.allData.slice(0, 5);
-
-            if (latest.length === 0) {
+            // Show 8 latest items
+            const latest = riwayatData.allData.slice(0, 8);
+            
+            // Add a placeholder if empty
+             if (latest.length === 0) {
                 container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
                 return;
             }
 
-            container.innerHTML = latest.map(item => `
+            let html = latest.map(item => `
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:bg-orange-50 transition group">
                     <div class="flex justify-between items-start">
-                        <div class="flex-1 min-w-0 pr-4"> <!-- Left -->
+                        <div class="flex-1 min-w-0 pr-4 text-left"> 
                             <h5 class="text-sm font-bold text-slate-800 truncate">${item.NamaDonatur || 'Hamba Allah'}</h5>
                             <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                                 <span class="bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded text-[10px] font-bold">${item.JenisDonasi || 'Donasi'}</span>
@@ -2112,7 +2213,7 @@
                                 <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">${item.MetodePembayaran || '-'}</span>
                             </p>
                         </div>
-                        <div class="text-right shrink-0"> <!-- Right -->
+                        <div class="text-right shrink-0"> 
                             <span class="block font-black text-orange-600 text-sm md:text-base group-hover:scale-105 transition-transform">${formatRupiah(item.Nominal)}</span>
                             <p class="text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1">
                                 <i class="far fa-clock"></i> ${timeAgo(item.Timestamp)}
@@ -2121,6 +2222,18 @@
                     </div>
                 </div>
             `).join('');
+            
+            // Add "See All" card at the end
+            html += `
+                <div onclick="showPage('riwayat')" class="bg-slate-100 p-4 rounded-2xl border border-slate-200 hover:bg-orange-500 hover:text-white transition group cursor-pointer flex flex-col items-center justify-center h-full min-h-[100px]">
+                     <div class="w-10 h-10 rounded-full bg-white text-orange-500 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-arrow-right"></i>
+                     </div>
+                     <span class="font-bold text-sm">Lihat Semua</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
         }
 
         function calculateStats() {
@@ -2128,18 +2241,26 @@
             let total = 0;
             let todayTotal = 0;
             let maxDonation = 0;
+            let maxDonationName = "-"; 
             const todayStr = new Date().toDateString();
             
-            // Maps
             const classMapMTs = {}, classMapMA = {};
             const santriDonasiMTs = {}, santriDonasiMA = {};
             const santriFreqMTs = {}, santriFreqMA = {};
+            const donationTypes = {};
 
             data.forEach(d => {
                 const val = parseInt(d.Nominal) || 0;
                 total += val;
-                if(val > maxDonation) maxDonation = val;
+                if(val > maxDonation) {
+                    maxDonation = val;
+                    maxDonationName = d.NamaDonatur || "Hamba Allah"; 
+                }
                 if(new Date(d.Timestamp).toDateString() === todayStr) todayTotal += val;
+                
+                // Count types
+                const typeName = d.JenisDonasi || "Lainnya";
+                donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
 
                 const rombel = d.KelasSantri || d.rombelSantri;
                 const nama = d.NamaSantri || d.namaSantri;
@@ -2157,8 +2278,17 @@
                     mapFreq[key] = (mapFreq[key] || 0) + 1;
                 }
             });
+            
+            // Find most popular type
+            let popularType = "-";
+            let maxCount = 0;
+            for(const [key, count] of Object.entries(donationTypes)) {
+                if(count > maxCount) {
+                    maxCount = count;
+                    popularType = key;
+                }
+            }
 
-            // Helpers
             const setText = (id, txt) => { 
                 const el = document.getElementById(id);
                 if(el) el.innerText = txt; 
@@ -2171,6 +2301,7 @@
                 return { key: maxK, val: type === 'val' ? formatRupiah(maxV) : maxV + 'x' };
             };
             
+            // Update Home Stats
             const elTotal = document.getElementById('stat-total-donasi');
             if(elTotal) animateValue(elTotal, 0, total, 2000, true);
             
@@ -2183,10 +2314,27 @@
             const elHari = document.getElementById('stat-donasi-hari-ini');
             if(elHari) animateValue(elHari, 0, todayTotal, 1000, true);
             
-            setText('riwayat-summary-total', formatRupiah(total));
-            setText('riwayat-summary-transaksi', data.length);
-            setText('riwayat-summary-tertinggi', formatRupiah(maxDonation));
+            const elMax = document.getElementById('stat-donasi-tertinggi');
+            if(elMax) animateValue(elMax, 0, maxDonation, 1500, true);
+            setText('stat-donasi-tertinggi-nama', maxDonationName); 
 
+            // Update Riwayat Stats (Distinct IDs)
+            const elRTotal = document.getElementById('stat-r-total');
+            if(elRTotal) animateValue(elRTotal, 0, total, 2000, true);
+
+            const elRTrans = document.getElementById('stat-r-transaksi');
+            if(elRTrans) animateValue(elRTrans, 0, data.length, 1500);
+
+            const elRMax = document.getElementById('stat-r-tertinggi');
+            if(elRMax) animateValue(elRMax, 0, maxDonation, 1500, true);
+            
+            const elRHari = document.getElementById('stat-r-hari-ini');
+            if(elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
+            
+            const elRTipe = document.getElementById('stat-r-tipe-top');
+            if(elRTipe) elRTipe.innerText = popularType;
+            
+            // Update Santri Stats
             const mtsClass = getMax(classMapMTs);
             setText('stat-mts-kelas-max', mtsClass.key);
             setText('stat-mts-kelas-total', mtsClass.val);
@@ -2232,6 +2380,8 @@
              const typeFilter = document.getElementById('filter-jenis') ? document.getElementById('filter-jenis').value : 'all';
              const methodFilter = document.getElementById('filter-metode') ? document.getElementById('filter-metode').value : 'all';
              const timeFilter = document.getElementById('filter-waktu') ? document.getElementById('filter-waktu').value : 'all';
+             const startDate = document.getElementById('filter-start-date').value;
+             const endDate = document.getElementById('filter-end-date').value;
 
              if(typeFilter !== 'all') {
                  filtered = filtered.filter(d => d.JenisDonasi === typeFilter || d.type === typeFilter);
@@ -2239,6 +2389,19 @@
              if(methodFilter !== 'all') {
                  filtered = filtered.filter(d => d.MetodePembayaran === methodFilter);
              }
+             
+             // Date Range Filter
+             if (startDate || endDate) {
+                const start = startDate ? new Date(startDate) : new Date('1970-01-01');
+                const end = endDate ? new Date(endDate) : new Date();
+                end.setHours(23, 59, 59, 999); // Include the entire end day
+
+                filtered = filtered.filter(d => {
+                    const itemDate = new Date(d.Timestamp);
+                    return itemDate >= start && itemDate <= end;
+                });
+             }
+
              if(timeFilter !== 'all') {
                  const now = new Date();
                  filtered = filtered.filter(d => {
