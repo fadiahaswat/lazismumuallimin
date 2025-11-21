@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazismu Mu'allimin Yogyakarta - Memberi untuk Negeri</title>
+    <meta name="description" content="Portal Donasi Resmi Lazismu Madrasah Mu'allimin Muhammadiyah Yogyakarta">
+    
+    <!-- Framework & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Configuration & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#F15A22',
+                            dark: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #f8fafc;
+        }
+
+        /* Animations */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .nav-link.active {
+            color: #F15A22;
+            font-weight: 700;
+            background-color: #fff7ed;
+        }
+
+        /* Button Interactions */
+        .choice-button, .sub-choice-button, .nominal-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .choice-button:active, .sub-choice-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Selection States */
+        .choice-button.selected { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); ring: 2px; }
+        .btn-fitrah.selected { background-color: #10b981; border-color: #10b981; color: white; }
+        .btn-maal.selected { background-color: #eab308; border-color: #eab308; color: white; }
+        .btn-infaq.selected { background-color: #F15A22; border-color: #F15A22; color: white; }
+        .btn-fitrah.selected i, .btn-maal.selected i, .btn-infaq.selected i { color: white; }
+
+        /* Sub Selection States */
+        .sub-choice-button.selected { border-color: #F15A22; background-color: #fff7ed; transform: translateX(5px); }
+        .nominal-btn.selected { border-color: #F15A22; background-color: #fff7ed; color: #c2410c; ring: 2px; ring-color: #F15A22; }
+
+        /* Form Elements */
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #F15A22; box-shadow: 0 0 0 3px rgba(241, 90, 34, 0.2); }
+        
+        /* Radio Custom */
+        .payment-radio:checked + label {
+            border-color: #F15A22; background-color: #fff7ed; box-shadow: 0 4px 6px -1px rgba(241, 90, 34, 0.1);
+        }
+        
+        /* Toast Notification */
+        #toast-container {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+        }
+        .toast {
+            background: white; padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideIn 0.3s ease-out forwards; border-left: 4px solid #333;
+        }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+        .toast.warning { border-left-color: #eab308; }
+        
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- MODAL HUBUNGI KAMI -->
+    <div id="hubungi-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in-up">
+            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2 text-center">Pusat Bantuan</h3>
+            <p class="text-center text-slate-500 mb-8">Silakan pilih layanan kebaikan yang Anda butuhkan.</p>
+            <div class="space-y-4">
+                <!-- Konsultasi: Ke WA -->
+                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="flex items-center p-4 bg-green-50 border border-green-100 rounded-xl hover:bg-green-100 transition group">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mr-4 group-hover:scale-110 transition-transform">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Chat Konsultasi</h4>
+                        <p class="text-sm text-slate-600">Tanya jawab seputar ZIS via WhatsApp.</p>
+                    </div>
+                </a>
+                <!-- Konfirmasi: Ke Form Donasi -->
+                <button onclick="document.getElementById('hubungi-modal').classList.add('hidden'); showPage('donasi');" class="w-full flex items-center p-4 bg-orange-50 border border-orange-100 rounded-xl hover:bg-orange-100 transition group text-left">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl mr-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Konfirmasi ZIS</h4>
+                        <p class="text-sm text-slate-600">Isi formulir donasi untuk konfirmasi kebaikan.</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUCCESS (Now just a notification, navigation handled in main view) -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform scale-100 transition-transform duration-300">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <i class="fas fa-check text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">Alhamdulillah!</h3>
+            <p class="text-slate-600 mb-6">Niat kebaikan Anda berhasil dicatat. Jazakumullah Khairan Katsiran.</p>
+            <button id="success-modal-continue" class="w-full bg-green-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-colors shadow-lg shadow-green-500/30">
+                Lanjut Pembayaran <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <i class="fas fa-hand-holding-heart text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold text-slate-800 leading-tight tracking-tight">LAZIS<span class="text-orange-500">MU</span></span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Mu'allimin</span>
+                </div>
+            </a>
+            
+            <!-- Mobile Menu Button -->
+            <button id="menu-toggle" class="md:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 rounded-lg">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+
+            <!-- Desktop Menu -->
+            <div id="menu-links" class="hidden md:flex md:items-center gap-2 absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent shadow-2xl md:shadow-none p-4 md:p-0 flex-col md:flex-row border-b md:border-0 border-gray-100 rounded-b-3xl md:rounded-none transition-all duration-300">
+                <a href="#home" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Beranda</a>
+                <a href="#riwayat" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Laporan & Statistik</a>
+                <a href="#rekapitulasi" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-orange-600 transition font-bold text-sm w-full md:w-auto">Rekapitulasi</a>
+                <a href="#donasi" class="mt-2 md:mt-0 bg-slate-900 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 w-full md:w-auto">
+                    <i class="fas fa-heart text-orange-500"></i> Donasi Sekarang
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow">
+        <!-- === HOME SECTION === -->
+        <section id="page-home" class="page-section">
+            <!-- Hero -->
+            <div class="relative bg-slate-900 overflow-hidden rounded-b-[3rem] mb-12">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-orange-500 rounded-full blur-[100px] opacity-20"></div>
+                <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                
+                <div class="container mx-auto px-4 py-16 md:py-28 text-center relative z-10">
+                    <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold tracking-wider mb-6 border border-orange-500/30">LEMBAGA AMIL ZAKAT TERPERCAYA</span>
+                    <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
+                        Amanah Mengelola,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Memberdaya Sesama</span>
+                    </h1>
+                    <p class="text-slate-400 text-base md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed px-4">
+                        Salurkan Zakat, Infaq, dan Shodaqoh Anda melalui Lazismu Mu'allimin Yogyakarta untuk menebar kebaikan bagi pendidikan kader umat.
+                    </p>
+                    
+                    <!-- 4 Main Buttons Grid -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-8 max-w-4xl mx-auto px-2">
+                        <a href="#donasi" class="bg-orange-500 text-white px-6 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                            <i class="fas fa-hand-holding-heart"></i> Tunaikan ZIS
+                        </a>
+                        <a href="#donasi-rekening" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                            <i class="fas fa-wallet"></i> Daftar Rekening
+                        </a>
+                        <a href="#qris-section" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-white/20 transition flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                            <i class="fas fa-qrcode"></i> Scan QRIS
+                        </a>
+                        <button id="btn-hubungi-hero" class="bg-slate-700/50 hover:bg-slate-700 text-white px-6 py-3 rounded-full font-bold transition border border-slate-600 backdrop-blur-sm flex items-center justify-center gap-2 transform hover:-translate-y-1 w-full sm:w-auto">
+                            <i class="far fa-comments"></i> Hubungi Kami
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER: 1. Capaian Kebaikan -->
+            <div class="container mx-auto px-4 -mt-20 relative z-20 mb-8">
+                <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-100">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6">
+                        <div class="mb-4 md:mb-0">
+                            <h2 class="text-2xl font-bold text-slate-800">Capaian Kebaikan</h2>
+                            <p class="text-slate-500 text-sm">Update Real-time</p>
+                        </div>
+                        <a href="#riwayat" class="text-orange-500 font-semibold text-sm hover:underline">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        <!-- Total -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i class="fas fa-chart-line"></i></div>
+                                <span class="text-slate-500 text-sm font-medium">Total Donasi</span>
+                            </div>
+                            <h3 id="stat-total-donasi" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                        </div>
+                        <!-- Transaksi -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600"><i class="fas fa-receipt"></i></div>
+                                <span class="text-slate-500 text-sm font-medium">Total Transaksi</span>
+                            </div>
+                            <h3 id="stat-total-transaksi" class="text-xl md:text-2xl font-black text-slate-800" data-value="0">0</h3>
+                        </div>
+                         <!-- Rata-rata -->
+                         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-chart-pie"></i></div>
+                                <span class="text-slate-500 text-sm font-medium">Rata-rata</span>
+                            </div>
+                            <h3 id="stat-donasi-rata" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                        </div>
+                        <!-- Hari Ini -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"><i class="fas fa-calendar-day"></i></div>
+                                <span class="text-slate-500 text-sm font-medium">Hari Ini</span>
+                            </div>
+                            <h3 id="stat-donasi-hari-ini" class="text-xl md:text-2xl font-black text-slate-800 truncate" data-value="0">Rp 0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER: 2. Jejak Kebaikan Terbaru -->
+            <div class="container mx-auto px-4 mb-20">
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 md:p-8 overflow-hidden">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-50 pb-4">
+                        <h3 class="text-lg md:text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            Jejak Kebaikan Terbaru
+                        </h3>
+                        <span class="text-xs font-bold text-slate-400 uppercase">Realtime</span>
+                    </div>
+                    <!-- Grid Modified for Better Responsiveness -->
+                    <div id="home-latest-donations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        <!-- Content will be loaded here -->
+                        <div class="text-center col-span-full py-4 text-slate-400 text-sm animate-pulse">
+                            Memuat data kebaikan terbaru...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER: 3. Statistik Santri (Top Kontributor) -->
+            <section class="py-10 bg-slate-50/50">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-10">
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800">Top Kontributor Santri</h2>
+                        <p class="text-slate-500 text-sm md:text-base">Apresiasi untuk kelas dan santri dengan semangat berbagi kebaikan tertinggi.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Kolom MTs -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-teal-700 flex items-center gap-2"><i class="fas fa-school"></i> Tingkat MTs (1, 2, 3)</h3>
+                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Kelas Terbanyak</p><h4 id="stat-mts-kelas-max" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-mts-kelas-total" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Santri (Nominal Tertinggi)</p><h4 id="stat-mts-santri-max-donasi" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-mts-santri-total-donasi" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-teal-600 uppercase mb-1">Santri (Paling Sering)</p><h4 id="stat-mts-santri-freq-nama" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Frekuensi</p><span id="stat-mts-santri-freq-val" class="font-bold text-slate-600" data-value="0">0x</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Kolom MA -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-indigo-700 flex items-center gap-2"><i class="fas fa-graduation-cap"></i> Tingkat MA (4, 5, 6)</h3>
+                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Kelas Terbanyak</p><h4 id="stat-ma-kelas-max" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-ma-kelas-total" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Santri (Nominal Tertinggi)</p><h4 id="stat-ma-santri-max-donasi" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Total</p><span id="stat-ma-santri-total-donasi" class="font-bold text-slate-600" data-value="0">Rp 0</span></div>
+                            </div>
+                             <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                                <div><p class="text-xs font-bold text-indigo-600 uppercase mb-1">Santri (Paling Sering)</p><h4 id="stat-ma-santri-freq-nama" class="text-lg md:text-xl font-bold text-slate-800">N/A</h4></div>
+                                <div class="text-right"><p class="text-xs text-slate-400">Frekuensi</p><span id="stat-ma-santri-freq-val" class="font-bold text-slate-600" data-value="0">0x</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ORDER: 4. Laporan Penyaluran (Jejak Kebaikan Ramadhan) -->
+            <section class="py-20 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                <div class="absolute top-0 left-0 w-64 h-64 bg-orange-500 rounded-full blur-[100px] opacity-10"></div>
+                
+                <div class="container mx-auto px-4 relative z-10">
+                    <div class="text-center max-w-3xl mx-auto mb-12">
+                        <span class="inline-block py-1 px-3 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold tracking-wider mb-4 border border-orange-500/30">LAPORAN PENYALURAN</span>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">Jejak Kebaikan Ramadhan 1446 H</h2>
+                        <p class="text-slate-300">Alhamdulillah, berkat amanah Anda, kami telah menghimpun dan menyalurkan kebaikan sebesar:</p>
+                        <div class="my-8">
+                            <span class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Rp 708.996.037</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">Dana kebaikan ini telah disalurkan untuk program-program berikut:</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-university text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2">Pembangunan Kampus</h4>
+                            <p class="text-slate-400 text-sm">Pembangunan Kampus Terpadu Mu'allimin.</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-chair text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2">Pengadaan Meubelair</h4>
+                            <p class="text-slate-400 text-sm">Fasilitas belajar santri yang nyaman.</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-chalkboard-teacher text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2">Program Peduli Guru</h4>
+                            <p class="text-slate-400 text-sm">Kado Ramadhan untuk ustadz & pamong.</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-user-graduate text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2">Beasiswa Pendidikan</h4>
+                            <p class="text-slate-400 text-sm">Syafii Maarif Scholarship untuk kader.</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-hand-holding-heart text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2">Sumbangan AUM/Ortom</h4>
+                            <p class="text-slate-400 text-sm">Dukungan untuk gerak langkah persyarikatan.</p>
+                        </div>
+                         <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition">
+                            <i class="fas fa-globe-asia text-orange-400 text-2xl mb-3"></i>
+                            <h4 class="font-bold text-lg mb-2 leading-snug">Muballigh Hijrah Nasional & Internasional</h4>
+                            <p class="text-slate-400 text-sm">Dakwah santri di berbagai penjuru.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-12">
+                        <a href="#donasi" class="inline-flex items-center bg-orange-500 text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30">
+                            <i class="fas fa-heart mr-2"></i> Mari Lanjutkan Kebaikan Ini
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ORDER: 5. Metode Pembayaran (QRIS & Transfer) -->
+            <section id="qris-section" class="py-20">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold text-slate-800 mb-3">Metode Pembayaran</h2>
+                        <p class="text-slate-500">Pilih metode yang paling memudahkan niat baik Anda.</p>
+                    </div>
+
+                    <!-- QRIS Card -->
+                    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mb-12 flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-1 text-center md:text-left">
+                            <div class="inline-block p-3 rounded-2xl bg-orange-100 text-orange-600 mb-4"><i class="fas fa-qrcode text-3xl"></i></div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Scan QRIS</h3>
+                            <p class="text-slate-500 mb-6">Dukung pembayaran kebaikan melalui GoPay, OVO, Dana, LinkAja, ShopeePay, dan seluruh aplikasi Mobile Banking.</p>
+                            <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                                <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-teal-600 text-white font-bold hover:bg-teal-700 transition text-sm">
+                                    <i class="fas fa-download mr-2"></i> QRIS BSI
+                                </a>
+                                <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800 transition text-sm">
+                                    <i class="fas fa-download mr-2"></i> QRIS BPD
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-4">
+                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center group hover:border-teal-200 transition">
+                                <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" alt="QRIS BSI" class="w-full h-auto rounded-lg mb-2 object-contain group-hover:scale-105 transition-transform">
+                                <p class="text-xs font-bold text-slate-500">BSI</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center group hover:border-blue-200 transition">
+                                <div class="relative mb-2">
+                                    <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" alt="QRIS BPD" class="w-full h-auto rounded-lg object-contain group-hover:scale-105 transition-transform">
+                                </div>
+                                <p class="text-xs font-bold text-slate-500">BPD DIY Syariah</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rekening Grid -->
+                    <div id="donasi-rekening" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        <!-- BNI -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <img src="https://placehold.co/100x40/F15A22/ffffff?text=BNI" alt="BNI" class="h-8 rounded">
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                                <span class="font-mono text-lg font-bold text-slate-700" id="rek-bni">3440000348</span>
+                                <button onclick="copyText('3440000348')" class="text-orange-500 hover:bg-white px-3 py-1.5 rounded-md transition shadow-sm flex items-center gap-2 text-sm font-bold">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 mt-3">a.n. Lazismu Madrasah Mu'allimin</p>
+                        </div>
+                        <!-- BSI -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <img src="https://placehold.co/100x40/00a39e/ffffff?text=BSI" alt="BSI" class="h-8 rounded">
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                                <span class="font-mono text-lg font-bold text-slate-700" id="rek-bsi">7930030303</span>
+                                <button onclick="copyText('7930030303')" class="text-teal-500 hover:bg-white px-3 py-1.5 rounded-md transition shadow-sm flex items-center gap-2 text-sm font-bold">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 mt-3">a.n. Lazismu Muallimin</p>
+                        </div>
+                        <!-- BPD DIY Syariah (Updated) -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://placehold.co/100x40/1e40af/ffffff?text=BPD" alt="BPD" class="h-8 rounded">
+                                    <span class="text-sm font-extrabold text-blue-800 italic">Syariah</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                                <span class="font-mono text-lg font-bold text-slate-700" id="rek-bpd">801241004624</span>
+                                <button onclick="copyText('801241004624')" class="text-blue-500 hover:bg-white px-3 py-1.5 rounded-md transition shadow-sm flex items-center gap-2 text-sm font-bold">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 mt-3">a.n. KL Lazismu Madrasah</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- === RIWAYAT SECTION === -->
+        <section id="page-riwayat" class="page-section bg-white min-h-screen py-20">
+            <div class="container mx-auto px-4 md:px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Jejak Kebaikan</h2>
+                    <p class="text-slate-500">Transparansi kebaikan adalah prioritas kami.</p>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="max-w-4xl mx-auto mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+                     <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                        <select id="filter-jenis" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <option value="all">Semua Jenis Donasi</option>
+                            <option value="Zakat Fitrah">Zakat Fitrah</option>
+                            <option value="Zakat Maal">Zakat Maal</option>
+                            <option value="Infaq Pengembangan Kampus">Infaq Pembangunan</option>
+                            <option value="Infaq Beasiswa Pendidikan">Infaq Pendidikan</option>
+                            <option value="Infaq Umum">Infaq Umum</option>
+                        </select>
+                         <select id="filter-metode" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <option value="all">Semua Metode</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Tunai">Tunai</option>
+                        </select>
+                        <select id="filter-waktu" class="p-3 rounded-xl border border-slate-200 text-sm text-slate-600 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <option value="all">Semua Waktu</option>
+                            <option value="today">Hari Ini</option>
+                            <option value="month">Bulan Ini</option>
+                            <option value="year">Tahun Ini</option>
+                        </select>
+                     </div>
+                     <div class="text-xs text-slate-400 font-bold uppercase tracking-wider self-end md:self-center">
+                         <i class="fas fa-filter mr-1"></i> Filter Data
+                     </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 text-center border border-orange-100 shadow-sm">
+                        <h3 id="riwayat-summary-total" class="text-2xl font-black text-orange-600">Rp 0</h3>
+                        <p class="text-sm text-orange-800 font-medium">Total Kebaikan Terkumpul</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center border border-blue-100 shadow-sm">
+                        <h3 id="riwayat-summary-transaksi" class="text-2xl font-black text-blue-600">0</h3>
+                        <p class="text-sm text-blue-800 font-medium">Jumlah Transaksi</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center border border-green-100 shadow-sm">
+                         <h3 id="riwayat-summary-tertinggi" class="text-2xl font-black text-green-600">Rp 0</h3>
+                         <p class="text-sm text-green-800 font-medium">Donasi Tertinggi</p>
+                    </div>
+                </div>
+
+                <!-- Loading/Content -->
+                <div class="max-w-3xl mx-auto">
+                    <!-- Call to Action Card -->
+                    <div class="bg-slate-900 rounded-2xl p-8 text-center mb-10 shadow-xl relative overflow-hidden animate-fade-in-up">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white mb-2">Ingin Nama Anda Tercatat dalam Sejarah Kebaikan?</h3>
+                            <p class="text-slate-400 mb-6">Mari berlomba-lomba dalam kebaikan. Donasi Anda sangat berarti.</p>
+                            <a href="#donasi" class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition shadow-lg shadow-orange-500/30">
+                                <i class="fas fa-plus-circle mr-2"></i> Mulai Berdonasi
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="riwayat-loading" class="py-20 text-center">
+                        <div class="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+                        <p class="text-slate-500 font-medium">Mengambil data kebaikan...</p>
+                    </div>
+                    
+                    <div id="riwayat-content" class="hidden space-y-4">
+                        <!-- List -->
+                        <div id="riwayat-list-container" class="space-y-3"></div>
+
+                        <!-- Pagination -->
+                        <div class="flex justify-between items-center pt-8 border-t border-slate-100 mt-6">
+                            <button id="riwayat-prev" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2">
+                                <i class="fas fa-chevron-left"></i> Sebelumnya
+                            </button>
+                            <span id="riwayat-page-info" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Halaman 1</span>
+                            <button id="riwayat-next" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold disabled:opacity-50 hover:bg-slate-50 transition text-sm flex items-center gap-2">
+                                Selanjutnya <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                     <div id="riwayat-no-data" class="hidden py-20 text-center">
+                        <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl">
+                            <i class="far fa-folder-open"></i>
+                        </div>
+                        <p class="text-slate-500">Belum ada riwayat kebaikan yang tercatat sesuai filter.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === REKAPITULASI SECTION === -->
+        <section id="page-rekapitulasi" class="page-section bg-white min-h-screen py-20">
+             <div class="container mx-auto px-4 md:px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Rekapitulasi Kelas</h2>
+                    <p class="text-slate-500">Pantau perolehan kebaikan per kelas secara detail dan transparan.</p>
+                </div>
+
+                <div class="max-w-5xl mx-auto">
+                    <!-- Filter Control -->
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mb-8 flex flex-col md:flex-row gap-6 items-center justify-between transform hover:scale-[1.01] transition-all duration-300">
+                        <div class="w-full md:w-1/2">
+                            <label class="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                <i class="fas fa-users text-orange-500"></i> Pilih Kelas
+                            </label>
+                            <div class="relative">
+                                <select id="rekap-kelas-select" class="w-full p-4 pl-12 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-orange-500 transition appearance-none font-bold text-slate-700">
+                                    <option value="">-- Silakan Pilih Kelas --</option>
+                                    <!-- Options populated by JS -->
+                                </select>
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-slate-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="w-full md:w-auto flex flex-col items-end">
+                             <p class="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">Aksi Dokumen</p>
+                            <button id="btn-export-pdf" disabled class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg shadow-red-500/20">
+                                <i class="fas fa-file-pdf text-xl"></i> <span>Unduh Laporan PDF</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Cards (Hidden initially) -->
+                    <div id="rekap-summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up">
+                        <div class="bg-white p-6 rounded-2xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fas fa-chalkboard-teacher"></i></div>
+                                <p class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Wali Kelas</p>
+                            </div>
+                            <h4 id="rekap-wali" class="text-lg font-bold text-slate-800 pl-14">-</h4>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border-l-4 border-teal-500 shadow-sm hover:shadow-md transition">
+                             <div class="flex items-center gap-4 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600"><i class="fas fa-user-tie"></i></div>
+                                <p class="text-xs font-bold text-teal-600 uppercase tracking-wide">Musyrif</p>
+                            </div>
+                            <h4 id="rekap-musyrif" class="text-lg font-bold text-slate-800 pl-14">-</h4>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white shadow-lg shadow-orange-500/20">
+                            <p class="text-xs font-bold text-orange-100 uppercase mb-1 tracking-wide">Total Perolehan Kelas</p>
+                            <h4 id="rekap-total-kelas" class="text-3xl font-black tracking-tight">Rp 0</h4>
+                        </div>
+                    </div>
+
+                    <!-- Table Container (Hidden initially) -->
+                    <div id="rekap-table-container" class="hidden bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in-up">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-600">
+                                <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-xs tracking-wider">
+                                    <tr>
+                                        <th class="px-6 py-5 border-b border-slate-200">No</th>
+                                        <th class="px-6 py-5 border-b border-slate-200">Nama Santri</th>
+                                        <th class="px-6 py-5 text-right border-b border-slate-200">QRIS</th>
+                                        <th class="px-6 py-5 text-right border-b border-slate-200">Transfer</th>
+                                        <th class="px-6 py-5 text-right border-b border-slate-200">Tunai</th>
+                                        <th class="px-6 py-5 text-right border-b border-slate-200 bg-orange-50 text-orange-700">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rekap-table-body" class="divide-y divide-slate-100">
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                     <div id="rekap-placeholder" class="text-center py-24 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 text-4xl">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-400 mb-2">Belum Ada Kelas Dipilih</h4>
+                        <p class="text-slate-400 font-medium">Silakan pilih kelas pada menu di atas untuk melihat rekapitulasi data.</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- === DONASI WIZARD SECTION === -->
+        <section id="page-donasi" class="page-section bg-white py-20">
+            <div class="container mx-auto px-4 md:px-6">
+                <div class="max-w-2xl mx-auto mb-10 text-center">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-3">Formulir Kebaikan</h2>
+                    <p class="text-slate-500">Lengkapi 5 langkah mudah berikut untuk berdonasi.</p>
+                </div>
+
+                <div id="donasi-wizard" class="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+                    <!-- Progress Bar -->
+                    <div class="h-1.5 bg-slate-100 w-full">
+                        <div id="wizard-progress-bar" class="h-full bg-orange-500 transition-all duration-500 ease-out" style="width: 20%"></div>
+                    </div>
+
+                    <!-- Header Steps -->
+                    <div class="px-8 pt-8 pb-4 flex justify-between items-center border-b border-slate-50">
+                        <div>
+                             <h3 id="wizard-title" class="text-xl font-bold text-slate-800">Pilih Jenis Kebaikan</h3>
+                             <p id="wizard-subtitle" class="text-sm text-slate-500 mt-1">Niat Suci Dimulai</p>
+                        </div>
+                         <span id="wizard-step-indicator" class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full">Step 1/5</span>
+                    </div>
+
+                    <!-- Step Content Wrapper -->
+                    <div class="p-6 md:p-10 min-h-[400px]">
+                        
+                        <!-- STEP 1: TIPE DONASI -->
+                        <div id="donasi-step-1" class="donasi-step-container">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <button data-type="Zakat Fitrah" class="choice-button btn-fitrah border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-emerald-400 bg-white">
+                                    <i class="fas fa-leaf text-3xl text-emerald-500"></i>
+                                    <span class="font-bold text-slate-700">Zakat Fitrah</span>
+                                </button>
+                                <button data-type="Zakat Maal" class="choice-button btn-maal border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-yellow-400 bg-white">
+                                    <i class="fas fa-coins text-3xl text-yellow-500"></i>
+                                    <span class="font-bold text-slate-700">Zakat Maal</span>
+                                </button>
+                                <button data-type="Infaq" class="choice-button btn-infaq border-2 border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-orange-400 bg-white">
+                                    <i class="fas fa-hand-holding-heart text-3xl text-orange-500"></i>
+                                    <span class="font-bold text-slate-700">Infaq</span>
+                                </button>
+                            </div>
+
+                            <!-- Pilihan Infaq -->
+                            <div id="infaq-options" class="hidden space-y-3">
+                                <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Peruntukan Infaq</p>
+                                <button data-type-infaq="Infaq Pengembangan Kampus" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                    <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-xl shrink-0"><i class="fas fa-building"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">Pengembangan Kampus</h5><p class="text-xs text-slate-500">Pembangunan sarana & prasarana.</p></div>
+                                </button>
+                                <button data-type-infaq="Infaq Beasiswa Pendidikan" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                    <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 text-xl shrink-0"><i class="fas fa-user-graduate"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">Beasiswa Pendidikan</h5><p class="text-xs text-slate-500">Bantuan bagi santri berprestasi & dhuafa.</p></div>
+                                </button>
+                                <button data-type-infaq="Infaq Umum" class="sub-choice-button w-full p-4 rounded-xl border border-slate-200 flex items-center gap-4 bg-white text-left">
+                                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl shrink-0"><i class="fas fa-globe"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">Infaq Umum</h5><p class="text-xs text-slate-500">Dana operasional & program kemanusiaan.</p></div>
+                                </button>
+                            </div>
+
+                            <!-- Checker Fitrah -->
+                            <div id="zakat-fitrah-checker" class="hidden bg-emerald-50 p-6 rounded-2xl border border-emerald-100 animate-fade-in-up">
+                                <p class="text-emerald-800 text-sm mb-4 font-medium"><i class="fas fa-info-circle mr-2"></i>Besaran: <strong>Rp 37.500</strong> / jiwa.</p>
+                                <div class="flex gap-4 items-end">
+                                    <div class="flex-1">
+                                        <label class="text-xs font-bold text-emerald-600 uppercase mb-1 block">Jumlah Jiwa</label>
+                                        <input type="number" id="fitrah-jumlah-orang" class="w-full p-3 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-500 bg-white" placeholder="0">
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="text-xs font-bold text-emerald-600 uppercase mb-1 block">Total</label>
+                                        <input type="text" id="fitrah-total" class="w-full p-3 rounded-xl bg-emerald-100 border-transparent font-bold text-emerald-800" value="Rp 0" readonly>
+                                    </div>
+                                </div>
+                                <button id="btn-fitrah-next" class="mt-4 w-full bg-emerald-500 text-white py-3 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20">Lanjut Data Diri <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
+
+                            <!-- Checker Maal -->
+                            <div id="zakat-maal-checker" class="hidden bg-yellow-50 p-6 rounded-2xl border border-yellow-100 animate-fade-in-up">
+                                <p class="text-yellow-800 text-sm mb-4">Kalkulator Zakat Profesi (2.5%).</p>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="text-xs font-bold text-yellow-700 uppercase mb-1 block">Harga Emas (per gram)</label>
+                                        <input type="text" id="harga-emas" class="w-full p-3 rounded-xl border border-yellow-200 bg-white" value="Rp 1.300.000">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-yellow-700 uppercase mb-1 block">Penghasilan Bulanan</label>
+                                        <input type="text" id="penghasilan-bulanan" class="w-full p-3 rounded-xl border border-yellow-200 bg-white" placeholder="Rp 0">
+                                    </div>
+                                    <button id="zakat-check-button" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg shadow-yellow-500/20">Hitung Zakat</button>
+                                </div>
+                                
+                                <div id="zakat-result" class="hidden mt-4 pt-4 border-t border-yellow-200 text-center">
+                                    <p id="zakat-result-message" class="font-bold text-lg mb-3"></p>
+                                    <button id="btn-maal-next" class="hidden w-full bg-yellow-600 text-white py-3 rounded-xl font-bold hover:bg-yellow-700 transition">Bayar Zakat <i class="fas fa-arrow-right ml-2"></i></button>
+                                    <button id="zakat-lanjutkan-infaq" class="hidden w-full mt-2 border-2 border-yellow-500 text-yellow-700 py-2.5 rounded-xl font-bold hover:bg-yellow-100 transition">Tidak Wajib, Lanjut Infaq Saja</button>
+                                </div>
+                            </div>
+
+                            <!-- Next Button (General) -->
+                            <div id="step-1-nav-default" class="hidden mt-8 flex justify-end">
+                                <button data-next-step="2" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">
+                                    Tentukan Nominal <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: NOMINAL -->
+                        <div id="donasi-step-2" class="donasi-step-container hidden">
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="50000">Rp 50.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="100000">Rp 100.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="250000">Rp 250.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="500000">Rp 500.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="1000000">Rp 1.000.000</button>
+                                <button class="nominal-btn border border-slate-200 rounded-xl p-4 font-bold text-slate-600 bg-white" data-nominal="2000000">Rp 2.000.000</button>
+                            </div>
+                            <div class="mb-8">
+                                <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nominal Kebaikan Lainnya</label>
+                                <input type="text" id="nominal-custom" class="w-full p-4 rounded-xl border border-slate-200 text-xl font-bold text-slate-800 focus:ring-2 focus:ring-orange-500" placeholder="Rp 0">
+                            </div>
+                            <div class="flex justify-between">
+                                <button data-prev-step="1" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="3" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Isi Data Muzakki/Munfiq <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: DATA DIRI -->
+                        <div id="donasi-step-3" class="donasi-step-container hidden">
+                            <div class="space-y-5">
+                                <!-- Tipe Donatur (Removed Explicit Alumni Type) -->
+                                <div class="bg-slate-50 p-1 rounded-xl flex flex-row text-sm font-bold text-slate-500 gap-1">
+                                    <label class="flex-1 text-center cursor-pointer">
+                                        <input type="radio" name="donatur-tipe" value="santri" class="hidden peer" checked>
+                                        <span class="block py-3 rounded-lg peer-checked:bg-white peer-checked:text-orange-500 peer-checked:shadow-sm transition">Via Santri</span>
+                                    </label>
+                                    <label class="flex-1 text-center cursor-pointer">
+                                        <input type="radio" name="donatur-tipe" value="umum" class="hidden peer">
+                                        <span class="block py-3 rounded-lg peer-checked:bg-white peer-checked:text-orange-500 peer-checked:shadow-sm transition">Masyarakat Umum</span>
+                                    </label>
+                                </div>
+
+                                <!-- Data Santri -->
+                                <div id="santri-details" class="bg-orange-50 p-5 rounded-2xl border border-orange-100 space-y-3 animate-fade-in-up">
+                                    <h5 class="text-orange-800 font-bold text-sm flex items-center"><i class="fas fa-child mr-2"></i> Data Santri</h5>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <select id="santri-level-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white">
+                                            <option value="">Tingkat</option>
+                                            <option value="1">Kelas 1</option>
+                                            <option value="2">Kelas 2</option>
+                                            <option value="3">Kelas 3</option>
+                                            <option value="4">Kelas 4</option>
+                                            <option value="5">Kelas 5</option>
+                                            <option value="6">Kelas 6</option>
+                                        </select>
+                                        <select id="santri-rombel-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white" disabled>
+                                            <option value="">Rombel</option>
+                                        </select>
+                                    </div>
+                                    <select id="santri-nama-select" class="w-full p-2.5 rounded-lg border border-orange-200 text-sm bg-white" disabled>
+                                        <option value="">Pilih Nama Santri</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nama Donatur -->
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nama Donatur (Muzakki/Munfiq)</label>
+                                    <input type="text" id="nama-muzakki-input" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Nama Lengkap Anda" required>
+                                    
+                                    <!-- Checkbox: Saya Juga Alumni (Moved Below Name) -->
+                                    <div id="div-check-alumni" class="mt-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="checkbox" id="check-also-alumni" class="w-4 h-4 text-orange-500 rounded border-gray-300 focus:ring-orange-500">
+                                            <span class="text-sm font-medium text-slate-500">Saya juga Alumni Mu'allimin</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Input Khusus Alumni -->
+                                    <div id="input-alumni-tahun" class="hidden mt-2 animate-fade-in-up">
+                                        <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl border border-slate-200 text-sm bg-slate-50" placeholder="Masukkan Tahun Lulus (Contoh: 1998)">
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-4 mt-3 text-sm">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="nama-choice" value="manual" class="text-orange-500 focus:ring-orange-500" checked>
+                                            <span class="text-slate-600">Manual</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="nama-choice" value="santri" id="radio-an-santri" class="text-orange-500 focus:ring-orange-500" disabled>
+                                            <span class="text-slate-600">A/n Santri</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="nama-choice" value="hamba" class="text-orange-500 focus:ring-orange-500">
+                                            <span class="text-slate-600">Hamba Allah</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Kontak -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">WhatsApp (Wajib)</label>
+                                        <input type="tel" id="no-hp" class="w-full p-3 rounded-xl border border-slate-200" placeholder="08..." required>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Email</label>
+                                        <input type="email" id="email" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Opsional">
+                                    </div>
+                                </div>
+                                
+                                <!-- Alamat & NIK (Updated) -->
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Alamat Lengkap (Wajib)</label>
+                                    <textarea id="alamat" rows="2" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Alamat domisili saat ini" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">No. KTP / NIK (Opsional)</label>
+                                    <input type="text" id="no-ktp" class="w-full p-3 rounded-xl border border-slate-200" placeholder="16 digit NIK">
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Pesan dan Doa (Opsional)</label>
+                                    <textarea id="pesan-doa" rows="2" class="w-full p-3 rounded-xl border border-slate-200" placeholder="Tuliskan doa atau pesan kebaikan Anda..."></textarea>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button data-prev-step="2" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="4" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Metode Pembayaran <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: METODE BAYAR -->
+                        <div id="donasi-step-4" class="donasi-step-container hidden">
+                            <div class="space-y-3">
+                                <input type="radio" name="payment-method" id="pay-qris" value="QRIS" class="hidden payment-radio">
+                                <label for="pay-qris" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-qrcode text-slate-600"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">QRIS</h5><p class="text-xs text-slate-500">Gopay, OVO, Dana, ShopeePay, M-Banking</p></div>
+                                </label>
+
+                                <input type="radio" name="payment-method" id="pay-transfer" value="Transfer" class="hidden payment-radio">
+                                <label for="pay-transfer" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-university text-slate-600"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">Transfer Bank</h5><p class="text-xs text-slate-500">BSI, BNI, BPD DIY Syariah</p></div>
+                                </label>
+
+                                <input type="radio" name="payment-method" id="pay-tunai" value="Tunai" class="hidden payment-radio">
+                                <label for="pay-tunai" class="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 cursor-pointer hover:border-orange-500 transition bg-white">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl"><i class="fas fa-money-bill-wave text-slate-600"></i></div>
+                                    <div><h5 class="font-bold text-slate-800">Tunai (Cash)</h5><p class="text-xs text-slate-500">Serahkan langsung ke Kantor Layanan</p></div>
+                                </label>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button data-next-step="5" class="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-slate-700 transition shadow-lg">Konfirmasi Akhir <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 5: RINGKASAN -->
+                        <div id="donasi-step-5" class="donasi-step-container hidden">
+                            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
+                                <div class="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
+                                    <div>
+                                        <p class="text-xs text-slate-400 font-bold uppercase">Jenis Kebaikan</p>
+                                        <h4 id="summary-type" class="text-lg font-bold text-slate-800">Zakat Maal</h4>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-400 font-bold uppercase">Nominal</p>
+                                        <h4 id="summary-nominal" class="text-2xl font-black text-orange-500">Rp 0</h4>
+                                    </div>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span class="text-slate-500">Nama Donatur:</span> <span id="summary-nama" class="font-medium text-slate-800"></span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">WhatsApp:</span> <span id="summary-hp" class="font-medium text-slate-800"></span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Metode Bayar:</span> <span id="summary-metode" class="font-medium text-slate-800"></span></div>
+                                    <div id="summary-santri-row" class="flex justify-between hidden"><span class="text-slate-500">Santri:</span> <span id="summary-santri" class="font-medium text-slate-800 text-right max-w-[60%]"></span></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="flex items-start gap-3 p-4 rounded-xl border border-orange-200 bg-orange-50 cursor-pointer hover:bg-orange-100 transition">
+                                    <input type="checkbox" id="confirm-check" class="mt-1 w-5 h-5 text-orange-500 rounded border-gray-300 focus:ring-orange-500">
+                                    <span class="text-sm text-orange-900 font-medium leading-snug">Saya menyatakan bahwa data yang saya isi adalah benar. Bismillah, saya niat menebar kebaikan.</span>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button data-prev-step="4" class="text-slate-400 hover:text-slate-600 font-bold px-4"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                <button id="btn-submit-final" class="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                    <span class="default-text">Konfirmasi & Bayar <i class="fas fa-check-circle"></i></span>
+                                    <span class="loading-text hidden"><i class="fas fa-spinner fa-spin"></i> Memproses...</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Instruksi Pembayaran (Hidden initially) -->
+                <div id="donasi-payment-instructions" class="hidden max-w-3xl mx-auto animate-fade-in-up">
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden text-center p-10">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl text-green-500"><i class="fas fa-check"></i></div>
+                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Selesaikan Pembayaran</h2>
+                        <p class="text-slate-500 mb-8">Silakan lakukan pembayaran sesuai nominal kebaikan Anda.</p>
+
+                        <div id="instruction-content" class="mb-10 text-left bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <!-- Content injected by JS -->
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a id="btn-wa-confirm" href="#" target="_blank" class="flex-1 inline-block bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-6 rounded-2xl font-bold text-lg transition shadow-xl shadow-green-500/20 transform hover:-translate-y-1 hover:scale-[1.02] border border-green-400 group">
+                                <div class="flex items-center justify-center gap-3">
+                                    <i class="fab fa-whatsapp text-3xl group-hover:rotate-12 transition-transform"></i>
+                                    <div class="text-left leading-tight">
+                                        <div class="text-xs font-medium text-green-100 opacity-90">Langkah Terakhir</div>
+                                        <div class="text-xl">Konfirmasi WhatsApp</div>
+                                    </div>
+                                </div>
+                            </a>
+                            <button onclick="location.reload()" class="flex-1 inline-block bg-white border-2 border-slate-100 text-slate-600 hover:text-orange-600 hover:border-orange-200 px-8 py-6 rounded-2xl font-bold text-lg transition transform hover:-translate-y-1 hover:shadow-lg group">
+                                 <div class="flex items-center justify-center gap-3">
+                                    <i class="fas fa-plus-circle text-3xl text-slate-300 group-hover:text-orange-500 transition-colors"></i>
+                                    <div class="text-left leading-tight">
+                                        <div class="text-xs font-medium text-slate-400 group-hover:text-orange-400 transition-colors">Ingin Berdonasi Lagi?</div>
+                                        <div class="text-xl">Buat Donasi Baru</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-16 text-sm border-t border-slate-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
+                <!-- Tentang Kami -->
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-lg mb-4 relative inline-block">
+                        Tentang Kami
+                        <span class="absolute -bottom-2 left-0 w-10 h-1 bg-orange-500 rounded-full"></span>
+                    </h4>
+                    <p class="leading-relaxed text-slate-400">Lazismu Mu'allimin adalah lembaga amil zakat tingkat kantor layanan yang berkhidmat dalam pemberdayaan masyarakat melalui pendayagunaan dana Zakat, Infaq, Shodaqoh.</p>
+                </div>
+                
+                <!-- Alamat -->
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-lg mb-4 relative inline-block">
+                        Alamat Kantor
+                        <span class="absolute -bottom-2 left-0 w-10 h-1 bg-orange-500 rounded-full"></span>
+                    </h4>
+                    <p class="leading-relaxed text-slate-400 flex items-start gap-3">
+                        <div class="mt-1 w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-orange-500 shrink-0">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <span class="break-words w-full">Jalan Letjend S. Parman No. 68 Wirobrajan Yogyakarta 55252</span>
+                    </p>
+                    <!-- Embed Map -->
+                    <div class="mt-4 rounded-xl overflow-hidden border border-slate-700 shadow-lg">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.9988672493076!2d110.35288327595172!3d-7.790456579160073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5828977a584d%3A0x6903b9f866747a57!2sMadrasah%20Mu&#39;allimin%20Muhammadiyah%20Yogyakarta!5e0!3m2!1sen!2sid!4v1709876543210!5m2!1sen!2sid" 
+                            width="100%" 
+                            height="150" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Kontak -->
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-lg mb-4 relative inline-block">
+                        Hubungi Kami
+                        <span class="absolute -bottom-2 left-0 w-10 h-1 bg-orange-500 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li class="overflow-hidden">
+                            <a href="mailto:lazismumuallimin@gmail.com" class="flex items-center gap-3 text-slate-400 hover:text-white transition group w-full">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition shrink-0">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span class="truncate">lazismumuallimin@gmail.com</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://wa.me/6281196961918" target="_blank" class="flex items-center gap-3 text-slate-400 hover:text-white transition group">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition shrink-0">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                0811-9696-1918
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Media Sosial -->
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-lg mb-4 relative inline-block">
+                        Ikuti Kami
+                        <span class="absolute -bottom-2 left-0 w-10 h-1 bg-orange-500 rounded-full"></span>
+                    </h4>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="https://instagram.com/lazismu_muallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-gradient-to-br hover:from-purple-600 hover:to-orange-500 hover:text-white transition shadow-lg" title="Instagram">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="https://facebook.com/kl.lazismumuallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition shadow-lg" title="Facebook">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                         <a href="https://youtube.com/@lazismumuallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white transition shadow-lg" title="YouTube">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                        <a href="https://tiktok.com/@lazismu_muallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-pink-500 hover:text-white transition shadow-lg" title="TikTok">
+                            <i class="fab fa-tiktok text-xl"></i>
+                        </a>
+                        <a href="https://x.com/lazismuallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-black hover:text-white transition shadow-lg" title="X (Twitter)">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-800 pt-8 text-center">
+                <p class="mb-2 font-medium text-slate-500">&copy; 2025 Kantor Layanan Lazismu Madrasah Mu'allimin Muhammadiyah Yogyakarta.</p>
+                <p class="opacity-40 max-w-2xl mx-auto text-xs leading-relaxed">Dana kebaikan yang didonasikan bukan bersumber dan bukan untuk tujuan pencucian uang (money laundry), termasuk terorisme maupun tindak kejahatan lainnya.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- CONFIGURATION ---
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec";
+        
+        // Data Santri (Embedded)
+        const rawSantriData = `
+2A	11844	Adelio Daffa Syahrizha
+2A	11853	Ahmad Ahsanur Rizqi
+2A	11855	Ahmad Arkan Sya'bani
+2A	11859	Ahmad Darwis
+2A	11860	Ahmad Ghozi El Muntazhor
+2A	11867	Aldan 'Izzul Islam
+2A	11883	Arkana El Sabilly
+2A	11893	Athaya Auza'i Mubarak
+2A	11915	Dama Arza Evannova
+2A	11916	Danar Nizam Daniswara
+2A	11921	Devgan Jadid Sahlvatico
+2A	11947	Fariq Imtiyas Aufaa Kamil
+2A	11955	Fawwaz Elfareza Zuhri
+2A	11956	Firaas Izzulhaq
+2A	11963	Gilang Omar Fardad
+2A	11976	Jaladri Arif Wirasena
+2A	11985	Kemal Mubarak Siregar
+2A	11986	Khairil Nizam
+2A	11994	M. Fathan Alfarisi Harahap
+2A	12004	Mirza Nasyath Ahza Attaillah
+2A	12013	Muhammad Ahsani Taqwim
+2A	12022	Muhammad Ayyub Al Fatih
+2A	12138	Muhammad Farros Linggar Cahyono
+2A	12028	Muhammad Fathir Alfalah
+2A	12029	Muhammad Gibran Rafassya
+2A	12074	Narendra Gerrardi Kusumah
+2A	12075	Narendra Wibawa
+2A	12077	Naufal Zhafran Purnama
+2A	12108	Rijal Abdul'aziz
+2A	12109	Rizki Chandra Dewantara
+3B	11535	Ahmad Azzam Huluq
+3B	11541	Ahnaf Azizan Sasmito
+3B	11544	Ajnata Haziq Abisatya Hayu Wardana (Tahfidz)
+3B	11555	Arkan Araafi Ardian
+3B	11559	Ashraf 'Ifathurrosydan (Tahfidz)
+3B	11565	Aysar Sahwahita Darwisyi
+3B	11573	Bilal Jibril
+3B	11574	Bintang Revoluna Al Mahdi
+3B	11577	Daffa Adyatama Abdullah
+3B	11582	Devga Aulia
+3B	11585	Dwi Rizky Fausta
+3B	11586	Elka Maulana Iskandar (Tahfidz)
+3B	11587	Fabiansyah Jumany Rizki
+3B	11590	Fahmi Ahnaf Baihaqi (Tahfidz)
+3B	11608	Firaz Tsaqeffano (Tahfidz)
+3B	11647	Kanka Emiliano Al Arafat
+3B	11670	Mirza Ghaisan Ramadhan
+3B	11673	Mohammad Azzam Azinuddin
+3B	11675	Mohammad Ihsan Kamil
+3B	11684	Muhammad Alfan Arrasyid
+3B	11693	Muhammad Atha Elhanani
+3B	11702	Muhammad Dzaki Rian Putra (Tahfidz)
+3B	11716	Muhammad Hafiz Ziyad
+3B	11723	Muhammad Kafi
+3B	11728	Muhammad Naufal Rasyiid Jaya
+3B	11749	Muhammad Zaim Aditya
+3B	11752	Muhammad Zidane Al Barraa
+3B	11755	Narendra Alfarizqi Gayatra
+3B	11763	Noersy Arkana Mahammada
+3B	11769	Raden Hafi Muhadzdzib Hassan
+3B	11810	Syabil Angkasa Putra Solissa
+3B	11815	Thoriq Bil Furqon Lesmana
+4C	11515	Abdilla Rousan Fikri Akbar
+4C	11219	Ahmad Badir Hamam Zadisa
+4C	11226	Ahmad Maududi Faqih
+4C	11231	Ahmad Shiddiq Al Kariem
+4C	11260	Arroyan Ulya Anwar (Tahfidz)
+4C	11285	Chalis Zabadi Putra
+4C	11310	Fahri Mirza Hanafi (Tahfidz)
+4C	11319	Faqih Najwan Madani
+4C	11349	Ibad Naufal Uthman
+4C	11356	Isa Azatta Fadhlan Faiq
+4C	11359	Juanda Pranata Ritonga
+4C	11360	Juhdan Lintang Fahmi Habibi
+4C	11373	M. Muttaqin Ar Rasyiid (Tahfidz)
+4C	11379	Muh. Rifat Zehavi Yasmin
+4C	11440	Muhamad Naufal Farisqi
+4C	11385	Muhammad Al Fatih
+4C	11394	Muhammad Azam Tawakkal
+4C	11401	Muhammad Difa Ahnaf
+4C	11407	Muhammad Fairuz Nafis Azzahir
+4C	11418	Muhammad Fayyadh Irsyad
+4C	11421	Muhammad Hilmi Rabbani Abdullah (Tahfidz)
+4C	11435	Muhammad Kimi As Shidiqi
+4C	11447	Muhammad Noval
+4C	11451	Muhammad Rafha Noorzakki
+4C	11453	Muhammad Rusyda Aiqona
+4C	11455	Muhammad Tsaqib Arsalan Zain
+4C	11465	Nasywa Tifatur Rasyid
+4C	11470	Nico Ghulam Mustaqim
+4C	11486	Raka Haidar Altaf
+4C	11498	Shidiq Dwi Nur Rahman
+4C	11499	Sholih Muhammad Faiq Ali Syahada
+4C	11514	Zhafir Abhinaya Diera Riyadie
+5D	10877	Abdillah Adlan Wicaksana
+5D	10887	Ahmad Ali Daffa
+5D	10891	Ahmad Muflih Satrio (Tahfidz)
+5D	10897	Akhmad Ravi Dhanissworo
+5D	10910	Arib Muhammad Hisyam (Tahfidz)
+5D	10923	Athalla Aryaputra Widodo
+5D	10949	Fachri Bagus Wibowo
+5D	10952	Fairuz Fawwazul Akmal (Tahfidz)
+5D	10956	Fa'iq Abiyyu Zuhri (Tahfidz)
+5D	10959	Faiz Akmal Saifudin
+5D	10963	Fakhri Luqman Affanny
+5D	10984	Fikri Aziz Avrilian
+5D	10991	Gusti Aditya
+5D	11003	Intifadhah Al-Aqsha Anas
+5D	11006	Izzudin Nawaf Hasan
+5D	11016	Lintang Abdullah
+5D	11032	Mirza Rafi Susanto
+5D	11034	Mochammad Hilmy Izzudin Arrasyid
+5D	11046	Muhammad Affan Fahrurrozi
+5D	11061	Muhammad Bintang Al Hafidz (Tahfidz)
+5D	11076	Muhammad Haedar Rizky Anwar
+5D	11081	Muhammad Iqbal Azzahir
+5D	11088	Muhammad Mannan Arrahmi
+5D	11089	Muhammad Mufassyah Dewandaru (Tahfidz)
+5D	11101	Muhammad Razzan Syahid
+5D	11115	Muhammad Zahran Istaz Solichin
+5D	11122	Nabil Abiyu Khairi
+5D	11138	Nehan Kaysan Fikri Susilo (Tahfidz)
+5D	11144	Pandya Aqila Rianto
+5D	11163	Rasyiq Asyrafa Baihaqi
+5D	11185	Yaafi Ramadhan Yugastian
+5D	11186	Yafa Ghani Arrasyid
+`;
+
+        // --- STATE MANAGEMENT ---
+        let donasiData = {
+            type: null, 
+            subType: null, 
+            nominal: 0,
+            donaturTipe: 'santri', 
+            isAlumni: false, 
+            alumniTahun: '',
+            namaSantri: '', nisSantri: '', rombelSantri: '',
+            nama: '', hp: '', email: '', alamat: '', doa: '',
+            metode: null
+        };
+        let riwayatData = { allData: [], isLoaded: false, currentPage: 1, itemsPerPage: 10 };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+
+        function init() {
+            parseSantriData();
+            setupNavigation();
+            setupWizardLogic();
+            setupHistoryLogic();
+            setupModalLogic();
+            setupRekapLogic(); // Added Rekap Logic
+            handleInitialLoad();
+        }
+
+        // --- TOAST NOTIFICATION SYSTEM ---
+        function showToast(message, type = 'warning') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = 'fa-exclamation-triangle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-times-circle';
+
+            toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm">${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- UTILS ---
+        function copyText(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(`Berhasil disalin: ${text}`, 'success');
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`Berhasil disalin: ${text}`, 'success');
+            } catch (err) {
+                showToast('Gagal menyalin text', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function formatRupiah(num) {
+            return "Rp " + parseInt(num).toLocaleString('id-ID');
+        }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " tahun yang lalu";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " bulan yang lalu";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " hari yang lalu";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " jam yang lalu";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " menit yang lalu";
+            return "Baru saja";
+        }
+
+        function animateValue(obj, start, end, duration, isCurrency = false) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = isCurrency ? formatRupiah(val) : val;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- SANTRI DATA PARSING ---
+        let santriDB = {};
+        function parseSantriData() {
+            const lines = rawSantriData.trim().split('\n');
+            lines.forEach(line => {
+                const parts = line.split('\t');
+                if (parts.length < 3) return; // Skip bad lines
+
+                const rombel = parts[0].trim();
+                const nis = parts[1].trim();
+                const nama = parts[2].trim();
+                const level = rombel.charAt(0);
+
+                if (!santriDB[level]) santriDB[level] = {};
+                if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
+                
+                santriDB[level][rombel].push({ nama, nis, rombel });
+            });
+        }
+
+        // --- NAVIGATION ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) target.classList.add('active');
+            
+            // Highlight Nav
+            const navLink = document.querySelector(`a[href="#${pageId}"]`);
+            if (navLink) navLink.classList.add('active');
+
+            if (pageId === 'riwayat' || pageId === 'home' || pageId === 'rekapitulasi') loadRiwayat();
+        }
+
+        function handleInitialLoad() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            showPage(hash);
+        }
+
+        function setupNavigation() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const id = this.getAttribute('href').replace('#', '');
+                    if(document.getElementById(`page-${id}`)) {
+                        e.preventDefault();
+                        showPage(id);
+                        history.pushState(null, null, `#${id}`);
+                        document.getElementById('menu-links').classList.add('hidden'); // Close mobile menu
+                    }
+                });
+            });
+            document.getElementById('menu-toggle').onclick = () => {
+                document.getElementById('menu-links').classList.toggle('hidden');
+            };
+        }
+
+        function setupModalLogic() {
+            const modal = document.getElementById('hubungi-modal');
+            const btn = document.getElementById('btn-hubungi-hero');
+            const close = document.getElementById('hubungi-modal-close');
+
+            if(btn) btn.onclick = () => modal.classList.remove('hidden');
+            if(close) close.onclick = () => modal.classList.add('hidden');
+            
+            // Close on outside click
+            modal.onclick = (e) => {
+                if(e.target === modal) modal.classList.add('hidden');
+            }
+        }
+
+        // --- REKAPITULASI LOGIC ---
+        function setupRekapLogic() {
+             const select = document.getElementById('rekap-kelas-select');
+             if(!select) return;
+
+             // Populate Dropdown
+             // Flatten santriDB to get list of classes
+             let allClasses = [];
+             for(const level in santriDB) {
+                 for(const rombel in santriDB[level]) {
+                     allClasses.push(rombel);
+                 }
+             }
+             allClasses.sort();
+             allClasses.forEach(cls => {
+                 const opt = document.createElement('option');
+                 opt.value = cls;
+                 opt.innerText = `Kelas ${cls}`;
+                 select.appendChild(opt);
+             });
+
+             select.onchange = () => {
+                 const cls = select.value;
+                 if(cls) {
+                     document.getElementById('rekap-placeholder').classList.add('hidden');
+                     document.getElementById('rekap-summary').classList.remove('hidden');
+                     document.getElementById('rekap-table-container').classList.remove('hidden');
+                     document.getElementById('btn-export-pdf').disabled = false;
+                     renderRekapTable(cls);
+                 } else {
+                     document.getElementById('rekap-placeholder').classList.remove('hidden');
+                     document.getElementById('rekap-summary').classList.add('hidden');
+                     document.getElementById('rekap-table-container').classList.add('hidden');
+                     document.getElementById('btn-export-pdf').disabled = true;
+                 }
+             };
+
+             document.getElementById('btn-export-pdf').onclick = () => exportRekapPDF();
+        }
+
+        // Mockup data for Walikelas & Musyrif (since not provided)
+        const classMetaData = {
+            '2A': { wali: 'Ust. Ahmad', musyrif: 'Ust. Budi' },
+            '3B': { wali: 'Ust. Candra', musyrif: 'Ust. Dedi' },
+            '4C': { wali: 'Ust. Eko', musyrif: 'Ust. Fajar' },
+            '5D': { wali: 'Ust. Gilang', musyrif: 'Ust. Hadi' }
+        };
+
+        function renderRekapTable(cls) {
+            const tbody = document.getElementById('rekap-table-body');
+            tbody.innerHTML = '';
+
+            // 1. Get base student list
+            const level = cls.charAt(0);
+            const students = santriDB[level] ? santriDB[level][cls] : [];
+            
+            if(!students) return;
+
+            // 2. Aggregate Data
+            let totalKelas = 0;
+            
+            students.forEach((s, index) => {
+                let qris = 0, transfer = 0, tunai = 0;
+
+                // Find matching donations
+                riwayatData.allData.forEach(d => {
+                    // Check name match (simple inclusion check)
+                    if(d.NamaSantri && d.NamaSantri.includes(s.nama) && (d.KelasSantri === cls || d.rombelSantri === cls)) {
+                         const nom = parseInt(d.Nominal) || 0;
+                         if(d.MetodePembayaran === 'QRIS') qris += nom;
+                         else if(d.MetodePembayaran === 'Transfer') transfer += nom;
+                         else tunai += nom;
+                    }
+                });
+                const subtotal = qris + transfer + tunai;
+                totalKelas += subtotal;
+
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
+                    <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">${s.nama}</td>
+                    <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
+                    <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>
+                    <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${tunai > 0 ? formatRupiah(tunai) : '-'}</td>
+                    <td class="px-6 py-4 text-right font-bold text-orange-600 whitespace-nowrap">${formatRupiah(subtotal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Summary
+            const meta = classMetaData[cls] || { wali: 'Belum Ditentukan', musyrif: 'Belum Ditentukan' };
+            document.getElementById('rekap-wali').innerText = meta.wali;
+            document.getElementById('rekap-musyrif').innerText = meta.musyrif;
+            document.getElementById('rekap-total-kelas').innerText = formatRupiah(totalKelas);
+        }
+
+        function exportRekapPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const cls = document.getElementById('rekap-kelas-select').value;
+            const date = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
+            const meta = classMetaData[cls] || { wali: '-', musyrif: '-' };
+            
+            // Header
+            doc.setFontSize(18);
+            doc.setTextColor(241, 90, 34); // Orange
+            doc.text("REKAPITULASI PEROLEHAN ZIS", 14, 20);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text(`Kelas: ${cls}`, 14, 30);
+            doc.text(`Tanggal: ${date}`, 14, 36);
+            doc.text(`Wali Kelas: ${meta.wali}`, 120, 30);
+            doc.text(`Musyrif: ${meta.musyrif}`, 120, 36);
+
+            // Table
+            doc.autoTable({
+                html: '#rekap-table-container table',
+                startY: 45,
+                theme: 'grid',
+                headStyles: { fillColor: [241, 90, 34] },
+                styles: { fontSize: 8 },
+            });
+
+            // Footer
+            const total = document.getElementById('rekap-total-kelas').innerText;
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            doc.text(`Total Perolehan: ${total}`, 14, doc.lastAutoTable.finalY + 10);
+
+            doc.save(`Rekap ZIS_Kelas ${cls}_${date}.pdf`);
+        }
+
+
+        // --- WIZARD LOGIC ---
+        const STEP_TITLES = [
+            { title: "Pilih Jenis Kebaikan", subtitle: "Niat Suci Dimulai" },
+            { title: "Tentukan Nominal", subtitle: "Semoga Rezeki Berkah" },
+            { title: "Isi Data Muzakki/Munfiq", subtitle: "Menyambung Silaturahmi" },
+            { title: "Metode Pembayaran", subtitle: "Mudah dan Aman" },
+            { title: "Konfirmasi Akhir", subtitle: "Menjemput Ridho-Nya" }
+        ];
+
+        function updateStepTitle(step) {
+            const titleEl = document.getElementById('wizard-title');
+            const subEl = document.getElementById('wizard-subtitle');
+            const data = STEP_TITLES[step - 1];
+            if(data && titleEl && subEl) {
+                titleEl.innerText = data.title;
+                subEl.innerText = data.subtitle;
+            }
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.donasi-step-container').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(`donasi-step-${step}`);
+            target.classList.remove('hidden');
+            
+            // Trigger animation reset
+            target.classList.remove('animate-fade-in-up');
+            void target.offsetWidth; // trigger reflow
+            target.classList.add('animate-fade-in-up');
+
+            // Update progress & title
+            document.getElementById('wizard-step-indicator').innerText = `Step ${step}/5`;
+            document.getElementById('wizard-progress-bar').style.width = `${step * 20}%`;
+            updateStepTitle(step);
+            
+            document.getElementById('donasi-wizard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function setupWizardLogic() {
+            // STEP 1: TYPE
+            document.querySelectorAll('.choice-button').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    
+                    const type = btn.dataset.type;
+                    donasiData.type = type;
+                    donasiData.subType = null;
+
+                    // Reset UI areas
+                    document.getElementById('infaq-options').classList.add('hidden');
+                    document.getElementById('zakat-fitrah-checker').classList.add('hidden');
+                    document.getElementById('zakat-maal-checker').classList.add('hidden');
+                    document.getElementById('step-1-nav-default').classList.add('hidden');
+
+                    if(type === 'Infaq') document.getElementById('infaq-options').classList.remove('hidden');
+                    else if(type === 'Zakat Fitrah') document.getElementById('zakat-fitrah-checker').classList.remove('hidden');
+                    else if(type === 'Zakat Maal') document.getElementById('zakat-maal-checker').classList.remove('hidden');
+                };
+            });
+
+            // Infaq Sub-types
+            document.querySelectorAll('.sub-choice-button').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.sub-choice-button').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    donasiData.subType = btn.dataset.typeInfaq; // Simpan subtype
+                    document.getElementById('step-1-nav-default').classList.remove('hidden');
+                };
+            });
+
+            // Zakat Logic - SAFEGUARDED
+            const fitrahInput = document.getElementById('fitrah-jumlah-orang');
+            if (fitrahInput) {
+                fitrahInput.oninput = (e) => {
+                    const total = (parseInt(e.target.value) || 0) * 37500;
+                    const totalInput = document.getElementById('fitrah-total');
+                    if(totalInput) totalInput.value = formatRupiah(total);
+                    donasiData.nominal = total;
+                };
+            }
+            
+            const btnFitrahNext = document.getElementById('btn-fitrah-next');
+            if (btnFitrahNext) {
+                btnFitrahNext.onclick = () => {
+                    if(donasiData.nominal < 37500) return showToast("Minimal 1 jiwa");
+                    goToStep(3);
+                };
+            }
+
+            const btnZakatCheck = document.getElementById('zakat-check-button');
+            if (btnZakatCheck) {
+                btnZakatCheck.onclick = () => {
+                    const emas = parseInt(document.getElementById('harga-emas').value.replace(/\D/g,'')) || 0;
+                    const hasil = parseInt(document.getElementById('penghasilan-bulanan').value.replace(/\D/g,'')) || 0;
+                    const nisab = (emas * 85) / 12;
+                    
+                    const resultDiv = document.getElementById('zakat-result');
+                    const msg = document.getElementById('zakat-result-message');
+                    resultDiv.classList.remove('hidden');
+
+                    if(hasil >= nisab) {
+                        const zakat = hasil * 0.025;
+                        msg.innerHTML = `<span class="text-green-600 block">WAJIB ZAKAT</span>Kewajiban: ${formatRupiah(zakat)}`;
+                        donasiData.nominal = zakat;
+                        document.getElementById('btn-maal-next').classList.remove('hidden');
+                        document.getElementById('zakat-lanjutkan-infaq').classList.add('hidden');
+                    } else {
+                        msg.innerHTML = `<span class="text-orange-600 block">BELUM WAJIB</span>Belum mencapai nishab (${formatRupiah(nisab)})`;
+                        document.getElementById('btn-maal-next').classList.add('hidden');
+                        document.getElementById('zakat-lanjutkan-infaq').classList.remove('hidden');
+                    }
+                };
+            }
+            
+            const btnMaalNext = document.getElementById('btn-maal-next');
+            if (btnMaalNext) btnMaalNext.onclick = () => goToStep(3);
+            
+            const btnZakatSkip = document.getElementById('zakat-lanjutkan-infaq');
+            if (btnZakatSkip) {
+                btnZakatSkip.onclick = () => {
+                    document.querySelector('[data-type="Infaq"]').click();
+                };
+            }
+
+            // General Nav Step 1
+            const btnNextStep2 = document.querySelector('[data-next-step="2"]');
+            if (btnNextStep2) {
+                btnNextStep2.onclick = () => {
+                    if(donasiData.type === 'Infaq' && !donasiData.subType) return showToast("Pilih peruntukan infaq terlebih dahulu");
+                    goToStep(2);
+                };
+            }
+
+            // STEP 2: NOMINAL
+            document.querySelectorAll('.nominal-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    donasiData.nominal = parseInt(btn.dataset.nominal);
+                    document.getElementById('nominal-custom').value = formatRupiah(donasiData.nominal);
+                };
+            });
+            
+            const nominalCustom = document.getElementById('nominal-custom');
+            if (nominalCustom) {
+                nominalCustom.addEventListener('input', function() {
+                    let val = this.value.replace(/\D/g, '');
+                    donasiData.nominal = parseInt(val) || 0;
+                    this.value = formatRupiah(donasiData.nominal);
+                    document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
+                });
+            }
+            
+            const btnNextStep3 = document.querySelector('[data-next-step="3"]');
+            if (btnNextStep3) {
+                btnNextStep3.onclick = () => {
+                    if(donasiData.nominal < 1000) showToast("Nominal minimal Rp 1.000");
+                    else goToStep(3);
+                };
+            }
+
+            // STEP 3: DATA DIRI (CASCADING DROPDOWN)
+            const santriLevel = document.getElementById('santri-level-select');
+            const santriRombel = document.getElementById('santri-rombel-select');
+            const santriNama = document.getElementById('santri-nama-select');
+
+            if (santriLevel) {
+                santriLevel.onchange = () => {
+                    santriRombel.innerHTML = '<option value="">Rombel</option>';
+                    santriRombel.disabled = true;
+                    santriNama.innerHTML = '<option value="">Pilih Nama Santri</option>';
+                    santriNama.disabled = true;
+
+                    const lvl = santriLevel.value;
+                    if(lvl && santriDB[lvl]) {
+                        Object.keys(santriDB[lvl]).forEach(r => {
+                            santriRombel.innerHTML += `<option value="${r}">${r}</option>`;
+                        });
+                        santriRombel.disabled = false;
+                    }
+                };
+            }
+
+            if (santriRombel) {
+                santriRombel.onchange = () => {
+                    santriNama.innerHTML = '<option value="">Pilih Nama Santri</option>';
+                    santriNama.disabled = true;
+
+                    const lvl = santriLevel.value;
+                    const rmb = santriRombel.value;
+                    if(lvl && rmb && santriDB[lvl][rmb]) {
+                        santriDB[lvl][rmb].forEach(s => {
+                            santriNama.innerHTML += `<option value="${s.nama}::${s.nis}::${s.rombel}">${s.nama}</option>`;
+                        });
+                        santriNama.disabled = false;
+                    }
+                };
+            }
+
+            if (santriNama) {
+                santriNama.onchange = () => {
+                    if(santriNama.value) {
+                        const [nama, nis, rombel] = santriNama.value.split('::');
+                        donasiData.namaSantri = nama;
+                        donasiData.nisSantri = nis;
+                        donasiData.rombelSantri = rombel;
+
+                        const radioAnSantri = document.getElementById('radio-an-santri');
+                        if (radioAnSantri) {
+                            radioAnSantri.disabled = false;
+                            if(radioAnSantri.checked) {
+                                document.getElementById('nama-muzakki-input').value = `A/n Santri: ${nama}`;
+                            }
+                        }
+                    }
+                };
+            }
+
+            // Tipe Donatur Radio Logic
+            document.querySelectorAll('input[name="donatur-tipe"]').forEach(r => {
+                r.onchange = (e) => {
+                    donasiData.donaturTipe = e.target.value;
+                    const santriDetails = document.getElementById('santri-details');
+                    const alumniInput = document.getElementById('input-alumni-tahun');
+                    const radioAnSantri = document.getElementById('radio-an-santri');
+                    const checkAlumniDiv = document.getElementById('div-check-alumni'); // New container
+
+                    // Reset some states
+                    if (radioAnSantri) radioAnSantri.disabled = true;
+                    if(radioAnSantri && radioAnSantri.checked) {
+                         document.querySelector('input[name="nama-choice"][value="manual"]').click();
+                    }
+
+                    // Show/Hide Logic
+                    if(e.target.value === 'santri') {
+                        santriDetails.classList.remove('hidden');
+                        checkAlumniDiv.classList.remove('hidden'); // Show checkbox
+                        // Year input visibility depends on checkbox state
+                        if(document.getElementById('check-also-alumni').checked) {
+                            alumniInput.classList.remove('hidden');
+                        } else {
+                            alumniInput.classList.add('hidden');
+                        }
+                    } else {
+                        // Umum
+                        santriDetails.classList.add('hidden');
+                        checkAlumniDiv.classList.remove('hidden'); // Show checkbox
+                        if(document.getElementById('check-also-alumni').checked) {
+                            alumniInput.classList.remove('hidden');
+                        } else {
+                            alumniInput.classList.add('hidden');
+                        }
+                    }
+                };
+            });
+
+            // Checkbox "Saya juga Alumni" Logic
+            const checkAlsoAlumni = document.getElementById('check-also-alumni');
+            if(checkAlsoAlumni) {
+                checkAlsoAlumni.onchange = (e) => {
+                    const alumniInput = document.getElementById('input-alumni-tahun');
+                    if(e.target.checked) {
+                        alumniInput.classList.remove('hidden');
+                    } else {
+                        alumniInput.classList.add('hidden');
+                    }
+                };
+            }
+
+
+            // Nama Choice Logic
+            document.querySelectorAll('input[name="nama-choice"]').forEach(r => {
+                r.onchange = (e) => {
+                    const input = document.getElementById('nama-muzakki-input');
+                    if(e.target.value === 'hamba') {
+                        input.value = "Hamba Allah";
+                        input.readOnly = true;
+                    } else if (e.target.value === 'santri') {
+                        if(donasiData.namaSantri) {
+                            input.value = `A/n Santri: ${donasiData.namaSantri}`;
+                            input.readOnly = true;
+                        } else {
+                            showToast("Pilih nama santri terlebih dahulu");
+                            document.querySelector('input[name="nama-choice"][value="manual"]').checked = true;
+                        }
+                    } else {
+                        input.value = "";
+                        input.readOnly = false;
+                        input.focus();
+                    }
+                };
+            });
+
+            // Nav Step 3
+            const btnNextStep4 = document.querySelector('[data-next-step="4"]');
+            if (btnNextStep4) {
+                btnNextStep4.onclick = () => {
+                    const nama = document.getElementById('nama-muzakki-input').value;
+                    const hp = document.getElementById('no-hp').value;
+                    const alamat = document.getElementById('alamat').value;
+                    const isAlsoAlumni = document.getElementById('check-also-alumni') ? document.getElementById('check-also-alumni').checked : false;
+                    const NIKInput = document.getElementById('no-ktp'); // ADDED NIK
+
+                    // Validation
+                    if(donasiData.donaturTipe === 'santri' && !donasiData.namaSantri) return showToast("Wajib memilih data santri");
+                    
+                    // Alumni validation
+                    if(isAlsoAlumni && !document.getElementById('alumni-tahun').value) {
+                        return showToast("Tahun lulus wajib diisi bagi Alumni");
+                    }
+                    
+                    if(!nama) return showToast("Nama donatur wajib diisi");
+                    if(!hp) return showToast("Nomor WhatsApp wajib diisi");
+                    // Alamat & NIK Optional now based on user preference or keep mandatory? Keeping mandatory as per prev instruction, except NIK.
+                    if(!alamat) return showToast("Alamat wajib diisi"); 
+
+                    donasiData.nama = nama;
+                    donasiData.hp = hp;
+                    donasiData.alamat = alamat;
+                    donasiData.email = document.getElementById('email').value;
+                    donasiData.doa = document.getElementById('pesan-doa').value;
+                    donasiData.nik = NIKInput ? NIKInput.value : ''; // Capture NIK
+                    
+                    if(isAlsoAlumni) {
+                        donasiData.isAlumni = true;
+                        donasiData.alumniTahun = document.getElementById('alumni-tahun').value;
+                    } else {
+                        donasiData.isAlumni = false;
+                        donasiData.alumniTahun = '';
+                    }
+
+                    goToStep(4);
+                };
+            }
+
+            // STEP 4: PAYMENT
+            const btnNextStep5 = document.querySelector('[data-next-step="5"]');
+            if (btnNextStep5) {
+                btnNextStep5.onclick = () => {
+                    const method = document.querySelector('input[name="payment-method"]:checked');
+                    if(!method) return showToast("Pilih metode pembayaran");
+                    
+                    donasiData.metode = method.value;
+                    
+                    // Render Summary
+                    document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
+                    document.getElementById('summary-nominal').innerText = formatRupiah(donasiData.nominal);
+                    document.getElementById('summary-nama').innerText = donasiData.nama;
+                    document.getElementById('summary-hp').innerText = donasiData.hp;
+                    document.getElementById('summary-metode').innerText = donasiData.metode;
+
+                    const santriRow = document.getElementById('summary-santri-row');
+                    if(donasiData.namaSantri && donasiData.donaturTipe === 'santri') {
+                        santriRow.classList.remove('hidden');
+                        document.getElementById('summary-santri').innerText = `${donasiData.namaSantri} (${donasiData.rombelSantri})`;
+                    } else {
+                        santriRow.classList.add('hidden');
+                    }
+
+                    goToStep(5);
+                };
+            }
+
+            // SUBMIT FINAL
+            const btnSubmitFinal = document.getElementById('btn-submit-final');
+            if (btnSubmitFinal) {
+                btnSubmitFinal.onclick = async () => {
+                    const btn = document.getElementById('btn-submit-final');
+                    const check = document.getElementById('confirm-check');
+                    
+                    if(!check.checked) return showToast("Mohon centang pernyataan konfirmasi");
+
+                    btn.disabled = true;
+                    btn.querySelector('.default-text').classList.add('hidden');
+                    btn.querySelector('.loading-text').classList.remove('hidden');
+
+                    const payload = {
+                        "type": donasiData.subType || donasiData.type,
+                        "nominal": donasiData.nominal,
+                        "nama": donasiData.nama,
+                        "hp": donasiData.hp,
+                        "email": donasiData.email,
+                        "alamat": donasiData.alamat,
+                        "metode": donasiData.metode,
+                        "doa": donasiData.doa,
+                        "donaturTipe": donasiData.donaturTipe, 
+                        "alumniTahun": donasiData.alumniTahun || "",
+                        "DetailAlumni": donasiData.alumniTahun || "", 
+                        "namaSantri": donasiData.namaSantri || "",
+                        "nisSantri": donasiData.nisSantri || "",
+                        "rombelSantri": donasiData.rombelSantri || "",
+                        "NoKTP": donasiData.nik || "" // Adding NIK to payload
+                    };
+
+                    try {
+                        await fetch(GAS_API_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "text/plain" },
+                            body: JSON.stringify({ action: "create", payload: payload })
+                        });
+
+                        document.getElementById('success-modal').classList.remove('hidden');
+                        
+                        const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
+                        document.getElementById('btn-wa-confirm').href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
+
+                        // Render Instructions with Prayer
+                        let instr = '';
+                        
+                        // The Prayer
+                        const prayerHTML = `
+                            <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
+                                <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
+                                    آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
+                                </p>
+                                <p class="text-green-700 text-sm italic">
+                                    "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
+                                </p>
+                            </div>
+                        `;
+
+                        let paymentDetails = '';
+                        if(donasiData.metode === 'QRIS') {
+                            const qrisContent = document.querySelector('#qris-section .max-w-4xl').innerHTML;
+                             paymentDetails = `<div class="max-w-full overflow-hidden transform scale-90 origin-top-left">${qrisContent}</div>`;
+                        } else if(donasiData.metode === 'Transfer') {
+                            const bankContent = document.getElementById('donasi-rekening').innerHTML;
+                            paymentDetails = `<div class="grid grid-cols-1 gap-4">${bankContent}</div>`;
+                        } else {
+                            paymentDetails = `<div class="p-6 bg-blue-50 rounded-xl border border-blue-100 text-center"><div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-2xl"><i class="fas fa-money-bill-wave"></i></div><h4 class="font-bold text-blue-900 text-lg mb-2">Pembayaran Tunai</h4><p class="text-blue-700">Silakan datang langsung ke Kantor Layanan Lazismu Mu'allimin atau titipkan melalui Musyrif Asrama.</p></div>`;
+                        }
+                        
+                        document.getElementById('instruction-content').innerHTML = prayerHTML + paymentDetails;
+                        document.getElementById('donasi-wizard').classList.add('hidden');
+                        document.getElementById('donasi-payment-instructions').classList.remove('hidden');
+
+                    } catch (e) {
+                        showToast("Gagal mengirim data, periksa koneksi internet.", "error");
+                        btn.disabled = false;
+                        btn.querySelector('.default-text').classList.remove('hidden');
+                        btn.querySelector('.loading-text').classList.add('hidden');
+                    }
+                };
+            }
+
+            // Modal Logic
+            const successContinue = document.getElementById('success-modal-continue');
+            if(successContinue) {
+                successContinue.onclick = () => {
+                    document.getElementById('success-modal').classList.add('hidden');
+                    document.getElementById('donasi-payment-instructions').scrollIntoView({behavior:'smooth'});
+                };
+            }
+
+            // Back Buttons
+            document.querySelectorAll('[data-prev-step]').forEach(btn => {
+                btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
+            });
+        }
+
+        // --- HISTORY LOGIC ---
+        function setupHistoryLogic() {
+            const prevBtn = document.getElementById('riwayat-prev');
+            const nextBtn = document.getElementById('riwayat-next');
+
+            if(prevBtn) {
+                prevBtn.onclick = () => {
+                    if(riwayatData.currentPage > 1) {
+                        riwayatData.currentPage--;
+                        renderRiwayatList();
+                        renderPagination();
+                    }
+                };
+            }
+            if(nextBtn) {
+                nextBtn.onclick = () => {
+                    const totalPages = Math.ceil(riwayatData.allData.length / riwayatData.itemsPerPage);
+                    if(riwayatData.currentPage < totalPages) {
+                        riwayatData.currentPage++;
+                        renderRiwayatList();
+                        renderPagination();
+                    }
+                };
+            }
+
+            // Add event listeners for filters
+            ['filter-jenis', 'filter-metode', 'filter-waktu'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.onchange = () => {
+                    riwayatData.currentPage = 1; // Reset page
+                    renderRiwayatList();
+                    renderPagination(); // Update pagination buttons
+                };
+            });
+        }
+
+        async function loadRiwayat() {
+            if(riwayatData.isLoaded) return;
+            
+            const loader = document.getElementById('riwayat-loading');
+            const content = document.getElementById('riwayat-content');
+            
+            if(loader) loader.classList.remove('hidden');
+            if(content) content.classList.add('hidden');
+
+            try {
+                const res = await fetch(GAS_API_URL);
+                const json = await res.json();
+                
+                if(json.status === 'success') {
+                    riwayatData.allData = json.data.reverse(); 
+                    riwayatData.isLoaded = true;
+                    
+                    calculateStats();
+                    renderHomeLatestDonations();
+                    renderPagination();
+                    renderRiwayatList();
+
+                    if(loader) loader.classList.add('hidden');
+                    if(content) content.classList.remove('hidden');
+                    
+                    if(riwayatData.allData.length === 0) {
+                        const noData = document.getElementById('riwayat-no-data');
+                        if(noData) noData.classList.remove('hidden');
+                    }
+                }
+            } catch(e) {
+                if(loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+            }
+        }
+
+        function renderHomeLatestDonations() {
+            const container = document.getElementById('home-latest-donations');
+            if(!container) return;
+
+            const latest = riwayatData.allData.slice(0, 5);
+
+            if (latest.length === 0) {
+                container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
+                return;
+            }
+
+            container.innerHTML = latest.map(item => `
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:bg-orange-50 transition group">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1 min-w-0 pr-4"> <!-- Left -->
+                            <h5 class="text-sm font-bold text-slate-800 truncate">${item.NamaDonatur || 'Hamba Allah'}</h5>
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                <span class="bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded text-[10px] font-bold">${item.JenisDonasi || 'Donasi'}</span>
+                                <span>-</span>
+                                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">${item.MetodePembayaran || '-'}</span>
+                            </p>
+                        </div>
+                        <div class="text-right shrink-0"> <!-- Right -->
+                            <span class="block font-black text-orange-600 text-sm md:text-base group-hover:scale-105 transition-transform">${formatRupiah(item.Nominal)}</span>
+                            <p class="text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1">
+                                <i class="far fa-clock"></i> ${timeAgo(item.Timestamp)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calculateStats() {
+            const data = riwayatData.allData;
+            let total = 0;
+            let todayTotal = 0;
+            let maxDonation = 0;
+            const todayStr = new Date().toDateString();
+            
+            // Maps
+            const classMapMTs = {}, classMapMA = {};
+            const santriDonasiMTs = {}, santriDonasiMA = {};
+            const santriFreqMTs = {}, santriFreqMA = {};
+
+            data.forEach(d => {
+                const val = parseInt(d.Nominal) || 0;
+                total += val;
+                if(val > maxDonation) maxDonation = val;
+                if(new Date(d.Timestamp).toDateString() === todayStr) todayTotal += val;
+
+                const rombel = d.KelasSantri || d.rombelSantri;
+                const nama = d.NamaSantri || d.namaSantri;
+
+                if(rombel && nama) {
+                    const lvl = parseInt(rombel.charAt(0));
+                    const isMTs = lvl <= 3;
+                    const mapClass = isMTs ? classMapMTs : classMapMA;
+                    const mapSantri = isMTs ? santriDonasiMTs : santriDonasiMA;
+                    const mapFreq = isMTs ? santriFreqMTs : santriFreqMA;
+
+                    mapClass[rombel] = (mapClass[rombel] || 0) + val;
+                    const key = `${nama} (${rombel})`;
+                    mapSantri[key] = (mapSantri[key] || 0) + val;
+                    mapFreq[key] = (mapFreq[key] || 0) + 1;
+                }
+            });
+
+            // Helpers
+            const setText = (id, txt) => { 
+                const el = document.getElementById(id);
+                if(el) el.innerText = txt; 
+            };
+            const getMax = (map, type='val') => {
+                let maxK = 'N/A', maxV = 0;
+                for(const [k,v] of Object.entries(map)) {
+                    if(v > maxV) { maxV = v; maxK = k; }
+                }
+                return { key: maxK, val: type === 'val' ? formatRupiah(maxV) : maxV + 'x' };
+            };
+            
+            const elTotal = document.getElementById('stat-total-donasi');
+            if(elTotal) animateValue(elTotal, 0, total, 2000, true);
+            
+            const elTrans = document.getElementById('stat-total-transaksi');
+            if(elTrans) animateValue(elTrans, 0, data.length, 1500);
+            
+            const elRata = document.getElementById('stat-donasi-rata');
+            if(elRata) animateValue(elRata, 0, data.length ? total/data.length : 0, 1500, true);
+            
+            const elHari = document.getElementById('stat-donasi-hari-ini');
+            if(elHari) animateValue(elHari, 0, todayTotal, 1000, true);
+            
+            setText('riwayat-summary-total', formatRupiah(total));
+            setText('riwayat-summary-transaksi', data.length);
+            setText('riwayat-summary-tertinggi', formatRupiah(maxDonation));
+
+            const mtsClass = getMax(classMapMTs);
+            setText('stat-mts-kelas-max', mtsClass.key);
+            setText('stat-mts-kelas-total', mtsClass.val);
+            
+            const mtsSantri = getMax(santriDonasiMTs);
+            setText('stat-mts-santri-max-donasi', mtsSantri.key.split('(')[0]);
+            setText('stat-mts-santri-total-donasi', mtsSantri.val);
+
+            const mtsFreq = getMax(santriFreqMTs, 'freq');
+            setText('stat-mts-santri-freq-nama', mtsFreq.key.split('(')[0]);
+            setText('stat-mts-santri-freq-val', mtsFreq.val);
+
+            const maClass = getMax(classMapMA);
+            setText('stat-ma-kelas-max', maClass.key);
+            setText('stat-ma-kelas-total', maClass.val);
+            
+            const maSantri = getMax(santriDonasiMA);
+            setText('stat-ma-santri-max-donasi', maSantri.key.split('(')[0]);
+            setText('stat-ma-santri-total-donasi', maSantri.val);
+
+            const maFreq = getMax(santriFreqMA, 'freq');
+            setText('stat-ma-santri-freq-nama', maFreq.key.split('(')[0]);
+            setText('stat-ma-santri-freq-val', maFreq.val);
+        }
+
+        function renderPagination() {
+            // Calculate pages based on FILTERED items
+            const items = getFilteredData();
+            const totalPages = Math.ceil(items.length / riwayatData.itemsPerPage);
+            
+            const pageInfo = document.getElementById('riwayat-page-info');
+            if(pageInfo) pageInfo.innerText = `Halaman ${riwayatData.currentPage} dari ${totalPages || 1}`;
+            
+            const prevBtn = document.getElementById('riwayat-prev');
+            if(prevBtn) prevBtn.disabled = riwayatData.currentPage === 1;
+            
+            const nextBtn = document.getElementById('riwayat-next');
+            if(nextBtn) nextBtn.disabled = riwayatData.currentPage >= totalPages || totalPages === 0;
+        }
+
+        function getFilteredData() {
+             let filtered = riwayatData.allData;
+             const typeFilter = document.getElementById('filter-jenis') ? document.getElementById('filter-jenis').value : 'all';
+             const methodFilter = document.getElementById('filter-metode') ? document.getElementById('filter-metode').value : 'all';
+             const timeFilter = document.getElementById('filter-waktu') ? document.getElementById('filter-waktu').value : 'all';
+
+             if(typeFilter !== 'all') {
+                 filtered = filtered.filter(d => d.JenisDonasi === typeFilter || d.type === typeFilter);
+             }
+             if(methodFilter !== 'all') {
+                 filtered = filtered.filter(d => d.MetodePembayaran === methodFilter);
+             }
+             if(timeFilter !== 'all') {
+                 const now = new Date();
+                 filtered = filtered.filter(d => {
+                     const date = new Date(d.Timestamp);
+                     if(timeFilter === 'today') return date.toDateString() === now.toDateString();
+                     if(timeFilter === 'month') return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                     if(timeFilter === 'year') return date.getFullYear() === now.getFullYear();
+                     return true;
+                 });
+             }
+             return filtered;
+        }
+
+        function renderRiwayatList() {
+            const container = document.getElementById('riwayat-list-container');
+            if(!container) return;
+
+            const items = getFilteredData();
+            const start = (riwayatData.currentPage - 1) * riwayatData.itemsPerPage;
+            const end = start + riwayatData.itemsPerPage;
+            const visibleItems = items.slice(start, end);
+            
+            if(visibleItems.length === 0) {
+                 container.innerHTML = '<p class="text-center text-slate-400 py-4">Tidak ada data yang sesuai filter.</p>';
+                 return;
+            }
+
+            container.innerHTML = visibleItems.map(item => {
+                let borderClass = 'border-l-gray-400';
+                let iconClass = 'fa-donate text-gray-400';
+                let bgIcon = 'bg-gray-100';
+                
+                const type = item.JenisDonasi || item.type || ""; 
+                const subType = item.SubJenis || item.subType || "";
+                const displayType = subType || type;
+
+                if(displayType.includes('Fitrah')) { borderClass = 'border-l-emerald-500'; iconClass = 'fa-leaf text-emerald-500'; bgIcon = 'bg-emerald-50'; }
+                else if(displayType.includes('Maal')) { borderClass = 'border-l-yellow-500'; iconClass = 'fa-coins text-yellow-500'; bgIcon = 'bg-yellow-50'; }
+                else if(displayType.includes('Beasiswa')) { borderClass = 'border-l-cyan-500'; iconClass = 'fa-user-graduate text-cyan-500'; bgIcon = 'bg-cyan-50'; }
+                else if(displayType.includes('Kampus')) { borderClass = 'border-l-orange-500'; iconClass = 'fa-building text-orange-500'; bgIcon = 'bg-orange-50'; }
+                else { borderClass = 'border-l-indigo-500'; iconClass = 'fa-hand-holding-heart text-indigo-500'; bgIcon = 'bg-indigo-50'; }
+
+                const date = new Date(item.Timestamp).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                
+                const alumniYear = item.DetailAlumni || item.detailAlumni;
+                const alumniText = alumniYear ? `<span class="text-xs text-orange-500 font-semibold block mt-0.5">Alumni Tahun ${alumniYear}</span>` : '';
+                
+                return `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 border-l-4 ${borderClass} flex items-center justify-between hover:shadow-md transition animate-fade-in-up">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full ${bgIcon} flex items-center justify-center text-lg shrink-0">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm md:text-base">
+                                ${item.NamaDonatur || 'Hamba Allah'}
+                            </h4>
+                            ${alumniText}
+                            <p class="text-xs text-slate-500 mt-1">${displayType} • ${date}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="block font-black text-slate-700">${formatRupiah(item.Nominal)}</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-500">${item.MetodePembayaran || '-'}</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
