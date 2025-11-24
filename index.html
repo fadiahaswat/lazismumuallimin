@@ -887,6 +887,35 @@
             </div>
         </section>
     </main>
+    <div id="qris-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 transition-opacity duration-300" aria-hidden="true">
+        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" onclick="closeQrisModal()"></div>
+        
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-2 transform scale-95 transition-transform duration-300" id="qris-modal-panel">
+            
+            <div class="flex justify-between items-center p-4 pb-2">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fas fa-qrcode text-orange-500"></i> 
+                    <span id="qris-modal-title">Scan QRIS</span>
+                </h3>
+                <button onclick="closeQrisModal()" class="text-slate-400 hover:text-red-500 transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200 mx-2 relative group">
+                <img id="qris-modal-img" src="" class="w-full h-auto rounded-lg object-contain bg-white shadow-sm" alt="QRIS Full">
+                <div class="absolute bottom-6 left-0 w-full text-center opacity-50 text-xs text-slate-400 pointer-events-none">
+                    Cubit layar untuk zoom
+                </div>
+            </div>
+
+            <div class="p-4">
+                <a id="qris-modal-btn" href="#" target="_blank" class="block w-full bg-brand-orange text-white text-center py-3 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition transform active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fas fa-download"></i> Simpan Gambar
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script src="data-santri.js"></script>
     <script src="data-kelas.js"></script>
@@ -895,5 +924,6 @@
 
 </body>
 </html>
+
 
 
