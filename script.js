@@ -1532,3 +1532,54 @@
                 `;
             }).join('');
         }
+// --- LOGIKA MODAL QRIS (POP-UP) ---
+
+const qrisDatabase = {
+    'bni': {
+        title: 'QRIS BNI',
+        img: 'https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000', // Link Gambar Tampilan
+        url: 'https://drive.google.com/uc?export=download&id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt'  // Link Download
+    },
+    'bsi': {
+        title: 'QRIS BSI',
+        img: 'https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000',
+        url: 'https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V'
+    },
+    'bpd': {
+        title: 'QRIS BPD DIY',
+        img: 'https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000',
+        url: 'https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm'
+    }
+};
+
+function openQrisModal(key) {
+    const data = qrisDatabase[key];
+    if(!data) return;
+
+    const modal = document.getElementById('qris-modal');
+    const panel = document.getElementById('qris-modal-panel');
+    
+    // Isi Data ke dalam Modal
+    document.getElementById('qris-modal-title').innerText = data.title;
+    document.getElementById('qris-modal-img').src = data.img;
+    document.getElementById('qris-modal-btn').href = data.url;
+
+    // Tampilkan Modal dengan Animasi
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        panel.classList.remove('scale-95');
+        panel.classList.add('scale-100');
+    }, 10);
+}
+
+function closeQrisModal() {
+    const modal = document.getElementById('qris-modal');
+    const panel = document.getElementById('qris-modal-panel');
+
+    panel.classList.remove('scale-100');
+    panel.classList.add('scale-95');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 200);
+}
