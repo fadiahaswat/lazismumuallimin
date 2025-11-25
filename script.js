@@ -318,37 +318,82 @@
         }
 
         function renderNewsGrid(postsToRender, appendMode) {
-            const container = document.getElementById('news-grid');
-            let html = '';
-            let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
+    const container = document.getElementById('news-grid');
+    let html = '';
+    let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
 
-            postsToRender.forEach((post, i) => {
-                const globalIndex = startIndex + i;
-                const img = post.featured_image || 'https://via.placeholder.com/600x400?text=Lazismu';
-                const date = new Date(post.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+    // Helper untuk warna badge kategori acak
+    const getBadgeColor = (catName) => {
+        const colors = [
+            'bg-blue-50 text-blue-600 border-blue-100',
+            'bg-orange-50 text-orange-600 border-orange-100',
+            'bg-green-50 text-green-600 border-green-100',
+            'bg-purple-50 text-purple-600 border-purple-100'
+        ];
+        // Simple hash function untuk warna konsisten per kategori
+        let hash = 0;
+        for (let i = 0; i < catName.length; i++) hash = catName.charCodeAt(i) + ((hash << 5) - hash);
+        return colors[Math.abs(hash) % colors.length];
+    };
+
+    postsToRender.forEach((post, i) => {
+        const globalIndex = startIndex + i;
+        const img = post.featured_image || 'https://via.placeholder.com/600x400?text=Lazismu+Update';
+        
+        // Format Date: "25 Nov 2025"
+        const dateObj = new Date(post.date);
+        const day = dateObj.toLocaleDateString('id-ID', {day: '2-digit'});
+        const month = dateObj.toLocaleDateString('id-ID', {month: 'short'});
+        const year = dateObj.getFullYear();
+        
+        // Get Category (First one)
+        const categoryName = post.categories ? Object.values(post.categories)[0].name : 'Umum';
+        const badgeClass = getBadgeColor(categoryName);
+
+        html += `
+        <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="openNewsModal(${globalIndex})">
+            
+            <div class="relative h-60 overflow-hidden">
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
                 
-                html += `
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col h-full border border-slate-100 group cursor-pointer fade-in" onclick="openNewsModal(${globalIndex})">
-                    <div class="relative h-56 overflow-hidden bg-slate-100">
-                        <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
-                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold text-gray-600 shadow">
-                            ${date}
-                        </div>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="font-bold text-lg text-slate-800 mb-3 line-clamp-2 group-hover:text-brand-orange transition">${post.title}</h3>
-                        <p class="text-slate-500 text-sm line-clamp-3 mb-4 flex-grow">${stripHtml(post.excerpt)}</p>
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                            <span class="text-xs font-bold text-brand-orange uppercase tracking-wide">Baca Selengkapnya</span>
-                            <i class="fas fa-arrow-right text-slate-300 group-hover:text-brand-orange transition transform group-hover:translate-x-1"></i>
-                        </div>
-                    </div>
-                </div>`;
-            });
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
+                
+                <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
+                    <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
+                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
+                </div>
 
-            if(appendMode) container.innerHTML += html;
-            else container.innerHTML = html;
-        }
+                <div class="absolute bottom-4 left-4 z-30">
+                    <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
+                        ${categoryName}
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 flex flex-col flex-grow relative">
+                <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                    ${post.title}
+                </h3>
+                
+                <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
+                    ${stripHtml(post.excerpt)}
+                </p>
+
+                <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <i class="far fa-user-circle"></i> Admin Lazismu
+                    </div>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                        <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
+                    </span>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    if(appendMode) container.innerHTML += html;
+    else container.innerHTML = html;
+}
 
         function handleNewsSearch(e) {
             if (e.key === 'Enter') {
