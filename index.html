@@ -127,15 +127,29 @@
     </div>
 </div>
 
-    <div id="news-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300 flex flex-col" id="news-modal-panel">
-            <button onclick="closeNewsModal()" class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-red-500 hover:text-white text-gray-800 p-2 rounded-full w-10 h-10 shadow-md transition">
-                <i class="fas fa-times"></i>
+    <div id="news-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 transition-opacity duration-300 opacity-0" role="dialog" aria-modal="true">
+    
+    <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity" onclick="closeNewsModal()"></div>
+
+    <div id="news-modal-panel" class="relative w-full max-w-5xl h-[85vh] md:h-[90vh] bg-white rounded-[2.5rem] shadow-2xl shadow-slate-900/50 transform scale-95 transition-all duration-300 flex flex-col overflow-hidden border border-white/20">
+        
+        <div class="absolute top-6 right-6 z-50 group">
+            <button onclick="closeNewsModal()" class="w-12 h-12 bg-white/80 backdrop-blur-xl border border-slate-200/50 rounded-full flex items-center justify-center text-slate-500 shadow-lg hover:bg-red-500 hover:text-white hover:border-red-500 hover:rotate-90 transition-all duration-300 transform hover:scale-110">
+                <i class="fas fa-times text-xl"></i>
             </button>
-            <div id="news-modal-content" class="flex-grow">
-                </div>
+            <div class="absolute top-full mt-2 right-1/2 translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+                Tutup
+            </div>
+        </div>
+
+        <div id="news-modal-content" class="flex-grow overflow-y-auto custom-scrollbar bg-slate-50 scroll-smooth">
+            </div>
+
+        <div class="h-1.5 w-full bg-slate-100">
+            <div class="h-full bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 w-full opacity-30"></div>
         </div>
     </div>
+</div>
 
     <div id="success-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center transform scale-100 transition-transform duration-300 animate-fade-in-up relative overflow-hidden">
@@ -1891,6 +1905,7 @@
 
 </body>
 </html>
+
 
 
 
