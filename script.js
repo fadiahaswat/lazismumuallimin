@@ -288,18 +288,22 @@
                 }
 
                 if (newsState.posts.length === 0) {
-                    let pesanKosong = "Tidak ada berita ditemukan.";
-                    if (newsState.category) {
-                        pesanKosong = `Belum ada berita di kategori ini.`;
-                    }
+    let pesanKosong = "Tidak ada berita ditemukan.";
+    if (newsState.category) pesanKosong = `Belum ada berita di kategori ini.`;
 
-                    document.getElementById('news-grid').innerHTML = `
-                        <div class="col-span-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                            <i class="fas fa-newspaper text-4xl text-gray-300 mb-3"></i>
-                            <p class="text-gray-500">${pesanKosong}</p>
-                            <button onclick="resetNewsFilter()" class="mt-4 text-brand-orange font-bold hover:underline">Reset Filter</button>
-                        </div>`;
-                } else {
+    document.getElementById('news-grid').innerHTML = `
+        <div class="col-span-full text-center py-24">
+            <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
+                <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
+                <i class="far fa-folder-open text-5xl text-slate-300"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
+            <p class="text-slate-400 max-w-xs mx-auto mb-8">${pesanKosong}</p>
+            <button onclick="resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
+                <i class="fas fa-undo mr-2"></i> Reset Filter
+            </button>
+        </div>`;
+} else {
                     renderNewsGrid(isLoadMore ? data.posts : newsState.posts, isLoadMore);
                 }
 
