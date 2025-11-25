@@ -1281,79 +1281,99 @@ if(resetBtn) {
         }
 
         function renderHomeLatestDonations() {
-            const container = document.getElementById('home-latest-donations');
-            if(!container) return;
+    const container = document.getElementById('home-latest-donations');
+    if(!container) return;
 
-            const latest = riwayatData.allData.slice(0, 8);
+    // Kita ambil 6 data saja agar sisa 2 slot untuk kartu spesial
+    const latest = riwayatData.allData.slice(0, 6);
 
-            if (latest.length === 0) {
-                container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
-                return;
-            }
+    if (latest.length === 0) {
+        container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
+        return;
+    }
 
-            let html = latest.map(item => {
-                let iconClass = 'fa-donate';
-                let bgIcon = 'bg-slate-100 text-slate-400';
-                let bgBadge = 'bg-slate-50 text-slate-600';
-                
-                const type = item.JenisDonasi || item.type || ""; 
-                const subType = item.SubJenis || item.subType || "";
-                const displayType = subType || type;
+    let html = latest.map(item => {
+        let iconClass = 'fa-donate';
+        let bgIcon = 'bg-slate-100 text-slate-400';
+        let bgBadge = 'bg-slate-50 text-slate-600';
+        
+        const type = item.JenisDonasi || item.type || ""; 
+        const subType = item.SubJenis || item.subType || "";
+        const displayType = subType || type;
 
-                if(displayType.includes('Fitrah')) { 
-                    iconClass = 'fa-leaf'; 
-                    bgIcon = 'bg-emerald-100 text-emerald-600';
-                    bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-                }
-                else if(displayType.includes('Maal')) { 
-                    iconClass = 'fa-coins'; 
-                    bgIcon = 'bg-amber-100 text-amber-600'; 
-                    bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
-                }
-                else { 
-                    iconClass = 'fa-hand-holding-heart'; 
-                    bgIcon = 'bg-orange-100 text-brand-orange'; 
-                    bgBadge = 'bg-orange-50 text-orange-700 border-orange-100';
-                }
-
-                return `
-                <div class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md border border-slate-100 transition-all duration-300 group hover:-translate-y-1">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full ${bgIcon} flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas ${iconClass}"></i>
-                        </div>
-                        <span class="text-xs font-bold ${bgBadge} border px-2 py-1 rounded-full truncate max-w-[120px]">${displayType}</span>
-                    </div>
-                    <div>
-                        <h5 class="font-bold text-slate-800 text-sm mb-1 truncate" title="${item.NamaDonatur || 'Hamba Allah'}">
-                            ${item.NamaDonatur || 'Hamba Allah'}
-                        </h5>
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-xs text-slate-400 font-medium">Rp</span>
-                            <span class="text-lg font-black text-slate-800 group-hover:text-brand-orange transition-colors">${parseInt(item.Nominal).toLocaleString('id-ID')}</span>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-slate-50 flex items-center gap-2 text-[10px] text-slate-400">
-                            <i class="far fa-clock"></i>
-                            <span>${timeAgo(item.Timestamp)}</span>
-                        </div>
-                    </div>
-                </div>
-                `;
-            }).join('');
-            
-            // View All Card
-            html += `
-                <div onclick="showPage('riwayat')" class="bg-slate-50 p-5 rounded-2xl hover:bg-white hover:shadow-md border border-slate-100 border-dashed hover:border-solid transition-all duration-300 cursor-pointer flex flex-col items-center justify-center h-full min-h-[180px] group">
-                     <div class="w-12 h-12 rounded-full bg-white text-slate-400 flex items-center justify-center mb-3 shadow-sm group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-arrow-right text-lg"></i>
-                     </div>
-                     <span class="font-bold text-sm text-slate-500 group-hover:text-brand-orange transition-colors">Lihat Semua</span>
-                     <span class="text-xs text-slate-400 mt-1">Jejak Kebaikan Lainnya</span>
-                </div>
-            `;
-
-            container.innerHTML = html;
+        if(displayType.includes('Fitrah')) { 
+            iconClass = 'fa-leaf'; 
+            bgIcon = 'bg-emerald-100 text-emerald-600';
+            bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
         }
+        else if(displayType.includes('Maal')) { 
+            iconClass = 'fa-coins'; 
+            bgIcon = 'bg-amber-100 text-amber-600'; 
+            bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+        }
+        else { 
+            iconClass = 'fa-hand-holding-heart'; 
+            bgIcon = 'bg-orange-100 text-brand-orange'; 
+            bgBadge = 'bg-orange-50 text-orange-700 border-orange-100';
+        }
+
+        return `
+        <div class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md border border-slate-100 transition-all duration-300 group hover:-translate-y-1 h-full flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-full ${bgIcon} flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <span class="text-[10px] font-bold ${bgBadge} border px-2 py-1 rounded-full truncate max-w-[100px]">${displayType}</span>
+                </div>
+                <div>
+                    <h5 class="font-bold text-slate-800 text-sm mb-1 truncate" title="${item.NamaDonatur || 'Hamba Allah'}">
+                        ${item.NamaDonatur || 'Hamba Allah'}
+                    </h5>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-xs text-slate-400 font-medium">Rp</span>
+                        <span class="text-lg font-black text-slate-800 group-hover:text-brand-orange transition-colors">${parseInt(item.Nominal).toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-50 flex items-center gap-2 text-[10px] text-slate-400">
+                <i class="far fa-clock"></i>
+                <span>${timeAgo(item.Timestamp)}</span>
+            </div>
+        </div>
+        `;
+    }).join('');
+    
+    // --- KARTU 7: AJAKAN DONASI (Accent Color) ---
+    html += `
+        <div onclick="showPage('donasi')" class="group relative bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-5 shadow-lg shadow-orange-500/20 text-white cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center text-center h-full min-h-[180px] overflow-hidden border border-orange-400/50">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+            <div class="relative z-10">
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition duration-300">
+                    <i class="fas fa-hand-holding-heart text-2xl"></i>
+                </div>
+                <h5 class="font-bold text-lg mb-1 leading-tight">Mari Berbagi</h5>
+                <p class="text-xs text-orange-100 mb-3">Tunaikan ZIS Anda sekarang</p>
+                <span class="inline-block bg-white text-orange-600 text-[10px] font-bold px-3 py-1 rounded-full shadow-sm group-hover:shadow-md transition">
+                    Klik di sini
+                </span>
+            </div>
+        </div>
+    `;
+
+    // --- KARTU 8: LIHAT SEMUA (Outline Style) ---
+    html += `
+        <div onclick="showPage('riwayat')" class="group bg-slate-50 rounded-2xl p-5 border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center h-full min-h-[180px]">
+             <div class="w-12 h-12 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center mb-3 shadow-sm group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all duration-300">
+                <i class="fas fa-arrow-right text-lg group-hover:-rotate-45 transition-transform duration-300"></i>
+             </div>
+             <span class="font-bold text-sm text-slate-500 group-hover:text-blue-600 transition-colors">Lihat Semua</span>
+             <span class="text-xs text-slate-400 mt-1 group-hover:text-blue-400">Arsip Data Lengkap</span>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
 
         function calculateStats() {
             const data = riwayatData.allData;
