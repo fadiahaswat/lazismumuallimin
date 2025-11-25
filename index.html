@@ -57,35 +57,75 @@
 
     <div id="toast-container"></div>
 
-    <div id="hubungi-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-fade-in-up">
-            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-500 transition-colors">
-                <i class="fas fa-times"></i>
+    <div id="hubungi-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300" role="dialog" aria-modal="true">
+    
+    <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" onclick="document.getElementById('hubungi-modal').classList.add('hidden')"></div>
+
+    <div class="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 animate-fade-in-up">
+        
+        <div class="relative h-32 bg-slate-900 overflow-hidden">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl -mt-10 -mr-10"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mb-10 -ml-10"></div>
+            
+            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white transition-all duration-300 group">
+                <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
-            <h3 class="text-2xl font-bold text-slate-800 mb-2 text-center">Pusat Bantuan</h3>
-            <p class="text-center text-slate-500 mb-8">Silakan pilih layanan kebaikan yang Anda butuhkan.</p>
-            <div class="space-y-4">
-                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="flex items-center p-4 bg-green-50 rounded-2xl hover:bg-green-100 transition group cursor-pointer border border-transparent hover:border-green-200">
-                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mr-4 shadow-lg shadow-green-500/30">
-                        <i class="fab fa-whatsapp"></i>
+        </div>
+
+        <div class="relative px-8 pb-10 -mt-16">
+            <div class="flex justify-center mb-6">
+                <div class="w-28 h-28 bg-white p-2 rounded-full shadow-xl relative z-10">
+                    <div class="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-5xl shadow-inner">
+                        <i class="fas fa-headset"></i>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">Chat Konsultasi</h4>
-                        <p class="text-sm text-slate-600">Tanya jawab seputar ZIS via WhatsApp.</p>
+                    <div class="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-4 border-white rounded-full animate-pulse"></div>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-black text-slate-800 mb-2">Layanan Ummat</h3>
+                <p class="text-slate-500 text-sm px-4">
+                    Tim kami siap membantu menjawab pertanyaan atau memandu donasi Anda.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                
+                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="group flex items-center p-4 bg-white border border-emerald-100 rounded-2xl hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer relative overflow-hidden">
+                    <div class="absolute inset-0 bg-emerald-50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    
+                    <div class="relative z-10 flex items-center w-full">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl mr-4 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">Chat Konsultasi</h4>
+                            <p class="text-xs text-slate-500 group-hover:text-emerald-600/80">Tanya jawab via WhatsApp</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-slate-300 group-hover:text-emerald-500 transition-transform group-hover:translate-x-1"></i>
                     </div>
                 </a>
-                <button onclick="document.getElementById('hubungi-modal').classList.add('hidden'); showPage('donasi');" class="w-full flex items-center p-4 bg-orange-50 rounded-2xl hover:bg-orange-100 transition group text-left cursor-pointer border border-transparent hover:border-orange-200">
-                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl mr-4 shadow-lg shadow-orange-500/30">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">Konfirmasi ZIS</h4>
-                        <p class="text-sm text-slate-600">Isi formulir donasi untuk konfirmasi kebaikan.</p>
+
+                <button onclick="document.getElementById('hubungi-modal').classList.add('hidden'); showPage('donasi');" class="w-full group flex items-center p-4 bg-white border border-orange-100 rounded-2xl hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 cursor-pointer relative overflow-hidden text-left">
+                    <div class="absolute inset-0 bg-orange-50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    
+                    <div class="relative z-10 flex items-center w-full">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl mr-4 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-800 group-hover:text-orange-700 transition-colors">Konfirmasi ZIS</h4>
+                            <p class="text-xs text-slate-500 group-hover:text-orange-600/80">Isi formulir donasi</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-slate-300 group-hover:text-orange-500 transition-transform group-hover:translate-x-1"></i>
                     </div>
                 </button>
+
             </div>
         </div>
     </div>
+</div>
 
     <div id="news-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300 flex flex-col" id="news-modal-panel">
@@ -1851,6 +1891,7 @@
 
 </body>
 </html>
+
 
 
 
