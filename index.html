@@ -161,64 +161,79 @@
                 </div>
             </div>
 
-            <div class="container max-w-7xl mx-auto px-4 md:px-8 -mt-24 relative z-20 mb-16">
-                <div class="bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/60 p-8 md:p-10 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -mt-10 -mr-10 pointer-events-none"></div>
-                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -mb-10 -ml-10 pointer-events-none"></div>
+            <div class="container max-w-7xl mx-auto px-4 md:px-8 -mt-24 relative z-20 mb-20">
+    
+    <div class="bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-900/50 border border-slate-800 p-8 md:p-12 relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]" style="animation-delay: 2s"></div>
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10"></div>
 
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-slate-100 pb-6 relative z-10">
-                        <div>
-                            <h2 class="text-3xl font-black text-slate-800 flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl shadow-lg shadow-orange-500/30">
-                                    <i class="fas fa-chart-pie"></i>
-                                </div>
-                                Capaian Kebaikan
-                            </h2>
-                            <p class="text-slate-500 mt-2 text-lg ml-16">Pantau dampak nyata donasi Anda secara real-time.</p>
-                        </div>
-                        <a href="#" onclick="showPage('riwayat'); return false;" class="group flex items-center gap-2 text-brand-orange font-bold hover:bg-orange-50 px-5 py-3 rounded-xl transition-all duration-300 mt-4 md:mt-0">
-                            Lihat Detail Laporan
-                            <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1"></i>
-                        </a>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-                        <div class="group relative bg-gradient-to-br from-orange-50 to-white p-6 rounded-3xl border border-orange-100 hover:border-orange-300 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-500 transform hover:-translate-y-2">
-                            <div class="absolute top-4 right-4 text-orange-200 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500"><i class="fas fa-hand-holding-heart"></i></div>
-                            <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl mb-4 shadow-sm group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <p class="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">Total Donasi</p>
-                            <h3 id="stat-total-donasi" class="text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">Rp 0</h3>
-                        </div>
-                        <div class="group relative bg-gradient-to-br from-blue-50 to-white p-6 rounded-3xl border border-blue-100 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-500 transform hover:-translate-y-2">
-                            <div class="absolute top-4 right-4 text-blue-200 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500"><i class="fas fa-receipt"></i></div>
-                            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Total Transaksi</p>
-                            <h3 id="stat-total-transaksi" class="text-2xl font-black text-slate-800 group-hover:text-blue-600 transition-colors">0</h3>
-                        </div>
-                        <div class="group relative bg-gradient-to-br from-teal-50 to-white p-6 rounded-3xl border border-teal-100 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-500 transform hover:-translate-y-2">
-                            <div class="absolute top-4 right-4 text-teal-200 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500"><i class="fas fa-balance-scale"></i></div>
-                            <div class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mb-4 shadow-sm group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <p class="text-xs font-bold text-teal-600 uppercase tracking-widest mb-1">Rata-rata Donasi</p>
-                            <h3 id="stat-donasi-rata" class="text-2xl font-black text-slate-800 group-hover:text-teal-600 transition-colors">Rp 0</h3>
-                        </div>
-                        <div class="group relative bg-gradient-to-br from-yellow-50 to-white p-6 rounded-3xl border border-yellow-200 hover:border-yellow-400 hover:shadow-xl hover:shadow-yellow-500/10 transition-all duration-500 transform hover:-translate-y-2">
-                            <div class="absolute top-4 right-4 text-yellow-200 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500"><i class="fas fa-crown"></i></div>
-                            <div class="w-14 h-14 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl mb-4 shadow-sm group-hover:bg-yellow-500 group-hover:text-white transition-colors duration-300">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <p class="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-1">Donasi Tertinggi</p>
-                            <h3 id="stat-donasi-tertinggi" class="text-2xl font-black text-slate-800 group-hover:text-yellow-600 transition-colors">Rp 0</h3>
-                             <p id="stat-donasi-tertinggi-nama" class="text-xs text-slate-400 truncate mt-1 font-medium bg-white/50 px-2 py-1 rounded-lg inline-block border border-yellow-100">-</p>
-                        </div>
-                    </div>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-slate-800 pb-8 relative z-10">
+            <div>
+                <div class="inline-flex items-center gap-3 mb-2">
+                    <span class="relative flex h-2.5 w-2.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                    </span>
+                    <span class="text-green-500 text-xs font-bold uppercase tracking-widest">Live Dashboard</span>
                 </div>
+                <h2 class="text-3xl md:text-4xl font-black text-white flex items-center gap-4 mt-2">
+                    Capaian Kebaikan
+                </h2>
+                <p class="text-slate-400 mt-3 text-lg">Pantau dampak nyata donasi Anda secara real-time.</p>
             </div>
+            
+            <a href="#" onclick="showPage('riwayat'); return false;" class="group flex items-center gap-3 text-white bg-white/5 hover:bg-white/10 px-6 py-3 rounded-full border border-white/10 transition-all duration-300 mt-6 md:mt-0 backdrop-blur-sm">
+                <span class="text-sm font-bold">Lihat Detail Laporan</span>
+                <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+            
+            <div class="group relative bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-700/50 hover:border-orange-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg hover:shadow-orange-500/10">
+                <div class="absolute top-4 right-4 text-orange-500/20 text-4xl group-hover:scale-110 transition duration-500"><i class="fas fa-hand-holding-heart"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-orange-500/30 group-hover:rotate-6 transition duration-300">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Total Donasi</p>
+                <h3 id="stat-total-donasi" class="text-2xl font-black text-white">Rp 0</h3>
+            </div>
+
+            <div class="group relative bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-700/50 hover:border-blue-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg hover:shadow-blue-500/10">
+                <div class="absolute top-4 right-4 text-blue-500/20 text-4xl group-hover:scale-110 transition duration-500"><i class="fas fa-receipt"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-blue-500/30 group-hover:rotate-6 transition duration-300">
+                    <i class="fas fa-users"></i>
+                </div>
+                <p class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Total Transaksi</p>
+                <h3 id="stat-total-transaksi" class="text-2xl font-black text-white">0</h3>
+            </div>
+
+            <div class="group relative bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-700/50 hover:border-teal-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg hover:shadow-teal-500/10">
+                <div class="absolute top-4 right-4 text-teal-500/20 text-4xl group-hover:scale-110 transition duration-500"><i class="fas fa-balance-scale"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-teal-500/30 group-hover:rotate-6 transition duration-300">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <p class="text-xs font-bold text-teal-400 uppercase tracking-widest mb-1">Rata-rata Donasi</p>
+                <h3 id="stat-donasi-rata" class="text-2xl font-black text-white">Rp 0</h3>
+            </div>
+
+            <div class="group relative bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-700/50 hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg hover:shadow-yellow-500/10">
+                <div class="absolute top-4 right-4 text-yellow-500/20 text-4xl group-hover:scale-110 transition duration-500"><i class="fas fa-crown"></i></div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-yellow-500/30 group-hover:rotate-6 transition duration-300">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <p class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-1">Donasi Tertinggi</p>
+                <h3 id="stat-donasi-tertinggi" class="text-2xl font-black text-white">Rp 0</h3>
+                <p id="stat-donasi-tertinggi-nama" class="text-[10px] text-slate-400 truncate mt-2 font-medium bg-slate-900 px-2 py-1 rounded inline-block border border-slate-700">-</p>
+            </div>
+
+        </div>
+    </div>
+</div>
 
             <section class="py-24 bg-slate-50 relative overflow-hidden border-b border-slate-200">
     
@@ -1725,6 +1740,7 @@
 
 </body>
 </html>
+
 
 
 
