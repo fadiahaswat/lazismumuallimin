@@ -1,60 +1,226 @@
+/* =========================================
+   1. BASE STYLES
+   ========================================= */
 body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-        .soft-card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(241, 245, 249, 1);
-        }
-        .soft-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-        }
-        .input-soft {
-            background-color: #f1f5f9;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .input-soft:focus {
-            background-color: #ffffff;
-            border-color: #F15A22;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(241, 90, 34, 0.1);
-        }
-        .selection-btn {
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-        .selection-btn.selected {
-            background-color: #fff7ed;
-            border-color: #F15A22;
-            color: #c2410c;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(241, 90, 34, 0.1);
-        }
-        /* Specific Colors for Selected State */
-        .selection-btn.selected.type-fitrah { background-color: #ecfdf5; border-color: #10b981; color: #047857; }
-        .selection-btn.selected.type-maal { background-color: #fefce8; border-color: #eab308; color: #854d0e; }
-        .selection-btn.selected.type-infaq { background-color: #fff7ed; border-color: #F15A22; color: #c2410c; }
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f8fafc;
+    /* Pola Dot Background Default */
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 40px 40px;
+    overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+}
 
-        .page-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
-        .page-section.active { display: block; opacity: 1; animation: fadeInUp 0.6s ease-out forwards; }
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .toast {
-            background: white; padding: 16px 24px; border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 10px;
-            display: flex; align-items: center; gap: 12px;
-            animation: slideIn 0.3s ease-out forwards;
-        }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+/* Font Arab untuk doa */
+.font-arabic {
+    font-family: 'Amiri', serif;
+}
 
-        /* WordPress Content Styles */
-        .wp-content p { margin-bottom: 1rem; line-height: 1.6; }
-        .wp-content img { border-radius: 0.5rem; margin: 1rem 0; max-width: 100%; height: auto; }
-        .wp-content ul { list-style: disc; margin-left: 1.5rem; }
+/* =========================================
+   2. UTILITY CLASSES (NEW & OLD)
+   ========================================= */
+
+/* Sembunyikan Scrollbar (untuk filter menu horizontal) */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Masking Gradient untuk list horizontal (Opsional) */
+.mask-gradient-right {
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+}
+
+/* =========================================
+   3. COMPONENT: SOFT CARD & INPUTS
+   (Penting untuk Halaman Donasi & Rekap)
+   ========================================= */
+.soft-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(241, 245, 249, 1);
+}
+
+.soft-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.input-soft {
+    background-color: #f1f5f9;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.input-soft:focus {
+    background-color: #ffffff;
+    border-color: #F15A22;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(241, 90, 34, 0.1);
+}
+
+/* =========================================
+   4. COMPONENT: SELECTION BUTTONS
+   (Penting untuk Wizard Donasi)
+   ========================================= */
+.selection-btn {
+    transition: all 0.2s;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.selection-btn.selected {
+    background-color: #fff7ed;
+    border-color: #F15A22;
+    color: #c2410c;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(241, 90, 34, 0.1);
+}
+
+/* Specific Colors for Selected State */
+.selection-btn.selected.type-fitrah {
+    background-color: #ecfdf5;
+    border-color: #10b981;
+    color: #047857;
+}
+
+.selection-btn.selected.type-maal {
+    background-color: #fefce8;
+    border-color: #eab308;
+    color: #854d0e;
+}
+
+.selection-btn.selected.type-infaq {
+    background-color: #fff7ed;
+    border-color: #F15A22;
+    color: #c2410c;
+}
+
+/* =========================================
+   5. SPA PAGE TRANSITIONS
+   ========================================= */
+.page-section {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.page-section.active {
+    display: block;
+    opacity: 1;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* =========================================
+   6. TOAST NOTIFICATIONS
+   ========================================= */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    background: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease-out forwards;
+    border-left: 4px solid #cbd5e1; /* Default border */
+}
+
+.toast.success { border-left-color: #22c55e; }
+.toast.error { border-left-color: #ef4444; }
+.toast.warning { border-left-color: #f97316; }
+
+/* =========================================
+   7. WORDPRESS CONTENT (Berita Modal)
+   ========================================= */
+.wp-content p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+    color: #475569;
+}
+
+.wp-content img {
+    border-radius: 1rem;
+    margin: 1.5rem 0;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.wp-content ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.wp-content h2, .wp-content h3 {
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* =========================================
+   8. NEW ANIMATIONS (Untuk Hero & Cards)
+   ========================================= */
+
+/* Fade In Up */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Toast Slide In */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Toast Fade Out */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Shimmer Effect (Teks Mengkilap di Hero) */
+@keyframes shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+.animate-shimmer {
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
+}
+
+/* Shine Effect (Kilatan pada Tombol) */
+@keyframes shine {
+    100% { transform: translateX(100%) skewX(12deg); }
+}
+.animate-shine {
+    animation: shine 1.5s infinite;
+}
+
+/* Spin Slow (Untuk dekorasi bintang/badge) */
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
