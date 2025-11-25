@@ -237,3 +237,7 @@ body {
 #page-home {
     padding-top: 0 !important; /* Hapus jarak di pembungkus luar agar tidak ada celah putih */
 }
+/* 3. Atur jarak di dalam elemen background Home-nya langsung */
+#page-home > div {
+    padding-top: 60px !important; /* Dorong teks "Amanah Mengelola" ke bawah */
+}
