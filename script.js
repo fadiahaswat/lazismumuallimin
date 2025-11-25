@@ -439,51 +439,116 @@
             filterNews('');
         }
 
-        function openNewsModal(index) {
-            const post = newsState.posts[index];
-            if(!post) return;
+        function updateReadingProgress() {
+    const container = document.getElementById('news-modal-content');
+    const progressBar = document.getElementById('reading-progress');
+    const scrollHeight = container.scrollHeight - container.clientHeight;
+    const scrolled = (container.scrollTop / scrollHeight) * 100;
+    progressBar.style.width = `${scrolled}%`;
+}
 
-            const modal = document.getElementById('news-modal');
-            const panel = document.getElementById('news-modal-panel');
-            const container = document.getElementById('news-modal-content');
-            const date = new Date(post.date).toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-            const img = post.featured_image || 'https://via.placeholder.com/1200x600';
+function openNewsModal(index) {
+    const post = newsState.posts[index];
+    if (!post) return;
 
-            // Render Content
-            container.innerHTML = `
-                <div class="relative h-64 md:h-80 w-full bg-slate-900">
-                    <img src="${img}" class="w-full h-full object-contain" alt="Detail">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full">
-                        <span class="bg-brand-orange text-white px-3 py-1 rounded text-xs font-bold mb-3 inline-block shadow">Berita Lazismu</span>
-                        <h2 class="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-md mb-2">${post.title}</h2>
-                        <div class="flex items-center gap-4 text-sm text-slate-300">
-                            <span><i class="far fa-calendar-alt mr-2"></i> ${date}</span>
-                        </div>
+    const modal = document.getElementById('news-modal');
+    const panel = document.getElementById('news-modal-panel');
+    const container = document.getElementById('news-modal-content');
+    
+    // Format Data
+    const dateObj = new Date(post.date);
+    const date = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const img = post.featured_image || 'https://via.placeholder.com/1200x600?text=Lazismu+Update';
+    const category = post.categories ? Object.values(post.categories)[0].name : 'Berita';
+    const author = post.author.name || 'Admin Lazismu';
+    const avatar = post.author.avatar_URL || 'https://ui-avatars.com/api/?name=Admin+Lazismu&background=random';
+
+    // Inject Content (Layout Majalah Premium)
+    container.innerHTML = `
+        <div class="relative h-[50vh] md:h-[60vh] w-full group overflow-hidden">
+            <img src="${img}" class="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105" alt="Hero Image">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full p-6 md:p-12">
+                <span class="inline-block px-3 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-4 shadow-lg shadow-orange-500/30 border border-orange-400/50">
+                    ${category}
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-6 drop-shadow-lg max-w-4xl">
+                    ${post.title}
+                </h2>
+                
+                <div class="flex items-center gap-4 text-white/90">
+                    <img src="${avatar}" class="w-10 h-10 rounded-full border-2 border-white/30 shadow-sm" alt="${author}">
+                    <div class="text-sm">
+                        <p class="font-bold text-white">${author}</p>
+                        <p class="text-slate-300 text-xs">${date} &bull; <i class="far fa-clock ml-1"></i> 3 min baca</p>
                     </div>
                 </div>
-                <div class="p-8 md:p-10 overflow-y-auto">
-                    <div class="wp-content text-lg text-slate-700">
-                        ${post.content}
-                    </div>
-                    <div class="mt-10 pt-6 border-t border-slate-100 text-center">
-                        <p class="text-slate-400 text-sm mb-4">Bagikan kebaikan ini:</p>
-                        <div class="flex justify-center gap-3">
-                            <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-10 h-10 rounded-full bg-green-500 text-white hover:scale-110 transition flex items-center justify-center"><i class="fab fa-whatsapp"></i></a>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-10 h-10 rounded-full bg-blue-600 text-white hover:scale-110 transition flex items-center justify-center"><i class="fab fa-facebook-f"></i></a>
-                        </div>
-                    </div>
-                </div>
-            `;
+            </div>
+        </div>
 
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                panel.classList.remove('scale-95');
-                panel.classList.add('scale-100');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
+        <div class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+                <div class="flex items-center gap-2 text-slate-400 text-sm font-medium">
+                    <i class="fas fa-share-alt mr-1"></i> Bagikan:
+                </div>
+                <div class="flex gap-3">
+                    <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-x-twitter"></i></a>
+                    <button onclick="copyText('${post.URL}')" class="w-9 h-9 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fas fa-link"></i></button>
+                </div>
+            </div>
+
+            <div class="wp-content text-lg text-slate-700 leading-loose font-serif tracking-wide">
+                <div class="first-letter:text-6xl first-letter:font-bold first-letter:text-slate-900 first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
+                    ${post.content}
+                </div>
+            </div>
+
+            <div class="mt-16 p-8 bg-slate-50 rounded-2xl border-l-4 border-orange-500 italic text-slate-600 text-center relative">
+                <i class="fas fa-quote-left text-4xl text-slate-200 absolute top-4 left-4"></i>
+                <p class="relative z-10">"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."</p>
+            </div>
+
+            <div class="mt-12 text-center">
+                <h4 class="font-bold text-slate-800 mb-4">Tergerak untuk membantu?</h4>
+                <button onclick="closeNewsModal(); showPage('donasi');" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:bg-orange-600 transition-all duration-300 hover:shadow-orange-500/30 transform hover:-translate-y-1 flex items-center justify-center gap-2 mx-auto">
+                    <i class="fas fa-heart text-red-500"></i> Donasi Sekarang
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Animation Open
+    modal.classList.remove('hidden');
+    document.getElementById('reading-progress').style.width = '0%'; // Reset progress
+    
+    // Slight delay for smooth transition
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        panel.classList.remove('translate-y-full', 'scale-95');
+        panel.classList.add('translate-y-0', 'scale-100'); // Reset position for desktop/mobile
+    }, 10);
+    
+    document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+    const modal = document.getElementById('news-modal');
+    const panel = document.getElementById('news-modal-panel');
+    
+    // Animation Close
+    modal.classList.add('opacity-0');
+    panel.classList.remove('translate-y-0', 'scale-100');
+    panel.classList.add('translate-y-full', 'scale-95'); // Slide down effect
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300); // Wait for transition
+    document.body.style.overflow = 'auto';
+}
 
         function closeNewsModal() {
             const modal = document.getElementById('news-modal');
