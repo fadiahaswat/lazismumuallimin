@@ -121,9 +121,6 @@
             </button>
             <div id="menu-links" class="hidden md:flex md:items-center gap-2 absolute md:relative top-full left-0 w-full md:w-auto bg-white/95 md:bg-transparent shadow-lg md:shadow-none p-4 md:p-0 flex-col md:flex-row border-b md:border-0 border-slate-100 transition-all duration-300 backdrop-blur-md md:backdrop-blur-none">
                 <a href="#home" onclick="showPage('home'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-brand-orange transition font-bold text-sm w-full md:w-auto text-center">Beranda</a>
-                
-                <a href="#tentang" onclick="showPage('tentang'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-brand-orange transition font-bold text-sm w-full md:w-auto text-center">Tentang Kami</a>
-
                 <a href="#berita" onclick="showPage('berita'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-brand-orange transition font-bold text-sm w-full md:w-auto text-center">Kabar Berita</a>
                 <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-brand-orange transition font-bold text-sm w-full md:w-auto text-center">Laporan & Statistik</a>
                 <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link px-4 py-2 rounded-lg hover:bg-orange-50 text-slate-600 hover:text-brand-orange transition font-bold text-sm w-full md:w-auto text-center">Rekapitulasi</a>
@@ -515,135 +512,447 @@
                 </div>
             </section>
 
-            <section id="page-tentang" class="page-section bg-white min-h-screen py-16">
-                <div class="container max-w-7xl mx-auto px-4 md:px-8">
-                    <div class="text-center mb-16">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 text-2xl mb-4 shadow-glow">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Tentang Kami</h2>
-                        <p class="text-slate-500">Mengenal Lebih Dekat Lazismu Mu'allimin</p>
-                    </div>
+        </section>
 
-                    <div class="max-w-4xl mx-auto mb-16">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-6 border-l-4 border-brand-orange pl-4">Profil Lembaga</h3>
-                        <div class="bg-white rounded-3xl p-8 shadow-soft border border-slate-100 text-slate-600 leading-relaxed space-y-4 text-justify">
-                            <p>LAZISMU adalah lembaga zakat tingkat nasional yang berkhidmat dalam pemberdayaan masyarakat melalui pendayagunaan secara produktif dana zakat, infaq, wakaf, dan dana kedermawanan lainnya, baik dari perseorangan, lembaga, perusahaan, maupun instansi lainnya.</p>
-                            <p>Sebagai bagian dari jejaring nasional tersebut, LAZISMU Kantor Layanan (KL) Mu'allimin hadir di lingkungan Madrasah Mu'allimin Muhammadiyah Yogyakarta untuk mendekatkan layanan kepada donatur dan penerima manfaat, khususnya dalam ekosistem pendidikan kader.</p>
-                            <p>Berdirinya LAZISMU dimaksudkan sebagai institusi pengelola zakat dengan manajemen modern yang dapat menghantarkan zakat menjadi bagian dari penyelesai masalah (problem solver) sosial masyarakat yang terus berkembang.</p>
+        <section id="page-berita" class="page-section bg-white min-h-screen py-20">
+            <div class="container max-w-7xl mx-auto px-4 md:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 text-2xl mb-4 shadow-glow">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Kabar Lazismu</h2>
+                    <p class="text-slate-500">Informasi terkini kegiatan dan penyaluran.</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow-soft border border-slate-100 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center sticky top-20 z-30 opacity-95 backdrop-blur">
+                    <div id="news-filter-container" class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                        <button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-brand-orange text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition">Semua</button>
+                        <div class="animate-pulse bg-slate-100 h-9 w-20 rounded-lg"></div>
+                        <div class="animate-pulse bg-slate-100 h-9 w-20 rounded-lg"></div>
+                    </div>
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="news-search-input" placeholder="Cari berita..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-orange transition" onkeypress="handleNewsSearch(event)">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="col-span-full text-center py-12">
+                        <div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div>
+                        <p class="text-slate-400">Memuat berita...</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-10">
+                    <button id="btn-news-load-more" onclick="loadMoreNews()" class="hidden bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-50 hover:text-brand-orange hover:border-orange-500 transition shadow-sm">
+                        Muat Lebih Banyak <i class="fas fa-sync-alt ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-riwayat" class="page-section bg-white min-h-screen py-20">
+             <div class="container max-w-7xl mx-auto px-4 md:px-8">
+                 <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-600 text-2xl mb-4 shadow-glow">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Jejak Kebaikan</h2>
+                    <p class="text-slate-500">Transparansi kebaikan adalah prioritas kami.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="soft-card p-5 flex items-center gap-4 border-l-4 border-blue-500">
+                         <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xl shrink-0"><i class="fas fa-chart-line"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase">Total Himpunan</p><h3 id="stat-r-total" class="text-lg font-black text-slate-800">Rp 0</h3></div>
+                    </div>
+                    <div class="soft-card p-5 flex items-center gap-4 border-l-4 border-purple-500">
+                         <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xl shrink-0"><i class="fas fa-receipt"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase">Total Transaksi</p><h3 id="stat-r-transaksi" class="text-lg font-black text-slate-800">0</h3></div>
+                    </div>
+                    <div class="soft-card p-5 flex items-center gap-4 border-l-4 border-green-500">
+                         <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl shrink-0"><i class="fas fa-calendar-day"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase">Himpunan Hari Ini</p><h3 id="stat-r-hari-ini" class="text-lg font-black text-slate-800">Rp 0</h3></div>
+                    </div>
+                     <div class="soft-card p-5 flex items-center gap-4 border-l-4 border-teal-500">
+                         <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 text-xl shrink-0"><i class="fas fa-star"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase">Donasi Terpopuler</p><h3 id="stat-r-tipe-top" class="text-sm font-bold text-slate-800 truncate w-32">Memuat...</h3></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-emerald-50 rounded-2xl p-4 flex justify-between items-center border border-emerald-100">
+                        <div><p class="text-xs font-bold text-emerald-600 uppercase">Zakat Fitrah</p><h4 id="stat-detail-fitrah" class="text-lg font-black text-slate-700">Rp 0</h4></div>
+                        <i class="fas fa-leaf text-emerald-200 text-3xl"></i>
+                    </div>
+                    <div class="bg-yellow-50 rounded-2xl p-4 flex justify-between items-center border border-yellow-100">
+                        <div><p class="text-xs font-bold text-yellow-600 uppercase">Zakat Maal</p><h4 id="stat-detail-maal" class="text-lg font-black text-slate-700">Rp 0</h4></div>
+                        <i class="fas fa-coins text-yellow-200 text-3xl"></i>
+                    </div>
+                    <div class="bg-orange-50 rounded-2xl p-4 flex justify-between items-center border border-orange-100">
+                        <div><p class="text-xs font-bold text-orange-600 uppercase">Total Infaq</p><h4 id="stat-detail-infaq" class="text-lg font-black text-slate-700">Rp 0</h4></div>
+                        <i class="fas fa-hand-holding-heart text-orange-200 text-3xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-soft rounded-2xl p-6 mb-8 border border-slate-50">
+                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select id="filter-jenis" class="input-soft p-3 rounded-xl text-sm text-slate-600 font-bold cursor-pointer w-full">
+                            <option value="all">Semua Jenis</option>
+                            <option value="Zakat Fitrah">Zakat Fitrah</option>
+                            <option value="Zakat Maal">Zakat Maal</option>
+                            <option value="Infaq Pengembangan Kampus">Infaq Kampus</option>
+                            <option value="Infaq Beasiswa Pendidikan">Infaq Beasiswa</option>
+                            <option value="Infaq Umum">Infaq Umum</option>
+                        </select>
+                         <select id="filter-metode" class="input-soft p-3 rounded-xl text-sm text-slate-600 font-bold cursor-pointer w-full">
+                            <option value="all">Semua Metode</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Tunai">Tunai</option>
+                        </select>
+                        <div class="md:col-span-2 flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                            <button class="time-filter-btn px-4 py-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs font-bold transition whitespace-nowrap" data-time="today">Hari Ini</button>
+                            <button class="time-filter-btn px-4 py-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs font-bold transition whitespace-nowrap" data-time="week">Pekan Ini</button>
+                            <button class="time-filter-btn px-4 py-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs font-bold transition whitespace-nowrap" data-time="month">Bulan Ini</button>
+                            <button class="time-filter-btn px-4 py-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs font-bold transition whitespace-nowrap" data-time="year">Tahun Ini</button>
+                            <button id="btn-reset-filter" class="px-4 py-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 text-xs font-bold transition whitespace-nowrap ml-auto"><i class="fas fa-undo mr-1"></i> Reset</button>
+                        </div>
+                        <input type="hidden" id="filter-start-date">
+                        <input type="hidden" id="filter-end-date">
+                     </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div id="riwayat-loading" class="py-20 text-center">
+                        <div class="inline-block w-10 h-10 border-4 border-slate-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+                        <p class="text-slate-500 font-medium">Mengambil data...</p>
+                    </div>
+                    <div id="riwayat-content" class="hidden space-y-4">
+                        <div id="riwayat-list-container" class="space-y-3"></div>
+                        <div class="flex justify-between items-center pt-8 border-t border-slate-100 mt-6">
+                            <button id="riwayat-prev" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 disabled:opacity-50">Prev</button>
+                            <span id="riwayat-page-info" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Page 1</span>
+                            <button id="riwayat-next" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 disabled:opacity-50">Next</button>
                         </div>
                     </div>
+                    <div id="riwayat-no-data" class="hidden py-20 text-center text-slate-400"><i class="far fa-folder-open text-3xl mb-2"></i><p>Data tidak ditemukan.</p></div>
+                </div>
+             </div>
+        </section>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                        <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 hover:shadow-lg transition duration-300">
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="w-10 h-10 bg-brand-orange rounded-full flex items-center justify-center text-white"><i class="fas fa-scale-balanced"></i></div>
-                                <h4 class="text-xl font-bold text-slate-800">Legalitas Nasional</h4>
+        <section id="page-rekapitulasi" class="page-section bg-white min-h-screen py-20">
+             <div class="container max-w-7xl mx-auto px-4 md:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 text-teal-600 text-2xl mb-4 shadow-glow">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Rekapitulasi Kelas</h2>
+                    <p class="text-slate-500">Data transparan perolehan kelas.</p>
+                </div>
+
+                <div class="max-w-5xl mx-auto">
+                    <div class="bg-white p-8 rounded-3xl shadow-soft mb-8 flex flex-col md:flex-row gap-6 items-start justify-between">
+                        <div class="w-full md:w-2/3 grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">1. Pilih Tingkat</label>
+                                <select id="rekap-level-select" class="w-full p-4 rounded-xl input-soft font-bold text-slate-700 cursor-pointer">
+                                    <option value="">-- Tingkat --</option>
+                                    <option value="1">Kelas 1</option>
+                                    <option value="2">Kelas 2</option>
+                                    <option value="3">Kelas 3</option>
+                                    <option value="4">Kelas 4</option>
+                                    <option value="5">Kelas 5</option>
+                                    <option value="6">Kelas 6</option>
+                                </select>
                             </div>
-                            <ul class="space-y-3 text-sm text-slate-600 list-disc list-inside">
-                                <li>Didirikan oleh PP Muhammadiyah (2002).</li>
-                                <li>LAZNAS SK Menteri Agama RI No. 457/2002.</li>
-                                <li>Dikukuhkan kembali SK Menag RI No. 730/2016.</li>
-                                <li>Perpanjangan SK Menag RI Nomor 90/2022.</li>
-                                <li>Beroperasi sesuai UU Zakat No. 23 Tahun 2011.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-soft hover:shadow-lg transition duration-300">
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white"><i class="fas fa-building-columns"></i></div>
-                                <h4 class="text-xl font-bold text-slate-800">Legalitas Unit (KL)</h4>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">2. Pilih Kelas</label>
+                                <select id="rekap-kelas-select" class="w-full p-4 rounded-xl input-soft font-bold text-slate-700 cursor-pointer" disabled>
+                                    <option value="">-- Kelas --</option>
+                                </select>
                             </div>
-                            <ul class="space-y-3 text-sm text-slate-600">
-                                <li class="flex gap-3">
-                                    <i class="fas fa-check text-green-500 mt-1"></i>
-                                    <span><strong>Piagam Pendirian:</strong><br>Nomor 020.BP/KEP/II.17/B/2018</span>
-                                </li>
-                                <li class="flex gap-3">
-                                    <i class="fas fa-check text-green-500 mt-1"></i>
-                                    <span><strong>SK Operasional:</strong><br>SK BP Lazismu DIY No. 003.BP/KEP/II.17/B/2021</span>
-                                </li>
-                            </ul>
+                        </div>
+                         <div class="w-full md:w-auto pt-6">
+                            <button id="btn-export-pdf" disabled class="w-full md:w-auto px-6 py-4 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition disabled:opacity-50 flex items-center justify-center gap-2 transform active:scale-95">
+                                <i class="fas fa-file-pdf"></i> Unduh PDF
+                            </button>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-                        <div class="lg:col-span-1 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl p-10 text-white flex flex-col justify-center text-center shadow-lg">
-                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl"><i class="fas fa-bullseye"></i></div>
-                            <h3 class="text-2xl font-bold mb-4">Visi Kami</h3>
-                            <p class="font-medium text-lg opacity-90">"Menjadi Lembaga Amil Zakat Terpercaya"</p>
+                    <div id="rekap-summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up">
+                        <div class="soft-card p-6 border-l-4 border-indigo-500">
+                            <p class="text-xs font-bold text-indigo-500 uppercase mb-1">Wali Kelas</p>
+                            <h4 id="rekap-wali" class="text-lg font-bold text-slate-800">-</h4>
                         </div>
-                        <div class="lg:col-span-2 bg-white rounded-3xl p-10 border border-slate-100 shadow-soft">
-                            <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3"><i class="fas fa-rocket text-orange-500"></i> Misi Utama</h3>
-                            <div class="grid gap-4">
-                                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50">
-                                    <span class="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">1</span>
-                                    <p class="text-slate-700">Meningkatkan kualitas pengelolaan ZIS yang amanah, profesional, dan transparan.</p>
-                                </div>
-                                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50">
-                                    <span class="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">2</span>
-                                    <p class="text-slate-700">Meningkatkan pendayagunaan ZIS yang kreatif, inovatif, dan produktif.</p>
-                                </div>
-                                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50">
-                                    <span class="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">3</span>
-                                    <p class="text-slate-700">Meningkatkan pelayanan prima kepada donatur.</p>
-                                </div>
-                            </div>
+                        <div class="soft-card p-6 border-l-4 border-teal-500">
+                             <p class="text-xs font-bold text-teal-500 uppercase mb-1">Musyrif</p>
+                            <h4 id="rekap-musyrif" class="text-lg font-bold text-slate-800">-</h4>
+                        </div>
+                        <div class="bg-orange-500 p-6 rounded-2xl text-white shadow-lg shadow-orange-500/20">
+                            <p class="text-xs font-bold text-orange-100 uppercase mb-1">Total Perolehan</p>
+                            <h4 id="rekap-total-kelas" class="text-3xl font-black">Rp 0</h4>
                         </div>
                     </div>
 
-                    <div class="text-center mb-10">
-                        <h3 class="text-2xl font-bold text-slate-800">11 Prinsip Pengelolaan</h3>
-                        <p class="text-slate-500 mt-2">Nilai-nilai utama yang kami pegang teguh.</p>
+                    <div id="rekap-table-container" class="hidden bg-white rounded-3xl shadow-soft overflow-hidden animate-fade-in-up">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-600">
+                                <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-xs tracking-wider">
+                                    <tr>
+                                        <th class="px-6 py-5">No</th>
+                                        <th class="px-6 py-5">Nama Santri</th>
+                                        <th class="px-6 py-5 text-right">QRIS</th>
+                                        <th class="px-6 py-5 text-right">Transfer</th>
+                                        <th class="px-6 py-5 text-right">Tunai</th>
+                                        <th class="px-6 py-5 text-right bg-orange-50 text-orange-700">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rekap-table-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-quran text-teal-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Syariat Islam</span>
+                    
+                     <div id="rekap-placeholder" class="text-center py-24 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                        <i class="fas fa-chart-bar text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-400 font-bold">Pilih tingkat dan kelas untuk melihat data.</p>
+                    </div>
+                </div>
+        </section>
+
+        <section id="page-donasi" class="page-section bg-white py-20">
+             <div class="container max-w-7xl mx-auto px-4 md:px-8">
+                  <div class="max-w-2xl mx-auto mb-10 text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 text-orange-600 text-2xl mb-4 shadow-glow">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-3">Formulir Kebaikan</h2>
+                    <p class="text-slate-500">5 Langkah mudah menebar manfaat.</p>
+                </div>
+                
+                <div id="donasi-wizard" class="max-w-3xl mx-auto bg-white rounded-3xl shadow-soft overflow-hidden relative border border-slate-100">
+                    <div class="h-1.5 bg-slate-50 w-full"><div id="wizard-progress-bar" class="h-full bg-brand-orange transition-all duration-500 ease-out" style="width: 20%"></div></div>
+                    <div class="px-8 pt-8 pb-4 flex justify-between items-center border-b border-slate-50">
+                        <div>
+                            <h3 id="wizard-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fas fa-hand-pointer text-orange-500"></i> Pilih Jenis</h3>
+                            <p id="wizard-subtitle" class="text-sm text-slate-500 mt-1">Niat Suci Dimulai</p>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-handshake text-blue-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Amanah & Integritas</span>
+                        <span id="wizard-step-indicator" class="text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full">Step 1/5</span>
+                    </div>
+
+                    <div class="p-6 md:p-10 min-h-[400px]">
+                         <div id="donasi-step-1" class="donasi-step-container">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <button data-type="Zakat Fitrah" class="choice-button selection-btn soft-card p-6 flex flex-col items-center justify-center gap-3 type-fitrah group">
+                                    <i class="fas fa-leaf text-3xl text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-bold text-slate-700">Zakat Fitrah</span>
+                                    <p class="text-[10px] text-emerald-600 font-medium">Pembersih jiwa di bulan Ramadhan</p>
+                                </button>
+                                <button data-type="Zakat Maal" class="choice-button selection-btn soft-card p-6 flex flex-col items-center justify-center gap-3 type-maal group">
+                                    <i class="fas fa-coins text-3xl text-yellow-500 group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-bold text-slate-700">Zakat Maal</span>
+                                    <p class="text-[10px] text-yellow-600 font-medium">Membersihkan harta, memberkahi rezeki</p>
+                                </button>
+                                <button data-type="Infaq" class="choice-button selection-btn soft-card p-6 flex flex-col items-center justify-center gap-3 type-infaq group">
+                                    <i class="fas fa-hand-holding-heart text-3xl text-orange-500 group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-bold text-slate-700">Infaq</span>
+                                    <p class="text-[10px] text-orange-600 font-medium">Sedekah jariyah untuk kemaslahatan</p>
+                                </button>
+                            </div>
+                            
+                             <div id="infaq-options" class="hidden space-y-3 animate-fade-in-up">
+                                <p class="text-xs font-bold text-slate-400 uppercase mb-2">Pilih Peruntukan Infaq</p>
+                                <button data-type-infaq="Infaq Pengembangan Kampus" class="sub-choice-button selection-btn w-full p-4 rounded-xl bg-slate-50 flex items-center gap-4 text-left cursor-pointer hover:bg-white hover:shadow-md transition"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i class="fas fa-building"></i></div><div><span class="font-bold text-slate-700 block">Pengembangan Kampus</span><span class="text-xs text-slate-500">Wakaf pembangunan sarana pendidikan</span></div></button>
+                                <button data-type-infaq="Infaq Beasiswa Pendidikan" class="sub-choice-button selection-btn w-full p-4 rounded-xl bg-slate-50 flex items-center gap-4 text-left cursor-pointer hover:bg-white hover:shadow-md transition"><div class="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600"><i class="fas fa-user-graduate"></i></div><div><span class="font-bold text-slate-700 block">Beasiswa Pendidikan</span><span class="text-xs text-slate-500">Bantuan santri berprestasi & dhuafa</span></div></button>
+                                <button data-type-infaq="Infaq Umum" class="sub-choice-button selection-btn w-full p-4 rounded-xl bg-slate-50 flex items-center gap-4 text-left cursor-pointer hover:bg-white hover:shadow-md transition"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fas fa-globe"></i></div><div><span class="font-bold text-slate-700 block">Infaq Umum</span><span class="text-xs text-slate-500">Dana operasional & program sosial</span></div></button>
+                            </div>
+
+                             <div id="zakat-fitrah-checker" class="hidden bg-emerald-50 p-6 rounded-2xl border border-emerald-100 animate-fade-in-up"><p class="text-emerald-800 text-sm mb-4 font-bold"><i class="fas fa-info-circle mr-2"></i>Besaran Zakat Fitrah: <strong>Rp 37.500</strong> / jiwa.</p><div class="flex gap-4"><input type="number" id="fitrah-jumlah-orang" class="w-full p-3 rounded-xl border-0 bg-white shadow-sm focus:ring-2 focus:ring-emerald-500" placeholder="Jumlah Jiwa"><input type="text" id="fitrah-total" class="w-full p-3 rounded-xl bg-emerald-100 font-bold text-emerald-800 text-center border-transparent" value="Rp 0" readonly></div><button id="btn-fitrah-next" class="mt-4 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/20">Lanjut Data Diri <i class="fas fa-arrow-right ml-2"></i></button></div>
+                            
+                            <div id="zakat-maal-checker" class="hidden bg-yellow-50 p-6 rounded-2xl border border-yellow-100 animate-fade-in-up"><div class="space-y-3"><div class="relative"><label class="text-[10px] font-bold text-yellow-700 uppercase mb-1 ml-1">Harga Emas (per gram)</label><input type="text" id="harga-emas" class="w-full p-3 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-yellow-500" value="Rp 1.300.000"></div><div class="relative"><label class="text-[10px] font-bold text-yellow-700 uppercase mb-1 ml-1">Penghasilan Bulanan</label><input type="text" id="penghasilan-bulanan" class="w-full p-3 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-yellow-500" placeholder="Contoh: 5.000.000"></div><button id="zakat-check-button" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg shadow-yellow-500/20">Hitung Zakat</button></div><div id="zakat-result" class="hidden mt-4 pt-4 border-t border-yellow-200 text-center"><p id="zakat-result-message" class="font-bold text-lg mb-3"></p><button id="btn-maal-next" class="hidden w-full bg-yellow-600 text-white py-3 rounded-xl font-bold hover:bg-yellow-700 transition">Bayar Zakat <i class="fas fa-arrow-right ml-2"></i></button><button id="zakat-lanjutkan-infaq" class="hidden w-full mt-2 text-yellow-700 font-bold hover:bg-yellow-100 py-2 rounded-lg transition">Tidak Wajib, Lanjut Infaq Saja</button></div></div>
+                            
+                            <div id="step-1-nav-default" class="hidden mt-8 flex justify-end"><button data-next-step="2" class="bg-brand-orange text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95">Lanjut <i class="fas fa-arrow-right ml-2"></i></button></div>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-gift text-red-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Kemanfaatan</span>
+
+                        <div id="donasi-step-2" class="donasi-step-container hidden">
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="50000">Rp 50.000</button>
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="100000">Rp 100.000</button>
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="250000">Rp 250.000</button>
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="500000">Rp 500.000</button>
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="1000000">Rp 1.000.000</button>
+                                <button class="nominal-btn selection-btn bg-slate-50 rounded-xl p-4 font-bold text-slate-600 hover:bg-white hover:shadow-md transition" data-nominal="2000000">Rp 2.000.000</button>
+                            </div>
+                            <div class="mb-8">
+                                <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nominal Lainnya</label>
+                                <input type="text" id="nominal-custom" class="w-full p-4 rounded-xl input-soft text-xl font-bold text-slate-800" placeholder="Rp 0">
+                            </div>
+                            <div class="flex justify-between">
+                                <button data-prev-step="1" class="text-slate-400 hover:text-slate-600 font-bold px-4">Kembali</button>
+                                <button data-next-step="3" class="bg-brand-orange text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95">Lanjut <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-balance-scale text-indigo-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Keadilan</span>
+
+                        <div id="donasi-step-3" class="donasi-step-container hidden">
+                            <div class="space-y-5">
+                                <div class="bg-slate-100 p-1 rounded-xl flex flex-row font-bold text-slate-500 gap-1">
+                                    <label class="flex-1 text-center cursor-pointer">
+                                        <input type="radio" name="donatur-tipe" value="santri" class="hidden peer" checked>
+                                        <span class="block py-3 rounded-lg peer-checked:bg-white peer-checked:text-orange-500 peer-checked:shadow-sm transition">Via Santri</span>
+                                    </label>
+                                    <label class="flex-1 text-center cursor-pointer">
+                                        <input type="radio" name="donatur-tipe" value="umum" class="hidden peer">
+                                        <span class="block py-3 rounded-lg peer-checked:bg-white peer-checked:text-orange-500 peer-checked:shadow-sm transition">Masyarakat Umum</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="santri-details" class="bg-orange-50 p-5 rounded-2xl border border-orange-100 space-y-3 animate-fade-in-up">
+                                    <h5 class="text-orange-800 font-bold text-sm"><i class="fas fa-child mr-2"></i> Data Santri</h5>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <select id="santri-level-select" class="w-full p-2.5 rounded-lg border-0 bg-white cursor-pointer text-sm">
+                                            <option value="">Tingkat</option>
+                                            <option value="1">Kelas 1</option>
+                                            <option value="2">Kelas 2</option>
+                                            <option value="3">Kelas 3</option>
+                                            <option value="4">Kelas 4</option>
+                                            <option value="5">Kelas 5</option>
+                                            <option value="6">Kelas 6</option>
+                                        </select>
+                                        <select id="santri-rombel-select" class="w-full p-2.5 rounded-lg border-0 bg-white cursor-pointer text-sm" disabled>
+                                            <option value="">Rombel</option>
+                                        </select>
+                                    </div>
+                                    <select id="santri-nama-select" class="w-full p-2.5 rounded-lg border-0 bg-white cursor-pointer text-sm" disabled>
+                                        <option value="">Pilih Nama Santri</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Nama Donatur</label>
+                                    <input type="text" id="nama-muzakki-input" class="w-full p-3 rounded-xl input-soft font-bold" placeholder="Nama Lengkap Anda" required>
+                                    
+                                    <div id="div-check-alumni" class="mt-2">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" id="check-also-alumni" class="text-orange-500 rounded focus:ring-orange-500">
+                                            <span class="text-sm font-medium text-slate-500">Saya juga Alumni</span>
+                                        </label>
+                                    </div>
+                                    <div id="input-alumni-tahun" class="hidden mt-2">
+                                        <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl input-soft text-sm" placeholder="Tahun Lulus (Contoh: 1998)">
+                                    </div>
+
+                                    <div class="flex gap-4 mt-3 text-sm">
+                                        <label class="flex items-center gap-2"><input type="radio" name="nama-choice" value="manual" class="text-orange-500" checked> Manual</label>
+                                        <label class="flex items-center gap-2"><input type="radio" name="nama-choice" value="santri" id="radio-an-santri" class="text-orange-500" disabled> A/n Santri</label>
+                                        <label class="flex items-center gap-2"><input type="radio" name="nama-choice" value="hamba" class="text-orange-500"> Hamba Allah</label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">WhatsApp (Wajib)</label>
+                                        <input type="tel" id="no-hp" class="w-full p-3 rounded-xl input-soft" placeholder="08..." required>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Email</label>
+                                        <input type="email" id="email" class="w-full p-3 rounded-xl input-soft" placeholder="Opsional">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Alamat Lengkap (Wajib)</label>
+                                    <textarea id="alamat" rows="2" class="w-full p-3 rounded-xl input-soft" placeholder="Alamat domisili saat ini" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">No. KTP / NIK (Opsional)</label>
+                                    <input type="text" id="no-ktp" class="w-full p-3 rounded-xl input-soft" placeholder="16 digit NIK">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Pesan dan Doa (Opsional)</label>
+                                    <textarea id="pesan-doa" rows="2" class="w-full p-3 rounded-xl input-soft" placeholder="Tuliskan doa atau pesan kebaikan Anda..."></textarea>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button data-prev-step="2" class="text-slate-400 hover:text-slate-600 font-bold px-4">Kembali</button>
+                                <button data-next-step="4" class="bg-brand-orange text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95">Lanjut <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-gavel text-slate-600 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Kepastian Hukum</span>
+
+                        <div id="donasi-step-4" class="donasi-step-container hidden">
+                            <div class="space-y-3">
+                                <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-slate-50 cursor-pointer hover:bg-white hover:shadow-md transition border-2 border-transparent has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50">
+                                    <input type="radio" name="payment-method" value="QRIS" class="peer sr-only">
+                                    <div class="w-12 h-12 rounded-full bg-white text-slate-600 flex items-center justify-center text-xl shadow-sm peer-checked:bg-brand-orange peer-checked:text-white transition-colors"><i class="fas fa-qrcode"></i></div>
+                                    <div><h5 class="font-bold text-slate-800 peer-checked:text-orange-800">QRIS</h5><p class="text-xs text-slate-500 peer-checked:text-orange-700">Gopay, OVO, Dana, M-Banking</p></div>
+                                    <div class="absolute top-4 right-4 text-orange-500 opacity-0 peer-checked:opacity-100 transition-opacity"><i class="fas fa-check-circle text-xl"></i></div>
+                                </label>
+                                <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-slate-50 cursor-pointer hover:bg-white hover:shadow-md transition border-2 border-transparent has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                                    <input type="radio" name="payment-method" value="Transfer" class="peer sr-only">
+                                    <div class="w-12 h-12 rounded-full bg-white text-slate-600 flex items-center justify-center text-xl shadow-sm peer-checked:bg-blue-500 peer-checked:text-white transition-colors"><i class="fas fa-university"></i></div>
+                                    <div><h5 class="font-bold text-slate-800 peer-checked:text-blue-800">Transfer Bank</h5><p class="text-xs text-slate-500 peer-checked:text-blue-700">BSI, BNI, BPD DIY Syariah</p></div>
+                                    <div class="absolute top-4 right-4 text-blue-500 opacity-0 peer-checked:opacity-100 transition-opacity"><i class="fas fa-check-circle text-xl"></i></div>
+                                </label>
+                                <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-slate-50 cursor-pointer hover:bg-white hover:shadow-md transition border-2 border-transparent has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50">
+                                    <input type="radio" name="payment-method" value="Tunai" class="peer sr-only">
+                                    <div class="w-12 h-12 rounded-full bg-white text-slate-600 flex items-center justify-center text-xl shadow-sm peer-checked:bg-teal-500 peer-checked:text-white transition-colors"><i class="fas fa-money-bill-wave"></i></div>
+                                    <div><h5 class="font-bold text-slate-800 peer-checked:text-teal-800">Tunai (Cash)</h5><p class="text-xs text-slate-500 peer-checked:text-teal-700">Serahkan ke Kantor Layanan</p></div>
+                                    <div class="absolute top-4 right-4 text-teal-500 opacity-0 peer-checked:opacity-100 transition-opacity"><i class="fas fa-check-circle text-xl"></i></div>
+                                </label>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4">Kembali</button>
+                                <button data-next-step="5" class="bg-brand-orange text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95">Lanjut <i class="fas fa-arrow-right ml-2"></i></button>
+                            </div>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-network-wired text-orange-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Terintegrasi</span>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-file-invoice-dollar text-green-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Akuntabilitas</span>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-user-tie text-blue-800 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Profesional</span>
-                        </div>
-                         <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-eye text-cyan-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Transparansi</span>
-                        </div>
-                         <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-users-cog text-purple-500 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Sinergi</span>
-                        </div>
-                         <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center">
-                            <i class="fas fa-forward text-red-600 text-xl mb-2 block"></i>
-                            <span class="font-bold text-slate-700 text-sm">Berkemajuan</span>
+
+                        <div id="donasi-step-5" class="donasi-step-container hidden">
+                            <div class="bg-slate-50 rounded-2xl p-6 mb-6">
+                                <div class="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
+                                    <div><p class="text-xs text-slate-400 font-bold uppercase">Jenis</p><h4 id="summary-type" class="text-lg font-bold text-slate-800">Zakat Maal</h4></div>
+                                    <div class="text-right"><p class="text-xs text-slate-400 font-bold uppercase">Nominal</p><h4 id="summary-nominal" class="text-2xl font-black text-orange-500">Rp 0</h4></div>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span class="text-slate-500">Nama:</span> <span id="summary-nama" class="font-bold text-slate-800"></span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">WA:</span> <span id="summary-hp" class="font-bold text-slate-800"></span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Metode:</span> <span id="summary-metode" class="font-bold text-slate-800"></span></div>
+                                    <div id="summary-santri-row" class="flex justify-between hidden"><span class="text-slate-500">Santri:</span> <span id="summary-santri" class="font-bold text-slate-800 text-right max-w-[60%]"></span></div>
+                                </div>
+                            </div>
+                            <label class="flex items-start gap-3 p-4 rounded-xl bg-orange-50 cursor-pointer hover:bg-orange-100 transition mb-4">
+                                <input type="checkbox" id="confirm-check" class="mt-1 w-5 h-5 text-orange-500 rounded focus:ring-orange-500">
+                                <span class="text-sm text-orange-900 font-bold leading-snug">Data benar & saya berniat donasi lillahi ta'ala.</span>
+                            </label>
+                            <p class="text-[10px] text-slate-400 leading-relaxed mb-8 px-2 text-justify">Dengan mengisi formulir ini, Muzaki menyatakan bahwa zakat yang ditunaikan berasal dari sumber halal yang sesuai dengan peraturan, bukan hasil pencucian uang, dan merupakan harta yang dimiliki secara penuh.</p>
+                            <div class="flex justify-between">
+                                <button data-prev-step="4" class="text-slate-400 hover:text-slate-600 font-bold px-4">Kembali</button>
+                                <button id="btn-submit-final" class="bg-brand-orange text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 flex items-center gap-2 transform active:scale-95">
+                                    <span class="default-text">Bayar Sekarang <i class="fas fa-check-circle"></i></span>
+                                    <span class="loading-text hidden"><i class="fas fa-spinner fa-spin"></i> Proses...</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-
+                
+                <div id="donasi-payment-instructions" class="hidden max-w-3xl mx-auto animate-fade-in-up">
+                    <div class="bg-white rounded-3xl shadow-soft overflow-hidden text-center p-10">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl text-green-600 animate-bounce"><i class="fas fa-check"></i></div>
+                        <h2 class="text-3xl font-bold text-slate-800 mb-2">Instruksi Pembayaran</h2>
+                        <p class="text-slate-500 mb-8">Silakan selesaikan pembayaran Anda.</p>
+                        <div id="instruction-content" class="mb-10 text-left bg-slate-50 p-6 rounded-2xl border border-slate-100"></div>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a id="btn-wa-confirm" href="#" target="_blank" class="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-2xl font-bold text-lg transition hover:from-green-600 hover:to-green-700 shadow-lg shadow-green-500/20 transform hover:-translate-y-1 flex items-center justify-center gap-3 group">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center group-hover:rotate-12 transition"><i class="fab fa-whatsapp text-2xl"></i></div>
+                                <div class="text-left"><span class="block text-xs font-medium opacity-80">Langkah Terakhir</span><span class="block leading-none">Konfirmasi WA</span></div>
+                            </a>
+                            <button onclick="location.reload()" class="flex-1 inline-block bg-white text-slate-600 px-8 py-4 rounded-2xl font-bold text-lg transition hover:bg-slate-50 shadow-sm border border-slate-200 hover:border-orange-300 hover:text-orange-600 flex items-center justify-center gap-3 group">
+                                <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center group-hover:bg-orange-100 transition"><i class="fas fa-plus text-slate-400 group-hover:text-orange-500"></i></div>
+                                <div class="text-left"><span class="block text-xs font-medium opacity-60">Ingin donasi lagi?</span><span class="block leading-none">Donasi Baru</span></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -697,7 +1006,6 @@
                     <h5 class="font-bold text-lg mb-6 text-orange-500">Akses Cepat</h5>
                     <ul class="space-y-3 text-sm text-slate-400">
                         <li><a href="#home" onclick="showPage('home')" class="hover:text-white transition">Beranda</a></li>
-                        <li><a href="#tentang" onclick="showPage('tentang')" class="hover:text-white transition">Tentang Kami</a></li>
                         <li><a href="#berita" onclick="showPage('berita')" class="hover:text-white transition">Kabar Berita</a></li>
                         <li><a href="#riwayat" onclick="showPage('riwayat')" class="hover:text-white transition">Laporan Keuangan</a></li>
                         <li><a href="#donasi" onclick="showPage('donasi')" class="hover:text-white transition">Formulir Donasi</a></li>
