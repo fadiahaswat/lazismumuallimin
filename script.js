@@ -1190,40 +1190,59 @@
             });
             
             document.querySelectorAll('.time-filter-btn').forEach(btn => {
-                btn.onclick = () => {
-                    document.querySelectorAll('.time-filter-btn').forEach(b => {
-                        b.classList.remove('bg-brand-orange', 'text-white');
-                        b.classList.add('bg-slate-100', 'text-slate-500');
-                    });
-                    btn.classList.remove('bg-slate-100', 'text-slate-500');
-                    btn.classList.add('bg-brand-orange', 'text-white');
-                    
-                    timeFilterState = btn.dataset.time;
-                    riwayatData.currentPage = 1;
-                    renderRiwayatList();
-                    renderPagination();
-                }
-            });
+    btn.onclick = () => {
+        // 1. RESET SEMUA TOMBOL KE TAMPILAN MATI (INACTIVE)
+        document.querySelectorAll('.time-filter-btn').forEach(b => {
+            // Hapus style aktif
+            b.classList.remove('bg-slate-900', 'text-white', 'shadow-md', 'active');
+            // Tambahkan style tidak aktif
+            b.classList.add('text-slate-500', 'hover:bg-white', 'hover:text-slate-700', 'hover:shadow-sm');
+            // Hapus background putih jika ada (dari sisa hover)
+            b.classList.remove('bg-white'); 
+        });
 
-            const resetBtn = document.getElementById('btn-reset-filter');
-            if(resetBtn) {
-                resetBtn.onclick = () => {
-                    document.getElementById('filter-jenis').value = 'all';
-                    document.getElementById('filter-metode').value = 'all';
-                    document.getElementById('filter-start-date').value = '';
-                    document.getElementById('filter-end-date').value = '';
-                    
-                    timeFilterState = 'all';
-                    document.querySelectorAll('.time-filter-btn').forEach(b => {
-                        b.classList.remove('bg-brand-orange', 'text-white');
-                        b.classList.add('bg-slate-100', 'text-slate-500');
-                    });
+        // 2. AKTIFKAN TOMBOL YANG DIKLIK
+        // Hapus style tidak aktif
+        btn.classList.remove('text-slate-500', 'hover:bg-white', 'hover:text-slate-700', 'hover:shadow-sm');
+        // Tambahkan style aktif
+        btn.classList.add('bg-slate-900', 'text-white', 'shadow-md', 'active');
+        
+        // 3. JALANKAN LOGIKA FILTER
+        timeFilterState = btn.dataset.time;
+        riwayatData.currentPage = 1;
+        renderRiwayatList();
+        renderPagination();
+    }
+});
 
-                    riwayatData.currentPage = 1;
-                    renderRiwayatList();
-                    renderPagination();
-                }
+// UPDATE JUGA BAGIAN RESET BUTTON
+const resetBtn = document.getElementById('btn-reset-filter');
+if(resetBtn) {
+    resetBtn.onclick = () => {
+        document.getElementById('filter-jenis').value = 'all';
+        document.getElementById('filter-metode').value = 'all';
+        document.getElementById('filter-start-date').value = '';
+        document.getElementById('filter-end-date').value = '';
+        
+        timeFilterState = 'all';
+
+        // RESET VISUAL TOMBOL WAKTU (Kembali ke 'Semua')
+        document.querySelectorAll('.time-filter-btn').forEach(b => {
+            b.classList.remove('bg-slate-900', 'text-white', 'shadow-md', 'active');
+            b.classList.add('text-slate-500', 'hover:bg-white', 'hover:text-slate-700', 'hover:shadow-sm');
+            
+            // Jika tombol adalah 'all', jadikan aktif
+            if(b.dataset.time === 'all') {
+                b.classList.remove('text-slate-500', 'hover:bg-white', 'hover:text-slate-700', 'hover:shadow-sm');
+                b.classList.add('bg-slate-900', 'text-white', 'shadow-md', 'active');
             }
+        });
+
+        riwayatData.currentPage = 1;
+        renderRiwayatList();
+        renderPagination();
+    }
+}
         }
 
         async function loadRiwayat() {
