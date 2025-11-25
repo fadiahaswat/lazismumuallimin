@@ -1729,3 +1729,14 @@ function closeQrisModal() {
         modal.classList.add('hidden');
     }, 200);
 }
+// Optional: Header Scroll Effect
+window.addEventListener('scroll', () => {
+    const header = document.getElementById('main-header');
+    if (window.scrollY > 50) {
+        header.classList.add('shadow-md', 'bg-white/95');
+        header.classList.remove('bg-white/80');
+    } else {
+        header.classList.remove('shadow-md', 'bg-white/95');
+        header.classList.add('bg-white/80');
+    }
+});
