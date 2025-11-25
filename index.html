@@ -976,15 +976,16 @@
                     </div>
 
                     <div class="lg:col-span-5">
-                        <div class="bg-slate-100 p-1 rounded-xl flex gap-1 overflow-x-auto no-scrollbar">
-                            <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg bg-white text-slate-800 text-xs font-bold shadow-sm transition whitespace-nowrap border border-slate-200" data-time="all">Semua</button>
-                            <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 text-xs font-bold transition whitespace-nowrap" data-time="today">Hari Ini</button>
-                            <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 text-xs font-bold transition whitespace-nowrap" data-time="week">Pekan Ini</button>
-                            <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 text-xs font-bold transition whitespace-nowrap" data-time="month">Bulan Ini</button>
-                        </div>
-                        <input type="hidden" id="filter-start-date">
-                        <input type="hidden" id="filter-end-date">
-                    </div>
+    <div class="bg-slate-100 p-1 rounded-xl flex gap-1 overflow-x-auto no-scrollbar">
+        <button class="time-filter-btn active flex-1 px-4 py-2.5 rounded-lg bg-slate-900 text-white text-xs font-bold shadow-md transition whitespace-nowrap" data-time="all">Semua</button>
+        
+        <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 hover:shadow-sm text-xs font-bold transition whitespace-nowrap" data-time="today">Hari Ini</button>
+        <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 hover:shadow-sm text-xs font-bold transition whitespace-nowrap" data-time="week">Pekan Ini</button>
+        <button class="time-filter-btn flex-1 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-slate-700 hover:shadow-sm text-xs font-bold transition whitespace-nowrap" data-time="month">Bulan Ini</button>
+    </div>
+    <input type="hidden" id="filter-start-date">
+    <input type="hidden" id="filter-end-date">
+</div>
 
                     <div class="lg:col-span-2 flex justify-end">
                         <button id="btn-reset-filter" class="w-full bg-red-50 hover:bg-red-100 text-red-500 px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 group">
@@ -1468,6 +1469,7 @@
 
 </body>
 </html>
+
 
 
 
