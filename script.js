@@ -1529,58 +1529,116 @@
         }
 
         function renderRiwayatList() {
-            const container = document.getElementById('riwayat-list-container');
-            if(!container) return;
+    const container = document.getElementById('riwayat-list-container');
+    if (!container) return;
 
-            const items = getFilteredData();
-            const start = (riwayatData.currentPage - 1) * riwayatData.itemsPerPage;
-            const end = start + riwayatData.itemsPerPage;
-            const visibleItems = items.slice(start, end);
-            
-            if(visibleItems.length === 0) {
-                 container.innerHTML = '<p class="text-center text-slate-400 py-4">Tidak ada data.</p>';
-                 return;
-            }
+    const items = getFilteredData();
+    const start = (riwayatData.currentPage - 1) * riwayatData.itemsPerPage;
+    const end = start + riwayatData.itemsPerPage;
+    const visibleItems = items.slice(start, end);
 
-            container.innerHTML = visibleItems.map(item => {
-                let iconClass = 'fa-donate text-slate-400';
-                let bgIcon = 'bg-slate-100';
+    // Handle Empty State
+    const noDataEl = document.getElementById('riwayat-no-data');
+    if (visibleItems.length === 0) {
+        container.innerHTML = '';
+        if (noDataEl) noDataEl.classList.remove('hidden');
+        return;
+    } else {
+        if (noDataEl) noDataEl.classList.add('hidden');
+    }
+
+    container.innerHTML = visibleItems.map((item, index) => {
+        let iconClass = 'fa-donate';
+        let bgIcon = 'bg-slate-100 text-slate-400';
+        let borderClass = 'border-slate-100';
+
+        // Normalisasi data (handle properti huruf besar/kecil dari API)
+        const type = item.JenisDonasi || item.type || "";
+        const subType = item.SubJenis || item.subType || "";
+        const displayType = subType || type;
+        const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
+        const donaturName = item.NamaDonatur || item.nama || 'Hamba Allah';
+        const nominal = parseInt(item.Nominal || item.nominal) || 0;
+
+        // Logika Warna Berdasarkan Jenis Donasi
+        if (displayType.includes('Fitrah')) {
+            iconClass = 'fa-leaf';
+            bgIcon = 'bg-emerald-100 text-emerald-600';
+            borderClass = 'hover:border-emerald-200';
+        } else if (displayType.includes('Maal')) {
+            iconClass = 'fa-coins';
+            bgIcon = 'bg-yellow-100 text-yellow-600';
+            borderClass = 'hover:border-yellow-200';
+        } else if (displayType.includes('Infaq')) {
+            iconClass = 'fa-hand-holding-heart';
+            bgIcon = 'bg-orange-100 text-orange-600';
+            borderClass = 'hover:border-orange-200';
+        }
+
+        // Format Waktu
+        const dateObj = new Date(item.Timestamp);
+        const date = dateObj.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        const time = dateObj.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Badge Alumni
+        const alumniYear = item.DetailAlumni || item.detailAlumni;
+        const alumniBadge = alumniYear ?
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni Tahun ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` :
+            '';
+
+        // Badge Metode Pembayaran
+        let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
+        if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
+        else if (paymentMethod === 'Transfer') metodeBadge = 'bg-purple-50 text-purple-600 border-purple-200';
+        else if (paymentMethod === 'Tunai') metodeBadge = 'bg-green-50 text-green-600 border-green-200';
+
+        return `
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 ${borderClass} group relative overflow-hidden transform hover:-translate-y-1">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
                 
-                const type = item.JenisDonasi || item.type || ""; 
-                const subType = item.SubJenis || item.subType || "";
-                const displayType = subType || type;
-
-                if(displayType.includes('Fitrah')) { iconClass = 'fa-leaf text-emerald-500'; bgIcon = 'bg-emerald-50'; }
-                else if(displayType.includes('Maal')) { iconClass = 'fa-coins text-yellow-500'; bgIcon = 'bg-yellow-50'; }
-                else { iconClass = 'fa-hand-holding-heart text-indigo-500'; bgIcon = 'bg-indigo-50'; }
-
-                const date = new Date(item.Timestamp).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
-                
-                const alumniYear = item.DetailAlumni || item.detailAlumni;
-                const alumniText = alumniYear ? `<span class="text-xs text-orange-500 font-semibold block mt-0.5">Alumni ${alumniYear}</span>` : '';
-                
-                return `
-                <div class="soft-card p-4 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full ${bgIcon} flex items-center justify-center text-lg shrink-0">
-                            <i class="fas ${iconClass}"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm md:text-base">
-                                ${item.NamaDonatur || 'Hamba Allah'}
-                            </h4>
-                            ${alumniText}
-                            <p class="text-xs text-slate-500 mt-1">${displayType}</p>
-                        </div>
+                <div class="flex items-start sm:items-center gap-5 w-full">
+                    <div class="w-14 h-14 rounded-2xl ${bgIcon} flex items-center justify-center text-2xl shadow-inner shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+                        <i class="fas ${iconClass}"></i>
                     </div>
-                    <div class="text-right">
-                        <span class="block font-black text-slate-700">${formatRupiah(item.Nominal)}</span>
-                        <span class="text-xs text-slate-400">${date}</span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center flex-wrap gap-y-1 mb-1">
+                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
+                                ${donaturName}
+                            </h4>
+                            ${alumniBadge}
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
+                            <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
+                        </div>
                     </div>
                 </div>
-                `;
-            }).join('');
-        }
+
+                <div class="text-left sm:text-right w-full sm:w-auto pl-[4.5rem] sm:pl-0 mt-[-10px] sm:mt-0">
+                    <span class="block font-black text-xl text-slate-800 mb-1 tracking-tight group-hover:text-brand-orange transition-colors">
+                        ${parseInt(nominal).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}
+                    </span>
+                    <div class="flex items-center sm:justify-end gap-2 text-xs text-slate-400 font-medium">
+                        <i class="far fa-clock"></i> ${date} • ${time}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="absolute right-[-20px] bottom-[-20px] text-9xl opacity-[0.03] pointer-events-none group-hover:opacity-[0.06] transition-opacity duration-500 rotate-12">
+                <i class="fas ${iconClass}"></i>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
 // --- LOGIKA MODAL QRIS (POP-UP) ---
 
 const qrisDatabase = {
