@@ -442,6 +442,9 @@
         function updateReadingProgress() {
     const container = document.getElementById('news-modal-content');
     const progressBar = document.getElementById('reading-progress');
+    // Mencegah error jika elemen belum ada
+    if (!container || !progressBar) return;
+    
     const scrollHeight = container.scrollHeight - container.clientHeight;
     const scrolled = (container.scrollTop / scrollHeight) * 100;
     progressBar.style.width = `${scrolled}%`;
@@ -463,58 +466,55 @@ function openNewsModal(index) {
     const author = post.author.name || 'Admin Lazismu';
     const avatar = post.author.avatar_URL || 'https://ui-avatars.com/api/?name=Admin+Lazismu&background=random';
 
-    // Inject Content (Layout Majalah Premium)
+    // Inject Content
     container.innerHTML = `
-        <div class="relative h-[50vh] md:h-[60vh] w-full group overflow-hidden">
-            <img src="${img}" class="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105" alt="Hero Image">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90"></div>
+        <div class="relative h-[40vh] md:h-[50vh] w-full group overflow-hidden">
+            <img src="${img}" class="w-full h-full object-cover" alt="Hero Image">
             
-            <div class="absolute bottom-0 left-0 w-full p-6 md:p-12">
-                <span class="inline-block px-3 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-4 shadow-lg shadow-orange-500/30 border border-orange-400/50">
+            <div class="absolute inset-0 bg-slate-900/70"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 z-10">
+                <span class="inline-block px-3 py-1 rounded bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-3">
                     ${category}
                 </span>
-                <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-6 drop-shadow-lg max-w-4xl">
+                <h2 class="text-2xl md:text-4xl font-black text-white leading-tight mb-4 drop-shadow-md">
                     ${post.title}
                 </h2>
                 
-                <div class="flex items-center gap-4 text-white/90">
-                    <img src="${avatar}" class="w-10 h-10 rounded-full border-2 border-white/30 shadow-sm" alt="${author}">
-                    <div class="text-sm">
-                        <p class="font-bold text-white">${author}</p>
-                        <p class="text-slate-300 text-xs">${date} &bull; <i class="far fa-clock ml-1"></i> 3 min baca</p>
+                <div class="flex items-center gap-3 text-white/90">
+                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}">
+                    <div class="text-xs md:text-sm font-medium">
+                        <span>${author}</span> • <span class="opacity-80">${date}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+        <div class="max-w-3xl mx-auto px-5 py-10 md:py-12">
             
             <div class="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
-                <div class="flex items-center gap-2 text-slate-400 text-sm font-medium">
-                    <i class="fas fa-share-alt mr-1"></i> Bagikan:
+                <div class="flex items-center gap-2 text-slate-500 text-sm font-bold">
+                    <i class="fas fa-share-alt"></i> Bagikan
                 </div>
-                <div class="flex gap-3">
-                    <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fab fa-x-twitter"></i></a>
-                    <button onclick="copyText('${post.URL}')" class="w-9 h-9 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm"><i class="fas fa-link"></i></button>
-                </div>
-            </div>
+                <div class="flex gap-2">
+                    <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                    
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-black transition group">
+                         <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
+                    </a>
 
-            <div class="wp-content text-lg text-slate-700 leading-loose font-serif tracking-wide">
-                <div class="first-letter:text-6xl first-letter:font-bold first-letter:text-slate-900 first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
-                    ${post.content}
+                    <button onclick="copyText('${post.URL}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
                 </div>
             </div>
 
-            <div class="mt-16 p-8 bg-slate-50 rounded-2xl border-l-4 border-orange-500 italic text-slate-600 text-center relative">
-                <i class="fas fa-quote-left text-4xl text-slate-200 absolute top-4 left-4"></i>
-                <p class="relative z-10">"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."</p>
+            <div class="wp-content text-base md:text-lg text-slate-700 font-sans leading-loose text-justify">
+                ${post.content}
             </div>
 
-            <div class="mt-12 text-center">
-                <h4 class="font-bold text-slate-800 mb-4">Tergerak untuk membantu?</h4>
-                <button onclick="closeNewsModal(); showPage('donasi');" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:bg-orange-600 transition-all duration-300 hover:shadow-orange-500/30 transform hover:-translate-y-1 flex items-center justify-center gap-2 mx-auto">
+            <div class="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                <h4 class="font-bold text-slate-800 mb-3">Mari wujudkan lebih banyak kebaikan</h4>
+                <button onclick="closeNewsModal(); showPage('donasi');" class="bg-slate-900 text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-600 transition shadow-lg flex items-center justify-center gap-2 mx-auto">
                     <i class="fas fa-heart text-red-500"></i> Donasi Sekarang
                 </button>
             </div>
@@ -523,31 +523,16 @@ function openNewsModal(index) {
 
     // Animation Open
     modal.classList.remove('hidden');
-    document.getElementById('reading-progress').style.width = '0%'; // Reset progress
+    const progress = document.getElementById('reading-progress');
+    if(progress) progress.style.width = '0%';
     
-    // Slight delay for smooth transition
     setTimeout(() => {
         modal.classList.remove('opacity-0');
         panel.classList.remove('translate-y-full', 'scale-95');
-        panel.classList.add('translate-y-0', 'scale-100'); // Reset position for desktop/mobile
+        panel.classList.add('translate-y-0', 'scale-100'); 
     }, 10);
     
     document.body.style.overflow = 'hidden';
-}
-
-function closeNewsModal() {
-    const modal = document.getElementById('news-modal');
-    const panel = document.getElementById('news-modal-panel');
-    
-    // Animation Close
-    modal.classList.add('opacity-0');
-    panel.classList.remove('translate-y-0', 'scale-100');
-    panel.classList.add('translate-y-full', 'scale-95'); // Slide down effect
-
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 300); // Wait for transition
-    document.body.style.overflow = 'auto';
 }
 
         function closeNewsModal() {
