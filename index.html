@@ -429,174 +429,133 @@
     </div>
 </section>
              
-             <section id="qris-section" class="py-16 relative overflow-hidden bg-slate-50">
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
-                    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" style="animation-delay: 2s"></div>
-                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+             <section id="qris-section" class="py-20 relative overflow-hidden bg-slate-50">
+    
+    <div class="absolute inset-0 opacity-30 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px]" style="animation-delay: 2s"></div>
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+    </div>
+
+    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+        
+        <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-xs font-black tracking-widest uppercase mb-4 border border-orange-200">Donasi Mudah</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
+            <p class="text-slate-500 text-lg">Pilih metode transfer bank atau scan QRIS langsung di bawah ini.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
+                
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
+                        </div>
+                        <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
+                    </div>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                    </div>
+
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-orange-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BNI">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BNI</div>
+                    </div>
+
+                    <a href="https://drive.google.com/uc?export=download&id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-orange-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </a>
                 </div>
+            </div>
 
-                <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
-                    <div class="text-center mb-16 max-w-3xl mx-auto">
-                        <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white shadow-xl mb-6 transform rotate-6 hover:rotate-0 transition duration-500 border border-slate-100">
-                            <i class="fas fa-wallet text-4xl text-brand-orange bg-clip-text bg-gradient-to-br from-orange-500 to-red-600"></i>
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
+                
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
                         </div>
-                        <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
-                        <p class="text-slate-500 text-lg">Transfer mudah melalui rekening resmi lembaga.</p>
+                        <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                        
-                        <div class="group relative h-64 rounded-[2.5rem] p-8 bg-gradient-to-br from-slate-800 to-gray-900 text-white shadow-2xl shadow-slate-900/30 overflow-hidden transition-all duration-500 hover:-translate-y-3 hover:shadow-slate-900/50 border border-slate-700/50 flex flex-col justify-between">
-                            <div class="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-                            <div class="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
-                            
-                            <div class="flex justify-between items-start relative z-10">
-                                <img src="bank-bni.png" alt="BNI" class="h-8 w-auto object-contain brightness-0 invert opacity-90"> 
-                                <i class="fas fa-wifi rotate-90 text-slate-600 text-2xl"></i>
-                            </div>
-                            
-                            <div class="relative z-10 my-auto">
-                                <p class="text-[10px] text-slate-400 font-mono uppercase tracking-widest mb-2">Nomor Rekening (Kode: 009)</p>
-                                <div class="flex items-center gap-3 group-hover:scale-105 transition-transform origin-left">
-                                    <h4 class="text-3xl font-mono font-bold tracking-widest text-slate-100" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">3440 000 348</h4>
-                                    <button onclick="copyText('3440000348')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-orange-500 flex items-center justify-center transition backdrop-blur-sm"><i class="far fa-copy text-xs"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="relative z-10 flex justify-between items-end border-t border-white/10 pt-5 pb-1">
-                                <div>
-                                    <p class="text-[10px] text-slate-400 uppercase">Atas Nama</p>
-                                    <p class="text-sm font-bold text-slate-200 truncate w-56">Lazismu Madrasah Mu'allimin</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="group relative h-64 rounded-[2.5rem] p-8 bg-gradient-to-br from-teal-700 to-emerald-800 text-white shadow-2xl shadow-teal-900/30 overflow-hidden transition-all duration-500 hover:-translate-y-3 hover:shadow-teal-900/50 border border-teal-600/50 flex flex-col justify-between">
-                            <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-                            <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
-                            
-                            <div class="flex justify-between items-start relative z-10">
-                                <img src="bank-bsi.png" alt="BSI" class="h-10 w-auto object-contain brightness-0 invert opacity-90">
-                                <i class="fas fa-wifi rotate-90 text-teal-900/50 text-2xl"></i>
-                            </div>
-                            
-                            <div class="relative z-10 my-auto">
-                                <p class="text-[10px] text-teal-200/70 font-mono uppercase tracking-widest mb-2">Nomor Rekening (Kode: 451)</p>
-                                <div class="flex items-center gap-3 group-hover:scale-105 transition-transform origin-left">
-                                    <h4 class="text-3xl font-mono font-bold tracking-widest text-slate-100" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">7930 030 303</h4>
-                                    <button onclick="copyText('7930030303')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition backdrop-blur-sm"><i class="far fa-copy text-xs"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="relative z-10 flex justify-between items-end border-t border-white/10 pt-5 pb-1">
-                                <div>
-                                    <p class="text-[10px] text-teal-200/70 uppercase">Atas Nama</p>
-                                    <p class="text-sm font-bold text-slate-100 truncate w-56">Lazismu Muallimin</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="group relative h-64 rounded-[2.5rem] p-8 bg-gradient-to-br from-blue-800 to-indigo-900 text-white shadow-2xl shadow-blue-900/30 overflow-hidden transition-all duration-500 hover:-translate-y-3 hover:shadow-blue-900/50 border border-blue-700/50 flex flex-col justify-between">
-                            <div class="absolute top-0 right-0 w-48 h-48 bg-blue-400/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-                            <div class="absolute bottom-0 left-0 w-32 h-32 bg-green-400/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
-                            
-                            <div class="flex justify-between items-start relative z-10">
-                                <img src="bank-bpd.png" alt="BPD" class="h-9 w-auto object-contain brightness-0 invert opacity-90">
-                                <i class="fas fa-wifi rotate-90 text-blue-900/50 text-2xl"></i>
-                            </div>
-                            
-                            <div class="relative z-10 my-auto">
-                                <p class="text-[10px] text-blue-200/70 font-mono uppercase tracking-widest mb-2">Nomor Rekening (Kode: 112)</p>
-                                <div class="flex items-center gap-3 group-hover:scale-105 transition-transform origin-left">
-                                    <h4 class="text-2xl font-mono font-bold tracking-widest text-slate-100" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">801 241 004 624</h4>
-                                    <button onclick="copyText('801241004624')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-blue-500 flex items-center justify-center transition backdrop-blur-sm"><i class="far fa-copy text-xs"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="relative z-10 flex justify-between items-end border-t border-white/10 pt-5 pb-1">
-                                <div>
-                                    <p class="text-[10px] text-blue-200/70 uppercase">Atas Nama</p>
-                                    <p class="text-sm font-bold text-slate-100 truncate w-56">KL Lazismu Madrasah</p>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
                     </div>
 
-                    <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 p-8 md:p-12 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 via-red-500 to-purple-600"></div>
-                        
-                        <div class="flex flex-col lg:flex-row items-center gap-10">
-                            <div class="w-full lg:w-1/3 flex justify-center">
-                                <div class="relative group cursor-pointer w-56 h-56" onclick="openQrisModal('bni')">
-                                    <div class="absolute top-0 left-0 w-full h-full bg-blue-100 rounded-2xl transform rotate-12 scale-90 translate-x-4 translate-y-2 group-hover:translate-x-8 group-hover:rotate-6 transition-all duration-500 shadow-md"></div>
-                                    <div class="absolute top-0 left-0 w-full h-full bg-teal-100 rounded-2xl transform rotate-6 scale-95 translate-x-2 translate-y-1 group-hover:translate-x-4 group-hover:rotate-3 transition-all duration-500 shadow-md"></div>
-                                    <div class="absolute top-0 left-0 w-full h-full bg-white p-4 rounded-2xl shadow-lg transform group-hover:scale-105 transition duration-500 z-10 border border-slate-100">
-                                        <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full h-full object-contain rounded-lg" alt="Preview QRIS">
-                                        <div class="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                            <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800 flex items-center gap-1 shadow-lg">
-                                                <i class="fas fa-search-plus text-orange-500"></i> Perbesar
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="w-full lg:w-2/3 text-center lg:text-left">
-                                <div class="flex items-center justify-center lg:justify-start gap-4 mb-6">
-                                    <img src="logo-qris.png" class="h-10 w-auto object-contain" alt="Logo QRIS">
-                                    <div class="h-8 w-px bg-slate-200"></div>
-                                    <div class="bg-red-50 text-red-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-red-100 animate-pulse">Metode Instan</div>
-                                </div>
-
-                                <h3 class="text-3xl font-bold text-slate-800 mb-4">Satu Kode, Sejuta Manfaat</h3>
-                                <p class="text-slate-500 mb-8 text-lg leading-relaxed">
-                                    Cukup scan satu kode QRIS ini menggunakan aplikasi pembayaran favorit Anda (GoPay, OVO, Dana, ShopeePay, LinkAja) atau Mobile Banking apa saja.
-                                </p>
-
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <button onclick="openQrisModal('bni')" class="group relative bg-white border border-slate-200 p-4 rounded-2xl hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 text-left overflow-hidden">
-                                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition"><i class="fas fa-qrcode text-4xl text-orange-500"></i></div>
-                                        <div class="relative z-10">
-                                            <div class="h-8 mb-3 flex items-center"><img src="bank-bni.png" class="h-5 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"></div>
-                                            <span class="text-xs font-bold text-slate-400 uppercase block mb-1">QRIS BNI</span>
-                                            <span class="text-sm font-bold text-slate-700 group-hover:text-orange-600 flex items-center gap-1">Lihat & Scan <i class="fas fa-arrow-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"></i></span>
-                                        </div>
-                                    </button>
-
-                                    <button onclick="openQrisModal('bsi')" class="group relative bg-white border border-slate-200 p-4 rounded-2xl hover:border-teal-500 hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 text-left overflow-hidden">
-                                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition"><i class="fas fa-qrcode text-4xl text-teal-500"></i></div>
-                                        <div class="relative z-10">
-                                            <div class="h-8 mb-3 flex items-center"><img src="bank-bsi.png" class="h-7 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"></div>
-                                            <span class="text-xs font-bold text-slate-400 uppercase block mb-1">QRIS BSI</span>
-                                            <span class="text-sm font-bold text-slate-700 group-hover:text-teal-600 flex items-center gap-1">Lihat & Scan <i class="fas fa-arrow-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"></i></span>
-                                        </div>
-                                    </button>
-
-                                    <button onclick="openQrisModal('bpd')" class="group relative bg-white border border-slate-200 p-4 rounded-2xl hover:border-blue-600 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 text-left overflow-hidden">
-                                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition"><i class="fas fa-qrcode text-4xl text-blue-600"></i></div>
-                                        <div class="relative z-10">
-                                            <div class="h-8 mb-3 flex items-center"><img src="bank-bpd.png" class="h-6 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"></div>
-                                            <span class="text-xs font-bold text-slate-400 uppercase block mb-1">QRIS BPD</span>
-                                            <span class="text-sm font-bold text-slate-700 group-hover:text-blue-600 flex items-center gap-1">Lihat & Scan <i class="fas fa-arrow-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"></i></span>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-teal-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BSI">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BSI</div>
                     </div>
 
-                    <div class="mt-12 text-center">
-                        <div class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white border border-slate-200 shadow-sm text-slate-500 font-medium hover:bg-slate-50 transition cursor-help group" title="Kantor Layanan Lazismu Mu'allimin">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 group-hover:scale-110 transition">
-                                <i class="fas fa-hand-holding-usd"></i>
-                            </div>
-                            <span>Juga menerima donasi <strong>Tunai (Cash)</strong> di Kantor Layanan</span>
-                        </div>
-                    </div>
+                    <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-teal-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-teal-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </a>
                 </div>
-            </section>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
+                        </div>
+                        <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
+                    </div>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                    </div>
+
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-blue-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BPD">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BPD</div>
+                    </div>
+
+                    <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-blue-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-blue-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center">
+            <div class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white border border-slate-200 shadow-sm text-slate-500 font-medium hover:bg-slate-50 transition cursor-help group" title="Kantor Layanan Lazismu Mu'allimin">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 group-hover:scale-110 transition shadow-sm">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="text-left">
+                    <span class="block text-xs font-bold text-slate-400 uppercase">Layanan Offline</span>
+                    <span class="text-slate-700 font-bold text-sm">Terima Donasi Tunai (Cash) di Kantor Layanan</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
 
         </section>
         
@@ -1671,4 +1630,5 @@
 
 </body>
 </html>
+
 
