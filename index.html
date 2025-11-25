@@ -769,42 +769,71 @@
     </div>
 </section>
 
-        <section id="page-berita" class="page-section bg-white min-h-screen py-20">
-            <div class="container max-w-7xl mx-auto px-4 md:px-8">
-                <div class="text-center mb-12">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 text-2xl mb-4 shadow-glow">
-                        <i class="fas fa-newspaper"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Kabar Lazismu</h2>
-                    <p class="text-slate-500">Informasi terkini kegiatan dan penyaluran.</p>
-                </div>
+        <section id="page-berita" class="page-section hidden bg-slate-50 min-h-screen py-24 relative overflow-hidden">
+    
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-200/30 rounded-full blur-[120px]" style="animation-delay: 1.5s"></div>
+        <div class="absolute top-10 right-10 text-9xl text-slate-200/20 rotate-[-15deg]"><i class="far fa-newspaper"></i></div>
+    </div>
 
-                <div class="bg-white p-4 rounded-xl shadow-soft border border-slate-100 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center sticky top-20 z-30 opacity-95 backdrop-blur">
-                    <div id="news-filter-container" class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-                        <button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-brand-orange text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition">Semua</button>
-                        <div class="animate-pulse bg-slate-100 h-9 w-20 rounded-lg"></div>
-                        <div class="animate-pulse bg-slate-100 h-9 w-20 rounded-lg"></div>
-                    </div>
-                    <div class="relative w-full md:w-72">
-                        <input type="text" id="news-search-input" placeholder="Cari berita..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-orange transition" onkeypress="handleNewsSearch(event)">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
-                </div>
+    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+        
+        <div class="text-center mb-16 animate-fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-xs font-black tracking-widest uppercase mb-4 border border-blue-200">Update Terkini</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">
+                Jendela <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Informasi</span>
+            </h2>
+            <p class="text-slate-500 max-w-xl mx-auto text-lg">
+                Ikuti rekam jejak penyaluran dan kegiatan terbaru Lazismu Mu'allimin secara transparan.
+            </p>
+        </div>
 
-                <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="col-span-full text-center py-12">
-                        <div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div>
-                        <p class="text-slate-400">Memuat berita...</p>
-                    </div>
-                </div>
-
-                <div class="text-center mt-10">
-                    <button id="btn-news-load-more" onclick="loadMoreNews()" class="hidden bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-50 hover:text-brand-orange hover:border-orange-500 transition shadow-sm">
-                        Muat Lebih Banyak <i class="fas fa-sync-alt ml-2"></i>
+        <div class="sticky top-24 z-40 mb-12 animate-fade-in-up" style="animation-delay: 0.1s">
+            <div class="bg-white/80 backdrop-blur-xl p-2 md:p-3 rounded-[1.5rem] shadow-2xl shadow-slate-200/50 border border-white/50 flex flex-col md:flex-row gap-4 justify-between items-center ring-1 ring-slate-900/5">
+                
+                <div id="news-filter-container" class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 px-2 no-scrollbar mask-gradient-right">
+                    <button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition shadow-lg shadow-slate-900/20 transform active:scale-95">
+                        <i class="fas fa-th-large mr-2"></i>Semua
                     </button>
+                    <div class="animate-pulse bg-slate-100 h-10 w-24 rounded-xl"></div>
+                    <div class="animate-pulse bg-slate-100 h-10 w-24 rounded-xl"></div>
+                </div>
+
+                <div class="relative w-full md:w-80 group">
+                    <input type="text" id="news-search-input" placeholder="Cari kabar..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-medium text-slate-600 placeholder:text-slate-400 group-hover:bg-white group-hover:shadow-sm" onkeypress="handleNewsSearch(event)">
+                    <div class="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                        <i class="fas fa-search text-lg"></i>
+                    </div>
+                    <div class="absolute right-3 top-3">
+                        <span class="text-[10px] font-bold bg-white border border-slate-200 text-slate-400 px-2 py-1 rounded-md hidden md:inline-block">ENTER</span>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+            <div class="col-span-full text-center py-24">
+                <div class="relative inline-flex">
+                    <div class="w-16 h-16 border-4 border-blue-100 rounded-full animate-spin border-t-blue-600"></div>
+                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                        <i class="fas fa-bolt text-blue-600 animate-pulse"></i>
+                    </div>
+                </div>
+                <p class="text-slate-400 mt-4 font-medium animate-pulse">Sedang mengambil berita...</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-8 pb-10">
+            <button id="btn-news-load-more" onclick="loadMoreNews()" class="hidden group relative bg-white hover:bg-slate-900 text-slate-700 hover:text-white px-8 py-4 rounded-full font-bold transition-all duration-300 shadow-lg shadow-slate-200/50 hover:shadow-slate-900/30 border border-slate-100 hover:border-slate-900 transform hover:-translate-y-1">
+                <span class="relative z-10 flex items-center gap-2">
+                    Muat Lebih Banyak <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                </span>
+            </button>
+        </div>
+
+    </div>
+</section>
 
         <section id="page-riwayat" class="page-section bg-white min-h-screen py-20">
              <div class="container max-w-7xl mx-auto px-4 md:px-8">
@@ -1330,6 +1359,7 @@
 
 </body>
 </html>
+
 
 
 
