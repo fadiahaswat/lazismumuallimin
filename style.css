@@ -224,3 +224,15 @@ body {
 .animate-spin-slow {
     animation: spin-slow 8s linear infinite;
 }
+
+/* Memaksa semua halaman turun ke bawah agar tidak ketutup Header */
+.page-section {
+    padding-top: 140px !important; /* Jarak aman header + spasi */
+    padding-bottom: 80px !important; /* Jarak bawah seragam */
+}
+
+/* Khusus Home (Hero) perlu penyesuaian khusus karena ada gambar besar */
+#page-home {
+    padding-top: 150px !important;
+    padding-bottom: 200px !important; /* Ruang untuk kartu capaian kebaikan */
+}
