@@ -1280,7 +1280,7 @@ if(resetBtn) {
             }
         }
 
-        function renderHomeLatestDonations() {
+function renderHomeLatestDonations() {
     const container = document.getElementById('home-latest-donations');
     if(!container) return;
 
