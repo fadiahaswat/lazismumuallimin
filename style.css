@@ -225,8 +225,21 @@ body {
     animation: spin-slow 8s linear infinite;
 }
 
-/* Memaksa semua halaman turun ke bawah agar tidak ketutup Header */
+/* --- PENGATURAN JARAK HALAMAN OTOMATIS --- */
+
+/* 1. Aturan Umum: Berlaku untuk halaman Tentang, Berita, Riwayat, dll */
 .page-section {
-    padding-top: 140px !important; /* Jarak aman header + spasi */
-    padding-bottom: 80px !important; /* Jarak bawah seragam */
+    padding-top: 140px !important; /* Memberi jarak agar judul tidak ketutup header */
+    padding-bottom: 80px !important;
+}
+
+/* 2. PENGECUALIAN KHUSUS HOME (FIX CELAH BACKGROUND) */
+#page-home {
+    padding-top: 0 !important; /* Hapus jarak di pembungkus luar agar tidak ada celah putih */
+}
+
+/* 3. Atur jarak di dalam elemen background Home-nya langsung */
+#page-home > div {
+    padding-top: 180px !important; /* Dorong teks "Amanah Mengelola" ke bawah */
+    padding-bottom: 250px !important; /* Beri ruang di bawah untuk kartu Capaian Kebaikan */
 }
