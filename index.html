@@ -234,22 +234,22 @@
         </div>
 
         <div id="menu-links" class="hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-xl border-t border-slate-100 flex-col p-4 space-y-2 lg:hidden animate-fade-in-up origin-top z-40">
-            <a href="#home" onclick="showPage('home'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-home"></i></div> Beranda
-            </a>
-            <a href="#tentang" onclick="showPage('tentang'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-500"><i class="fas fa-info"></i></div> Tentang Kami
-            </a>
-            <a href="#berita" onclick="showPage('berita'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500"><i class="fas fa-newspaper"></i></div> Kabar Berita
-            </a>
-            <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500"><i class="fas fa-chart-pie"></i></div> Laporan & Statistik
-            </a>
-            <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500"><i class="fas fa-table"></i></div> Rekapitulasi
-            </a>
-        </div>
+    <a href="#home" onclick="showPage('home'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-home"></i></div> Beranda
+    </a>
+    <a href="#tentang" onclick="showPage('tentang'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-500"><i class="fas fa-info"></i></div> Tentang Kami
+    </a>
+    <a href="#berita" onclick="showPage('berita'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500"><i class="fas fa-newspaper"></i></div> Kabar Berita
+    </a>
+    <a href="#riwayat" onclick="showPage('riwayat'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500"><i class="fas fa-chart-pie"></i></div> Laporan & Statistik
+    </a>
+    <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500"><i class="fas fa-table"></i></div> Rekapitulasi
+    </a>
+</div>
 
     </nav>
 </header>
@@ -652,9 +652,9 @@
                     <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mb-2">Total Penyaluran</p>
                     <div class="flex items-center justify-center gap-3">
                         <span class="text-2xl text-slate-500 font-medium">Rp</span>
-                        <h3 class="text-5xl md:text-7xl font-mono font-black text-white tracking-tighter drop-shadow-lg">
-                            708.996.037
-                        </h3>
+                        <h3 class="text-2xl sm:text-4xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg font-mono break-words">
+    Rp 708.996.037
+</h3>
                     </div>
                 </div>
             </div>
@@ -758,7 +758,7 @@
                         <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
                         </div>
                         <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
@@ -789,7 +789,7 @@
                         <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
                         </div>
                         <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
@@ -820,7 +820,7 @@
                         <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
                         </div>
                         <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
@@ -1784,7 +1784,8 @@
                     Ikuti Kami
                 </h5>
                 
-                <div class="grid grid-cols-4 gap-3">
+                <div class="flex flex-wrap gap-2"> 
+    </div>
     
     <a href="https://instagram.com/lazismu_muallimin" target="_blank" class="group w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center transition-all duration-300 hover:bg-pink-600 hover:border-pink-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-600/30" title="Instagram">
         <i class="fab fa-instagram text-slate-400 group-hover:text-white transition-colors"></i>
@@ -1933,6 +1934,7 @@
 
 </body>
 </html>
+
 
 
 
