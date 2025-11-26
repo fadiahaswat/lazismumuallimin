@@ -1717,7 +1717,8 @@
                                 <span class="text-sm font-medium text-slate-600 group-hover:text-orange-600 transition">Saya juga Alumni Mu'allimin</span>
                             </label>
                             <div id="input-alumni-tahun" class="hidden mt-2 animate-fade-in-up">
-                                <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 text-sm font-bold" placeholder="Tahun Lulus (Contoh: 2010)">
+                                <label class="text-xs font-bold text-slate-400 uppercase mb-1 block ml-1">Tahun Lulus</label>
+                                <input type="number" id="alumni-tahun" class="w-full p-3 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 text-sm font-bold" placeholder="Contoh: 2010">
                             </div>
                         </div>
 
@@ -1731,10 +1732,23 @@
                                 <input type="email" id="email" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700" placeholder="Opsional">
                             </div>
                         </div>
+                        
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-1 block ml-1">No. KTP / NIK</label>
+                            <input type="text" id="no-ktp" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700" placeholder="16 digit NIK (Opsional)">
+                        </div>
 
-                        <textarea id="alamat" rows="2" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700 text-sm" placeholder="Alamat Lengkap (Kota/Kab)" required></textarea>
-                        <textarea id="pesan-doa" rows="2" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700 text-sm" placeholder="Doa / Pesan Kebaikan (Opsional)"></textarea>
-                        <input type="hidden" id="no-ktp"> </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-1 block ml-1">Alamat Lengkap</label>
+                            <textarea id="alamat" rows="2" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700 text-sm" placeholder="Nama Jalan, Kelurahan, Kecamatan, Kota" required></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-1 block ml-1">Pesan & Doa</label>
+                            <textarea id="pesan-doa" rows="2" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-0 font-bold text-slate-700 text-sm" placeholder="Tuliskan doa atau pesan kebaikan Anda (Opsional)"></textarea>
+                        </div>
+
+                    </div>
 
                     <div class="flex justify-between items-center border-t border-slate-100 pt-6 mt-6">
                         <button data-prev-step="2" class="text-slate-400 hover:text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-50 transition">Kembali</button>
@@ -1801,14 +1815,18 @@
                         </div>
                     </div>
 
+                    <div class="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-100 text-blue-800 text-xs leading-relaxed text-justify">
+                        <i class="fas fa-info-circle mr-1"></i> Dengan mengisi formulir ini, Muzaki/Munfiq menyatakan bahwa Zakat/Infaq yang ditunaikan berasal dari sumber halal yang sesuai dengan peraturan, bukan hasil pencucian uang, dan merupakan harta yang dimiliki secara penuh.
+                    </div>
+
                     <label class="flex items-start gap-4 p-4 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition mb-8 group">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="confirm-check" class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-slate-300 transition-all checked:border-orange-500 checked:bg-orange-500">
                             <i class="fas fa-check absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 text-xs pointer-events-none"></i>
                         </div>
-                        <div class="text-sm text-slate-600 leading-snug">
-                            <span class="font-bold text-slate-800 block mb-1">Pernyataan Konfirmasi</span>
-                            Saya menyatakan data benar & berniat donasi lillahi ta'ala. Harta ini halal dan bukan hasil pencucian uang.
+                        <div class="text-sm text-slate-600 leading-snug text-justify">
+                            <span class="font-bold text-slate-800 block mb-1">Pernyataan Kebenaran Data</span>
+                            Saya menyatakan bahwa saya mengisi formulir ini dengan sebenar-benarnya, sesuai dengan fakta yang ada, tanpa rekayasa, dan tanpa unsur main-main. Saya bertanggung jawab penuh atas kebenaran informasi yang saya berikan. Pernyataan ini saya buat dengan kesadaran penuh dan kejujuran, <em>lillahi ta’ala</em>.
                         </div>
                     </label>
 
@@ -2043,6 +2061,7 @@
 
 </body>
 </html>
+
 
 
 
