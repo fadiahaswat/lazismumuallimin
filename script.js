@@ -1090,31 +1090,19 @@ function openNewsModal(index) {
                 };
             }
 
-            // --- STEP 5: SUBMIT FINAL ---
+            // SUBMIT FINAL
             const btnSubmitFinal = document.getElementById('btn-submit-final');
             if (btnSubmitFinal) {
                 btnSubmitFinal.onclick = async () => {
                     const btn = document.getElementById('btn-submit-final');
                     const check = document.getElementById('confirm-check');
                     
-                    // 1. Validasi Checkbox
-                    if(!check || !check.checked) return showToast("Mohon centang pernyataan kebenaran data", "warning");
+                    if(!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-                    // 2. Set Loading State
                     btn.disabled = true;
                     btn.querySelector('.default-text').classList.add('hidden');
                     btn.querySelector('.loading-text').classList.remove('hidden');
 
-                    // 3. Update Ringkasan di Halaman Akhir (Agar user bisa review ulang)
-                    const finalNominal = document.getElementById('final-nominal-display');
-                    const finalType = document.getElementById('final-type-display');
-                    const finalName = document.getElementById('final-name-display');
-
-                    if(finalNominal) finalNominal.innerText = formatRupiah(donasiData.nominal);
-                    if(finalType) finalType.innerText = donasiData.subType || donasiData.type;
-                    if(finalName) finalName.innerText = donasiData.nama || 'Hamba Allah';
-
-                    // 4. Siapkan Data Payload
                     const payload = {
                         "type": donasiData.subType || donasiData.type,
                         "nominal": donasiData.nominal,
@@ -1134,82 +1122,51 @@ function openNewsModal(index) {
                     };
 
                     try {
-                        // 5. Kirim ke Google Sheet
                         await fetch(GAS_API_URL, {
                             method: "POST",
                             headers: { "Content-Type": "text/plain" },
                             body: JSON.stringify({ action: "create", payload: payload })
                         });
 
-                        // 6. Transisi UI: Sembunyikan Wizard, Tampilkan Instruksi
-                        const wizard = document.getElementById('donasi-wizard');
-                        if(wizard) wizard.classList.add('hidden');
-                        
-                        const paymentInstr = document.getElementById('donasi-payment-instructions');
-                        if(paymentInstr) paymentInstr.classList.remove('hidden');
-
-                        // 7. Tampilkan Modal Sukses
                         const modal = document.getElementById('success-modal');
                         if(modal) modal.classList.remove('hidden');
-
-                        // 8. Setup Link WhatsApp Konfirmasi
+                        
                         const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
                         const btnWa = document.getElementById('btn-wa-confirm');
                         if(btnWa) btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
 
-                        // 9. Generate HTML Instruksi Pembayaran (Sesuai Pilihan)
+                        // GENERATE PAYMENT INSTRUCTIONS
                         let paymentDetails = '';
-                        
                         if(donasiData.metode === 'QRIS') {
                              paymentDetails = `
                                 <div class="text-center bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                    <p class="font-bold text-slate-700 mb-4 flex items-center justify-center gap-2">
-                                        <i class="fas fa-qrcode text-orange-500"></i> Silakan Scan QRIS Berikut:
-                                    </p>
-                                    <div class="grid grid-cols-3 gap-3 mb-4">
-                                        <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full rounded-lg" alt="BNI"></div>
-                                        <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full rounded-lg" alt="BSI"></div>
-                                        <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full rounded-lg" alt="BPD"></div>
+                                    <p class="font-bold text-slate-700 mb-4">Silakan Scan QRIS Berikut:</p>
+                                    <div class="grid grid-cols-3 gap-4 mb-2">
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full rounded-lg"></div>
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full rounded-lg"></div>
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full rounded-lg"></div>
                                     </div>
-                                    <p class="text-xs text-slate-500 bg-white inline-block px-3 py-1 rounded-full border border-slate-200">
-                                        Mendukung semua E-Wallet & Mobile Banking
-                                    </p>
+                                    <p class="text-xs text-slate-400">Mendukung semua e-wallet & m-banking</p>
                                 </div>
                              `;
                         } else if(donasiData.metode === 'Transfer') {
                              paymentDetails = `
                                 <div class="space-y-3">
-                                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center group hover:border-orange-200 transition">
-                                        <div><span class="font-bold block text-slate-700">BNI</span><span class="text-sm font-mono text-slate-500">3440000348</span></div>
-                                        <button onclick="copyText('3440000348')" class="text-orange-500 text-xs font-bold bg-white border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-50 transition">Salin</button>
-                                    </div>
-                                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center group hover:border-teal-200 transition">
-                                        <div><span class="font-bold block text-slate-700">BSI</span><span class="text-sm font-mono text-slate-500">7930030303</span></div>
-                                        <button onclick="copyText('7930030303')" class="text-teal-500 text-xs font-bold bg-white border border-teal-200 px-3 py-1.5 rounded-lg hover:bg-teal-50 transition">Salin</button>
-                                    </div>
-                                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center group hover:border-blue-200 transition">
-                                        <div><span class="font-bold block text-slate-700">BPD DIY Syariah</span><span class="text-sm font-mono text-slate-500">801241004624</span></div>
-                                        <button onclick="copyText('801241004624')" class="text-blue-500 text-xs font-bold bg-white border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">Salin</button>
-                                    </div>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BNI</span><span class="text-sm font-mono text-slate-500">3440000348</span></div><button onclick="copyText('3440000348')" class="text-orange-500 text-sm font-bold hover:bg-orange-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BSI</span><span class="text-sm font-mono text-slate-500">7930030303</span></div><button onclick="copyText('7930030303')" class="text-teal-500 text-sm font-bold hover:bg-teal-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BPD DIY Syariah</span><span class="text-sm font-mono text-slate-500">801241004624</span></div><button onclick="copyText('801241004624')" class="text-blue-500 text-sm font-bold hover:bg-blue-50 px-3 py-1 rounded-lg transition">Salin</button></div>
                                 </div>
                              `;
                         } else {
-                            paymentDetails = `
-                                <div class="p-8 bg-blue-50 rounded-2xl text-center border border-blue-100">
-                                    <div class="w-16 h-16 bg-white text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm">
-                                        <i class="fas fa-hand-holding-usd"></i>
-                                    </div>
-                                    <p class="text-blue-900 font-bold text-lg">Pembayaran Tunai</p>
-                                    <p class="text-blue-700/80 text-sm mt-1 leading-relaxed">Silakan serahkan donasi Anda langsung ke petugas di Kantor Layanan Lazismu Mu'allimin.</p>
-                                </div>`;
+                            paymentDetails = `<div class="p-6 bg-blue-50 rounded-2xl text-center border border-blue-100"><div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fas fa-hand-holding-usd"></i></div><p class="text-blue-800 font-bold">Pembayaran Tunai</p><p class="text-blue-600 text-sm mt-1">Silakan serahkan donasi ke Kantor Layanan Lazismu Mu'allimin.</p></div>`;
                         }
                         
                         const prayerHTML = `
-                            <div class="mb-8 text-center p-6 bg-green-50/50 rounded-2xl border border-green-100/50">
-                                <p class="font-arabic text-2xl text-green-800 mb-3 leading-loose font-bold" style="text-shadow: 0 1px 0 rgba(255,255,255,0.5);">
+                            <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
+                                <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
                                     آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
                                 </p>
-                                <p class="text-green-700 text-xs md:text-sm italic leading-relaxed">
+                                <p class="text-green-700 text-sm italic">
                                     "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
                                 </p>
                             </div>
@@ -1217,9 +1174,14 @@ function openNewsModal(index) {
 
                         const instrContent = document.getElementById('instruction-content');
                         if(instrContent) instrContent.innerHTML = prayerHTML + paymentDetails;
+                        
+                        const wizard = document.getElementById('donasi-wizard');
+                        if(wizard) wizard.classList.add('hidden');
+                        
+                        const paymentInstr = document.getElementById('donasi-payment-instructions');
+                        if(paymentInstr) paymentInstr.classList.remove('hidden');
 
                     } catch (e) {
-                        console.error(e);
                         showToast("Gagal mengirim data, periksa koneksi internet.", "error");
                         btn.disabled = false;
                         btn.querySelector('.default-text').classList.remove('hidden');
@@ -1227,6 +1189,21 @@ function openNewsModal(index) {
                     }
                 };
             }
+
+            const successContinue = document.getElementById('success-modal-continue');
+            if(successContinue) {
+                successContinue.onclick = () => {
+                    const modal = document.getElementById('success-modal');
+                    if(modal) modal.classList.add('hidden');
+                    const paymentInstr = document.getElementById('donasi-payment-instructions');
+                    if(paymentInstr) paymentInstr.scrollIntoView({behavior:'smooth'});
+                };
+            }
+
+            document.querySelectorAll('[data-prev-step]').forEach(btn => {
+                btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
+            });
+        }
 
         // --- HISTORY LOGIC ---
         function setupHistoryLogic() {
