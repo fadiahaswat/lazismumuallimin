@@ -1090,257 +1090,120 @@ function openNewsModal(index) {
                 };
             }
 
-            // SUBMIT FINAL LOGIC
-const btnSubmitFinal = document.getElementById('btn-submit-final');
+            // SUBMIT FINAL
+            const btnSubmitFinal = document.getElementById('btn-submit-final');
+            if (btnSubmitFinal) {
+                btnSubmitFinal.onclick = async () => {
+                    const btn = document.getElementById('btn-submit-final');
+                    const check = document.getElementById('confirm-check');
+                    
+                    if(!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-if (btnSubmitFinal) {
+                    btn.disabled = true;
+                    btn.querySelector('.default-text').classList.add('hidden');
+                    btn.querySelector('.loading-text').classList.remove('hidden');
 
-    btnSubmitFinal.onclick = async () => {
+                    const payload = {
+                        "type": donasiData.subType || donasiData.type,
+                        "nominal": donasiData.nominal,
+                        "nama": donasiData.nama,
+                        "hp": donasiData.hp,
+                        "email": donasiData.email,
+                        "alamat": donasiData.alamat,
+                        "metode": donasiData.metode,
+                        "doa": donasiData.doa,
+                        "donaturTipe": donasiData.donaturTipe, 
+                        "alumniTahun": donasiData.alumniTahun || "",
+                        "DetailAlumni": donasiData.alumniTahun || "", 
+                        "namaSantri": donasiData.namaSantri || "",
+                        "nisSantri": donasiData.nisSantri || "",
+                        "rombelSantri": donasiData.rombelSantri || "",
+                        "NoKTP": donasiData.nik || "" 
+                    };
 
-        // --- 1. BAGIAN UPDATE UI (DARI KODE TAMBAHAN) ---
-        // Memastikan ringkasan di halaman sukses sesuai dengan data inputan terakhir
-        const sumNominal = document.getElementById('summary-nominal');
-        const sumType = document.getElementById('summary-type');
-        const sumNama = document.getElementById('summary-nama');
+                    try {
+                        await fetch(GAS_API_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "text/plain" },
+                            body: JSON.stringify({ action: "create", payload: payload })
+                        });
 
-        if (document.getElementById('final-nominal-display') && sumNominal) {
-            document.getElementById('final-nominal-display').innerText = sumNominal.innerText;
-        }
-        if (document.getElementById('final-type-display') && sumType) {
-            document.getElementById('final-type-display').innerText = sumType.innerText;
-        }
-        if (document.getElementById('final-name-display') && sumNama) {
-            document.getElementById('final-name-display').innerText = sumNama.innerText;
-        }
+                        const modal = document.getElementById('success-modal');
+                        if(modal) modal.classList.remove('hidden');
+                        
+                        const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
+                        const btnWa = document.getElementById('btn-wa-confirm');
+                        if(btnWa) btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
 
-        // --- 2. BAGIAN VALIDASI & PERSIAPAN (DARI KODE DASAR) ---
-        const check = document.getElementById('confirm-check');
+                        // GENERATE PAYMENT INSTRUCTIONS
+                        let paymentDetails = '';
+                        if(donasiData.metode === 'QRIS') {
+                             paymentDetails = `
+                                <div class="text-center bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                    <p class="font-bold text-slate-700 mb-4">Silakan Scan QRIS Berikut:</p>
+                                    <div class="grid grid-cols-3 gap-4 mb-2">
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full rounded-lg"></div>
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full rounded-lg"></div>
+                                        <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full rounded-lg"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-400">Mendukung semua e-wallet & m-banking</p>
+                                </div>
+                             `;
+                        } else if(donasiData.metode === 'Transfer') {
+                             paymentDetails = `
+                                <div class="space-y-3">
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BNI</span><span class="text-sm font-mono text-slate-500">3440000348</span></div><button onclick="copyText('3440000348')" class="text-orange-500 text-sm font-bold hover:bg-orange-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BSI</span><span class="text-sm font-mono text-slate-500">7930030303</span></div><button onclick="copyText('7930030303')" class="text-teal-500 text-sm font-bold hover:bg-teal-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BPD DIY Syariah</span><span class="text-sm font-mono text-slate-500">801241004624</span></div><button onclick="copyText('801241004624')" class="text-blue-500 text-sm font-bold hover:bg-blue-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                                </div>
+                             `;
+                        } else {
+                            paymentDetails = `<div class="p-6 bg-blue-50 rounded-2xl text-center border border-blue-100"><div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fas fa-hand-holding-usd"></i></div><p class="text-blue-800 font-bold">Pembayaran Tunai</p><p class="text-blue-600 text-sm mt-1">Silakan serahkan donasi ke Kantor Layanan Lazismu Mu'allimin.</p></div>`;
+                        }
+                        
+                        const prayerHTML = `
+                            <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
+                                <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
+                                    آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
+                                </p>
+                                <p class="text-green-700 text-sm italic">
+                                    "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
+                                </p>
+                            </div>
+                        `;
 
-        if (!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
+                        const instrContent = document.getElementById('instruction-content');
+                        if(instrContent) instrContent.innerHTML = prayerHTML + paymentDetails;
+                        
+                        const wizard = document.getElementById('donasi-wizard');
+                        if(wizard) wizard.classList.add('hidden');
+                        
+                        const paymentInstr = document.getElementById('donasi-payment-instructions');
+                        if(paymentInstr) paymentInstr.classList.remove('hidden');
 
-        // Loading State
-        btnSubmitFinal.disabled = true;
-        const defaultText = btnSubmitFinal.querySelector('.default-text');
-        const loadingText = btnSubmitFinal.querySelector('.loading-text');
-        
-        if(defaultText) defaultText.classList.add('hidden');
-        if(loadingText) loadingText.classList.remove('hidden');
-
-        // Konstruksi Payload
-        const payload = {
-            "type": donasiData.subType || donasiData.type,
-            "nominal": donasiData.nominal,
-            "nama": donasiData.nama,
-            "hp": donasiData.hp,
-            "email": donasiData.email,
-            "alamat": donasiData.alamat,
-            "metode": donasiData.metode,
-            "doa": donasiData.doa,
-            "donaturTipe": donasiData.donaturTipe,
-            "alumniTahun": donasiData.alumniTahun || "",
-            "DetailAlumni": donasiData.alumniTahun || "",
-            "namaSantri": donasiData.namaSantri || "",
-            "nisSantri": donasiData.nisSantri || "",
-            "rombelSantri": donasiData.rombelSantri || "",
-            "NoKTP": donasiData.nik || ""
-        };
-
-        try {
-            // --- 3. PROSES KIRIM DATA KE GOOGLE SHEET ---
-            await fetch(GAS_API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ action: "create", payload: payload })
-            });
-
-            // Tampilkan Modal Sukses
-            const modal = document.getElementById('success-modal');
-            if (modal) modal.classList.remove('hidden');
-
-            // Setup Link WhatsApp Konfirmasi
-            const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
-            
-            const btnWa = document.getElementById('btn-wa-confirm');
-            if (btnWa) btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
-
-            // --- 4. GENERATE TAMPILAN INSTRUKSI PEMBAYARAN (GABUNGAN DESAIN BARU) ---
-            let paymentDetails = '';
-
-            // LOGIKA: Jika Tunai, pakai desain sederhana lama.
-            // Jika Transfer/QRIS, pakai DESAIN BARU yang menampilkan semua opsi bank.
-            
-            if (donasiData.metode === 'Tunai' || donasiData.metode === 'Cash') {
-                paymentDetails = `
-                    <div class="p-6 bg-blue-50 rounded-2xl text-center border border-blue-100">
-                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-                            <i class="fas fa-hand-holding-usd"></i>
-                        </div>
-                        <p class="text-blue-800 font-bold">Pembayaran Tunai</p>
-                        <p class="text-blue-600 text-sm mt-1">Silakan serahkan donasi ke Kantor Layanan Lazismu Mu'allimin.</p>
-                    </div>`;
-            } else {
-                // MENGGUNAKAN DESAIN BARU (Tailwind) UNTUK TRANSFER & QRIS
-                paymentDetails = `
-                   <div class="relative w-full overflow-hidden rounded-3xl bg-slate-50 py-10 mb-8">
-                       <div class="absolute inset-0 opacity-30 pointer-events-none">
-                           <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[60px] animate-pulse"></div>
-                           <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[60px]" style="animation-delay: 2s"></div>
-                           <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                       </div>
-                     
-                       <div class="container relative z-10 px-4">
-                           <div class="text-center mb-8">
-                               <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-[10px] font-black tracking-widest uppercase mb-3 border border-orange-200">Donasi Mudah</span>
-                               <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-2 tracking-tight">Salurkan Kebaikan</h2>
-                               <p class="text-slate-500 text-sm">Pilih metode transfer bank atau scan QRIS di bawah ini.</p>
-                           </div>
-                     
-                           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                               
-                               <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col group">
-                                   <div class="h-2 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                                   <div class="p-6 flex flex-col h-full">
-                                       <div class="text-center mb-4">
-                                           <img src="bank-bni.png" alt="BNI" class="h-6 mx-auto mb-3 object-contain">
-                                           <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
-                                           <div class="flex items-center justify-center gap-2 mb-2">
-                                               <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
-                                           </div>
-                                           <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold hover:bg-orange-100 transition active:scale-95">
-                                               <i class="far fa-copy"></i> Salin No. Rek
-                                           </button>
-                                       </div>
-                     
-                                       <div class="relative py-3">
-                                           <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                                           <div class="relative flex justify-center"><span class="bg-white px-2 text-[10px] text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                                       </div>
-                     
-                                       <div class="relative bg-slate-50 p-3 rounded-xl border border-slate-200 group-hover:border-orange-200 transition-colors">
-                                           <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-lg mix-blend-multiply" alt="QRIS BNI">
-                                       </div>
-                     
-                                       <a href="https://drive.google.com/uc?export=download&id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" target="_blank" class="mt-4 block w-full py-2.5 bg-slate-800 text-white text-center rounded-xl font-bold text-xs hover:bg-orange-600 transition shadow-lg shadow-slate-800/20 flex items-center justify-center gap-2">
-                                           <i class="fas fa-download"></i> Download QRIS
-                                       </a>
-                                   </div>
-                               </div>
-                     
-                               <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col group">
-                                   <div class="h-2 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
-                                   <div class="p-6 flex flex-col h-full">
-                                       <div class="text-center mb-4">
-                                           <img src="bank-bsi.png" alt="BSI" class="h-8 mx-auto mb-1 object-contain">
-                                           <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
-                                           <div class="flex items-center justify-center gap-2 mb-2">
-                                               <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
-                                           </div>
-                                           <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 text-teal-600 text-[10px] font-bold hover:bg-teal-100 transition active:scale-95">
-                                               <i class="far fa-copy"></i> Salin No. Rek
-                                           </button>
-                                       </div>
-                     
-                                       <div class="relative py-3">
-                                           <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                                           <div class="relative flex justify-center"><span class="bg-white px-2 text-[10px] text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                                       </div>
-                     
-                                       <div class="relative bg-slate-50 p-3 rounded-xl border border-slate-200 group-hover:border-teal-200 transition-colors">
-                                           <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-lg mix-blend-multiply" alt="QRIS BSI">
-                                       </div>
-                     
-                                       <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" target="_blank" class="mt-4 block w-full py-2.5 bg-slate-800 text-white text-center rounded-xl font-bold text-xs hover:bg-teal-600 transition shadow-lg shadow-slate-800/20 flex items-center justify-center gap-2">
-                                           <i class="fas fa-download"></i> Download QRIS
-                                       </a>
-                                   </div>
-                               </div>
-                     
-                               <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col group">
-                                   <div class="h-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-                                   <div class="p-6 flex flex-col h-full">
-                                       <div class="text-center mb-4">
-                                           <img src="bank-bpd.png" alt="BPD DIY" class="h-6 mx-auto mb-3 object-contain">
-                                           <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
-                                           <div class="flex items-center justify-center gap-2 mb-2">
-                                               <h3 class="text-2xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
-                                           </div>
-                                           <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold hover:bg-blue-100 transition active:scale-95">
-                                               <i class="far fa-copy"></i> Salin No. Rek
-                                           </button>
-                                       </div>
-                     
-                                       <div class="relative py-3">
-                                           <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                                           <div class="relative flex justify-center"><span class="bg-white px-2 text-[10px] text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                                       </div>
-                     
-                                       <div class="relative bg-slate-50 p-3 rounded-xl border border-slate-200 group-hover:border-blue-200 transition-colors">
-                                           <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-lg mix-blend-multiply" alt="QRIS BPD">
-                                       </div>
-                     
-                                       <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" target="_blank" class="mt-4 block w-full py-2.5 bg-slate-800 text-white text-center rounded-xl font-bold text-xs hover:bg-blue-600 transition shadow-lg shadow-slate-800/20 flex items-center justify-center gap-2">
-                                           <i class="fas fa-download"></i> Download QRIS
-                                       </a>
-                                   </div>
-                               </div>
-                     
-                           </div>
-                       </div>
-                   </div>
-                `;
+                    } catch (e) {
+                        showToast("Gagal mengirim data, periksa koneksi internet.", "error");
+                        btn.disabled = false;
+                        btn.querySelector('.default-text').classList.remove('hidden');
+                        btn.querySelector('.loading-text').classList.add('hidden');
+                    }
+                };
             }
 
-            // Doa HTML (Tetap sama)
-            const prayerHTML = `
-                <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
-                    <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
-                        آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَاللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُلَكَ طَهُورًا
-                    </p>
-                    <p class="text-green-700 text-sm italic">
-                        "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
-                    </p>
-                </div>
-            `;
+            const successContinue = document.getElementById('success-modal-continue');
+            if(successContinue) {
+                successContinue.onclick = () => {
+                    const modal = document.getElementById('success-modal');
+                    if(modal) modal.classList.add('hidden');
+                    const paymentInstr = document.getElementById('donasi-payment-instructions');
+                    if(paymentInstr) paymentInstr.scrollIntoView({behavior:'smooth'});
+                };
+            }
 
-            // Inject HTML ke DOM
-            const instrContent = document.getElementById('instruction-content');
-            if (instrContent) instrContent.innerHTML = prayerHTML + paymentDetails;
-
-            // Pindah Tampilan ke Instruksi
-            const wizard = document.getElementById('donasi-wizard');
-            if (wizard) wizard.classList.add('hidden');
-
-            const paymentInstr = document.getElementById('donasi-payment-instructions');
-            if (paymentInstr) paymentInstr.classList.remove('hidden');
-
-        } catch (e) {
-            console.error(e);
-            showToast("Gagal mengirim data, periksa koneksi internet.", "error");
-            
-            // Reset Button state jika error
-            btnSubmitFinal.disabled = false;
-            if(defaultText) defaultText.classList.remove('hidden');
-            if(loadingText) loadingText.classList.add('hidden');
+            document.querySelectorAll('[data-prev-step]').forEach(btn => {
+                btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
+            });
         }
-    };
-}
-
-// Logic Tombol Lanjut di Modal Sukses
-const successContinue = document.getElementById('success-modal-continue');
-if (successContinue) {
-    successContinue.onclick = () => {
-        const modal = document.getElementById('success-modal');
-        if (modal) modal.classList.add('hidden');
-
-        const paymentInstr = document.getElementById('donasi-payment-instructions');
-        if (paymentInstr) paymentInstr.scrollIntoView({ behavior: 'smooth' });
-    };
-}
-
-// Logic Tombol Kembali (Previous Steps)
-document.querySelectorAll('[data-prev-step]').forEach(btn => {
-    btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
-});
 
         // --- HISTORY LOGIC ---
         function setupHistoryLogic() {
@@ -1927,4 +1790,3 @@ window.addEventListener('scroll', () => {
         header.classList.add('bg-white/80');
     }
 });
-//Halo
