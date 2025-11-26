@@ -1193,6 +1193,19 @@ function setupWizardLogic() {
                     })
                 });
 
+                // --- BAGIAN BARU: Update UI Ringkasan Halaman Sukses ---
+                const finalNominal = document.getElementById('final-nominal-display');
+                const finalType = document.getElementById('final-type-display');
+                const finalName = document.getElementById('final-name-display');
+                const summaryNominal = document.getElementById('summary-nominal');
+                const summaryType = document.getElementById('summary-type');
+                const summaryName = document.getElementById('summary-nama');
+
+                if (finalNominal && summaryNominal) finalNominal.innerText = summaryNominal.innerText;
+                if (finalType && summaryType) finalType.innerText = summaryType.innerText;
+                if (finalName && summaryName) finalName.innerText = summaryName.innerText;
+                // -------------------------------------------------------
+
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
