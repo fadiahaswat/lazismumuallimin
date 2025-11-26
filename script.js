@@ -1281,25 +1281,173 @@ function setupWizardLogic() {
                     `;
                 } else if (donasiData.metode === 'Transfer') {
                     paymentDetails = `
-                        <div class="space-y-3">
-                            <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BNI</span><span class="text-sm font-mono text-slate-500">3440000348</span></div><button onclick="copyText('3440000348')" class="text-orange-500 text-sm font-bold hover:bg-orange-50 px-3 py-1 rounded-lg transition">Salin</button></div>
-                            <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BSI</span><span class="text-sm font-mono text-slate-500">7930030303</span></div><button onclick="copyText('7930030303')" class="text-teal-500 text-sm font-bold hover:bg-teal-50 px-3 py-1 rounded-lg transition">Salin</button></div>
-                            <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center"><div><span class="font-bold block text-slate-700">BPD DIY Syariah</span><span class="text-sm font-mono text-slate-500">801241004624</span></div><button onclick="copyText('801241004624')" class="text-blue-500 text-sm font-bold hover:bg-blue-50 px-3 py-1 rounded-lg transition">Salin</button></div>
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            <!-- Header Section -->
+            <div class="bg-slate-50 p-6 border-b border-slate-100 text-center">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-200 shadow-sm text-blue-600 text-xl">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h4 class="font-black text-slate-800 text-lg">Transfer Bank</h4>
+                <p class="text-slate-500 text-sm">Silakan transfer ke salah satu rekening resmi Lazismu di bawah ini.</p>
+            </div>
+
+            <!-- List Rekening -->
+            <div class="p-6 md:p-8 space-y-4">
+                
+                <!-- BNI Card -->
+                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <!-- Icon Bank -->
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0 border border-orange-100 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-wallet"></i>
                         </div>
+                        <!-- Detail -->
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank BNI</p>
+                            <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">3440 000 348</p>
+                        </div>
+                    </div>
+                    <!-- Copy Button -->
+                    <button onclick="copyText('3440000348')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white border border-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                        <i class="far fa-copy"></i>
+                        <span class="hidden md:inline text-xs font-bold">Salin</span>
+                    </button>
+                </div>
+
+                <!-- BSI Card -->
+                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-teal-300 transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shrink-0 border border-teal-100 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-star-and-crescent"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank Syariah Ind (BSI)</p>
+                            <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">7930 030 303</p>
+                        </div>
+                    </div>
+                    <button onclick="copyText('7930030303')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white border border-teal-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                        <i class="far fa-copy"></i>
+                        <span class="hidden md:inline text-xs font-bold">Salin</span>
+                    </button>
+                </div>
+
+                <!-- BPD Card -->
+                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 border border-blue-100 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">BPD DIY Syariah</p>
+                            <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">801 241 004 624</p>
+                        </div>
+                    </div>
+                    <button onclick="copyText('801241004624')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                        <i class="far fa-copy"></i>
+                        <span class="hidden md:inline text-xs font-bold">Salin</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Footer Notice -->
+            <div class="bg-yellow-50 px-6 py-4 border-t border-yellow-100 flex items-start gap-3">
+                <i class="fas fa-info-circle text-yellow-600 mt-0.5"></i>
+                <p class="text-xs text-yellow-800 leading-relaxed">
+                    Mohon pastikan nominal transfer sesuai hingga <strong>3 digit terakhir</strong> jika diminta, untuk memudahkan verifikasi otomatis sistem kami.
+                </p>
+            </div>
+        </div>
                     `;
                 } else {
-                    paymentDetails = `<div class="p-6 bg-blue-50 rounded-2xl text-center border border-blue-100"><div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fas fa-hand-holding-usd"></i></div><p class="text-blue-800 font-bold">Pembayaran Tunai</p><p class="text-blue-600 text-sm mt-1">Silakan serahkan donasi ke Kantor Layanan Lazismu Mu'allimin.</p></div>`;
+                    paymentDetails = `<div class="relative overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-xl">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-100 rounded-full blur-3xl opacity-40 pointer-events-none translate-x-10 -translate-y-10"></div>
+            
+            <div class="relative z-10">
+                <!-- Header -->
+                <div class="bg-emerald-50/50 p-8 text-center border-b border-emerald-100">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100 shadow-sm text-emerald-600 text-3xl transform rotate-3">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="font-black text-slate-800 text-xl mb-2">Layanan Kantor</h4>
+                    <p class="text-slate-500 text-sm max-w-sm mx-auto leading-relaxed">
+                        Silakan berkunjung langsung ke kantor layanan kami untuk menyerahkan donasi tunai & bersilaturahmi.
+                    </p>
+                </div>
+
+                <!-- Location Card -->
+                <div class="p-6 md:p-8">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Alamat Kantor</h5>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                    Gedung Lazismu Mu'allimin<br>
+                                    Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Yogyakarta
+                                </p>
+                                
+                                <!-- LINK GMAPS SUDAH DIPERBARUI -->
+                                <a href="https://maps.app.goo.gl/kLyg2BgZm9N88rqo9" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-200 active:scale-95">
+                                    <i class="fas fa-directions"></i> Buka Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operational Hours -->
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
+                            <i class="far fa-clock text-emerald-500 mb-1"></i>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Senin - Jumat</p>
+                            <p class="font-bold text-slate-700 text-sm">08.00 - 15.00 WIB</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
+                            <i class="far fa-calendar-alt text-emerald-500 mb-1"></i>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Sabtu</p>
+                            <p class="font-bold text-slate-700 text-sm">08.00 - 12.00 WIB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
                 }
 
                 const prayerHTML = `
-                    <div class="mb-8 text-center bg-green-50 p-6 rounded-2xl border border-green-100">
-                        <p class="font-arabic text-2xl text-green-800 mb-4 leading-loose font-bold">
-                            آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
-                        </p>
-                        <p class="text-green-700 text-sm italic">
-                            "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
-                        </p>
-                    </div>
+                    <div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 to-white rounded-3xl border border-emerald-100 shadow-lg p-8 md:p-10 mb-8 text-center group hover:shadow-xl transition-all duration-500">
+        
+        <!-- Decorative Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-300 via-teal-400 to-emerald-300"></div>
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-teal-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+        <div class="relative z-10">
+            <!-- Icon Header -->
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white border border-emerald-100 shadow-sm text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-praying-hands text-xl"></i>
+            </div>
+
+            <!-- Arabic Text -->
+            <h3 class="font-arabic text-2xl md:text-4xl font-black text-emerald-900 leading-[2.2] md:leading-[2.5] mb-6 drop-shadow-sm tracking-wide" dir="rtl">
+                آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ،<br class="hidden md:block"> وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
+            </h3>
+
+            <!-- Decorative Divider -->
+            <div class="flex items-center justify-center gap-3 opacity-60 mb-6">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span class="w-16 h-0.5 rounded-full bg-gradient-to-r from-transparent via-emerald-300 to-transparent"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            </div>
+
+            <!-- Translation -->
+            <p class="text-slate-600 text-sm md:text-base font-serif italic leading-relaxed max-w-2xl mx-auto">
+                "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
+            </p>
+        </div>
+    </div>
                 `;
 
                 const instrContent = document.getElementById('instruction-content');
