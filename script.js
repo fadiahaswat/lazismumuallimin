@@ -1790,3 +1790,4 @@ window.addEventListener('scroll', () => {
         header.classList.add('bg-white/80');
     }
 });
+//Halo
