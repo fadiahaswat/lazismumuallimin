@@ -1217,15 +1217,67 @@ function setupWizardLogic() {
                 let paymentDetails = '';
                 if (donasiData.metode === 'QRIS') {
                     paymentDetails = `
-                        <div class="text-center bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                            <p class="font-bold text-slate-700 mb-4">Silakan Scan QRIS Berikut:</p>
-                            <div class="grid grid-cols-3 gap-4 mb-2">
-                                <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full rounded-lg"></div>
-                                <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full rounded-lg"></div>
-                                <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-sm"><img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full rounded-lg"></div>
+                        <div class="relative overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-xl">
+            <!-- Decorative Background -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 pointer-events-none translate-x-10 -translate-y-10"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-10 translate-y-10"></div>
+
+            <div class="relative z-10 p-6 md:p-8 text-center">
+                <div class="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm text-slate-700 text-2xl">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                
+                <h4 class="font-black text-slate-800 text-xl mb-1">Pindai QRIS Pilihan Anda</h4>
+                <p class="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Klik gambar untuk memperbesar atau mengunduh kode QR.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- QRIS BNI -->
+                    <div onclick="openQrisModal('bni')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                        <div class="absolute top-3 right-3 z-20 bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-1 rounded-md border border-orange-100">BNI</div>
+                        <div class="relative overflow-hidden rounded-xl">
+                            <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                                <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
                             </div>
-                            <p class="text-xs text-slate-400">Mendukung semua e-wallet & m-banking</p>
+                            <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BNI">
                         </div>
+                        <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-orange-600 transition-colors">Infaq & Shadaqah</p>
+                    </div>
+
+                    <!-- QRIS BSI -->
+                    <div onclick="openQrisModal('bsi')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-teal-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                        <div class="absolute top-3 right-3 z-20 bg-teal-50 text-teal-600 text-[10px] font-bold px-2 py-1 rounded-md border border-teal-100">BSI</div>
+                        <div class="relative overflow-hidden rounded-xl">
+                            <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                                <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
+                            </div>
+                            <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BSI">
+                        </div>
+                        <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-teal-600 transition-colors">Zakat & Wakaf</p>
+                    </div>
+
+                    <!-- QRIS BPD -->
+                    <div onclick="openQrisModal('bpd')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                        <div class="absolute top-3 right-3 z-20 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md border border-blue-100">BPD</div>
+                        <div class="relative overflow-hidden rounded-xl">
+                            <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                                <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
+                            </div>
+                            <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BPD">
+                        </div>
+                        <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-blue-600 transition-colors">Kemanusiaan</p>
+                    </div>
+                </div>
+
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100">
+                    <span class="flex -space-x-2">
+                        <div class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">D</div>
+                        <div class="w-6 h-6 rounded-full bg-green-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">G</div>
+                        <div class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">O</div>
+                    </span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Support All E-Wallet</span>
+                </div>
+            </div>
+        </div>
                     `;
                 } else if (donasiData.metode === 'Transfer') {
                     paymentDetails = `
