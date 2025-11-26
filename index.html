@@ -1842,32 +1842,71 @@
             </div>
         </div>
 
-        <div id="donasi-payment-instructions" class="hidden max-w-3xl mx-auto animate-fade-in-up">
-            <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden text-center p-12">
-                <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce text-5xl text-green-500 shadow-lg shadow-green-500/20">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h2 class="text-3xl font-black text-slate-800 mb-2">Terima Kasih!</h2>
-                <p class="text-slate-500 mb-8 text-lg">Niat baik Anda selangkah lagi tertunaikan.</p>
-                
-                <div id="instruction-content" class="mb-10 text-left bg-slate-50 p-8 rounded-3xl border border-slate-200">
-                    </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a id="btn-wa-confirm" href="#" target="_blank" class="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-4 rounded-2xl font-bold text-lg transition shadow-lg shadow-green-500/20 transform hover:-translate-y-1 flex items-center justify-center gap-3 group">
-                        <i class="fab fa-whatsapp text-2xl"></i>
-                        <div class="text-left leading-tight">
-                            <span class="block text-[10px] font-medium opacity-80 uppercase tracking-wider">Wajib</span>
-                            <span>Konfirmasi WA</span>
-                        </div>
-                    </a>
-                    <button onclick="location.reload()" class="flex-1 bg-white text-slate-600 px-6 py-4 rounded-2xl font-bold text-lg transition hover:bg-slate-50 border-2 border-slate-100 hover:border-slate-300 flex items-center justify-center gap-3">
-                        <i class="fas fa-plus-circle text-slate-400"></i> Donasi Lagi
-                    </button>
-                </div>
-            </div>
+        <div id="donasi-payment-instructions" class="hidden max-w-3xl mx-auto animate-fade-in-up py-10">
+    
+    <div class="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white/50 relative overflow-hidden">
+        
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute top-10 left-10 text-yellow-400 text-2xl animate-bounce" style="animation-duration: 2s"><i class="fas fa-star"></i></div>
+            <div class="absolute top-20 right-10 text-green-400 text-xl animate-bounce" style="animation-duration: 3s"><i class="fas fa-circle"></i></div>
+            <div class="absolute bottom-10 left-20 text-orange-400 text-xl animate-bounce" style="animation-duration: 2.5s"><i class="fas fa-square"></i></div>
         </div>
 
+        <div class="relative z-10 p-8 md:p-12 text-center">
+            
+            <div class="relative inline-block mb-8">
+                <div class="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-20"></div>
+                <div class="relative w-28 h-28 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30 ring-4 ring-white">
+                    <i class="fas fa-check text-5xl text-white drop-shadow-md"></i>
+                </div>
+                <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-4 py-1 rounded-full shadow-sm border border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">
+                    Transaksi Berhasil
+                </div>
+            </div>
+
+            <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-3 tracking-tight">Alhamdulillah!</h2>
+            <p class="text-slate-500 text-lg mb-10 max-w-lg mx-auto">
+                Niat baik Anda selangkah lagi tertunaikan. Mohon selesaikan pembayaran sesuai instruksi di bawah.
+            </p>
+            
+            <div class="relative mb-10 text-left">
+                <div class="absolute top-1/2 -left-3 w-6 h-6 bg-white rounded-full z-20"></div>
+                <div class="absolute top-1/2 -right-3 w-6 h-6 bg-white rounded-full z-20"></div>
+
+                <div id="instruction-content" class="bg-slate-50 p-8 rounded-3xl border-2 border-dashed border-slate-200 relative z-10 hover:border-orange-200 transition-colors duration-300">
+                    </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-stretch">
+                
+                <a id="btn-wa-confirm" href="#" target="_blank" class="group relative overflow-hidden flex-1 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
+                    <div class="absolute inset-0 bg-white/20 skew-x-12 -translate-x-full group-hover:animate-shine"></div>
+                    <i class="fab fa-whatsapp text-3xl"></i>
+                    <div class="text-left leading-tight relative z-10">
+                        <span class="block text-[10px] font-bold opacity-90 uppercase tracking-wider">Langkah Wajib</span>
+                        <span>Konfirmasi WA</span>
+                    </div>
+                    <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 absolute right-6"></i>
+                </a>
+
+                <button onclick="location.reload()" class="flex-1 bg-white text-slate-600 px-6 py-4 rounded-2xl font-bold text-lg hover:bg-slate-50 border-2 border-slate-100 hover:border-slate-300 hover:text-slate-800 transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-orange-100 group-hover:text-orange-500 transition-colors">
+                        <i class="fas fa-plus text-sm"></i>
+                    </div>
+                    Donasi Lagi
+                </button>
+
+            </div>
+            
+            <p class="mt-8 text-xs text-slate-400">
+                <i class="fas fa-lock mr-1"></i> Data Anda aman dan terenkripsi.
+            </p>
+
+        </div>
+    </div>
+</div>
     </div>
 </section>
     </main>
@@ -2061,6 +2100,7 @@
 
 </body>
 </html>
+
 
 
 
