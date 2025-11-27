@@ -32,6 +32,37 @@ const rawSantriData = `
 2A	12077	Naufal Zhafran Purnama
 2A	12108	Rijal Abdul'aziz
 2A	12109	Rizki Chandra Dewantara
+2B	11862	Ahmad Miqdad
+2B	11866	Alano Faaiq Alfeno
+2B	11880	Arfandhika Fakhrul Islam
+2B	11898	Aydin Rafif
+2B	11918	Danish Alzahid Dinasti
+2B	11930	Dzaky Salman Al Farisi
+2B	11961	Ghani Arif Witjaksono
+2B	11967	Haidarrafid Satria Ardhana
+2B	11974	Iqbal Zulfikar Al Hanif
+2B	11977	Jangky Dausat
+2B	11991	Kumara Banyu Argani
+2B	12001	Mekha Ilham Lutfianto
+2B	12014	Muhammad Aiman Naim
+2B	12017	Muhammad Alvi Mumtaz Brillian Hafizh
+2B	12139	Muhammad Dede Afkar
+2B	12036	Muhammad Karel Ashiddiq
+2B	12038	Muhammad Mahdi Hafidz
+2B	12062	Muhammad Naufal Rasyid Arafi
+2B	12072	Nahsif Ilman Hazim Purwono
+2B	12076	Naufal Fahmi Darsono
+2B	12078	Nawwaf Bahy Rafif
+2B	12079	Nazhif Fahreza Zuhairy
+2B	12084	Nizar Adhyatma Aryanda
+2B	12093	Rafa Agitananda Az Zayyan
+2B	12094	Rafa Faeyza Fa'iz
+2B	12098	Rais Abqari Ash Shidqi
+2B	12111	Rizqi Satria Putra Surya
+2B	12125	Umar Ubaidillah Tsaqif
+2B	12127	Wildan Faiz Mahendra
+2B	12128	William Ramadhan Al Ghazali
+2B	12134	Zia El Ibrahim Aqeela Putra Wijaya
 3B	11535	Ahmad Azzam Huluq
 3B	11541	Ahnaf Azizan Sasmito
 3B	11544	Ajnata Haziq Abisatya Hayu Wardana (Tahfidz)
