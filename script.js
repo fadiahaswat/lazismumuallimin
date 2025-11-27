@@ -68,28 +68,31 @@ document.addEventListener('DOMContentLoaded', () => {
 async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
-    // --- BAGIAN BARU: AMBIL DATA DARI SPREADSHEET ---
-    // Pastikan fungsi loadSantriData sudah ada (dari file santri-data.js)
-    if (typeof loadSantriData === 'function') {
-        // Kita tunggu (await) sampai data selesai diambil
-        await loadSantriData(); 
-    }
-    // -----------------------------------------------
+    // 1. AMBIL DATA DARI INTERNET (PARALEL)
+    // Kita gunakan Promise.all supaya download Data Santri & Data Kelas berjalan BERSAMAAN (lebih cepat)
+    const promises = [];
 
-    // 1. Proses Data Santri yang sudah diambil
-    // Kita cek variabel 'santriData' (bukan rawSantriData lagi)
+    if (typeof loadSantriData === 'function') promises.push(loadSantriData());
+    if (typeof loadClassData === 'function') promises.push(loadClassData());
+
+    // Tunggu keduanya selesai
+    await Promise.all(promises);
+
+    // 2. LOGIKA SETELAH DATA SIAP
+    // Cek Data Santri
     if (typeof santriData !== 'undefined' && santriData.length > 0) {
-        console.log("Data Santri ditemukan:", santriData.length);
+        console.log("Data Santri OK.");
         parseSantriData();
+    }
+    
+    // Cek Data Kelas
+    if (typeof classMetaData !== 'undefined' && Object.keys(classMetaData).length > 0) {
+        console.log("Data Wali Kelas OK.");
     } else {
-        console.warn("Data santri belum termuat atau kosong.");
+        console.warn("Data Kelas Kosong/Gagal.");
     }
 
-    // 2. Cek Data Kelas (Sisa kode ke bawah biarkan sama)
-    if (typeof classMetaData !== 'undefined') {
-        console.log("Data Wali Kelas (classMetaData) ditemukan.");
-    }
-
+    // 3. JALANKAN FITUR LAINNYA
     setupNavigation();
     setupWizardLogic();
     setupHistoryLogic();
