@@ -1629,6 +1629,18 @@ function renderHomeLatestDonations() {
             iconClass = 'fa-sack-dollar';
             bgIcon = 'bg-amber-100 text-amber-600';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+        } else if (displayType.includes('Kampus')) {
+            iconClass = 'fa-school';
+            bgIcon = 'bg-rose-100 text-rose-600';
+            bgBadge = 'bg-rose-50 text-rose-700 border-rose-100';
+        } else if (displayType.includes('Beasiswa')) {
+            iconClass = 'fa-user-graduate';
+            bgIcon = 'bg-sky-100 text-sky-600';
+            bgBadge = 'bg-sky-50 text-sky-700 border-sky-100';
+        } else if (displayType.includes('Umum')) {
+            iconClass = 'fa-parachute-box';
+            bgIcon = 'bg-violet-100 text-violet-600';
+            bgBadge = 'bg-violet-50 text-violet-700 border-violet-100';
         } else {
             iconClass = 'fa-hand-holding-heart';
             bgIcon = 'bg-orange-100 text-brand-orange';
