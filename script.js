@@ -4,7 +4,7 @@
  * ============================================================================
  * File ini mengatur semua logika website:
  * 1. Navigasi halaman (pindah dari Home ke Donasi, Riwayat, dll)
- * 2. Formulir Donasi (langkah-langkah wizard)
+ * 2. Formulir Donasi (langkah-langkah wizard dengan desain baru)
  * 3. Menampilkan Berita dari WordPress
  * 4. Menampilkan Riwayat Donasi dari Google Sheets
  * 5. Tampilan pop-up (Modal) QRIS dan Berita
@@ -26,24 +26,25 @@ let donasiData = {
     subType: null,       // Sub jenis
     nominal: 0,          // Jumlah uang
     donaturTipe: 'santri', 
-    isAlumni: false,     
-    alumniTahun: '',     
-    namaSantri: '',      
-    nisSantri: '',       
-    rombelSantri: '',    
-    nama: '',            
-    hp: '',              
-    email: '',           
-    alamat: '',          
-    doa: '',             
-    metode: null         
+    isAlumni: false,      
+    alumniTahun: '',      
+    namaSantri: '',       
+    nisSantri: '',        
+    rombelSantri: '',     
+    nama: '',             
+    hp: '',               
+    email: '',            
+    alamat: '',           
+    doa: '',              
+    metode: null,
+    nik: ''
 };
 
 let riwayatData = {
-    allData: [],         
-    isLoaded: false,     
-    currentPage: 1,      
-    itemsPerPage: 10     
+    allData: [],          
+    isLoaded: false,      
+    currentPage: 1,       
+    itemsPerPage: 10      
 };
 
 let timeFilterState = 'all';
@@ -66,7 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function init() {
-    parseSantriData();
+    // Pengecekan aman untuk variabel global
+    if (typeof rawSantriData !== 'undefined') {
+        parseSantriData();
+    }
     setupNavigation();
     setupWizardLogic();
     setupHistoryLogic();
@@ -81,6 +85,8 @@ function init() {
 // ============================================================================
 function showToast(message, type = 'warning') {
     const container = document.getElementById('toast-container');
+    if (!container) return;
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
 
@@ -149,6 +155,7 @@ function timeAgo(date) {
 }
 
 function animateValue(obj, start, end, duration, isCurrency = false) {
+    if (!obj) return;
     let startTimestamp = null;
     const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
@@ -168,7 +175,7 @@ function animateValue(obj, start, end, duration, isCurrency = false) {
 let santriDB = {};
 
 function parseSantriData() {
-    if (!rawSantriData) return;
+    if (typeof rawSantriData === 'undefined' || !rawSantriData) return;
     const lines = rawSantriData.trim().split('\n');
     lines.forEach(line => {
         const parts = line.split('\t');
@@ -304,7 +311,8 @@ async function fetchNews(isLoadMore = false) {
         const btnMore = document.getElementById('btn-news-load-more');
         if (btnMore) btnMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
     } else {
-        document.getElementById('news-grid').innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-400">Memuat berita terbaru...</p></div>';
+        const grid = document.getElementById('news-grid');
+        if(grid) grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-400">Memuat berita terbaru...</p></div>';
     }
 
     let apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/posts/?number=${NEWS_PER_PAGE}&page=${newsState.page}`;
@@ -330,14 +338,17 @@ async function fetchNews(isLoadMore = false) {
             newsState.posts = [...newsState.posts, ...data.posts];
         } else {
             newsState.posts = data.posts;
-            document.getElementById('news-grid').innerHTML = '';
+            const grid = document.getElementById('news-grid');
+            if(grid) grid.innerHTML = '';
         }
 
         if (newsState.posts.length === 0) {
             let pesanKosong = "Tidak ada berita ditemukan.";
             if (newsState.category) pesanKosong = `Belum ada berita di kategori ini.`;
 
-            document.getElementById('news-grid').innerHTML = `
+            const grid = document.getElementById('news-grid');
+            if(grid) {
+                grid.innerHTML = `
                 <div class="col-span-full text-center py-24">
                     <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
                         <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
@@ -349,6 +360,7 @@ async function fetchNews(isLoadMore = false) {
                         <i class="fas fa-undo mr-2"></i> Reset Filter
                     </button>
                 </div>`;
+            }
         } else {
             renderNewsGrid(isLoadMore ? data.posts : newsState.posts, isLoadMore);
         }
@@ -363,12 +375,15 @@ async function fetchNews(isLoadMore = false) {
     } catch (err) {
         console.error(err);
         newsState.isLoading = false;
-        document.getElementById('news-grid').innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita. Periksa koneksi.</p>';
+        const grid = document.getElementById('news-grid');
+        if(grid) grid.innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita. Periksa koneksi.</p>';
     }
 }
 
 function renderNewsGrid(postsToRender, appendMode) {
     const container = document.getElementById('news-grid');
+    if(!container) return;
+
     let html = '';
     let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
 
@@ -395,40 +410,32 @@ function renderNewsGrid(postsToRender, appendMode) {
         const month = dateObj.toLocaleDateString('id-ID', {
             month: 'short'
         });
-        const year = dateObj.getFullYear();
-
+        
         const categoryName = post.categories ? Object.values(post.categories)[0].name : 'Umum';
         const badgeClass = getBadgeColor(categoryName);
 
         html += `
         <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="openNewsModal(${globalIndex})">
-            
             <div class="relative h-60 overflow-hidden">
                 <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
-                
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
-                
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
                     <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
                     <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
                 </div>
-
                 <div class="absolute bottom-4 left-4 z-30">
                     <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
                         ${categoryName}
                     </span>
                 </div>
             </div>
-
             <div class="p-6 md:p-8 flex flex-col flex-grow relative">
                 <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
                     ${post.title}
                 </h3>
-                
                 <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
                     ${stripHtml(post.excerpt)}
                 </p>
-
                 <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
                         <i class="far fa-user-circle"></i> Admin Lazismu
@@ -484,16 +491,6 @@ function resetNewsFilter() {
     filterNews('');
 }
 
-function updateReadingProgress() {
-    const container = document.getElementById('news-modal-content');
-    const progressBar = document.getElementById('reading-progress');
-    if (!container || !progressBar) return;
-
-    const scrollHeight = container.scrollHeight - container.clientHeight;
-    const scrolled = (container.scrollTop / scrollHeight) * 100;
-    progressBar.style.width = `${scrolled}%`;
-}
-
 function openNewsModal(index) {
     const post = newsState.posts[index];
     if (!post) return;
@@ -517,9 +514,7 @@ function openNewsModal(index) {
     container.innerHTML = `
         <div class="relative h-[40vh] md:h-[50vh] w-full group overflow-hidden">
             <img src="${img}" class="w-full h-full object-cover" alt="Hero Image">
-            
             <div class="absolute inset-0 bg-slate-900/70"></div>
-            
             <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 z-10">
                 <span class="inline-block px-3 py-1 rounded bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-3">
                     ${category}
@@ -527,7 +522,6 @@ function openNewsModal(index) {
                 <h2 class="text-2xl md:text-4xl font-black text-white leading-tight mb-4 drop-shadow-md">
                     ${post.title}
                 </h2>
-                
                 <div class="flex items-center gap-3 text-white/90">
                     <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}">
                     <div class="text-xs md:text-sm font-medium">
@@ -538,7 +532,6 @@ function openNewsModal(index) {
         </div>
 
         <div class="max-w-3xl mx-auto px-5 py-10 md:py-12">
-            
             <div class="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
                 <div class="flex items-center gap-2 text-slate-500 text-sm font-bold">
                     <i class="fas fa-share-alt"></i> Bagikan
@@ -546,11 +539,9 @@ function openNewsModal(index) {
                 <div class="flex gap-2">
                     <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
-                    
                     <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-black transition group">
                          <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
                     </a>
-
                     <button onclick="copyText('${post.URL}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
                 </div>
             </div>
@@ -703,7 +694,7 @@ function renderRekapTable(cls) {
         tbody.appendChild(tr);
     });
 
-    const meta = classMetaData[cls] || {
+    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
         wali: 'Belum Ditentukan',
         musyrif: 'Belum Ditentukan'
     };
@@ -727,7 +718,7 @@ function exportRekapPDF() {
     const clsSelect = document.getElementById('rekap-kelas-select');
     const cls = clsSelect ? clsSelect.value : '';
     const date = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
-    const meta = classMetaData[cls] || {
+    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
         wali: '-',
         musyrif: '-'
     };
@@ -767,7 +758,7 @@ function exportRekapPDF() {
 }
 
 // ============================================================================
-// 10. FORMULIR DONASI BERTAHAP (WIZARD)
+// 10. FORMULIR DONASI BERTAHAP (WIZARD) - DENGAN LOGIKA DESAIN BARU
 // ============================================================================
 const STEP_TITLES = [{
         title: "Pilih Jenis Kebaikan",
@@ -828,13 +819,35 @@ function goToStep(step) {
 
 // Logika utama untuk setiap langkah formulir donasi
 function setupWizardLogic() {
-    // --- LANGKAH 1: Pilih Jenis Donasi ---
+    // --- LANGKAH 1: Pilih Jenis Donasi (UPDATED FOR NEW DESIGN) ---
     document.querySelectorAll('.choice-button').forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
+            // 1. Reset Visual Semua Tombol (Hilangkan Border & BG Active)
+            document.querySelectorAll('.choice-button').forEach(b => {
+                b.classList.remove('active'); // Hapus class active
+                // Hapus warna border/bg spesifik saat aktif
+                b.classList.remove('border-emerald-500', 'bg-emerald-50');
+                b.classList.remove('border-amber-500', 'bg-amber-50');
+                b.classList.remove('border-orange-500', 'bg-orange-50');
+                // Kembalikan ke border default
+                b.classList.add('border-slate-100'); 
+            });
 
+            // 2. Set Active State pada Tombol yang Diklik
+            btn.classList.add('active'); // Trigger opacity checkmark via CSS group-[.active]
+            btn.classList.remove('border-slate-100'); // Hapus border default
+
+            // 3. Tambahkan Warna Spesifik Sesuai Tipe
             const type = btn.dataset.type;
+            if (type === 'Zakat Fitrah') {
+                btn.classList.add('border-emerald-500', 'bg-emerald-50');
+            } else if (type === 'Zakat Maal') {
+                btn.classList.add('border-amber-500', 'bg-amber-50');
+            } else if (type === 'Infaq') {
+                btn.classList.add('border-orange-500', 'bg-orange-50');
+            }
+
+            // 4. Update Data Logic
             donasiData.type = type;
             donasiData.subType = null;
 
@@ -843,26 +856,64 @@ function setupWizardLogic() {
             const zakatMaal = document.getElementById('zakat-maal-checker');
             const step1Nav = document.getElementById('step-1-nav-default');
 
+            // Hide All Sections
             if (infaqOpts) infaqOpts.classList.add('hidden');
             if (zakatFitrah) zakatFitrah.classList.add('hidden');
             if (zakatMaal) zakatMaal.classList.add('hidden');
             if (step1Nav) step1Nav.classList.add('hidden');
 
-            if (type === 'Infaq' && infaqOpts) infaqOpts.classList.remove('hidden');
-            else if (type === 'Zakat Fitrah' && zakatFitrah) zakatFitrah.classList.remove('hidden');
-            else if (type === 'Zakat Maal' && zakatMaal) zakatMaal.classList.remove('hidden');
+            // Show Specific Section
+            if (type === 'Infaq' && infaqOpts) {
+                infaqOpts.classList.remove('hidden');
+                // Reset visual sub-choices saat pindah ke Infaq
+                document.querySelectorAll('.sub-choice-button').forEach(b => {
+                    b.classList.remove('active', 'border-rose-500', 'bg-rose-50', 'border-sky-500', 'bg-sky-50', 'border-violet-500', 'bg-violet-50');
+                    b.classList.add('border-slate-200');
+                });
+            } 
+            else if (type === 'Zakat Fitrah' && zakatFitrah) {
+                zakatFitrah.classList.remove('hidden');
+                if(step1Nav) step1Nav.classList.remove('hidden'); // Fitrah langsung bisa lanjut
+            } 
+            else if (type === 'Zakat Maal' && zakatMaal) {
+                zakatMaal.classList.remove('hidden');
+                // Maal butuh kalkulator dulu, tombol lanjut ada di kalkulator
+            }
         };
     });
 
+    // --- Sub-Pilihan Infaq (UPDATED FOR NEW DESIGN) ---
     document.querySelectorAll('.sub-choice-button').forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll('.sub-choice-button').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            donasiData.subType = btn.dataset.typeInfaq;
+            // 1. Reset Visual Sub-Buttons
+            document.querySelectorAll('.sub-choice-button').forEach(b => {
+                b.classList.remove('active');
+                b.classList.remove('border-rose-500', 'bg-rose-50');
+                b.classList.remove('border-sky-500', 'bg-sky-50');
+                b.classList.remove('border-violet-500', 'bg-violet-50');
+                b.classList.add('border-slate-200');
+            });
+
+            // 2. Set Active State
+            btn.classList.add('active');
+            btn.classList.remove('border-slate-200');
+
+            // 3. Tambahkan Warna Spesifik Sub-Tipe
+            const subType = btn.dataset.typeInfaq;
+            if (subType.includes('Kampus')) btn.classList.add('border-rose-500', 'bg-rose-50');
+            else if (subType.includes('Beasiswa')) btn.classList.add('border-sky-500', 'bg-sky-50');
+            else if (subType.includes('Umum')) btn.classList.add('border-violet-500', 'bg-violet-50');
+
+            // 4. Update Data
+            donasiData.subType = subType;
+            
+            // 5. Show Next Button
             const step1Nav = document.getElementById('step-1-nav-default');
             if (step1Nav) step1Nav.classList.remove('hidden');
         };
     });
+
+    // ... (Sisa logika wizard tetap sama seperti sebelumnya) ...
 
     const fitrahInput = document.getElementById('fitrah-jumlah-orang');
     if (fitrahInput) {
@@ -1348,7 +1399,13 @@ function setupWizardLogic() {
                     <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">7930 030 303</p>
                 </div>
             </div>
-            <button onclick="copyText('7930030303', this)" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white border border-teal-100 transition-all active:scale-95 flex items-`;
+            <button onclick="copyText('7930030303', this)" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white border border-teal-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                <i class="far fa-copy"></i>
+                <span class="hidden md:inline text-xs font-bold">Salin</span>
+            </button>
+        </div>
+    </div>
+</div>`;
                 } else {
                     // TAMPILAN TUNAI (KANTOR)
                     paymentDetails = `
