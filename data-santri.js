@@ -63,6 +63,186 @@ const rawSantriData = `
 2B	12127	Wildan Faiz Mahendra
 2B	12128	William Ramadhan Al Ghazali
 2B	12134	Zia El Ibrahim Aqeela Putra Wijaya
+2C	11837	Abid Fadhil Prasraya
+2C	11846	Aditya Siddiq Ismoyo
+2C	11848	Adyatma Abdi Danendra
+2C	11865	Akram Saifuddin
+2C	11889	Athala Maulana Syarief
+2C	11896	Avicena Nafa Ghasani
+2C	11909	Benhati Damaifajar Hayumarghi
+2C	11924	Dhiyauddin Hanif Al Awwab
+2C	11926	Dyandra Fajri Putra Ramadhan
+2C	11941	Faiq Fauzil Adhim (Tahfidz)
+2C	11942	Fairuz Azzam Mahfuzh (Tahfidz)
+2C	11944	Fajar Cahya Rabbani
+2C	11958	Furqon Ardhan Muthohar Rakasiwi
+2C	11973	Ikhwan Labib Rozaqi
+2C	12019	Muhammad Arkhan Attaqi (Tahfidz)
+2C	12023	Muhammad Daffa Naufal Alaika (Tahfidz)
+2C	12056	Muhammad Tsabit Arrafat
+2C	12065	Muzakki Fairuzzaman (Tahfidz)
+2C	12069	Nabil Ahmad Bashori
+2C	12081	Neymar Tsaqif Hikmatyar (Tahfidz)
+2C	12082	Nirio Nur Firdausiy Ahla
+2C	12085	Novda Dama Santosa
+2C	12097	Raihan Fatih
+2C	12105	Rayyan Nafiz Ananta
+2C	12106	Reyhan Mohammad Kenzie
+2C	12107	Rifqi Maliki (Tahfidz)
+2C	12117	Satriya Alvaro Putra
+2C	12129	Yasykur Slamet 'abqariy (Tahfidz)
+2C	12133	Zhafran Dhiaurrahman Hakim (Tahfidz)
+2D	11840	Achmad Adi Darwis Elfaza (Tahfidz)
+2D	11872	Alizufar Raffasya Sukriyana
+2D	11884	Arsya Navarelo Al Islam
+2D	11904	Azzam Amirudin Syamil
+2D	11923	Dhika Muldan Mustari
+2D	11934	El Faza Miracle Akram
+2D	11954	Fauzil Habibi Irawan
+2D	11959	Gagas Revolusi Bangsa
+2D	11960	Galang Afkar Artyanto (Tahfidz)
+2D	11962	Gilang Asytar Artyanto (Tahfidz)
+2D	11979	Jawdan Hafidz Mumtazan
+2D	11980	Juhdan Yusuf Ghaisan
+2D	11984	Kayyis Hazim
+2D	11988	Kim Kayana Omar Naveed
+2D	11989	Kindi Abdullah Maulana
+2D	11995	Mahardika Panji Wardhana
+2D	11999	Maulana Yusuf Akbar Nuraga
+2D	12000	Mawla Azmat Khan Al-Husayni
+2D	12015	Muhammad Alif Al-Fatih (Tahfidz)
+2D	12021	Muhamad Athoya Zain
+2D	12026	Muhammad Faiz Ibnu Zakaria (Tahfidz)
+2D	12027	Muhammad Farros Prasetyaning Pribadi
+2D	12032	Muhammad Herdiansyah Al Faqih
+2D	12039	Muhammad Mahdi Hanafi (Tahfidz)
+2D	12040	Muhammad Muhdi Hafidz (Tahfidz)
+2D	12066	Naazira Parsa
+2D	12086	Oktaviano Aji Bagaskara
+2D	12087	Pandu Arya Al-ghifari
+2D	12110	Rizqi Ahmad Altaf Zafar (Tahfidz)
+2D	12113	Rois Faraz Hanafie Triyono
+2D	12122	Syafiq Faisal Hasan
+2D	12131	Zabran Muhammad Athif
+2E	11851	Aftah Munsyi' Alfikra
+2E	11856	Ahmad Daffa Fahri Al Farabi
+2E	11858	Ahmad Dahlan Harahap
+2E	11861	Ahmad Mekail Zabriski
+2E	11868	Alfarizqi Zaidan Nugroho
+2E	11869	Alfian Atha Ramadhan
+2E	11882	Arkan Fawazzi Kesturi
+2E	11894	Ausath Amna
+2E	11919	Danish Asshidiqie Pribadi
+2E	11936	Evrizal Fasich Ilmi
+2E	11948	Fasta Nirunabi Satriani Hadi Wijaya
+2E	12141	Ganteng Sholih Sugiharto
+2E	11966	Haidar Ali Mursyid
+2E	11968	Halvens Asgafo Mohamad Ilfa Baraka
+2E	11982	Karel Kavindra Agastya Putra Pradipta
+2E	11996	Mahardika Prabhu Nusantara Pri Atmaji
+2E	12007	Muadz Zidan Rahman
+2E	12035	Muhammad Iqbal Sheehan Azizy
+2E	12037	Muhammad Kholil Abdurohman
+2E	12041	Muhammad Najib
+2E	12044	Muhammad Raesa Fathan
+2E	12047	Muhammad Rauf Janitra Handoko
+2E	12052	Muhammad Sakhi Choirul Fata
+2E	12057	Muhammad Vano Al Tsaqib
+2E	12061	Muhammad Zhafran Al Farisi
+2E	12064	Muzaffar Al Qashid
+2E	12088	Prabu Yustisio Hakim Arisda
+2E	12096	Rafi Ahnaf Juffri
+2E	12102	Ranu Biruni
+2E	12103	Rashya Hafiz Fadian
+2E	12126	Vino Sebastian Adam
+2F	11839	Abrisam Janitra Abimanyu
+2F	11847	Adlan Muhammad Askari Arfa
+2F	11874	Althaf Dinajed Rafsanjani
+2F	11879	Arfan Satria Pratama
+2F	11887	Assalum Dana Al Ukhra
+2F	11891	Athallah Faris Kudus
+2F	11900	Azka Maydan
+2F	11907	Bahtiar Abid Sakhi
+2F	11912	Cahya Ibnu Safarudin
+2F	11913	Ciptaning Radito
+2F	11914	Daffa Dzakka Al Ghani
+2F	11917	Danendra Izzat Arfian
+2F	11928	Dzaky Ammar Murad
+2F	11932	Dzikri Fadillah Akbar
+2F	11933	Edgar Atharizz Narottama Indrahayu
+2F	11935	Emilio Valdano Danadyaksa
+2F	11943	Faiz Azkan Niyafi
+2F	11975	Irawan Atmojo Wibowo
+2F	11978	Januar Putra Wijaya
+2F	11981	Junnah Roghib Arroyyan Shopuanudin
+2F	11990	Kumara Argani Azfar Husna
+2F	12033	Muhammad Ihsan Faza
+2F	12034	Muhammad Ilyas Al-Farizi
+2F	12046	Muhammad Raihan Fakhri
+2F	12055	Muhammad Syafiiq Azmi
+2F	12068	Nabihan Sakhi Zaidan
+2F	12089	R. Fahri Evano Isya Kholik
+2F	12090	Radhi Ghiyast Mumtaz
+2F	12118	Senggang Cakradara Rizky
+2F	12124	Umar Muhtar
+2F	12135	Zidniy Nuril Haq
+2G	11838	Abieyacssa Ayubie Sunbastian
+2G	11863	Ahnaf Hilmi Fahreza
+2G	11870	Alfian Raffly Darmawan
+2G	11886	Arzaki Azhar Nipdapratama
+2G	11892	Athallah Izzat Rian Rasyaf Resyaban
+2G	11905	Azzam Fakhriza Ilmi
+2G	11908	Basyarajad Zayyan
+2G	11922	Devin Agathon Muhammad Abnar Rajendra
+2G	11929	Dzaky Anthony Akbar (Tahfidz)
+2G	11940	Faheem Muhammad Akhtar
+2G	11993	Leonard Fathaan Abqary Amrudin
+2G	11997	Mahesa Arundaya Al-Abrar
+2G	12003	Mirza Ahza Rais
+2G	12018	Muhammad Alzamsyah Putra
+2G	12020	Muhammad Arrayan Edgar Alvaro
+2G	12031	Muhammad Hayfa Reza
+2G	12137	Muhammad Jiddan Irfansyah
+2G	12042	Muhammad Naufal Alfaris
+2G	12050	Muhammad Rizky Wijaya
+2G	12053	Muhammad Satria Ramadhan
+2G	12059	Muhammad Zain Khan Abidin
+2G	12140	Muwafaqi Amru Ahmad (Tahfidz)
+2G	12083	Nizamul Haq Az Zuhri (keluar)
+2G	12092	Radith Putra Andita
+2G	12104	Rasya Muhammad Athaya Ardiansyah
+2G	12112	Rizqy Fathu Ramadhan
+2G	12132	Zavier Alvaro
+2H	11835	Abdul Ghani Irfan Rafif (Tahfidz)
+2H	11836	Abid Fadhil Abyah (Tahfidz)
+2H	11843	Achmad Hanif Al Faris
+2H	11850	Afif Akhsanul Muttaqin
+2H	11857	Ahmad Dahlan Asy'ari (Tahfidz)
+2H	11890	Athallah Azmi Ghaisan Muhammad (Tahfidz)
+2H	11901	Azka Rafisqy Faeyza
+2H	11902	Azmi Zulfadli Syafiq (Tahfidz)
+2H	11903	Azri Labibul Khawarizmi (Tahfidz)
+2H	11927	Dzaky Abbasy Ghaisan
+2H	11931	Dzar Al Ghifari (Tahfidz)
+2H	11937	Fadhil Atha Maulana
+2H	11938	Fadil Abdul Natsir
+2H	11952	Fatihan Al Ghifari RA (Tahfidz)
+2H	11953	Fauzan Wildan Al-Insan
+2H	12142	Hideaki Akhtar Yusuf
+2H	11971	Hisyam Nabil Pasha (Tahfidz)
+2H	11972	Ibadillah Kaiazmi Mubarak (Tahfidz)
+2H	11983	Kashvi Jabbar Azana (Tahfidz)
+2H	11987	Khawarizmi Fakhrulhaq (Tahfidz)
+2H	12012	Muhammad Aghna Ilman Rafa (Tahfidz)
+2H	12008	Muhammad Aziz Al Fatih Siregar
+2H	12009	Muhammad Daffa Frananda Al Hafidz
+2H	12010	Muhammad Naufal Alif (Tahfidz)
+2H	12011	Muhammad Syafiq Yaqdhan
+2H	12070	Nabil Hanafi Amarray
+2H	12071	Nadif Adicandra
+2H	12101	Ramadhan Dafa Rusydi
+2H	12114	Royyan Abdurrahman Ibtisam (Tahfidz)
+2H	12116	Sakhi Arkan Elfariza (Tahfidz)
 3B	11535	Ahmad Azzam Huluq
 3B	11541	Ahnaf Azizan Sasmito
 3B	11544	Ajnata Haziq Abisatya Hayu Wardana (Tahfidz)
