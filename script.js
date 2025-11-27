@@ -194,48 +194,32 @@ function animateValue(obj, start, end, duration, isCurrency = false) {
 let santriDB = {};
 
 function parseSantriData() {
-    if (typeof rawSantriData === 'undefined' || !rawSantriData) return;
+    // Kita gunakan variabel 'santriData' yang sudah diisi oleh loadSantriData()
+    if (typeof santriData === 'undefined' || !Array.isArray(santriData)) return;
 
-    // A. JIKA FORMATNYA ARRAY (JSON) - DARI FILE JS MODERN
-    if (Array.isArray(rawSantriData)) {
-        rawSantriData.forEach(item => {
-            const rombel = item.rombel || item.kelas || ""; // Support field 'rombel' atau 'kelas'
-            const nis = item.nis || item.noInduk || "";
-            const nama = item.nama || item.namaLengkap || "";
-            
-            if (!rombel) return;
+    // Reset database lokal
+    santriDB = {};
 
-            const level = rombel.charAt(0);
-            if (!santriDB[level]) santriDB[level] = {};
-            if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
+    santriData.forEach(item => {
+        // Ambil data sesuai struktur JSON dari Spreadsheet
+        const rombel = item.kelas || item.rombel || ""; 
+        const nis = item.nis || "";
+        const nama = item.nama || "";
+        
+        if (!rombel) return;
 
-            santriDB[level][rombel].push({ nama, nis, rombel });
-        });
-        return;
-    }
+        // Ambil digit pertama sebagai level (Contoh: "1A" -> "1")
+        const level = rombel.charAt(0);
+        
+        // Buat struktur object jika belum ada
+        if (!santriDB[level]) santriDB[level] = {};
+        if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
 
-    // B. JIKA FORMATNYA STRING (TSV/CSV) - LEGACY
-    if (typeof rawSantriData === 'string') {
-        const lines = rawSantriData.trim().split('\n');
-        lines.forEach(line => {
-            // Coba split dengan tab (\t) dulu, kalau gagal coba koma (,) atau titik koma (;)
-            let parts = line.split('\t');
-            if (parts.length < 3) parts = line.split(';'); // Fallback CSV semicolon
-            if (parts.length < 3) parts = line.split(','); // Fallback CSV comma
-
-            if (parts.length < 3) return;
-
-            const rombel = parts[0].trim();
-            const nis = parts[1].trim();
-            const nama = parts[2].trim();
-            const level = rombel.charAt(0);
-
-            if (!santriDB[level]) santriDB[level] = {};
-            if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
-
-            santriDB[level][rombel].push({ nama, nis, rombel });
-        });
-    }
+        // Masukkan data santri
+        santriDB[level][rombel].push({ nama, nis, rombel });
+    });
+    
+    console.log("Database Santri Berhasil Disusun:", santriDB);
 }
 
 // ============================================================================
