@@ -1637,7 +1637,7 @@ function renderHomeLatestDonations() {
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
 
     <div class="relative z-10">
-        <div class="relative mb-4 mx-auto">
+        <div class="relative mb-4 mx-auto w-16">
             <div class="absolute inset-0 bg-white/30 rounded-full blur-lg animate-pulse"></div>
             <div class="relative w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition duration-300 shadow-inner">
                 <i class="fas fa-hand-holding-heart text-3xl drop-shadow-md group-hover:animate-pulse"></i>
