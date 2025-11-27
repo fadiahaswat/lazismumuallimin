@@ -1952,259 +1952,213 @@ function getFilteredData() {
 }
 
 function renderRiwayatList() {
+
     const container = document.getElementById('riwayat-list-container');
+
     if (!container) return;
 
+
+
     const items = getFilteredData();
+
     const start = (riwayatData.currentPage - 1) * riwayatData.itemsPerPage;
+
     const end = start + riwayatData.itemsPerPage;
+
     const visibleItems = items.slice(start, end);
 
+
+
     const noDataEl = document.getElementById('riwayat-no-data');
+
     if (visibleItems.length === 0) {
+
         container.innerHTML = '';
+
         if (noDataEl) noDataEl.classList.remove('hidden');
+
         return;
+
     } else {
+
         if (noDataEl) noDataEl.classList.add('hidden');
+
     }
 
+
+
     container.innerHTML = visibleItems.map((item, index) => {
+
         let iconClass = 'fa-donate';
+
         let bgIcon = 'bg-slate-100 text-slate-400';
+
         let borderClass = 'border-slate-100';
 
+
+
         const type = item.JenisDonasi || item.type || "";
+
         const subType = item.SubJenis || item.subType || "";
+
         const displayType = subType || type;
+
         const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
+
         const donaturName = item.NamaDonatur || item.nama || 'Hamba Allah';
+
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
-        // Logika Ikon & Warna Sesuai Desain Baru
+
+
         if (displayType.includes('Fitrah')) {
+
             iconClass = 'fa-bowl-rice';
+
             bgIcon = 'bg-emerald-100 text-emerald-600';
+
             borderClass = 'hover:border-emerald-200';
+
         } else if (displayType.includes('Maal')) {
+
             iconClass = 'fa-sack-dollar';
+
             bgIcon = 'bg-amber-100 text-amber-600';
+
             borderClass = 'hover:border-amber-200';
-        } else if (displayType.includes('Kampus')) {
-            iconClass = 'fa-school';
-            bgIcon = 'bg-rose-100 text-rose-600';
-            borderClass = 'hover:border-rose-200';
-        } else if (displayType.includes('Beasiswa')) {
-            iconClass = 'fa-user-graduate';
-            bgIcon = 'bg-sky-100 text-sky-600';
-            borderClass = 'hover:border-sky-200';
-        } else if (displayType.includes('Umum')) {
-            iconClass = 'fa-parachute-box';
-            bgIcon = 'bg-violet-100 text-violet-600';
-            borderClass = 'hover:border-violet-200';
-        } else {
-            // Default Infaq / Lainnya
+
+        } else if (displayType.includes('Infaq')) {
+
             iconClass = 'fa-hand-holding-heart';
-            bgIcon = 'bg-orange-100 text-brand-orange';
+
+            bgIcon = 'bg-orange-100 text-orange-600';
+
             borderClass = 'hover:border-orange-200';
+
         }
+
+
 
         const dateObj = new Date(item.Timestamp);
+
         const date = dateObj.toLocaleDateString('id-ID', {
+
             day: 'numeric',
+
             month: 'long',
+
             year: 'numeric'
+
         });
+
         const time = dateObj.toLocaleTimeString('id-ID', {
+
             hour: '2-digit',
+
             minute: '2-digit'
+
         });
+
+
 
         const alumniYear = item.DetailAlumni || item.detailAlumni;
+
         const alumniBadge = alumniYear ?
+
             `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni Tahun ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` :
+
             '';
 
+
+
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
+
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
+
         else if (paymentMethod === 'Transfer') metodeBadge = 'bg-purple-50 text-purple-600 border-purple-200';
+
         else if (paymentMethod === 'Tunai') metodeBadge = 'bg-green-50 text-green-600 border-green-200';
 
+
+
         return `
+
         <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 ${borderClass} group relative overflow-hidden transform hover:-translate-y-1">
+
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+
                 
+
                 <div class="flex items-start sm:items-center gap-5 w-full">
+
                     <div class="w-14 h-14 rounded-2xl ${bgIcon} flex items-center justify-center text-2xl shadow-inner shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+
                         <i class="fas ${iconClass}"></i>
+
                     </div>
+
                     <div class="flex-1 min-w-0">
+
                         <div class="flex items-center flex-wrap gap-y-1 mb-1">
+
                             <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
+
                                 ${donaturName}
+
                             </h4>
+
                             ${alumniBadge}
+
                         </div>
+
                         <div class="flex flex-wrap items-center gap-2">
+
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
+
                             <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+
                             <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
+
                         </div>
+
                     </div>
+
                 </div>
+
+
 
                 <div class="text-left sm:text-right w-full sm:w-auto pl-[4.5rem] sm:pl-0 mt-[-10px] sm:mt-0">
+
                     <span class="block font-black text-xl text-slate-800 mb-1 tracking-tight group-hover:text-brand-orange transition-colors">
+
                         ${parseInt(nominal).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}
+
                     </span>
+
                     <div class="flex items-center sm:justify-end gap-2 text-xs text-slate-400 font-medium">
+
                         <i class="far fa-clock"></i> ${date} • ${time}
+
                     </div>
+
                 </div>
+
             </div>
+
             
+
             <div class="absolute right-[-20px] bottom-[-20px] text-9xl opacity-[0.03] pointer-events-none group-hover:opacity-[0.06] transition-opacity duration-500 rotate-12">
+
                 <i class="fas ${iconClass}"></i>
+
             </div>
+
         </div>
+
         `;
-    }).join('');
-}
 
-    let html = latest.map(item => {
-        let iconClass = 'fa-donate';
-        let bgIcon = 'bg-slate-100 text-slate-400';
-        let bgBadge = 'bg-slate-50 text-slate-600';
-
-        const type = item.JenisDonasi || item.type || "";
-        const subType = item.SubJenis || item.subType || "";
-        const displayType = subType || type;
-
-        if (displayType.includes('Fitrah')) {
-            iconClass = 'fa-bowl-rice';
-            bgIcon = 'bg-emerald-100 text-emerald-600';
-            bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-        } else if (displayType.includes('Maal')) {
-            iconClass = 'fa-sack-dollar';
-            bgIcon = 'bg-amber-100 text-amber-600';
-            bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
-        } else if (displayType.includes('Kampus')) {
-            iconClass = 'fa-school';
-            bgIcon = 'bg-rose-100 text-rose-600';
-            bgBadge = 'bg-rose-50 text-rose-700 border-rose-100';
-        } else if (displayType.includes('Beasiswa')) {
-            iconClass = 'fa-user-graduate';
-            bgIcon = 'bg-sky-100 text-sky-600';
-            bgBadge = 'bg-sky-50 text-sky-700 border-sky-100';
-        } else if (displayType.includes('Umum')) {
-            iconClass = 'fa-parachute-box';
-            bgIcon = 'bg-violet-100 text-violet-600';
-            bgBadge = 'bg-violet-50 text-violet-700 border-violet-100';
-        } else {
-            iconClass = 'fa-hand-holding-heart';
-            bgIcon = 'bg-orange-100 text-brand-orange';
-            bgBadge = 'bg-orange-50 text-orange-700 border-orange-100';
-        }
-
-        return `
-        <div class="relative bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 border border-slate-100 transition-all duration-300 group hover:-translate-y-1 h-full flex flex-col justify-between overflow-hidden">
-    <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 rotate-12">
-        <i class="fas ${iconClass} text-9xl text-slate-800"></i>
-    </div>
-
-    <div class="relative z-10">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl ${bgIcon} flex items-center justify-center text-lg shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform duration-300">
-                <i class="fas ${iconClass}"></i>
-            </div>
-            
-            <span class="text-[10px] font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
-                ${displayType}
-            </span>
-        </div>
-
-        <div>
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Muzaki</p>
-            
-            <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${item.NamaDonatur || 'Hamba Allah'}">
-                ${item.NamaDonatur || 'Hamba Allah'}
-            </h5>
-
-            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-orange-200 group-hover:bg-orange-50/30 transition-colors">
-                <div class="flex items-baseline gap-1">
-                    <span class="text-xs text-slate-500 font-medium">Rp</span>
-                    <span class="text-xl md:text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">
-                        ${parseInt(item.Nominal).toLocaleString('id-ID')}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
-        <div class="flex items-center gap-1.5">
-            <i class="far fa-clock text-orange-400"></i>
-            <span>${timeAgo(item.Timestamp)}</span>
-        </div>
-        
-        <div class="flex items-center gap-1 opacity-70">
-           <span class="font-medium text-slate-500">Via Web</span>
-           <i class="fas fa-check-circle text-green-500"></i>
-        </div>
-    </div>
-</div>
-        `;
     }).join('');
 
-    // --- KARTU 7: AJAKAN DONASI (Accent Color) ---
-    html += `
-        <div onclick="showPage('donasi')" class="group relative bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 shadow-xl shadow-orange-500/30 text-white cursor-pointer hover:-translate-y-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full min-h-[180px] overflow-hidden border border-white/20 ring-4 ring-orange-500/10 hover:ring-orange-500/30">
-    
-    <div class="absolute top-[-50%] left-[-50%] w-full h-full bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-    <div class="absolute bottom-[-50%] right-[-50%] w-full h-full bg-yellow-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-
-    <div class="relative z-10">
-        <div class="relative mb-4 mx-auto w-16">
-            <div class="absolute inset-0 bg-white/30 rounded-full blur-lg animate-pulse"></div>
-            <div class="relative w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition duration-300 shadow-inner">
-                <i class="fas fa-hand-holding-heart text-3xl drop-shadow-md group-hover:animate-pulse"></i>
-            </div>
-        </div>
-
-        <h5 class="font-black text-xl mb-1 tracking-tight">Mari Berbagi</h5>
-        <p class="text-sm text-orange-50 font-medium mb-4 opacity-90">Jemput keberkahan harta Anda hari ini.</p>
-        
-        <span class="inline-flex items-center gap-2 bg-white text-orange-600 text-xs font-bold px-5 py-2 rounded-full shadow-lg group-hover:bg-orange-50 transition-colors">
-            Tunaikan Sekarang <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-        </span>
-    </div>
-</div>
-    `;
-
-    // --- KARTU 8: LIHAT SEMUA (Outline Style) ---
-    html += `
-        <div onclick="showPage('riwayat')" class="group relative cursor-pointer h-full min-h-[180px] w-full">
-    <div class="absolute inset-0 bg-blue-100 rounded-2xl transform translate-x-2 translate-y-2 rotate-2 group-hover:rotate-6 group-hover:translate-x-3 group-hover:translate-y-3 transition-all duration-300"></div>
-    <div class="absolute inset-0 bg-slate-100 rounded-2xl transform translate-x-1 translate-y-1 rotate-1 group-hover:rotate-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-all duration-300"></div>
-    
-    <div class="relative bg-white rounded-2xl p-5 border border-slate-200 shadow-sm group-hover:shadow-xl group-hover:border-blue-300 group-hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center h-full text-center overflow-hidden">
-        
-        <div class="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-10 transition-opacity rotate-12">
-            <i class="fas fa-layer-group text-8xl text-blue-600"></i>
-        </div>
-
-        <div class="relative z-10 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center mb-3 shadow-inner group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
-            <i class="fas fa-arrow-right text-lg group-hover:-rotate-45 transition-transform duration-300"></i>
-        </div>
-        
-        <span class="font-bold text-base text-slate-700 group-hover:text-blue-600 transition-colors">Lihat Semua</span>
-        <span class="text-xs text-slate-400 mt-1 group-hover:text-blue-500/80">Buka arsip lengkap</span>
-    </div>
-</div>
-    `;
-
-    container.innerHTML = html;
 }
 
 // ============================================================================
