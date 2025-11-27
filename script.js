@@ -1948,42 +1948,59 @@ function renderRiwayatList() {
         else if (paymentMethod === 'Tunai') metodeBadge = 'bg-green-50 text-green-600 border-green-200';
 
         return `
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 ${borderClass} group relative overflow-hidden transform hover:-translate-y-1">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+        <div class="group relative bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden">
+    
+    <div class="absolute left-0 top-0 bottom-0 w-1 ${borderLeftClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+    <div class="absolute -right-4 -bottom-4 text-9xl opacity-[0.02] group-hover:opacity-[0.05] pointer-events-none rotate-12 transition-opacity duration-500">
+        <i class="fas ${iconClass}"></i>
+    </div>
+
+    <div class="relative z-10 flex flex-col sm:flex-row gap-5 items-start">
+        
+        <div class="w-14 h-14 rounded-2xl ${bgIcon} flex items-center justify-center text-2xl shadow-sm shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+            <i class="fas ${iconClass}"></i>
+        </div>
+
+        <div class="flex-1 w-full min-w-0">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
                 
-                <div class="flex items-start sm:items-center gap-5 w-full">
-                    <div class="w-14 h-14 rounded-2xl ${bgIcon} flex items-center justify-center text-2xl shadow-inner shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
-                        <i class="fas ${iconClass}"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center flex-wrap gap-y-1 mb-1">
-                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
-                                ${donaturName}
-                            </h4>
-                            ${alumniBadge}
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
-                            <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
-                        </div>
+                <div>
+                    <div class="flex items-center flex-wrap gap-2 mb-1">
+                        <h4 class="font-bold text-slate-800 text-lg leading-tight line-clamp-1 group-hover:text-slate-900" title="${donaturName}">
+                            ${donaturName}
+                        </h4>
+                        ${alumniBadge} </div>
+                    
+                    <div class="flex items-center gap-2 text-xs flex-wrap">
+                        <span class="font-bold ${textTypeClass} uppercase tracking-wide bg-white px-2 py-0.5 rounded border ${borderTypeClass}">
+                            ${displayType}
+                        </span>
+                        <span class="text-slate-300 hidden sm:inline">•</span>
+                        <span class="flex items-center gap-1 text-slate-500 font-medium">
+                            <i class="fas fa-wallet text-[10px] opacity-50"></i> ${paymentMethod}
+                        </span>
                     </div>
                 </div>
 
-                <div class="text-left sm:text-right w-full sm:w-auto pl-[4.5rem] sm:pl-0 mt-[-10px] sm:mt-0">
-                    <span class="block font-black text-xl text-slate-800 mb-1 tracking-tight group-hover:text-brand-orange transition-colors">
+                <div class="text-left sm:text-right mt-3 sm:mt-0 w-full sm:w-auto border-t border-slate-50 sm:border-0 pt-3 sm:pt-0">
+                    <span class="block font-black text-xl text-slate-800 tracking-tight group-hover:text-orange-600 transition-colors">
                         ${parseInt(nominal).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}
                     </span>
-                    <div class="flex items-center sm:justify-end gap-2 text-xs text-slate-400 font-medium">
-                        <i class="far fa-clock"></i> ${date} • ${time}
+                    <div class="flex items-center sm:justify-end gap-1.5 text-[11px] text-slate-400 font-medium mt-0.5">
+                        <i class="far fa-clock"></i> ${timeAgo}
                     </div>
                 </div>
             </div>
             
-            <div class="absolute right-[-20px] bottom-[-20px] text-9xl opacity-[0.03] pointer-events-none group-hover:opacity-[0.06] transition-opacity duration-500 rotate-12">
-                <i class="fas ${iconClass}"></i>
-            </div>
+            ${item.Pesan ? `
+            <div class="mt-3 bg-slate-50 rounded-xl p-3 text-xs text-slate-500 italic leading-relaxed border border-slate-100 relative">
+                <i class="fas fa-quote-left text-slate-200 absolute top-2 left-2 -z-10 text-xl"></i>
+                "${item.Pesan}"
+            </div>` : ''}
         </div>
+    </div>
+</div>
         `;
     }).join('');
 }
