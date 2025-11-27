@@ -669,14 +669,17 @@ function renderGlobalLeaderboard() {
     const container = document.getElementById('rekap-placeholder');
     if (!container) return;
 
-    // Jika data belum ada, biarkan loading/default
+    // Loading State
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
         container.innerHTML = `
-            <div class="text-center py-10">
-                <div class="inline-block p-4 rounded-full bg-slate-50 mb-4 animate-pulse">
-                    <i class="fas fa-trophy text-4xl text-slate-300"></i>
+            <div class="flex flex-col items-center justify-center py-16 space-y-4">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-75"></div>
+                    <div class="relative bg-white p-4 rounded-full shadow-sm border border-orange-100">
+                        <i class="fas fa-trophy text-4xl text-orange-400 animate-pulse"></i>
+                    </div>
                 </div>
-                <p class="text-slate-400 font-medium">Memuat data peringkat kelas...</p>
+                <p class="text-slate-400 font-medium text-sm animate-pulse">Sedang memuat data perolehan kelas...</p>
             </div>
         `;
         return;
@@ -685,7 +688,6 @@ function renderGlobalLeaderboard() {
     // 1. Agregasi Data per Kelas
     const classTotals = {};
     riwayatData.allData.forEach(d => {
-        // Cek field kelas (bisa 'KelasSantri' atau 'rombelSantri')
         const rombel = d.KelasSantri || d.rombelSantri;
         if (rombel) {
             const val = parseInt(d.Nominal) || 0;
@@ -693,62 +695,87 @@ function renderGlobalLeaderboard() {
         }
     });
 
-    // 2. Convert ke Array & Sort Descending
+    // 2. Sort & Structure
     const leaderboard = Object.keys(classTotals).map(key => ({
         kelas: key,
         total: classTotals[key]
     })).sort((a, b) => b.total - a.total);
 
     if (leaderboard.length === 0) {
-        container.innerHTML = `<div class="text-center py-10 text-slate-400">Belum ada data perolehan kelas.</div>`;
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12 border-2 border-dashed border-slate-200 rounded-3xl">
+                <i class="far fa-folder-open text-4xl text-slate-300 mb-2"></i>
+                <p class="text-slate-400 font-medium">Belum ada data donasi masuk.</p>
+            </div>`;
         return;
     }
 
+    // Max value for progress bars
+    const maxVal = leaderboard[0].total;
+
     // 3. Render HTML
     let html = `
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-8">
-                <h3 class="text-xl font-bold text-slate-800 flex items-center justify-center gap-2">
-                    <i class="fas fa-chart-line text-orange-500"></i> Peringkat Perolehan Kelas
-                </h3>
-                <p class="text-sm text-slate-500 mt-1">Akumulasi seluruh donasi (Zakat, Infaq, dll)</p>
+        <div class="max-w-3xl mx-auto px-2">
+            <div class="text-center mb-10">
+                <span class="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 border border-orange-100">Live Update</span>
+                <h3 class="text-2xl font-black text-slate-800 mb-2">Papan Peringkat Kebaikan</h3>
+                <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi per kelas saat ini.</p>
             </div>
             
-            <div class="space-y-3">
+            <div class="space-y-4">
     `;
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
-        let rankStyle = "bg-white border-slate-100 text-slate-600";
-        let icon = `<span class="font-mono font-bold text-sm w-6 text-center">${rank}</span>`;
-        let scale = "";
+        const percent = (item.total / maxVal) * 100;
+        
+        let cardClass = "";
+        let rankIcon = "";
+        let textClass = "text-slate-700";
+        let amountClass = "text-slate-800";
+        let progressColor = "bg-slate-100";
 
-        // Styling khusus untuk Top 3
         if (rank === 1) {
-            rankStyle = "bg-gradient-to-r from-yellow-50 to-white border-yellow-200 shadow-md ring-1 ring-yellow-100";
-            icon = `<div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 shadow-sm"><i class="fas fa-trophy text-sm"></i></div>`;
-            scale = "transform hover:scale-105 z-10";
+            cardClass = "bg-gradient-to-br from-yellow-50 via-white to-white border-yellow-200 shadow-lg shadow-yellow-500/10 scale-105 z-10 ring-1 ring-yellow-100";
+            rankIcon = `<div class="w-10 h-10 rounded-full bg-yellow-400 text-white flex items-center justify-center text-lg shadow-md shadow-yellow-200"><i class="fas fa-crown"></i></div>`;
+            progressColor = "bg-gradient-to-r from-yellow-400 to-orange-400";
+            amountClass = "text-yellow-700";
         } else if (rank === 2) {
-            rankStyle = "bg-white border-slate-200 shadow-sm";
-            icon = `<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+            cardClass = "bg-white border-slate-200 shadow-md z-0";
+            rankIcon = `<div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold shadow-sm">2</div>`;
+            progressColor = "bg-slate-400";
         } else if (rank === 3) {
-            rankStyle = "bg-white border-orange-100 shadow-sm";
-            icon = `<div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+            cardClass = "bg-white border-orange-100 shadow-md z-0";
+            rankIcon = `<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold shadow-sm">3</div>`;
+            progressColor = "bg-orange-400";
+            amountClass = "text-orange-700";
+        } else {
+            cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors";
+            rankIcon = `<div class="w-6 h-6 rounded-full bg-slate-50 text-slate-400 border border-slate-200 flex items-center justify-center text-xs font-bold">${rank}</div>`;
+            progressColor = "bg-slate-200";
         }
 
         html += `
-            <div class="relative flex items-center justify-between p-4 rounded-xl border ${rankStyle} transition-all duration-300 ${scale} hover:shadow-lg group">
-                <div class="flex items-center gap-4">
-                    ${icon}
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h4>
-                        ${rank === 1 ? '<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">Paling Unggul</span>' : ''}
-                    </div>
+            <div class="relative p-4 rounded-2xl border ${cardClass} flex items-center gap-4 group transition-all duration-300">
+                <!-- Rank Icon -->
+                <div class="shrink-0">
+                    ${rankIcon}
                 </div>
-                <div class="text-right">
-                    <span class="block font-black text-slate-700 text-lg group-hover:text-orange-600 transition-colors">
-                        ${formatRupiah(item.total)}
-                    </span>
+
+                <!-- Class Name & Bar -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-end mb-1.5">
+                        <h4 class="font-bold text-base ${textClass}">Kelas ${item.kelas}</h4>
+                        <span class="font-black text-base ${amountClass}">${formatRupiah(item.total)}</span>
+                    </div>
+                    
+                    <!-- Progress Bar Background -->
+                    <div class="w-full h-2.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                        <!-- Actual Progress -->
+                        <div class="h-full rounded-full ${progressColor} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110" style="width: ${percent}%">
+                            <div class="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -756,10 +783,26 @@ function renderGlobalLeaderboard() {
 
     html += `
             </div>
-            <div class="mt-8 text-center">
-                <p class="text-xs text-slate-400">Data diperbarui secara real-time berdasarkan input masuk.</p>
+            
+            <div class="mt-12 flex items-center justify-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                <i class="fas fa-sync-alt text-xs text-slate-400 animate-spin-slow"></i>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Realtime Data</span>
             </div>
         </div>
+        
+        <style>
+            @keyframes shimmer {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+            }
+            .animate-spin-slow {
+                animation: spin 3s linear infinite;
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        </style>
     `;
 
     container.innerHTML = html;
