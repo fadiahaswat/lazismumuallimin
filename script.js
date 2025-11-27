@@ -1373,6 +1373,7 @@ function setupWizardLogic() {
     
     <div class="p-6 md:p-8 space-y-4">
         
+        <!-- Bank BNI -->
         <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 border border-orange-100 group-hover:scale-110 transition-transform p-2">
@@ -1389,6 +1390,7 @@ function setupWizardLogic() {
             </button>
         </div>
 
+        <!-- Bank BSI -->
         <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-teal-300 transition-all duration-300">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center shrink-0 border border-teal-100 group-hover:scale-110 transition-transform p-2">
@@ -1404,6 +1406,24 @@ function setupWizardLogic() {
                 <span class="hidden md:inline text-xs font-bold">Salin</span>
             </button>
         </div>
+
+        <!-- Bank BPD DIY Syariah (Ditambahkan) -->
+        <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 group-hover:scale-110 transition-transform p-2">
+                    <img src="bank-bpd.png" alt="BPD" class="w-full h-full object-contain mix-blend-multiply">
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">BPD DIY Syariah</p>
+                    <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">804 211 000 000</p>
+                </div>
+            </div>
+            <button onclick="copyText('804211000000', this)" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                <i class="far fa-copy"></i>
+                <span class="hidden md:inline text-xs font-bold">Salin</span>
+            </button>
+        </div>
+
     </div>
 </div>`;
                 } else {
