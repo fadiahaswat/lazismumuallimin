@@ -2348,3 +2348,14 @@ function renderHomeCard(item) {
     </div>
     `;
 }
+
+// Contoh implementasi
+const container = document.getElementById('home-latest-donations');
+// ... fetch data ...
+let html = '';
+data.forEach(item => {
+   html += renderHomeCard(item);
+});
+// Tambahkan kartu "Lihat Semua" di akhir jika perlu
+// html += `...kode tombol lihat semua...`;
+container.innerHTML = html;
