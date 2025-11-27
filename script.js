@@ -28,7 +28,7 @@ let donasiData = {
     donaturTipe: 'santri', 
     isAlumni: false,      
     alumniTahun: '',      
-    namaSantri: '',       
+    namaSantri: '',        
     nisSantri: '',        
     rombelSantri: '',     
     nama: '',             
@@ -540,7 +540,7 @@ function openNewsModal(index) {
                     <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-black transition group">
-                         <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
+                          <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
                     </a>
                     <button onclick="copyText('${post.URL}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
                 </div>
@@ -593,7 +593,7 @@ function stripHtml(html) {
 }
 
 // ============================================================================
-// 9. FITUR REKAPITULASI KELAS (EXPORT PDF)
+// 9. FITUR REKAPITULASI KELAS (EXPORT PDF) & LEADERBOARD
 // ============================================================================
 function setupRekapLogic() {
     const lvlSelect = document.getElementById('rekap-level-select');
@@ -601,6 +601,11 @@ function setupRekapLogic() {
     const btnExport = document.getElementById('btn-export-pdf');
 
     if (!lvlSelect || !clsSelect) return;
+
+    // Inisialisasi awal: jika belum ada kelas dipilih, tampilkan leaderboard
+    if (!clsSelect.value) {
+        toggleRekapDisplay(false); // Mode false sekarang menampilkan Leaderboard
+    }
 
     lvlSelect.onchange = () => {
         const lvl = lvlSelect.value;
@@ -618,39 +623,147 @@ function setupRekapLogic() {
         } else {
             clsSelect.disabled = true;
         }
+        // Kembali ke leaderboard jika level diganti/direset
         toggleRekapDisplay(false);
+        renderGlobalLeaderboard(); 
     };
 
     clsSelect.onchange = () => {
         const cls = clsSelect.value;
         if (cls) {
-            toggleRekapDisplay(true);
+            toggleRekapDisplay(true); // Tampilkan detail tabel
             renderRekapTable(cls);
         } else {
-            toggleRekapDisplay(false);
+            toggleRekapDisplay(false); // Tampilkan leaderboard
+            renderGlobalLeaderboard();
         }
     };
 
     if (btnExport) btnExport.onclick = () => exportRekapPDF();
 }
 
-function toggleRekapDisplay(show) {
+function toggleRekapDisplay(showDetail) {
     const ph = document.getElementById('rekap-placeholder');
     const sum = document.getElementById('rekap-summary');
     const tbl = document.getElementById('rekap-table-container');
     const btnExport = document.getElementById('btn-export-pdf');
 
-    if (show) {
-        ph.classList.add('hidden');
+    // showDetail = true  => Tampilkan Tabel Kelas (Mode Detail)
+    // showDetail = false => Tampilkan Leaderboard (Mode Umum)
+
+    if (showDetail) {
+        ph.classList.add('hidden'); // Sembunyikan placeholder/leaderboard
         sum.classList.remove('hidden');
         tbl.classList.remove('hidden');
         if (btnExport) btnExport.disabled = false;
     } else {
-        ph.classList.remove('hidden');
+        ph.classList.remove('hidden'); // Tampilkan placeholder/leaderboard
         sum.classList.add('hidden');
         tbl.classList.add('hidden');
         if (btnExport) btnExport.disabled = true;
+        renderGlobalLeaderboard(); // Pastikan leaderboard dirender
     }
+}
+
+function renderGlobalLeaderboard() {
+    const container = document.getElementById('rekap-placeholder');
+    if (!container) return;
+
+    // Jika data belum ada, biarkan loading/default
+    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10">
+                <div class="inline-block p-4 rounded-full bg-slate-50 mb-4 animate-pulse">
+                    <i class="fas fa-trophy text-4xl text-slate-300"></i>
+                </div>
+                <p class="text-slate-400 font-medium">Memuat data peringkat kelas...</p>
+            </div>
+        `;
+        return;
+    }
+
+    // 1. Agregasi Data per Kelas
+    const classTotals = {};
+    riwayatData.allData.forEach(d => {
+        // Cek field kelas (bisa 'KelasSantri' atau 'rombelSantri')
+        const rombel = d.KelasSantri || d.rombelSantri;
+        if (rombel) {
+            const val = parseInt(d.Nominal) || 0;
+            classTotals[rombel] = (classTotals[rombel] || 0) + val;
+        }
+    });
+
+    // 2. Convert ke Array & Sort Descending
+    const leaderboard = Object.keys(classTotals).map(key => ({
+        kelas: key,
+        total: classTotals[key]
+    })).sort((a, b) => b.total - a.total);
+
+    if (leaderboard.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-slate-400">Belum ada data perolehan kelas.</div>`;
+        return;
+    }
+
+    // 3. Render HTML
+    let html = `
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center justify-center gap-2">
+                    <i class="fas fa-chart-line text-orange-500"></i> Peringkat Perolehan Kelas
+                </h3>
+                <p class="text-sm text-slate-500 mt-1">Akumulasi seluruh donasi (Zakat, Infaq, dll)</p>
+            </div>
+            
+            <div class="space-y-3">
+    `;
+
+    leaderboard.forEach((item, index) => {
+        const rank = index + 1;
+        let rankStyle = "bg-white border-slate-100 text-slate-600";
+        let icon = `<span class="font-mono font-bold text-sm w-6 text-center">${rank}</span>`;
+        let scale = "";
+
+        // Styling khusus untuk Top 3
+        if (rank === 1) {
+            rankStyle = "bg-gradient-to-r from-yellow-50 to-white border-yellow-200 shadow-md ring-1 ring-yellow-100";
+            icon = `<div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 shadow-sm"><i class="fas fa-trophy text-sm"></i></div>`;
+            scale = "transform hover:scale-105 z-10";
+        } else if (rank === 2) {
+            rankStyle = "bg-white border-slate-200 shadow-sm";
+            icon = `<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+        } else if (rank === 3) {
+            rankStyle = "bg-white border-orange-100 shadow-sm";
+            icon = `<div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+        }
+
+        html += `
+            <div class="relative flex items-center justify-between p-4 rounded-xl border ${rankStyle} transition-all duration-300 ${scale} hover:shadow-lg group">
+                <div class="flex items-center gap-4">
+                    ${icon}
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h4>
+                        ${rank === 1 ? '<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">Paling Unggul</span>' : ''}
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="block font-black text-slate-700 text-lg group-hover:text-orange-600 transition-colors">
+                        ${formatRupiah(item.total)}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-xs text-slate-400">Data diperbarui secara real-time berdasarkan input masuk.</p>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+    container.classList.remove('hidden');
 }
 
 function renderRekapTable(cls) {
@@ -1605,6 +1718,9 @@ async function loadRiwayat() {
             renderHomeLatestDonations(); // Tampilkan di halaman depan
             renderPagination();
             renderRiwayatList();
+            
+            // Render leaderboard jika data sudah siap
+            renderGlobalLeaderboard();
 
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
@@ -1751,7 +1867,7 @@ function renderHomeLatestDonations() {
     
     <div class="relative bg-white rounded-2xl p-5 border border-slate-200 shadow-sm group-hover:shadow-xl group-hover:border-blue-300 group-hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center h-full text-center overflow-hidden">
         
-        <div class="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-10 transition-opacity rotate-12">
+        <div class="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-1 transition-opacity rotate-12">
             <i class="fas fa-layer-group text-8xl text-blue-600"></i>
         </div>
 
