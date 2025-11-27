@@ -1242,32 +1242,113 @@ function setupWizardLogic() {
                     // TAMPILAN QRIS
                     paymentDetails = `
                         <div class="relative overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-xl">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 pointer-events-none translate-x-10 -translate-y-10"></div>
-                            <div class="absolute bottom-0 left-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-10 translate-y-10"></div>
-                            <div class="relative z-10 p-6 md:p-8 text-center">
-                                <div class="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm text-slate-700 text-2xl"><i class="fas fa-qrcode"></i></div>
-                                <h4 class="font-black text-slate-800 text-xl mb-1">Pindai QRIS Pilihan Anda</h4>
-                                <p class="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Klik gambar untuk memperbesar atau mengunduh kode QR.</p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                    <div onclick="openQrisModal('bni')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer"><div class="absolute top-3 right-3 z-20 bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-1 rounded-md border border-orange-100">BNI</div><div class="relative overflow-hidden rounded-xl"><div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center"><i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i></div><img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BNI"></div><p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-orange-600 transition-colors">Infaq & Shadaqah</p></div>
-                                    <div onclick="openQrisModal('bsi')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-teal-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer"><div class="absolute top-3 right-3 z-20 bg-teal-50 text-teal-600 text-[10px] font-bold px-2 py-1 rounded-md border border-teal-100">BSI</div><div class="relative overflow-hidden rounded-xl"><div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center"><i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i></div><img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BSI"></div><p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-teal-600 transition-colors">Zakat & Wakaf</p></div>
-                                    <div onclick="openQrisModal('bpd')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer"><div class="absolute top-3 right-3 z-20 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md border border-blue-100">BPD</div><div class="relative overflow-hidden rounded-xl"><div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center"><i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i></div><img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BPD"></div><p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-blue-600 transition-colors">Kemanusiaan</p></div>
-                                </div>
-                                <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100"><span class="flex -space-x-2"><div class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">D</div><div class="w-6 h-6 rounded-full bg-green-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">G</div><div class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">O</div></span><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Support All E-Wallet</span></div>
-                            </div>
-                        </div>`;
+    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 pointer-events-none translate-x-10 -translate-y-10"></div>
+    <div class="absolute bottom-0 left-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-10 translate-y-10"></div>
+    
+    <div class="relative z-10 p-6 md:p-8 text-center">
+        <div class="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm text-slate-700 text-2xl">
+            <i class="fas fa-qrcode"></i>
+        </div>
+        <h4 class="font-black text-slate-800 text-xl mb-1">Pindai QRIS Pilihan Anda</h4>
+        <p class="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Klik gambar untuk memperbesar atau mengunduh kode QR.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            
+            <div onclick="openQrisModal('bni')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                <div class="absolute top-3 right-3 z-20 bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm">
+                    <img src="bank-bni.png" alt="BNI" class="h-4 w-auto object-contain">
+                </div>
+                
+                <div class="relative overflow-hidden rounded-xl">
+                    <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
+                    </div>
+                    <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BNI">
+                </div>
+                <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-orange-600 transition-colors">Infaq & Shadaqah</p>
+            </div>
+
+            <div onclick="openQrisModal('bsi')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-teal-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                <div class="absolute top-3 right-3 z-20 bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm">
+                    <img src="bank-bsi.png" alt="BSI" class="h-4 w-auto object-contain">
+                </div>
+
+                <div class="relative overflow-hidden rounded-xl">
+                    <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
+                    </div>
+                    <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BSI">
+                </div>
+                <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-teal-600 transition-colors">Zakat & Wakaf</p>
+            </div>
+
+            <div onclick="openQrisModal('bpd')" class="group relative bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                <div class="absolute top-3 right-3 z-20 bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm">
+                    <img src="bank-bpd.png" alt="BPD" class="h-4 w-auto object-contain">
+                </div>
+
+                <div class="relative overflow-hidden rounded-xl">
+                    <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 drop-shadow-md"></i>
+                    </div>
+                    <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" class="w-full h-auto object-cover mix-blend-multiply" alt="QRIS BPD">
+                </div>
+                <p class="mt-3 text-xs font-bold text-slate-600 group-hover:text-blue-600 transition-colors">Kemanusiaan</p>
+            </div>
+
+        </div>
+        
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100">
+            <span class="flex -space-x-2">
+                <div class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">D</div>
+                <div class="w-6 h-6 rounded-full bg-green-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">G</div>
+                <div class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">O</div>
+            </span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Support All E-Wallet</span>
+        </div>
+    </div>
+</div>`;
                 } else if (donasiData.metode === 'Transfer') {
                     // TAMPILAN TRANSFER
                     paymentDetails = `
                         <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-                            <div class="bg-slate-50 p-6 border-b border-slate-100 text-center"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-200 shadow-sm text-blue-600 text-xl"><i class="fas fa-university"></i></div><h4 class="font-black text-slate-800 text-lg">Transfer Bank</h4><p class="text-slate-500 text-sm">Silakan transfer ke salah satu rekening resmi Lazismu di bawah ini.</p></div>
-                            <div class="p-6 md:p-8 space-y-4">
-                                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0 border border-orange-100 group-hover:scale-110 transition-transform"><i class="fas fa-wallet"></i></div><div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank BNI</p><p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">3440 000 348</p></div></div><button onclick="copyText('3440000348')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white border border-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening"><i class="far fa-copy"></i><span class="hidden md:inline text-xs font-bold">Salin</span></button></div>
-                                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-teal-300 transition-all duration-300"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shrink-0 border border-teal-100 group-hover:scale-110 transition-transform"><i class="fas fa-star-and-crescent"></i></div><div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank Syariah Ind (BSI)</p><p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">7930 030 303</p></div></div><button onclick="copyText('7930030303')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white border border-teal-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening"><i class="far fa-copy"></i><span class="hidden md:inline text-xs font-bold">Salin</span></button></div>
-                                <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 border border-blue-100 group-hover:scale-110 transition-transform"><i class="fas fa-building"></i></div><div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">BPD DIY Syariah</p><p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">801 241 004 624</p></div></div><button onclick="copyText('801241004624')" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening"><i class="far fa-copy"></i><span class="hidden md:inline text-xs font-bold">Salin</span></button></div>
-                            </div>
-                            <div class="bg-yellow-50 px-6 py-4 border-t border-yellow-100 flex items-start gap-3"><i class="fas fa-info-circle text-yellow-600 mt-0.5"></i><p class="text-xs text-yellow-800 leading-relaxed">Mohon pastikan nominal transfer sesuai hingga <strong>3 digit terakhir</strong> jika diminta, untuk memudahkan verifikasi otomatis sistem kami.</p></div>
-                        </div>`;
+    <div class="bg-slate-50 p-6 border-b border-slate-100 text-center">
+        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-200 shadow-sm text-blue-600 text-xl">
+            <i class="fas fa-university"></i>
+        </div>
+        <h4 class="font-black text-slate-800 text-lg">Transfer Bank</h4>
+        <p class="text-slate-500 text-sm">Silakan transfer ke salah satu rekening resmi Lazismu di bawah ini.</p>
+    </div>
+    
+    <div class="p-6 md:p-8 space-y-4">
+        
+        <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 border border-orange-100 group-hover:scale-110 transition-transform p-2">
+                    <img src="bank-bni.png" alt="BNI" class="w-full h-full object-contain mix-blend-multiply">
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank BNI</p>
+                    <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">3440 000 348</p>
+                </div>
+            </div>
+            <button onclick="copyText('3440000348', this)" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white border border-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn" title="Salin Nomor Rekening">
+                <i class="far fa-copy"></i>
+                <span class="hidden md:inline text-xs font-bold">Salin</span>
+            </button>
+        </div>
+
+        <div class="group relative bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm hover:shadow-lg hover:border-teal-300 transition-all duration-300">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center shrink-0 border border-teal-100 group-hover:scale-110 transition-transform p-2">
+                    <img src="bank-bsi.png" alt="BSI" class="w-full h-full object-contain mix-blend-multiply">
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Bank Syariah Ind (BSI)</p>
+                    <p class="font-mono font-bold text-slate-800 text-lg md:text-xl tracking-tight">7930 030 303</p>
+                </div>
+            </div>
+            <button onclick="copyText('7930030303', this)" class="w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white border border-teal-100 transition-all active:scale-95 flex items-`;
                 } else {
                     // TAMPILAN TUNAI (KANTOR)
                     paymentDetails = `
@@ -1498,58 +1579,101 @@ function renderHomeLatestDonations() {
         }
 
         return `
-        <div class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md border border-slate-100 transition-all duration-300 group hover:-translate-y-1 h-full flex flex-col justify-between">
-            <div>
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-full ${bgIcon} flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas ${iconClass}"></i>
-                    </div>
-                    <span class="text-[10px] font-bold ${bgBadge} border px-2 py-1 rounded-full truncate max-w-[100px]">${displayType}</span>
-                </div>
-                <div>
-                    <h5 class="font-bold text-slate-800 text-sm mb-1 truncate" title="${item.NamaDonatur || 'Hamba Allah'}">
-                        ${item.NamaDonatur || 'Hamba Allah'}
-                    </h5>
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-xs text-slate-400 font-medium">Rp</span>
-                        <span class="text-lg font-black text-slate-800 group-hover:text-brand-orange transition-colors">${parseInt(item.Nominal).toLocaleString('id-ID')}</span>
-                    </div>
-                </div>
+        <div class="relative bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 border border-slate-100 transition-all duration-300 group hover:-translate-y-1 h-full flex flex-col justify-between overflow-hidden">
+    <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 rotate-12">
+        <i class="fas ${iconClass} text-9xl text-slate-800"></i>
+    </div>
+
+    <div class="relative z-10">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl ${bgIcon} flex items-center justify-center text-lg shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform duration-300">
+                <i class="fas ${iconClass}"></i>
             </div>
-            <div class="mt-3 pt-3 border-t border-slate-50 flex items-center gap-2 text-[10px] text-slate-400">
-                <i class="far fa-clock"></i>
-                <span>${timeAgo(item.Timestamp)}</span>
+            
+            <span class="text-[10px] font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                ${displayType}
+            </span>
+        </div>
+
+        <div>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Muzaki</p>
+            
+            <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${item.NamaDonatur || 'Hamba Allah'}">
+                ${item.NamaDonatur || 'Hamba Allah'}
+            </h5>
+
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-orange-200 group-hover:bg-orange-50/30 transition-colors">
+                <div class="flex items-baseline gap-1">
+                    <span class="text-xs text-slate-500 font-medium">Rp</span>
+                    <span class="text-xl md:text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">
+                        ${parseInt(item.Nominal).toLocaleString('id-ID')}
+                    </span>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+        <div class="flex items-center gap-1.5">
+            <i class="far fa-clock text-orange-400"></i>
+            <span>${timeAgo(item.Timestamp)}</span>
+        </div>
+        
+        <div class="flex items-center gap-1 opacity-70">
+           <span class="font-medium text-slate-500">Via Web</span>
+           <i class="fas fa-check-circle text-green-500"></i>
+        </div>
+    </div>
+</div>
         `;
     }).join('');
 
     // --- KARTU 7: AJAKAN DONASI (Accent Color) ---
     html += `
-        <div onclick="showPage('donasi')" class="group relative bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-5 shadow-lg shadow-orange-500/20 text-white cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center text-center h-full min-h-[180px] overflow-hidden border border-orange-400/50">
-            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-            <div class="relative z-10">
-                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition duration-300">
-                    <i class="fas fa-hand-holding-heart text-2xl"></i>
-                </div>
-                <h5 class="font-bold text-lg mb-1 leading-tight">Mari Berbagi</h5>
-                <p class="text-xs text-orange-100 mb-3">Tunaikan ZIS Anda sekarang</p>
-                <span class="inline-block bg-white text-orange-600 text-[10px] font-bold px-3 py-1 rounded-full shadow-sm group-hover:shadow-md transition">
-                    Klik di sini
-                </span>
+        <div onclick="showPage('donasi')" class="group relative bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 shadow-xl shadow-orange-500/30 text-white cursor-pointer hover:-translate-y-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full min-h-[180px] overflow-hidden border border-white/20 ring-4 ring-orange-500/10 hover:ring-orange-500/30">
+    
+    <div class="absolute top-[-50%] left-[-50%] w-full h-full bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+    <div class="absolute bottom-[-50%] right-[-50%] w-full h-full bg-yellow-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+
+    <div class="relative z-10">
+        <div class="relative mb-4 mx-auto">
+            <div class="absolute inset-0 bg-white/30 rounded-full blur-lg animate-pulse"></div>
+            <div class="relative w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition duration-300 shadow-inner">
+                <i class="fas fa-hand-holding-heart text-3xl drop-shadow-md group-hover:animate-pulse"></i>
             </div>
         </div>
+
+        <h5 class="font-black text-xl mb-1 tracking-tight">Mari Berbagi</h5>
+        <p class="text-sm text-orange-50 font-medium mb-4 opacity-90">Jemput keberkahan harta Anda hari ini.</p>
+        
+        <span class="inline-flex items-center gap-2 bg-white text-orange-600 text-xs font-bold px-5 py-2 rounded-full shadow-lg group-hover:bg-orange-50 transition-colors">
+            Tunaikan Sekarang <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </span>
+    </div>
+</div>
     `;
 
     // --- KARTU 8: LIHAT SEMUA (Outline Style) ---
     html += `
-        <div onclick="showPage('riwayat')" class="group bg-slate-50 rounded-2xl p-5 border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center h-full min-h-[180px]">
-             <div class="w-12 h-12 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center mb-3 shadow-sm group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all duration-300">
-                <i class="fas fa-arrow-right text-lg group-hover:-rotate-45 transition-transform duration-300"></i>
-             </div>
-             <span class="font-bold text-sm text-slate-500 group-hover:text-blue-600 transition-colors">Lihat Semua</span>
-             <span class="text-xs text-slate-400 mt-1 group-hover:text-blue-400">Arsip Data Lengkap</span>
+        <div onclick="showPage('riwayat')" class="group relative cursor-pointer h-full min-h-[180px] w-full">
+    <div class="absolute inset-0 bg-blue-100 rounded-2xl transform translate-x-2 translate-y-2 rotate-2 group-hover:rotate-6 group-hover:translate-x-3 group-hover:translate-y-3 transition-all duration-300"></div>
+    <div class="absolute inset-0 bg-slate-100 rounded-2xl transform translate-x-1 translate-y-1 rotate-1 group-hover:rotate-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-all duration-300"></div>
+    
+    <div class="relative bg-white rounded-2xl p-5 border border-slate-200 shadow-sm group-hover:shadow-xl group-hover:border-blue-300 group-hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center h-full text-center overflow-hidden">
+        
+        <div class="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-10 transition-opacity rotate-12">
+            <i class="fas fa-layer-group text-8xl text-blue-600"></i>
         </div>
+
+        <div class="relative z-10 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center mb-3 shadow-inner group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
+            <i class="fas fa-arrow-right text-lg group-hover:-rotate-45 transition-transform duration-300"></i>
+        </div>
+        
+        <span class="font-bold text-base text-slate-700 group-hover:text-blue-600 transition-colors">Lihat Semua</span>
+        <span class="text-xs text-slate-400 mt-1 group-hover:text-blue-500/80">Buka arsip lengkap</span>
+    </div>
+</div>
     `;
 
     container.innerHTML = html;
