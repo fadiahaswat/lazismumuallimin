@@ -1,7 +1,7 @@
 // File: data-santri.js
 
 const rawSantriData = `
-1A  21331 Januari
+1A  21331  Januari
 2A	11844	Adelio Daffa Syahrizha
 2A	11853	Ahmad Ahsanur Rizqi
 2A	11855	Ahmad Arkan Sya'bani
