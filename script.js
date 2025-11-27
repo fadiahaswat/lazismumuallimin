@@ -1622,11 +1622,11 @@ function renderHomeLatestDonations() {
         const displayType = subType || type;
 
         if (displayType.includes('Fitrah')) {
-            iconClass = 'fa-leaf';
+            iconClass = 'fa-bowl-rice';
             bgIcon = 'bg-emerald-100 text-emerald-600';
             bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
         } else if (displayType.includes('Maal')) {
-            iconClass = 'fa-coins';
+            iconClass = 'fa-sack-dollar';
             bgIcon = 'bg-amber-100 text-amber-600';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
         } else {
@@ -1970,13 +1970,13 @@ function renderRiwayatList() {
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
         if (displayType.includes('Fitrah')) {
-            iconClass = 'fa-leaf';
+            iconClass = 'fa-bowl-rice';
             bgIcon = 'bg-emerald-100 text-emerald-600';
             borderClass = 'hover:border-emerald-200';
         } else if (displayType.includes('Maal')) {
-            iconClass = 'fa-coins';
-            bgIcon = 'bg-yellow-100 text-yellow-600';
-            borderClass = 'hover:border-yellow-200';
+            iconClass = 'fa-sack-dollar';
+            bgIcon = 'bg-amber-100 text-amber-600';
+            borderClass = 'hover:border-amber-200';
         } else if (displayType.includes('Infaq')) {
             iconClass = 'fa-hand-holding-heart';
             bgIcon = 'bg-orange-100 text-orange-600';
