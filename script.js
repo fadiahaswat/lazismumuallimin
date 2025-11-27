@@ -64,18 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 });
 
-function init() {
+// Tambahkan kata 'async' di depan function
+async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
-    // 1. Cek & Parse Data Santri (Support JSON & TSV)
-    if (typeof rawSantriData !== 'undefined') {
-        console.log("Data Santri ditemukan.");
+    // --- BAGIAN BARU: AMBIL DATA DARI SPREADSHEET ---
+    // Pastikan fungsi loadSantriData sudah ada (dari file santri-data.js)
+    if (typeof loadSantriData === 'function') {
+        // Kita tunggu (await) sampai data selesai diambil
+        await loadSantriData(); 
+    }
+    // -----------------------------------------------
+
+    // 1. Proses Data Santri yang sudah diambil
+    // Kita cek variabel 'santriData' (bukan rawSantriData lagi)
+    if (typeof santriData !== 'undefined' && santriData.length > 0) {
+        console.log("Data Santri ditemukan:", santriData.length);
         parseSantriData();
     } else {
-        console.warn("Peringatan: Variabel 'rawSantriData' tidak ditemukan. Pastikan file data-santri.js dimuat sebelum script.js");
+        console.warn("Data santri belum termuat atau kosong.");
     }
 
-    // 2. Cek Data Kelas
+    // 2. Cek Data Kelas (Sisa kode ke bawah biarkan sama)
     if (typeof classMetaData !== 'undefined') {
         console.log("Data Wali Kelas (classMetaData) ditemukan.");
     }
