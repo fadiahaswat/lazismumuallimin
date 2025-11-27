@@ -1,13 +1,11 @@
 /**
  * ============================================================================
- * SCRIPT UTAMA WEBSITE DONASI LAZISMU
+ * SCRIPT UTAMA WEBSITE DONASI LAZISMU (UPDATED)
  * ============================================================================
- * File ini mengatur semua logika website:
- * 1. Navigasi halaman (pindah dari Home ke Donasi, Riwayat, dll)
- * 2. Formulir Donasi (langkah-langkah wizard dengan desain baru)
- * 3. Menampilkan Berita dari WordPress
- * 4. Menampilkan Riwayat Donasi dari Google Sheets
- * 5. Tampilan pop-up (Modal) QRIS dan Berita
+ * Update Log:
+ * - Support format data santri JSON (Array) dan TSV (String)
+ * - Integrasi Global Leaderboard di halaman Rekap
+ * - Perbaikan logika deteksi data eksternal
  */
 
 // ============================================================================
@@ -22,9 +20,9 @@ const NEWS_PER_PAGE = 6;
 // ============================================================================
 
 let donasiData = {
-    type: null,          // Jenis donasi
-    subType: null,       // Sub jenis
-    nominal: 0,          // Jumlah uang
+    type: null,
+    subType: null,
+    nominal: 0,
     donaturTipe: 'santri', 
     isAlumni: false,      
     alumniTahun: '',      
@@ -67,10 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function init() {
-    // Pengecekan aman untuk variabel global
+    console.log("Memulai inisialisasi aplikasi...");
+
+    // 1. Cek & Parse Data Santri (Support JSON & TSV)
     if (typeof rawSantriData !== 'undefined') {
+        console.log("Data Santri ditemukan.");
         parseSantriData();
+    } else {
+        console.warn("Peringatan: Variabel 'rawSantriData' tidak ditemukan. Pastikan file data-santri.js dimuat sebelum script.js");
     }
+
+    // 2. Cek Data Kelas
+    if (typeof classMetaData !== 'undefined') {
+        console.log("Data Wali Kelas (classMetaData) ditemukan.");
+    }
+
     setupNavigation();
     setupWizardLogic();
     setupHistoryLogic();
@@ -170,31 +179,53 @@ function animateValue(obj, start, end, duration, isCurrency = false) {
 }
 
 // ============================================================================
-// 6. PENGOLAHAN DATA SANTRI
+// 6. PENGOLAHAN DATA SANTRI (DIPERBAIKI)
 // ============================================================================
 let santriDB = {};
 
 function parseSantriData() {
     if (typeof rawSantriData === 'undefined' || !rawSantriData) return;
-    const lines = rawSantriData.trim().split('\n');
-    lines.forEach(line => {
-        const parts = line.split('\t');
-        if (parts.length < 3) return;
 
-        const rombel = parts[0].trim();
-        const nis = parts[1].trim();
-        const nama = parts[2].trim();
-        const level = rombel.charAt(0);
+    // A. JIKA FORMATNYA ARRAY (JSON) - DARI FILE JS MODERN
+    if (Array.isArray(rawSantriData)) {
+        rawSantriData.forEach(item => {
+            const rombel = item.rombel || item.kelas || ""; // Support field 'rombel' atau 'kelas'
+            const nis = item.nis || item.noInduk || "";
+            const nama = item.nama || item.namaLengkap || "";
+            
+            if (!rombel) return;
 
-        if (!santriDB[level]) santriDB[level] = {};
-        if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
+            const level = rombel.charAt(0);
+            if (!santriDB[level]) santriDB[level] = {};
+            if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
 
-        santriDB[level][rombel].push({
-            nama,
-            nis,
-            rombel
+            santriDB[level][rombel].push({ nama, nis, rombel });
         });
-    });
+        return;
+    }
+
+    // B. JIKA FORMATNYA STRING (TSV/CSV) - LEGACY
+    if (typeof rawSantriData === 'string') {
+        const lines = rawSantriData.trim().split('\n');
+        lines.forEach(line => {
+            // Coba split dengan tab (\t) dulu, kalau gagal coba koma (,) atau titik koma (;)
+            let parts = line.split('\t');
+            if (parts.length < 3) parts = line.split(';'); // Fallback CSV semicolon
+            if (parts.length < 3) parts = line.split(','); // Fallback CSV comma
+
+            if (parts.length < 3) return;
+
+            const rombel = parts[0].trim();
+            const nis = parts[1].trim();
+            const nama = parts[2].trim();
+            const level = rombel.charAt(0);
+
+            if (!santriDB[level]) santriDB[level] = {};
+            if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
+
+            santriDB[level][rombel].push({ nama, nis, rombel });
+        });
+    }
 }
 
 // ============================================================================
@@ -713,7 +744,7 @@ function renderGlobalLeaderboard() {
     // Max value for progress bars
     const maxVal = leaderboard[0].total;
 
-    // 3. Render HTML
+    // 3. Render HTML (DESAIN BARU YANG MENARIK)
     let html = `
         <div class="max-w-3xl mx-auto px-2">
             <div class="text-center mb-10">
