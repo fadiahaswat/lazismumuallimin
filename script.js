@@ -629,10 +629,8 @@ function setupRekapLogic() {
 
     if (!lvlSelect || !clsSelect) return;
 
-    // Inisialisasi awal: jika belum ada kelas dipilih, tampilkan leaderboard
-    if (!clsSelect.value) {
-        toggleRekapDisplay(false); // Mode false sekarang menampilkan Leaderboard
-    }
+    // Reset tampilan awal
+    if (!clsSelect.value) toggleRekapDisplay(false);
 
     lvlSelect.onchange = () => {
         const lvl = lvlSelect.value;
@@ -640,6 +638,9 @@ function setupRekapLogic() {
 
         if (lvl && santriDB[lvl]) {
             clsSelect.disabled = false;
+            
+            // 1. TAMPILKAN KELAS FISIK / REGULER (Contoh: 4A, 4B, 4C)
+            // Ini akan menampilkan SEMUA siswa (termasuk tahfizh)
             const classes = Object.keys(santriDB[lvl]).sort();
             classes.forEach(cls => {
                 const opt = document.createElement('option');
@@ -647,21 +648,51 @@ function setupRekapLogic() {
                 opt.innerText = `Kelas ${cls}`;
                 clsSelect.appendChild(opt);
             });
+
+            // 2. TAMPILKAN OPSI KHUSUS TAHFIZH (FILTER)
+            let tahfizhOption = null;
+
+            if (lvl === '2') {
+                tahfizhOption = createOption('tahfizh-2', 'Kelas 2 Tahfizh (Ust. Zhafir)');
+            } 
+            else if (lvl === '3') {
+                tahfizhOption = createOption('tahfizh-3', 'Kelas 3 Tahfizh (Ust. Mukti)');
+            }
+            // LOGIKA GABUNGAN: Muncul di menu Level 4 DAN Level 6
+            else if (lvl === '4' || lvl === '6') {
+                tahfizhOption = createOption('tahfizh-4,6', 'Kelas 4 & 6 Tahfizh (Ust. Faiz)');
+            }
+            else if (lvl === '5') {
+                tahfizhOption = createOption('tahfizh-5', 'Kelas 5 Tahfizh (Ust. Tawakal)');
+            }
+
+            if (tahfizhOption) clsSelect.appendChild(tahfizhOption);
+
         } else {
             clsSelect.disabled = true;
         }
-        // Kembali ke leaderboard jika level diganti/direset
+        
         toggleRekapDisplay(false);
         renderGlobalLeaderboard(); 
     };
 
+    // Helper kecil untuk styling opsi Tahfizh
+    function createOption(val, text) {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.innerText = text;
+        opt.style.fontWeight = 'bold';
+        opt.style.color = '#f97316'; // Warna Orange
+        return opt;
+    }
+
     clsSelect.onchange = () => {
         const cls = clsSelect.value;
         if (cls) {
-            toggleRekapDisplay(true); // Tampilkan detail tabel
+            toggleRekapDisplay(true);
             renderRekapTable(cls);
         } else {
-            toggleRekapDisplay(false); // Tampilkan leaderboard
+            toggleRekapDisplay(false);
             renderGlobalLeaderboard();
         }
     };
