@@ -69,27 +69,19 @@ async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
     // 1. AMBIL DATA DARI INTERNET (PARALEL)
-    // Kita gunakan Promise.all supaya download Data Santri & Data Kelas berjalan BERSAMAAN (lebih cepat)
+    // Menunggu santri-data.js DAN data-kelas.js selesai loading
     const promises = [];
-
     if (typeof loadSantriData === 'function') promises.push(loadSantriData());
     if (typeof loadClassData === 'function') promises.push(loadClassData());
 
-    // Tunggu keduanya selesai
     await Promise.all(promises);
 
-    // 2. LOGIKA SETELAH DATA SIAP
-    // Cek Data Santri
+    // 2. PARSING DATA SANTRI
     if (typeof santriData !== 'undefined' && santriData.length > 0) {
-        console.log("Data Santri OK.");
+        console.log("Data Santri OK:", santriData.length);
         parseSantriData();
-    }
-    
-    // Cek Data Kelas
-    if (typeof classMetaData !== 'undefined' && Object.keys(classMetaData).length > 0) {
-        console.log("Data Wali Kelas OK.");
     } else {
-        console.warn("Data Kelas Kosong/Gagal.");
+        console.warn("Data santri kosong/gagal dimuat.");
     }
 
     // 3. JALANKAN FITUR LAINNYA
