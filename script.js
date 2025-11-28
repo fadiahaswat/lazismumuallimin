@@ -189,32 +189,39 @@ function animateValue(obj, start, end, duration, isCurrency = false) {
 let santriDB = {};
 
 function parseSantriData() {
-    // Kita gunakan variabel 'santriData' yang sudah diisi oleh loadSantriData()
     if (typeof santriData === 'undefined' || !Array.isArray(santriData)) return;
 
-    // Reset database lokal
-    santriDB = {};
+    santriDB = {}; // Reset database lokal
 
     santriData.forEach(item => {
-        // Ambil data sesuai struktur JSON dari Spreadsheet
+        // Ambil data dasar
         const rombel = item.kelas || item.rombel || ""; 
         const nis = item.nis || "";
         const nama = item.nama || "";
         
+        // AMBIL DATA KHUSUS (OVERRIDE)
+        const waliKhusus = item.wali_khusus || "";
+        const musyrifKhusus = item.musyrif_khusus || "";
+
         if (!rombel) return;
 
-        // Ambil digit pertama sebagai level (Contoh: "1A" -> "1")
         const level = rombel.charAt(0);
         
         // Buat struktur object jika belum ada
         if (!santriDB[level]) santriDB[level] = {};
         if (!santriDB[level][rombel]) santriDB[level][rombel] = [];
 
-        // Masukkan data santri
-        santriDB[level][rombel].push({ nama, nis, rombel });
+        // Simpan data lengkap ke database
+        santriDB[level][rombel].push({ 
+            nama, 
+            nis, 
+            rombel, 
+            waliKhusus,   // Simpan info wali khusus
+            musyrifKhusus // Simpan info musyrif khusus
+        });
     });
     
-    console.log("Database Santri Berhasil Disusun:", santriDB);
+    console.log("Database Santri Berhasil Disusun.");
 }
 
 // ============================================================================
