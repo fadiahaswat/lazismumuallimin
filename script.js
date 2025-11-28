@@ -638,34 +638,41 @@ function setupRekapLogic() {
         if (lvl && santriDB[lvl]) {
             clsSelect.disabled = false;
             
-            // 1. TAMPILKAN KELAS FISIK / REGULER (Contoh: 4A, 4B, 4C)
+            // 1. TAMPILKAN KELAS FISIK / REGULER
             const classes = Object.keys(santriDB[lvl]).sort();
             classes.forEach(cls => {
-                const opt = document.createElement('option');
-                opt.value = cls;
-                opt.innerText = `Kelas ${cls}`;
-                clsSelect.appendChild(opt);
+                clsSelect.appendChild(createOption(cls, `Kelas ${cls}`));
             });
 
-            // 2. TAMPILKAN OPSI KHUSUS TAHFIZH
-            // Perubahan: Teks disederhanakan & Style disamakan dengan reguler
-            let tahfizhOption = null;
+            // ============================================================
+            // 2. AUTO-DETECT TAHFIZH (LOGIKA OTOMATIS)
+            // ============================================================
+            
+            // Cek apakah di level ini ada setidaknya 1 anak yang punya Musyrif Khusus?
+            let adaAnakTahfizh = false;
+            classes.forEach(namaKelas => {
+                const dataSatuKelas = santriDB[lvl][namaKelas];
+                // Cek jika ada murid yang kolom musyrifKhusus-nya terisi
+                if (dataSatuKelas.some(s => s.musyrifKhusus && s.musyrifKhusus.trim() !== "")) {
+                    adaAnakTahfizh = true;
+                }
+            });
 
-            if (lvl === '2') {
-                tahfizhOption = createOption('tahfizh-2', 'Kelas 2 Tahfizh');
-            } 
-            else if (lvl === '3') {
-                tahfizhOption = createOption('tahfizh-3', 'Kelas 3 Tahfizh');
-            }
-            // LOGIKA GABUNGAN: Muncul di menu Level 4 DAN Level 6
-            else if (lvl === '4' || lvl === '6') {
-                tahfizhOption = createOption('tahfizh-4,6', 'Kelas 4 & 6 Tahfizh');
-            }
-            else if (lvl === '5') {
-                tahfizhOption = createOption('tahfizh-5', 'Kelas 5 Tahfizh');
+            // Jika ditemukan anak tahfizh, OTOMATIS buatkan tombolnya
+            if (adaAnakTahfizh) {
+                // Kecuali untuk kasus spesial (4 & 6), kita pakai nama standar
+                if (lvl !== '4' && lvl !== '6') {
+                    clsSelect.appendChild(createOption(`tahfizh-${lvl}`, `Kelas ${lvl} Tahfizh`));
+                }
             }
 
-            if (tahfizhOption) clsSelect.appendChild(tahfizhOption);
+            // ============================================================
+            // 3. LOGIKA SPESIAL GABUNGAN (Tetap Manual untuk Lintas Level)
+            // ============================================================
+            // Karena ini menggabungkan dua level berbeda, harus ditulis manual
+            if (lvl === '4' || lvl === '6') {
+                clsSelect.appendChild(createOption('tahfizh-4,6', 'Kelas 4 & 6 Tahfizh'));
+            }
 
         } else {
             clsSelect.disabled = true;
@@ -675,12 +682,11 @@ function setupRekapLogic() {
         renderGlobalLeaderboard(); 
     };
 
-    // Helper sederhana untuk membuat option standar
+    // Helper sederhana
     function createOption(val, text) {
         const opt = document.createElement('option');
         opt.value = val;
         opt.innerText = text;
-        // Style khusus (bold/warna) sudah DIHAPUS agar terlihat sama dengan kelas biasa
         return opt;
     }
 
