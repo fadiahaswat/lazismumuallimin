@@ -872,34 +872,99 @@ function renderRekapTable(cls) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    const level = cls.charAt(0);
-    const students = santriDB[level] ? santriDB[level][cls] : [];
+    let students = [];
+    let namaWali = "";
+    let namaMusyrif = "";
 
-    if (!students) return;
+    // === SKENARIO 1: PILIHAN KHUSUS TAHFIZH (VIA ID 'tahfizh-...') ===
+    if (cls.startsWith('tahfizh-')) {
+        // Ambil target level, misal "4,6" jadi array ["4", "6"]
+        const targetLevels = cls.replace('tahfizh-', '').split(',');
+
+        targetLevels.forEach(lvl => {
+            if (santriDB[lvl]) {
+                Object.keys(santriDB[lvl]).forEach(realClass => {
+                    const classData = santriDB[lvl][realClass];
+                    // FILTER: Hanya ambil yang punya Musyrif Khusus (Tidak Kosong)
+                    const filtered = classData.filter(s => s.musyrifKhusus && s.musyrifKhusus.trim() !== "");
+                    students = students.concat(filtered);
+                });
+            }
+        });
+
+        namaWali = "Gabungan Lintas Kelas";
+        // Ambil nama musyrif dari anak pertama yg ditemukan (misal: Ust. Faiz)
+        namaMusyrif = students.length > 0 ? students[0].musyrifKhusus : "-";
+    } 
+    
+    // === SKENARIO 2: PILIHAN KELAS STANDAR (MISAL '4A') ===
+    else {
+        const level = cls.charAt(0);
+        // AMBIL SEMUA: Tidak ada filter, jadi anak Tahfizh pun tetap masuk sini untuk laporan Wali Kelas.
+        students = santriDB[level] ? santriDB[level][cls] : [];
+        
+        // Ambil info Wali Kelas & Musyrif default dari data-kelas.js
+        const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
+            wali: '-',
+            musyrif: '-'
+        };
+        namaWali = meta.wali;
+        namaMusyrif = meta.musyrif; // Menampilkan Musyrif Asrama (Reguler)
+    }
+
+    // === RENDER TABEL ===
+
+    if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td></tr>';
+        
+        // Kosongkan header info
+        document.getElementById('rekap-wali').innerText = "-";
+        document.getElementById('rekap-musyrif').innerText = "-";
+        document.getElementById('rekap-total-kelas').innerText = "Rp 0";
+        return;
+    }
+
+    // Urutkan nama (Penting untuk kelas gabungan)
+    students.sort((a, b) => a.nama.localeCompare(b.nama));
 
     let totalKelas = 0;
 
     students.forEach((s, index) => {
-        let qris = 0,
-            transfer = 0,
-            tunai = 0;
+        let qris = 0, transfer = 0, tunai = 0;
 
+        // Hitung Donasi (Cek Nama & Kelas ASLI si Anak)
         riwayatData.allData.forEach(d => {
-            if (d.NamaSantri && d.NamaSantri.includes(s.nama) && (d.KelasSantri === cls || d.rombelSantri === cls)) {
+            const matchNama = d.NamaSantri && d.NamaSantri.includes(s.nama);
+            const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
+
+            if (matchNama && matchKelas) {
                 const nom = parseInt(d.Nominal) || 0;
                 if (d.MetodePembayaran === 'QRIS') qris += nom;
                 else if (d.MetodePembayaran === 'Transfer') transfer += nom;
                 else tunai += nom;
             }
         });
+        
         const subtotal = qris + transfer + tunai;
         totalKelas += subtotal;
+
+        // Label Kelas (Muncul jika mode Tahfizh Gabungan, biar Ust Faiz tau asalnya)
+        const badgeKelas = cls.startsWith('tahfizh-') ? 
+            `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
+
+        // Label Tahfizh (Muncul jika mode Kelas Biasa, biar Wali Kelas tau statusnya)
+        let labelTahfizh = '';
+        if (!cls.startsWith('tahfizh-') && s.musyrifKhusus) {
+             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
+        }
 
         const tr = document.createElement('tr');
         tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
         tr.innerHTML = `
             <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
-            <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">${s.nama}</td>
+            <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">
+                ${s.nama} ${badgeKelas} ${labelTahfizh}
+            </td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${tunai > 0 ? formatRupiah(tunai) : '-'}</td>
@@ -908,16 +973,13 @@ function renderRekapTable(cls) {
         tbody.appendChild(tr);
     });
 
-    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
-        wali: 'Belum Ditentukan',
-        musyrif: 'Belum Ditentukan'
-    };
+    // Update Header Tabel dengan Data yang Benar
     const elWali = document.getElementById('rekap-wali');
     const elMusyrif = document.getElementById('rekap-musyrif');
     const elTotal = document.getElementById('rekap-total-kelas');
 
-    if (elWali) elWali.innerText = meta.wali;
-    if (elMusyrif) elMusyrif.innerText = meta.musyrif;
+    if (elWali) elWali.innerText = namaWali;
+    if (elMusyrif) elMusyrif.innerText = namaMusyrif;
     if (elTotal) elTotal.innerText = formatRupiah(totalKelas);
 }
 
