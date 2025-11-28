@@ -54,36 +54,87 @@
     </script>
 </head>
 <body class="text-slate-600 flex flex-col min-h-screen font-sans antialiased">
-    <div id="app-preloader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+    <div id="app-preloader" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-hidden font-sans">
     
-    <div class="relative mb-6">
-        <div class="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-75"></div>
-        <div class="relative w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-xl border border-slate-100">
-            <i class="fas fa-heart text-4xl text-orange-500 animate-pulse"></i>
-        </div>
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-orange-200/30 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200/30 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
     </div>
 
-    <h3 class="text-xl font-black text-slate-800 mb-2 tracking-tight">Lazismu Mu'allimin</h3>
-    
-    <p id="loader-text" class="text-sm text-slate-500 font-medium animate-pulse">Menghubungkan ke Server...</p>
+    <div class="relative z-10 flex flex-col items-center">
+        <div class="relative mb-8">
+            <div class="absolute inset-0 bg-orange-500/20 rounded-full animate-ping-slow"></div>
+            
+            <div class="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/10 border-4 border-white ring-4 ring-orange-50 overflow-hidden">
+                <img src="logo.png" alt="Lazismu Logo" class="h-16 w-auto object-contain animate-breathe">
+            </div>
+        </div>
 
-    <div class="w-48 h-1 bg-slate-100 rounded-full mt-6 overflow-hidden">
-        <div class="h-full bg-gradient-to-r from-orange-400 to-red-500 w-1/3 animate-[loadingBar_1s_infinite_linear]"></div>
+        <div class="text-center mb-8">
+            <h3 class="text-3xl font-black text-slate-800 mb-1 tracking-tight">Lazismu Mu'allimin</h3>
+            <p class="text-sm text-orange-600 font-bold uppercase tracking-widest opacity-80">Menempa Kader, Memberdaya Umat</p>
+        </div>
+        
+        <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-8 animate-fade-in-up">
+            <i class="fas fa-circle-notch fa-spin text-orange-500"></i>
+            <p id="loader-text" class="text-sm text-slate-600 font-medium w-48 text-center">Menghubungkan ke Server...</p>
+        </div>
+
+        <div class="w-64 h-1.5 bg-slate-200 rounded-full overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/50 animate-shimmer-fast"></div>
+            <div class="h-full bg-gradient-to-r from-orange-400 via-red-500 to-orange-400 w-[40%] animate-loading-bar rounded-full relative z-10"></div>
+        </div>
     </div>
 
 </div>
 
 <style>
-    @keyframes loadingBar {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(300%); }
+    /* Animasi Bar Loading yang lebih halus */
+    @keyframes loadingBarSmooth {
+        0% { transform: translateX(-150%); }
+        100% { transform: translateX(250%); }
     }
+    .animate-loading-bar {
+        animation: loadingBarSmooth 1.5s ease-in-out infinite;
+    }
+
+    /* Animasi 'Bernapas' untuk Logo */
+    @keyframes breathe {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    .animate-breathe {
+        animation: breathe 3s ease-in-out infinite;
+    }
+
+    /* Ping yang lebih lambat */
+    .animate-ping-slow {
+        animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* Pulse untuk background blobs */
+    .animate-pulse-slow {
+        animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    /* Efek Shimmer cepat */
+    @keyframes shimmerFast {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    .animate-shimmer-fast {
+        animation: shimmerFast 1s infinite linear;
+    }
+
+    /* Class untuk menghilangkan preloader (dipakai di JS) */
     .fade-out {
         opacity: 0;
         pointer-events: none;
+        transform: scale(1.05); /* Sedikit membesar saat menghilang */
     }
 </style>
-
+    
     <div id="toast-container"></div>
 
     <div id="hubungi-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300" role="dialog" aria-modal="true">
@@ -2223,6 +2274,7 @@
 
 </body>
 </html>
+
 
 
 
