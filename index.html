@@ -866,6 +866,7 @@
              
              <section id="qris-section" class="py-20 relative overflow-hidden bg-slate-50">
     
+    <!-- Background Effects -->
     <div class="absolute inset-0 opacity-30 pointer-events-none">
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
         <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px]" style="animation-delay: 2s"></div>
@@ -874,14 +875,17 @@
 
     <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
         
+        <!-- Header -->
         <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
             <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-xs font-black tracking-widest uppercase mb-4 border border-orange-200">Donasi Mudah</span>
             <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
-            <p class="text-slate-500 text-lg">Pilih metode transfer bank atau scan QRIS langsung di bawah ini.</p>
+            <p class="text-slate-500 text-lg">Pilih metode transfer bank, scan QRIS, atau kunjungi kantor layanan kami.</p>
         </div>
 
+        <!-- Grid Bank & QRIS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             
+            <!-- BNI -->
             <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
                 <div class="h-3 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
                 
@@ -913,6 +917,7 @@
                 </div>
             </div>
 
+            <!-- BSI -->
             <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
                 <div class="h-3 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
                 
@@ -944,6 +949,7 @@
                 </div>
             </div>
 
+            <!-- BPD DIY -->
             <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
                 <div class="h-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
                 
@@ -977,55 +983,60 @@
 
         </div>
 
+        <!-- NEW: Layanan Offline Smart Card -->
         <div class="max-w-3xl mx-auto px-4 mt-16 text-center">
-    <div class="group relative inline-flex flex-col md:flex-row items-center gap-5 bg-white p-4 pr-4 md:pr-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 hover:border-emerald-200 transition-all duration-300 hover:-translate-y-1">
-        
-        <div class="w-16 h-16 md:w-24 md:h-24 rounded-[1.5rem] bg-gradient-to-br from-emerald-50 to-green-100 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform duration-500 self-start md:self-center">
-            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-emerald-600">
-                <i class="fas fa-hand-holding-usd text-lg group-hover:animate-bounce"></i>
+            <div class="group relative inline-flex flex-col md:flex-row items-center gap-5 bg-white p-4 pr-4 md:pr-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 hover:border-emerald-200 transition-all duration-300 hover:-translate-y-1">
+                
+                <!-- Icon Area -->
+                <div class="w-16 h-16 md:w-24 md:h-24 rounded-[1.5rem] bg-gradient-to-br from-emerald-50 to-green-100 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform duration-500 self-start md:self-center">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-emerald-600">
+                        <i class="fas fa-hand-holding-usd text-lg group-hover:animate-bounce"></i>
+                    </div>
+                </div>
+
+                <!-- Text Content -->
+                <div class="text-center md:text-left flex-1 min-w-0 px-2 md:px-0">
+                    <div class="inline-flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Layanan Offline</p>
+                    </div>
+                    
+                    <h4 class="text-lg font-bold text-slate-800 leading-tight mb-1">Lazismu Mu'allimin</h4>
+                    <p class="text-xs text-slate-500 mb-3 flex items-center justify-center md:justify-start gap-1">
+                        <i class="fas fa-map-marker-alt text-emerald-500"></i>
+                        Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta
+                    </p>
+
+                    <!-- Jam Operasional Badge -->
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                        <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Senin - Jumat">
+                            <i class="far fa-clock text-orange-500 text-[10px]"></i>
+                            <div class="text-[10px] text-slate-600 font-medium">
+                                <span class="font-bold">Sen-Jum:</span> 08.00-15.00
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Sabtu">
+                            <i class="far fa-calendar-alt text-blue-500 text-[10px]"></i>
+                            <div class="text-[10px] text-slate-600 font-medium">
+                                <span class="font-bold">Sabtu:</span> 08.00-12.00
+                            </div>
+                        </div>
+                        <div class="bg-red-50 border border-red-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Jam Istirahat">
+                            <i class="fas fa-mug-hot text-red-500 text-[10px]"></i>
+                            <div class="text-[10px] text-red-600 font-medium">
+                                <span class="font-bold">Rehat:</span> 12.00-13.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <a href="https://maps.app.goo.gl/Lp1CYYvfVHYS4PGn7" target="_blank" class="w-full md:w-auto bg-slate-900 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-xs transition-colors shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 group/btn shrink-0">
+                    <span>Buka Maps</span>
+                    <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
+                </a>
             </div>
         </div>
-
-        <div class="text-center md:text-left flex-1 min-w-0 px-2 md:px-0">
-            <div class="inline-flex items-center gap-2 mb-1">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Layanan Offline</p>
-            </div>
-            
-            <h4 class="text-lg font-bold text-slate-800 leading-tight mb-1">Lazismu Mu'allimin</h4>
-            <p class="text-xs text-slate-500 mb-3 flex items-center justify-center md:justify-start gap-1">
-                <i class="fas fa-map-marker-alt text-emerald-500"></i>
-                Jl. Letjen S. Parman No.68, Yk
-            </p>
-
-            <div class="flex flex-wrap justify-center md:justify-start gap-2">
-                <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Senin - Jumat">
-                    <i class="far fa-clock text-orange-500 text-[10px]"></i>
-                    <div class="text-[10px] text-slate-600 font-medium">
-                        <span class="font-bold">Sen-Jum:</span> 08.00-15.00
-                    </div>
-                </div>
-                <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Sabtu">
-                    <i class="far fa-calendar-alt text-blue-500 text-[10px]"></i>
-                    <div class="text-[10px] text-slate-600 font-medium">
-                        <span class="font-bold">Sabtu:</span> 08.00-12.00
-                    </div>
-                </div>
-                <div class="bg-red-50 border border-red-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Jam Istirahat">
-                    <i class="fas fa-mug-hot text-red-500 text-[10px]"></i>
-                    <div class="text-[10px] text-red-600 font-medium">
-                        <span class="font-bold">Rehat:</span> 12.00-13.00
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <a href="https://maps.app.goo.gl/Lp1CYYvfVHYS4PGn7" target="_blank" class="w-full md:w-auto bg-slate-900 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-xs transition-colors shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 group/btn shrink-0">
-            <span>Buka Maps</span>
-            <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
-        </a>
-    </div>
-</div>
 
     </div>
 </section>
@@ -2328,6 +2339,7 @@
 
 </body>
 </html>
+
 
 
 
