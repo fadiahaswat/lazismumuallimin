@@ -750,6 +750,7 @@ function renderGlobalLeaderboard() {
     // 1. Agregasi Data per Kelas
     const classTotals = {};
     riwayatData.allData.forEach(d => {
+        // Kita gunakan Kelas Fisik (Rombel) untuk leaderboard
         const rombel = d.KelasSantri || d.rombelSantri;
         if (rombel) {
             const val = parseInt(d.Nominal) || 0;
@@ -775,67 +776,104 @@ function renderGlobalLeaderboard() {
     // Max value for progress bars
     const maxVal = leaderboard[0].total;
 
-    // 3. Render HTML (DESAIN BARU YANG MENARIK)
+    // 3. Render HTML (DESAIN BARU: LEBIH PREMIUM & INFORMATIF)
     let html = `
         <div class="max-w-3xl mx-auto px-2">
             <div class="text-center mb-10">
-                <span class="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 border border-orange-100">Live Update</span>
-                <h3 class="text-2xl font-black text-slate-800 mb-2">Papan Peringkat Kebaikan</h3>
-                <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi per kelas saat ini.</p>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 border border-orange-100 shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                    </span>
+                    Live Update
+                </div>
+                <h3 class="text-3xl font-black text-slate-800 mb-2 tracking-tight">Klasemen Kebaikan</h3>
+                <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi tertinggi antar kelas.</p>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-5">
     `;
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
         const percent = (item.total / maxVal) * 100;
         
+        // Ambil Data Wali & Musyrif dari variable global classMetaData
+        // (Pastikan data-kelas.js sudah dimuat sebelumnya)
+        const meta = (typeof classMetaData !== 'undefined' ? classMetaData[item.kelas] : null) || { 
+            wali: '-', 
+            musyrif: '-' 
+        };
+
         let cardClass = "";
-        let rankIcon = "";
+        let rankBadge = "";
         let textClass = "text-slate-700";
         let amountClass = "text-slate-800";
-        let progressColor = "bg-slate-100";
+        let progressGradient = "bg-slate-200";
+        let glowEffect = "";
 
+        // Styling untuk Top 3
         if (rank === 1) {
-            cardClass = "bg-gradient-to-br from-yellow-50 via-white to-white border-yellow-200 shadow-lg shadow-yellow-500/10 scale-105 z-10 ring-1 ring-yellow-100";
-            rankIcon = `<div class="w-10 h-10 rounded-full bg-yellow-400 text-white flex items-center justify-center text-lg shadow-md shadow-yellow-200"><i class="fas fa-crown"></i></div>`;
-            progressColor = "bg-gradient-to-r from-yellow-400 to-orange-400";
+            // JUARA 1 (Emas)
+            cardClass = "bg-gradient-to-r from-yellow-50 via-white to-white border-yellow-300 shadow-lg shadow-yellow-500/10 scale-[1.02] ring-1 ring-yellow-100 relative overflow-hidden";
+            rankBadge = `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-300/50"><i class="fas fa-crown text-xs mb-0.5"></i><span class="font-black text-lg leading-none">1</span></div>`;
+            progressGradient = "bg-gradient-to-r from-yellow-400 to-orange-500";
             amountClass = "text-yellow-700";
-        } else if (rank === 2) {
-            cardClass = "bg-white border-slate-200 shadow-md z-0";
-            rankIcon = `<div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold shadow-sm">2</div>`;
-            progressColor = "bg-slate-400";
-        } else if (rank === 3) {
-            cardClass = "bg-white border-orange-100 shadow-md z-0";
-            rankIcon = `<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold shadow-sm">3</div>`;
-            progressColor = "bg-orange-400";
-            amountClass = "text-orange-700";
-        } else {
+            glowEffect = `<div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-400 rounded-full blur-3xl opacity-10 pointer-events-none"></div>`;
+        } 
+        else if (rank === 2) {
+            // JUARA 2 (Perak)
+            cardClass = "bg-white border-slate-300 shadow-md";
+            rankBadge = `<div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-black text-lg border border-slate-300">2</div>`;
+            progressGradient = "bg-slate-400";
+        } 
+        else if (rank === 3) {
+            // JUARA 3 (Perunggu)
+            cardClass = "bg-white border-orange-200 shadow-md";
+            rankBadge = `<div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-black text-lg border border-orange-200">3</div>`;
+            progressGradient = "bg-orange-400";
+            amountClass = "text-orange-800";
+        } 
+        else {
+            // Ranking Lainnya
             cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors";
-            rankIcon = `<div class="w-6 h-6 rounded-full bg-slate-50 text-slate-400 border border-slate-200 flex items-center justify-center text-xs font-bold">${rank}</div>`;
-            progressColor = "bg-slate-200";
+            rankBadge = `<div class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 border border-slate-200 flex items-center justify-center text-sm font-bold">#${rank}</div>`;
+            progressGradient = "bg-slate-200";
         }
 
         html += `
-            <div class="relative p-4 rounded-2xl border ${cardClass} flex items-center gap-4 group transition-all duration-300">
-                <!-- Rank Icon -->
-                <div class="shrink-0">
-                    ${rankIcon}
+            <div class="relative p-4 md:p-5 rounded-2xl border ${cardClass} flex items-center gap-4 group transition-all duration-500">
+                ${glowEffect}
+                
+                <div class="shrink-0 relative z-10">
+                    ${rankBadge}
                 </div>
 
-                <!-- Class Name & Bar -->
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-end mb-1.5">
-                        <h4 class="font-bold text-base ${textClass}">Kelas ${item.kelas}</h4>
-                        <span class="font-black text-base ${amountClass}">${formatRupiah(item.total)}</span>
+                <div class="flex-1 min-w-0 relative z-10">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-2 gap-1">
+                        <div>
+                            <h4 class="font-black text-lg ${textClass} tracking-tight">Kelas ${item.kelas}</h4>
+                            
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[11px] sm:text-xs text-slate-500 font-medium">
+                                <div class="flex items-center gap-1.5" title="Wali Kelas">
+                                   <i class="fas fa-chalkboard-user text-blue-400"></i> 
+                                   <span class="truncate max-w-[120px] sm:max-w-xs">${meta.wali}</span>
+                                </div>
+                                <div class="flex items-center gap-1.5" title="Musyrif">
+                                   <i class="fas fa-user-shield text-emerald-400"></i> 
+                                   <span class="truncate max-w-[120px] sm:max-w-xs">${meta.musyrif}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 mt-2 md:mt-0">
+                            <span class="font-black text-lg md:text-xl ${amountClass}">${formatRupiah(item.total)}</span>
+                        </div>
                     </div>
                     
-                    <!-- Progress Bar Background -->
-                    <div class="w-full h-2.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
-                        <!-- Actual Progress -->
-                        <div class="h-full rounded-full ${progressColor} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110" style="width: ${percent}%">
-                            <div class="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
+                    <div class="w-full h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                        <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110 shadow-sm" style="width: ${percent}%">
+                            <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
                         </div>
                     </div>
                 </div>
@@ -848,7 +886,7 @@ function renderGlobalLeaderboard() {
             
             <div class="mt-12 flex items-center justify-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                 <i class="fas fa-sync-alt text-xs text-slate-400 animate-spin-slow"></i>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Realtime Data</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Realtime Data Integration</span>
             </div>
         </div>
         
