@@ -750,7 +750,6 @@ function renderGlobalLeaderboard() {
     // 1. Agregasi Data per Kelas
     const classTotals = {};
     riwayatData.allData.forEach(d => {
-        // Kita gunakan Kelas Fisik (Rombel) untuk leaderboard
         const rombel = d.KelasSantri || d.rombelSantri;
         if (rombel) {
             const val = parseInt(d.Nominal) || 0;
@@ -776,9 +775,9 @@ function renderGlobalLeaderboard() {
     // Max value for progress bars
     const maxVal = leaderboard[0].total;
 
-    // 3. Render HTML (DESAIN BARU: LEBIH PREMIUM & INFORMATIF)
+    // 3. Render HTML
     let html = `
-        <div class="max-w-3xl mx-auto px-2">
+        <div class="max-w-4xl mx-auto px-2">
             <div class="text-center mb-10">
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 border border-orange-100 shadow-sm">
                     <span class="relative flex h-2 w-2">
@@ -791,15 +790,14 @@ function renderGlobalLeaderboard() {
                 <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi tertinggi antar kelas.</p>
             </div>
             
-            <div class="space-y-5">
+            <div class="space-y-4">
     `;
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
         const percent = (item.total / maxVal) * 100;
         
-        // Ambil Data Wali & Musyrif dari variable global classMetaData
-        // (Pastikan data-kelas.js sudah dimuat sebelumnya)
+        // Ambil Data Wali & Musyrif
         const meta = (typeof classMetaData !== 'undefined' ? classMetaData[item.kelas] : null) || { 
             wali: '-', 
             musyrif: '-' 
@@ -812,68 +810,68 @@ function renderGlobalLeaderboard() {
         let progressGradient = "bg-slate-200";
         let glowEffect = "";
 
-        // Styling untuk Top 3
+        // Styling Juara
         if (rank === 1) {
-            // JUARA 1 (Emas)
-            cardClass = "bg-gradient-to-r from-yellow-50 via-white to-white border-yellow-300 shadow-lg shadow-yellow-500/10 scale-[1.02] ring-1 ring-yellow-100 relative overflow-hidden";
-            rankBadge = `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-300/50"><i class="fas fa-crown text-xs mb-0.5"></i><span class="font-black text-lg leading-none">1</span></div>`;
+            cardClass = "bg-gradient-to-r from-yellow-50 via-white to-white border-yellow-300 shadow-xl shadow-yellow-500/10 ring-1 ring-yellow-100 relative overflow-hidden transform hover:-translate-y-1";
+            rankBadge = `<div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-300/50"><i class="fas fa-crown text-xs mb-0.5"></i><span class="font-black text-lg md:text-xl leading-none">1</span></div>`;
             progressGradient = "bg-gradient-to-r from-yellow-400 to-orange-500";
             amountClass = "text-yellow-700";
-            glowEffect = `<div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-400 rounded-full blur-3xl opacity-10 pointer-events-none"></div>`;
+            glowEffect = `<div class="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-10 pointer-events-none"></div>`;
         } 
         else if (rank === 2) {
-            // JUARA 2 (Perak)
-            cardClass = "bg-white border-slate-300 shadow-md";
-            rankBadge = `<div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-black text-lg border border-slate-300">2</div>`;
+            cardClass = "bg-white border-slate-300 shadow-md transform hover:-translate-y-0.5";
+            rankBadge = `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-black text-lg border border-slate-300">2</div>`;
             progressGradient = "bg-slate-400";
         } 
         else if (rank === 3) {
-            // JUARA 3 (Perunggu)
-            cardClass = "bg-white border-orange-200 shadow-md";
-            rankBadge = `<div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-black text-lg border border-orange-200">3</div>`;
+            cardClass = "bg-white border-orange-200 shadow-md transform hover:-translate-y-0.5";
+            rankBadge = `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-black text-lg border border-orange-200">3</div>`;
             progressGradient = "bg-orange-400";
             amountClass = "text-orange-800";
         } 
         else {
-            // Ranking Lainnya
             cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors";
             rankBadge = `<div class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 border border-slate-200 flex items-center justify-center text-sm font-bold">#${rank}</div>`;
             progressGradient = "bg-slate-200";
         }
 
         html += `
-            <div class="relative p-4 md:p-5 rounded-2xl border ${cardClass} flex items-center gap-4 group transition-all duration-500">
+            <div class="relative p-4 md:p-5 rounded-2xl border ${cardClass} group transition-all duration-500">
                 ${glowEffect}
                 
-                <div class="shrink-0 relative z-10">
-                    ${rankBadge}
-                </div>
+                <div class="flex items-start gap-4 md:gap-6 relative z-10">
+                    <div class="shrink-0 mt-1">
+                        ${rankBadge}
+                    </div>
 
-                <div class="flex-1 min-w-0 relative z-10">
-                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-2 gap-1">
-                        <div>
-                            <h4 class="font-black text-lg ${textClass} tracking-tight">Kelas ${item.kelas}</h4>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
                             
-                            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[11px] sm:text-xs text-slate-500 font-medium">
-                                <div class="flex items-center gap-1.5" title="Wali Kelas">
-                                   <i class="fas fa-chalkboard-user text-blue-400"></i> 
-                                   <span class="truncate max-w-[120px] sm:max-w-xs">${meta.wali}</span>
-                                </div>
-                                <div class="flex items-center gap-1.5" title="Musyrif">
-                                   <i class="fas fa-user-shield text-emerald-400"></i> 
-                                   <span class="truncate max-w-[120px] sm:max-w-xs">${meta.musyrif}</span>
+                            <div class="w-full">
+                                <h4 class="font-black text-xl md:text-2xl ${textClass} mb-2 tracking-tight">Kelas ${item.kelas}</h4>
+                                
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-start gap-3 text-xs md:text-sm text-slate-600 font-medium">
+                                        <div class="w-5 shrink-0 flex justify-center mt-0.5"><i class="fas fa-chalkboard-user text-blue-400"></i></div>
+                                        <span class="leading-tight break-words">${meta.wali}</span>
+                                    </div>
+                                    <div class="flex items-start gap-3 text-xs md:text-sm text-slate-600 font-medium">
+                                        <div class="w-5 shrink-0 flex justify-center mt-0.5"><i class="fas fa-user-shield text-emerald-400"></i></div>
+                                        <span class="leading-tight break-words">${meta.musyrif}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="flex items-center gap-2 mt-2 md:mt-0">
-                            <span class="font-black text-lg md:text-xl ${amountClass}">${formatRupiah(item.total)}</span>
+                            <div class="mt-1 md:mt-0 md:text-right shrink-0">
+                                <span class="block font-black text-xl md:text-2xl ${amountClass}">${formatRupiah(item.total)}</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block md:inline">Terkumpul</span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="w-full h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
-                        <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110 shadow-sm" style="width: ${percent}%">
-                            <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
+                        
+                        <div class="w-full h-2.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100 mt-2">
+                            <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110 shadow-sm" style="width: ${percent}%">
+                                <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -883,7 +881,6 @@ function renderGlobalLeaderboard() {
 
     html += `
             </div>
-            
             <div class="mt-12 flex items-center justify-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                 <i class="fas fa-sync-alt text-xs text-slate-400 animate-spin-slow"></i>
                 <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Realtime Data Integration</span>
