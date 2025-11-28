@@ -68,30 +68,76 @@ document.addEventListener('DOMContentLoaded', () => {
 async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
-    // 1. AMBIL DATA DARI INTERNET (PARALEL)
-    // Menunggu santri-data.js DAN data-kelas.js selesai loading
-    const promises = [];
-    if (typeof loadSantriData === 'function') promises.push(loadSantriData());
-    if (typeof loadClassData === 'function') promises.push(loadClassData());
+    // A. JALANKAN TEKS LOADING BERJALAN (Biar ga bosen nunggu)
+    const loadingTexts = [
+        "Menghubungkan ke Server...",
+        "Mengambil Data Santri...",
+        "Menyiapkan Data Kelas...",
+        "Hampir Selesai..."
+    ];
+    let textIdx = 0;
+    const textInterval = setInterval(() => {
+        const textEl = document.getElementById('loader-text');
+        if (textEl) {
+            textIdx = (textIdx + 1) % loadingTexts.length;
+            textEl.innerText = loadingTexts[textIdx];
+        }
+    }, 800); // Ganti teks setiap 0.8 detik
 
-    await Promise.all(promises);
+    // B. PROSES AMBIL DATA (YANG BIKIN LAMA)
+    try {
+        const promises = [];
+        if (typeof loadSantriData === 'function') promises.push(loadSantriData());
+        if (typeof loadClassData === 'function') promises.push(loadClassData());
 
-    // 2. PARSING DATA SANTRI
-    if (typeof santriData !== 'undefined' && santriData.length > 0) {
-        console.log("Data Santri OK:", santriData.length);
-        parseSantriData();
-    } else {
-        console.warn("Data santri kosong/gagal dimuat.");
+        // Tunggu semua data selesai didownload
+        await Promise.all(promises);
+
+        // Cek Hasil Data
+        if (typeof santriData !== 'undefined' && santriData.length > 0) {
+            console.log("Data Santri OK:", santriData.length);
+            parseSantriData();
+        } else {
+            console.warn("Data santri kosong/gagal dimuat.");
+        }
+
+        if (typeof classMetaData !== 'undefined' && Object.keys(classMetaData).length > 0) {
+            console.log("Data Wali Kelas OK.");
+        }
+
+        // Jalankan Fungsi Lain
+        setupNavigation();
+        setupWizardLogic();
+        setupHistoryLogic();
+        setupModalLogic();
+        setupRekapLogic();
+        handleInitialLoad();
+        fetchNewsCategories();
+
+    } catch (error) {
+        console.error("Terjadi kesalahan fatal:", error);
+        alert("Gagal memuat data. Silakan refresh halaman.");
+    } finally {
+        // C. HILANGKAN LOADING SCREEN (SUKSES ATAU GAGAL TETAP HILANG)
+        clearInterval(textInterval); // Stop ganti teks
+        
+        const preloader = document.getElementById('app-preloader');
+        if (preloader) {
+            // Ubah teks terakhir jadi "Selesai!"
+            const textEl = document.getElementById('loader-text');
+            if(textEl) textEl.innerText = "Selesai!";
+
+            // Kasih jeda dikit biar smooth
+            setTimeout(() => {
+                preloader.classList.add('fade-out'); // Efek memudar (CSS)
+                
+                // Hapus dari HTML setelah efek pudar selesai (0.5 detik)
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 500);
+        }
     }
-
-    // 3. JALANKAN FITUR LAINNYA
-    setupNavigation();
-    setupWizardLogic();
-    setupHistoryLogic();
-    setupModalLogic();
-    setupRekapLogic();
-    handleInitialLoad();
-    fetchNewsCategories();
 }
 
 // ============================================================================
