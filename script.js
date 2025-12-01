@@ -1631,7 +1631,6 @@ function setupWizardLogic() {
     }
     
     // --- LANGKAH TERAKHIR: Kirim Data ---
-    // --- LANGKAH TERAKHIR: Kirim Data ---
     const btnSubmitFinal = document.getElementById('btn-submit-final');
     if (btnSubmitFinal) {
         btnSubmitFinal.onclick = async () => {
@@ -1646,9 +1645,9 @@ function setupWizardLogic() {
             btn.querySelector('.loading-text').classList.remove('hidden');
 
             // 2. Siapkan Data (Payload)
+            // Pastikan mengirim nominalTotal yang sudah mengandung kode unik
             const payload = {
                 "type": donasiData.subType || donasiData.type,
-                // PENTING: Kirim nominalTotal (yang sudah ada kode uniknya)
                 "nominal": donasiData.nominalTotal, 
                 "nama": donasiData.nama,
                 "hp": donasiData.hp,
@@ -1690,19 +1689,15 @@ function setupWizardLogic() {
                     // Tampilkan Nominal Total
                     finalNominal.innerText = formatRupiah(donasiData.nominalTotal);
 
-                    // ... kode sebelumnya (finalNominal.innerText = ...)
-
-                    // === [FITUR BARU: INFO KODE UNIK FINAL - TAMPILAN RAPI] ===
-                    // Hapus pesan lama jika ada
+                    // === [INFO KODE UNIK FINAL - TAMPILAN RAPI] ===
                     const oldFinalMsg = document.getElementById('msg-kode-unik-final');
                     if (oldFinalMsg) oldFinalMsg.remove();
 
                     if (donasiData.kodeUnik > 0) {
-                        // 1. Kurangi jarak bawah (margin-bottom) angka nominal agar tidak terlalu jauh dengan pesan
+                        // Atur jarak agar rapi
                         finalNominal.classList.remove('mb-4');
                         finalNominal.classList.add('mb-2');
 
-                        // 2. Buat elemen pesan yang lebih cantik
                         const htmlFinalPesan = `
                             <div id="msg-kode-unik-final" class="mb-6 flex justify-center animate-fade-in-up">
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm max-w-xs">
@@ -1718,24 +1713,44 @@ function setupWizardLogic() {
                                 </div>
                             </div>`;
                         
-                        // 3. Masukkan tepat di bawah nominal
                         finalNominal.insertAdjacentHTML('afterend', htmlFinalPesan);
                     }
-                    // ==========================================================
                     // ==========================================
                 }
 
                 if (finalType && summaryType) finalType.innerText = summaryType.innerText;
                 if (finalName && summaryName) finalName.innerText = summaryName.innerText;
 
-                // Tampilkan Modal
+                // Tampilkan Modal Sukses
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
-                // Siapkan Link WhatsApp
-                const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominalTotal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
+                // Siapkan Pesan WhatsApp Pre-filled
+                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nSaya telah melakukan transfer donasi:\n\n• Nama: *${donasiData.nama}*\n• Jenis: ${donasiData.subType || donasiData.type}\n• Nominal: *${formatRupiah(donasiData.nominalTotal)}*\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
+                
                 const btnWa = document.getElementById('btn-wa-confirm');
-                if (btnWa) btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
+                if (btnWa) {
+                    btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
+                    
+                    // === [HIMBAUAN KONFIRMASI WA] ===
+                    const waContainer = btnWa.parentElement; 
+                    const oldAdvice = document.getElementById('wa-verification-advice');
+                    if(oldAdvice) oldAdvice.remove();
+
+                    const verificationAdvice = document.createElement('div');
+                    verificationAdvice.id = 'wa-verification-advice';
+                    verificationAdvice.className = 'mb-3 bg-blue-50 border border-blue-100 rounded-xl p-3 text-center animate-pulse';
+                    verificationAdvice.innerHTML = `
+                        <div class="flex items-center justify-center gap-2 text-blue-700 mb-1">
+                            <i class="fas fa-bell"></i>
+                            <span class="text-xs font-black uppercase tracking-wider">Langkah Terakhir</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-tight">
+                            Agar donasi Anda segera diverifikasi Admin dan status berubah menjadi <strong class="text-green-600">DITERIMA</strong>, mohon kirim bukti transfer sekarang.
+                        </p>
+                    `;
+                    waContainer.insertBefore(verificationAdvice, btnWa);
+                }
 
                 // --- GENERATE TAMPILAN PEMBAYARAN (QRIS/Transfer/Tunai) ---
                 let paymentDetails = '';
