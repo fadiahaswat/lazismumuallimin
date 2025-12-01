@@ -2070,65 +2070,92 @@
             </div>
         </div>
 
-        <div id="donasi-payment-instructions" class="hidden max-w-2xl mx-auto animate-fade-in-up py-10">
+        <div id="donasi-payment-instructions" class="hidden max-w-xl mx-auto py-10 px-4 sm:px-0 font-sans animate-fade-in-up">
     
-    <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white/50 relative overflow-hidden">
+    <div class="bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 relative overflow-hidden ring-1 ring-slate-100">
         
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-emerald-600"></div>
-        <div class="absolute -top-24 -right-24 w-64 h-64 bg-green-500/5 rounded-full blur-3xl"></div>
+        <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500"></div>
+        
+        <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50/50 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-orange-50/50 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none"></div>
 
-        <div class="relative z-10 p-8 md:p-12 text-center">
+        <div class="relative z-10 p-8 md:p-10 text-center">
             
-            <div class="relative inline-block mb-8"> 
-                <div class="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75"></div>
-                <div class="relative w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl ring-4 ring-green-50">
-                    <i class="fas fa-check text-3xl text-green-500"></i>
+            <div class="relative inline-flex justify-center items-center mb-6">
+                <div class="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75 duration-1000"></div>
+                <div class="relative w-24 h-24 bg-gradient-to-br from-white to-green-50 rounded-full flex items-center justify-center shadow-xl ring-4 ring-white border border-green-100">
+                    <i class="fas fa-check-circle text-5xl text-transparent bg-clip-text bg-gradient-to-br from-green-500 to-emerald-600"></i>
                 </div>
             </div>
 
-            <h2 class="text-3xl font-black text-slate-800 mb-2">Alhamdulillah!</h2>
-            <p class="text-slate-500 mb-8 text-sm">Niat baik Anda telah tercatat.</p>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-2 tracking-tight">Alhamdulillah!</h2>
+            <p class="text-slate-500 text-sm md:text-base mb-8 leading-relaxed max-w-xs mx-auto">
+                Niat baik Anda telah kami catat.<br>Semoga menjadi amal jariyah yang abadi.
+            </p>
             
-            <div id="success-prayer-container" class="w-full mb-8"></div>
+            <div id="success-prayer-container" class="w-full mb-8 transform transition-transform duration-500 hover:scale-[1.02]"></div>
 
-            <div class="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-200 relative">
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-slate-200 rotate-45"></div> 
+            <div class="relative bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 p-6 mb-8 group hover:border-orange-300 transition-colors duration-300">
+                <div class="absolute -top-3 -left-3 w-6 h-6 bg-white rounded-full border-b-2 border-r-2 border-slate-100 z-10"></div>
+                <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full border-b-2 border-l-2 border-slate-100 z-10"></div>
+                <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-white rounded-full border-t-2 border-r-2 border-slate-100 z-10"></div>
+                <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full border-t-2 border-l-2 border-slate-100 z-10"></div>
                 
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Donasi</p>
+                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.2em] mb-2">TOTAL TRANSFER</p>
                 
-                <h3 id="final-nominal-display" class="text-3xl font-black text-slate-800 tracking-tight mb-4">Rp 0</h3>
-                
-                <div class="flex justify-between items-center pt-4 border-t border-slate-200 border-dashed text-sm">
-                    <span class="text-slate-500">Jenis Donasi</span>
-                    <span id="final-type-display" class="font-bold text-slate-700 bg-white px-3 py-1 rounded border border-slate-200">Loading...</span>
-                </div>
-                <div class="flex justify-between items-center mt-2 text-sm">
-                    <span class="text-slate-500">Atas Nama</span>
-                    <span id="final-name-display" class="font-bold text-slate-700">Hamba Allah</span>
+                <h3 id="final-nominal-display" class="text-4xl md:text-5xl font-black text-slate-800 tracking-tighter mb-1 drop-shadow-sm group-hover:text-orange-600 transition-colors duration-300">Rp 0</h3>
+                <div class="h-px w-full bg-slate-200 my-5"></div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm group/row">
+                        <span class="text-slate-500 font-medium">Jenis Donasi</span>
+                        <span id="final-type-display" class="font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm group-hover/row:border-orange-200 transition">Loading...</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm group/row">
+                        <span class="text-slate-500 font-medium">Atas Nama</span>
+                        <span id="final-name-display" class="font-bold text-slate-700 border-b border-transparent group-hover/row:border-slate-300 transition-all">Hamba Allah</span>
+                    </div>
                 </div>
             </div>
 
             <div class="text-left mb-8">
-                <p class="text-sm font-bold text-slate-700 mb-3 ml-2 flex items-center gap-2">
-                    <i class="fas fa-wallet text-orange-500"></i> Instruksi Pembayaran:
-                </p>
-                <div id="payment-methods-content" class="bg-white p-0 rounded-xl space-y-4"></div>
+                <div class="flex items-center gap-3 mb-4 pl-1">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm shadow-sm">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-sm uppercase tracking-wide">Metode Pembayaran</span>
+                </div>
+                
+                <div id="payment-methods-content" class="space-y-4"></div>
             </div>
 
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-4">
                 
-                <a id="btn-wa-confirm" href="#" target="_blank" class="w-full group relative overflow-hidden bg-[#25D366] hover:bg-[#1ebc57] text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3">
-                    <div class="absolute inset-0 bg-white/20 skew-x-12 -translate-x-full group-hover:animate-shine"></div>
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                    <span>Konfirmasi via WhatsApp</span>
+                <a id="btn-wa-confirm" href="#" target="_blank" class="relative w-full group overflow-hidden bg-[#25D366] rounded-2xl p-4 shadow-xl shadow-green-500/20 hover:shadow-green-500/40 transition-all duration-300 transform hover:-translate-y-1 ring-4 ring-green-50 hover:ring-green-100">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 -translate-x-full group-hover:animate-shine transition-all duration-1000"></div>
+                    
+                    <div class="relative flex items-center justify-center gap-4 text-white">
+                        <i class="fab fa-whatsapp text-4xl filter drop-shadow-md animate-pulse"></i>
+                        <div class="text-left">
+                            <span class="block text-[10px] font-bold opacity-90 uppercase tracking-widest mb-0.5 text-green-100">Langkah Terakhir</span>
+                            <span class="block text-xl font-black leading-none tracking-tight">Konfirmasi WhatsApp</span>
+                        </div>
+                    </div>
                 </a>
 
-                <button onclick="location.reload()" class="w-full bg-white text-slate-500 hover:text-slate-800 px-6 py-3 rounded-xl font-bold text-sm transition hover:bg-slate-50 border-2 border-transparent hover:border-slate-200 flex items-center justify-center gap-2">
-                    <i class="fas fa-undo-alt"></i> Kembali ke Beranda
+                <button onclick="location.reload()" class="w-full bg-white text-slate-500 hover:text-slate-800 font-bold text-sm py-4 rounded-xl border-2 border-slate-100 hover:border-slate-300 transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <i class="fas fa-undo-alt group-hover:-rotate-180 transition-transform duration-500 text-slate-400 group-hover:text-slate-600"></i>
+                    Kembali ke Beranda
                 </button>
             </div>
             
+            <p class="mt-8 text-[10px] text-slate-400 font-medium opacity-60">
+                Lazismu Mu'allimin &copy; 2025 - Memberi Untuk Negeri
+            </p>
+
         </div>
+    </div>
+</div>
     </div>
 </div>
     </div>
@@ -2346,6 +2373,7 @@
 
 </body>
 </html>
+
 
 
 
