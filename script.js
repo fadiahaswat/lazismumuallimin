@@ -1690,22 +1690,38 @@ function setupWizardLogic() {
                     // Tampilkan Nominal Total
                     finalNominal.innerText = formatRupiah(donasiData.nominalTotal);
 
-                    // === [INFO KODE UNIK DI HALAMAN SUKSES] ===
-                    // Hapus pesan lama biar tidak dobel
+                    // ... kode sebelumnya (finalNominal.innerText = ...)
+
+                    // === [FITUR BARU: INFO KODE UNIK FINAL - TAMPILAN RAPI] ===
+                    // Hapus pesan lama jika ada
                     const oldFinalMsg = document.getElementById('msg-kode-unik-final');
                     if (oldFinalMsg) oldFinalMsg.remove();
 
-                    // Jika ada kode unik, tampilkan peringatan
                     if (donasiData.kodeUnik > 0) {
+                        // 1. Kurangi jarak bawah (margin-bottom) angka nominal agar tidak terlalu jauh dengan pesan
+                        finalNominal.classList.remove('mb-4');
+                        finalNominal.classList.add('mb-2');
+
+                        // 2. Buat elemen pesan yang lebih cantik
                         const htmlFinalPesan = `
-                            <div id="msg-kode-unik-final" class="mt-2">
-                                <p class="text-xs text-orange-500 font-bold bg-orange-50 inline-block px-3 py-1.5 rounded-lg border border-orange-100">
-                                    <i class="fas fa-exclamation-circle mr-1"></i>
-                                    Mohon transfer tepat hingga ${donasiData.kodeUnik} rupiah terakhir.
-                                </p>
+                            <div id="msg-kode-unik-final" class="mb-6 flex justify-center animate-fade-in-up">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm max-w-xs">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 shrink-0">
+                                        <i class="fas fa-exclamation text-sm"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-[10px] font-bold text-yellow-800 uppercase tracking-wide mb-0.5">PENTING</p>
+                                        <p class="text-xs text-slate-600 leading-tight">
+                                            Mohon transfer tepat hingga <span class="font-black text-orange-600 border-b-2 border-orange-200">${donasiData.kodeUnik}</span> digit terakhir agar terverifikasi otomatis.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>`;
+                        
+                        // 3. Masukkan tepat di bawah nominal
                         finalNominal.insertAdjacentHTML('afterend', htmlFinalPesan);
                     }
+                    // ==========================================================
                     // ==========================================
                 }
 
