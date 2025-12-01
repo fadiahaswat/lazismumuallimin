@@ -1639,12 +1639,12 @@ function setupWizardLogic() {
 
             if (!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-            // 1. Loading
+            // 1. Ubah tombol jadi Loading
             btn.disabled = true;
             btn.querySelector('.default-text').classList.add('hidden');
             btn.querySelector('.loading-text').classList.remove('hidden');
 
-            // 2. Payload
+            // 2. Siapkan Data (Payload)
             const payload = {
                 "type": donasiData.subType || donasiData.type,
                 "nominal": donasiData.nominalTotal, 
@@ -1664,25 +1664,25 @@ function setupWizardLogic() {
             };
 
             try {
-                // 3. Kirim ke Server
+                // 3. Kirim ke Google Apps Script
                 await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ action: "create", payload: payload })
                 });
 
-                // 4. Update Tampilan Summary
+                // 4. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');
                 const finalType = document.getElementById('final-type-display');
                 const finalName = document.getElementById('final-name-display');
-                const summaryNominal = document.getElementById('summary-nominal');
                 const summaryType = document.getElementById('summary-type');
                 const summaryName = document.getElementById('summary-nama');
 
+                // Update Teks Ringkasan
                 if (finalNominal) {
                     finalNominal.innerText = formatRupiah(donasiData.nominalTotal);
                     
-                    // Info Kode Unik
+                    // --- INFO KODE UNIK (KUNING) ---
                     const oldFinalMsg = document.getElementById('msg-kode-unik-final');
                     if (oldFinalMsg) oldFinalMsg.remove();
 
@@ -1711,16 +1711,148 @@ function setupWizardLogic() {
                 if (finalType && summaryType) finalType.innerText = summaryType.innerText;
                 if (finalName && summaryName) finalName.innerText = summaryName.innerText;
 
-                // Tampilkan Modal
+                // Tampilkan Modal Sukses (Wadah Utama)
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
-                // WhatsApp Button & Advice
+                // --- 5. GENERATE KONTEN INTRUKSI PEMBAYARAN & DOA ---
+                
+                // A. Generate Doa (Lengkap & Indah)
+                // Ini akan ditaruh di paling atas sesuai request
+                const prayerHTML = `
+                    <div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 to-white rounded-3xl border border-emerald-100 shadow-lg p-8 md:p-10 mb-8 text-center group hover:shadow-xl transition-all duration-500">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-300 via-teal-400 to-emerald-300"></div>
+                        <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+                        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-teal-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white border border-emerald-100 shadow-sm text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="fas fa-praying-hands text-xl"></i></div>
+                            <h3 class="font-arabic text-2xl md:text-3xl font-black text-emerald-900 leading-[2.5] mb-6 drop-shadow-sm tracking-wide" dir="rtl">
+                                آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا
+                            </h3>
+                            <div class="flex items-center justify-center gap-3 opacity-60 mb-6"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span class="w-16 h-0.5 rounded-full bg-gradient-to-r from-transparent via-emerald-300 to-transparent"></span><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span></div>
+                            <p class="text-slate-600 text-sm italic leading-relaxed max-w-2xl mx-auto">
+                                "Semoga Allah memberikan pahala atas apa yang engkau berikan, dan semoga Allah memberkahimu atas apa yang masih ada di tanganmu dan menjadikannya sebagai pembersih (dosa) bagimu."
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                // B. Generate Metode Pembayaran (Desain Modern)
+                let paymentDetails = '';
+                
+                if (donasiData.metode === 'QRIS') {
+                    paymentDetails = `
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                            <div class="flex items-center justify-center gap-2 mb-6">
+                                <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg"><i class="fas fa-qrcode"></i></div>
+                                <h4 class="font-bold text-slate-800 text-lg">Pindai QRIS</h4>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div onclick="openQrisModal('bni')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-orange-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
+                                    <div class="h-8 flex items-center mb-3"><img src="bank-bni.png" class="h-full object-contain"></div>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition">Lihat QR</button>
+                                </div>
+                                <div onclick="openQrisModal('bsi')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-teal-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
+                                    <div class="h-10 flex items-center mb-3"><img src="bank-bsi.png" class="h-full object-contain"></div>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition">Lihat QR</button>
+                                </div>
+                                <div onclick="openQrisModal('bpd')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-blue-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
+                                    <div class="h-8 flex items-center mb-3"><img src="bank-bpd.png" class="h-full object-contain"></div>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition">Lihat QR</button>
+                                </div>
+                            </div>
+                            <p class="text-center text-[10px] text-slate-400 mt-4 bg-slate-50 py-2 rounded-lg"><i class="fas fa-info-circle mr-1"></i> Mendukung GoPay, OVO, Dana, ShopeePay, & Mobile Banking</p>
+                        </div>`;
+                
+                } else if (donasiData.metode === 'Transfer') {
+                    paymentDetails = `
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                            <div class="flex items-center justify-center gap-2 mb-4">
+                                <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-lg"><i class="fas fa-university"></i></div>
+                                <h4 class="font-bold text-slate-800 text-lg">Transfer Bank</h4>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-orange-200 hover:bg-orange-50/30 transition-all gap-4 group">
+                                <div class="flex items-center gap-4 w-full sm:w-auto">
+                                    <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
+                                        <img src="bank-bni.png" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">3440 000 348</p>
+                                    </div>
+                                </div>
+                                <button onclick="copyText('3440000348')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-teal-200 hover:bg-teal-50/30 transition-all gap-4 group">
+                                <div class="flex items-center gap-4 w-full sm:w-auto">
+                                    <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
+                                        <img src="bank-bsi.png" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">7930 030 303</p>
+                                    </div>
+                                </div>
+                                <button onclick="copyText('7930030303')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-teal-500 hover:text-white hover:border-teal-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/30 transition-all gap-4 group">
+                                <div class="flex items-center gap-4 w-full sm:w-auto">
+                                    <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
+                                        <img src="bank-bpd.png" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">804 211 000 000</p>
+                                    </div>
+                                </div>
+                                <button onclick="copyText('804211000000')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-blue-500 hover:text-white hover:border-blue-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                    <i class="far fa-copy"></i> Salin
+                                </button>
+                            </div>
+                        </div>`;
+                
+                } else {
+                    // Tampilan Tunai
+                    paymentDetails = `
+                        <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 text-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-emerald-600 text-3xl"><i class="fas fa-handshake"></i></div>
+                            <h4 class="font-black text-emerald-900 text-xl mb-1">Layanan Kantor</h4>
+                            <p class="text-emerald-700 text-sm">Silakan datang langsung ke kantor Lazismu Mu'allimin.</p>
+                        </div>`;
+                }
+
+                // C. Masukkan ke Container yang Tepat (Sesuai Urutan di HTML Baru)
+                // 1. Masukkan Doa ke Container Atas
+                const prayerContainer = document.getElementById('success-prayer-container');
+                if (prayerContainer) prayerContainer.innerHTML = prayerHTML;
+
+                // 2. Masukkan Payment ke Container Bawah
+                const paymentContainer = document.getElementById('payment-methods-content');
+                if (paymentContainer) paymentContainer.innerHTML = paymentDetails;
+
+                // Tampilkan Wrapper Utama
+                const wizard = document.getElementById('donasi-wizard');
+                if (wizard) wizard.classList.add('hidden');
+
+                const paymentInstr = document.getElementById('donasi-payment-instructions');
+                if (paymentInstr) paymentInstr.classList.remove('hidden');
+
+                // --- 6. SET UP WHATSAPP (Di Bawah) ---
                 const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nSaya telah melakukan transfer donasi:\n\n• Nama: *${donasiData.nama}*\n• Jenis: ${donasiData.subType || donasiData.type}\n• Nominal: *${formatRupiah(donasiData.nominalTotal)}*\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
+                
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) {
                     btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
                     
+                    // --- HIMBAUAN KONFIRMASI (BIRU) ---
                     const waContainer = btnWa.parentElement; 
                     const oldAdvice = document.getElementById('wa-verification-advice');
                     if(oldAdvice) oldAdvice.remove();
@@ -1739,42 +1871,6 @@ function setupWizardLogic() {
                     `;
                     waContainer.insertBefore(verificationAdvice, btnWa);
                 }
-
-                // --- 5. GENERATE TAMPILAN TERPISAH ---
-                
-                // A. Generate Doa
-                const prayerHTML = `
-                    <div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 to-white rounded-3xl border border-emerald-100 shadow-lg p-6 text-center group hover:shadow-xl transition-all duration-500">
-                        <div class="relative z-10">
-                            <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-emerald-100 shadow-sm text-emerald-600 mb-3"><i class="fas fa-praying-hands text-lg"></i></div>
-                            <h3 class="font-arabic text-xl md:text-2xl font-black text-emerald-900 leading-loose mb-3" dir="rtl">آجَرَكَ اللَّهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ اللَّهُ فِيمَا أَبْقَيْتَ، وَجَعَلَهُ لَكَ طَهُورًا</h3>
-                            <p class="text-slate-600 text-xs italic">"Semoga Allah memberikan pahala atas apa yang engkau berikan, dan memberkahimu atas apa yang masih ada di tanganmu."</p>
-                        </div>
-                    </div>`;
-
-                // B. Generate Metode Pembayaran
-                let paymentDetails = '';
-                if (donasiData.metode === 'QRIS') {
-                    paymentDetails = `<div class="bg-white p-6 rounded-2xl border border-slate-200 text-center shadow-sm"><i class="fas fa-qrcode text-4xl text-slate-700 mb-3"></i><h4 class="font-bold text-slate-800">Scan QRIS</h4><p class="text-xs text-slate-500 mb-4">Gunakan E-Wallet pilihan Anda</p><button onclick="openQrisModal('bsi')" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Lihat Kode QR</button></div>`;
-                } else if (donasiData.metode === 'Transfer') {
-                    paymentDetails = `<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3"><div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100"><div class="flex items-center gap-3"><img src="bank-bsi.png" class="h-6 w-auto mix-blend-multiply"><div><p class="text-[10px] font-bold text-slate-400">BSI</p><p class="font-mono font-bold text-slate-800">7930 030 303</p></div></div><button onclick="copyText('7930030303')" class="text-teal-600"><i class="far fa-copy"></i></button></div><div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100"><div class="flex items-center gap-3"><img src="bank-bpd.png" class="h-6 w-auto mix-blend-multiply"><div><p class="text-[10px] font-bold text-slate-400">BPD DIY</p><p class="font-mono font-bold text-slate-800">804 211 000 000</p></div></div><button onclick="copyText('804211000000')" class="text-blue-600"><i class="far fa-copy"></i></button></div></div>`;
-                } else {
-                    paymentDetails = `<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center"><i class="fas fa-handshake text-4xl text-emerald-600 mb-2"></i><p class="text-sm font-bold text-emerald-800">Silakan menuju Kantor Layanan</p></div>`;
-                }
-
-                // C. Masukkan ke Container Masing-Masing
-                const prayerContainer = document.getElementById('success-prayer-container');
-                if (prayerContainer) prayerContainer.innerHTML = prayerHTML;
-
-                const paymentContainer = document.getElementById('payment-methods-content');
-                if (paymentContainer) paymentContainer.innerHTML = paymentDetails;
-
-                // Tampilkan Wrapper Utama
-                const wizard = document.getElementById('donasi-wizard');
-                if (wizard) wizard.classList.add('hidden');
-
-                const paymentInstr = document.getElementById('donasi-payment-instructions');
-                if (paymentInstr) paymentInstr.classList.remove('hidden');
 
             } catch (e) {
                 showToast("Gagal mengirim data: " + e.message, "error");
