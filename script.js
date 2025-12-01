@@ -1572,28 +1572,31 @@ function setupWizardLogic() {
 
             donasiData.metode = method.value;
 
-            // === [UPDATE MULAI DI SINI] ===
-            // Reset dulu ke nominal murni (jika user bolak-balik klik back)
-            if (donasiData.nominalAsli) {
-                donasiData.nominal = donasiData.nominalAsli;
+            // 1. Pastikan Nominal Asli tersimpan aman dulu
+            if (!donasiData.nominalAsli) {
+                donasiData.nominalAsli = donasiData.nominal; 
             } else {
-                donasiData.nominalAsli = donasiData.nominal;
+                // Reset ke nominal asli jika user kembali dan ubah metode
+                donasiData.nominal = donasiData.nominalAsli;
             }
 
-            // Tambahkan Kode Unik jika Transfer/QRIS
+            // 2. Logika Kode Unik (HANYA untuk Transfer & QRIS)
             if (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS') {
-                const kodeUnik = generateUniqueCode();
+                const kodeUnik = generateUniqueCode(); // Pastikan fungsi ini sudah ada di bagian atas
                 donasiData.kodeUnik = kodeUnik;
                 donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
             } else {
-                // Jika Tunai, tidak perlu kode unik
+                // Tunai tidak pakai kode unik
                 donasiData.kodeUnik = 0;
                 donasiData.nominalTotal = donasiData.nominalAsli;
             }
-            // === [UPDATE SELESAI] ===
 
+            // 3. Update Tampilan Halaman Konfirmasi (Step 5)
             document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
-            document.getElementById('summary-nominal').innerText = formatRupiah(donasiData.nominal);
+            
+            // PENTING: Tampilkan nominalTotal (yang sudah ada kode unik)
+            document.getElementById('summary-nominal').innerText = formatRupiah(donasiData.nominalTotal);
+            
             document.getElementById('summary-nama').innerText = donasiData.nama;
             document.getElementById('summary-hp').innerText = donasiData.hp;
             document.getElementById('summary-metode').innerText = donasiData.metode;
@@ -1609,7 +1612,7 @@ function setupWizardLogic() {
             goToStep(5);
         };
     }
-
+    
     // --- LANGKAH TERAKHIR: Kirim Data ---
     const btnSubmitFinal = document.getElementById('btn-submit-final');
     if (btnSubmitFinal) {
@@ -1664,6 +1667,7 @@ function setupWizardLogic() {
                 const summaryType = document.getElementById('summary-type');
                 const summaryName = document.getElementById('summary-nama');
 
+                if (finalNominal) finalNominal.innerText = formatRupiah(donasiData.nominalTotal);
                 if (finalNominal && summaryNominal) finalNominal.innerText = summaryNominal.innerText;
                 if (finalType && summaryType) finalType.innerText = summaryType.innerText;
                 if (finalName && summaryName) finalName.innerText = summaryName.innerText;
