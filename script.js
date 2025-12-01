@@ -229,6 +229,11 @@ function animateValue(obj, start, end, duration, isCurrency = false) {
     window.requestAnimationFrame(step);
 }
 
+function generateUniqueCode() {
+    // Menghasilkan angka acak antara 1 - 999
+    return Math.floor(Math.random() * 999) + 1;
+}
+
 // ============================================================================
 // 6. PENGOLAHAN DATA SANTRI (DIPERBAIKI)
 // ============================================================================
@@ -1567,6 +1572,26 @@ function setupWizardLogic() {
 
             donasiData.metode = method.value;
 
+            // === [UPDATE MULAI DI SINI] ===
+            // Reset dulu ke nominal murni (jika user bolak-balik klik back)
+            if (donasiData.nominalAsli) {
+                donasiData.nominal = donasiData.nominalAsli;
+            } else {
+                donasiData.nominalAsli = donasiData.nominal;
+            }
+
+            // Tambahkan Kode Unik jika Transfer/QRIS
+            if (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS') {
+                const kodeUnik = generateUniqueCode();
+                donasiData.kodeUnik = kodeUnik;
+                donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
+            } else {
+                // Jika Tunai, tidak perlu kode unik
+                donasiData.kodeUnik = 0;
+                donasiData.nominalTotal = donasiData.nominalAsli;
+            }
+            // === [UPDATE SELESAI] ===
+
             document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
             document.getElementById('summary-nominal').innerText = formatRupiah(donasiData.nominal);
             document.getElementById('summary-nama').innerText = donasiData.nama;
@@ -1600,7 +1625,10 @@ function setupWizardLogic() {
 
             const payload = {
                 "type": donasiData.subType || donasiData.type,
-                "nominal": donasiData.nominal,
+                // === [UBAH BAGIAN INI] ===
+                // Kirim nominalTotal (yang sudah ada kode unik), bukan nominal biasa
+                "nominal": donasiData.nominalTotal, 
+                // =========================
                 "nama": donasiData.nama,
                 "hp": donasiData.hp,
                 "email": donasiData.email,
@@ -1643,7 +1671,7 @@ function setupWizardLogic() {
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
-                const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
+                const waMsg = `Assalamu'alaikum, saya ingin konfirmasi donasi kebaikan:\n\nJenis: ${donasiData.subType || donasiData.type}\nNominal: ${formatRupiah(donasiData.nominalTotal)}\nNama: ${donasiData.nama}\nMetode: ${donasiData.metode}\n${donasiData.namaSantri ? `Santri: ${donasiData.namaSantri} (${donasiData.rombelSantri})` : ''}`;
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
 
