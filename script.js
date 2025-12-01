@@ -2342,48 +2342,59 @@ function renderRiwayatList() {
         const donaturName = item.NamaDonatur || item.nama || 'Hamba Allah';
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
-        if (displayType.includes('Fitrah')) {
-            iconClass = 'fa-bowl-rice';
-            bgIcon = 'bg-emerald-100 text-emerald-600';
-            borderClass = 'hover:border-emerald-200';
-        } else if (displayType.includes('Maal')) {
-            iconClass = 'fa-sack-dollar';
-            bgIcon = 'bg-amber-100 text-amber-600';
-            borderClass = 'hover:border-amber-200';
-        } else if (displayType.includes('Kampus')) {
-            iconClass = 'fa-school';
-            bgIcon = 'bg-rose-100 text-rose-600';
-            borderClass = 'hover:border-rose-200';
-        } else if (displayType.includes('Beasiswa')) {
-            iconClass = 'fa-user-graduate';
-            bgIcon = 'bg-sky-100 text-sky-600';
-            borderClass = 'hover:border-sky-200';
-        } else if (displayType.includes('Umum')) {
-            iconClass = 'fa-parachute-box';
-            bgIcon = 'bg-violet-100 text-violet-600';
-            borderClass = 'hover:border-violet-200';
+        // === [1. LOGIKA STATUS MAKER-CHECKER] ===
+        // Ambil status dari spreadsheet, default "Belum Verifikasi" jika kosong
+        const status = item.Status || "Belum Verifikasi";
+        let statusBadgeHTML = '';
+
+        if (status === 'Terverifikasi') {
+            // Tampilan Hijau (Sudah di-acc Admin)
+            statusBadgeHTML = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 shadow-sm ml-auto sm:ml-0" title="Donasi Diterima">
+                    <i class="fas fa-check-circle text-[10px]"></i> 
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Diterima</span>
+                </div>`;
         } else {
-            // Default Infaq / Lainnya
-            iconClass = 'fa-hand-holding-heart';
-            bgIcon = 'bg-orange-100 text-orange-600';
-            borderClass = 'hover:border-orange-200';
+            // Tampilan Kuning (Menunggu Admin)
+            statusBadgeHTML = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm ml-auto sm:ml-0" title="Menunggu Verifikasi Admin">
+                    <i class="fas fa-hourglass-half text-[10px] animate-pulse"></i> 
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Proses</span>
+                </div>`;
+        }
+
+        // === [2. LOGIKA HIGHLIGHT KODE UNIK] ===
+        // Format angka ke Rupiah
+        let nominalHTML = nominal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+        
+        // Jika bukan Tunai dan ada digit unik (tidak habis dibagi 1000)
+        // Warnai 3 digit terakhir dengan warna oranye
+        if (nominal % 1000 !== 0 && paymentMethod !== 'Tunai') {
+             nominalHTML = nominalHTML.replace(/(\d{3})(?=\D*$)/, '<span class="text-orange-500 border-b-2 border-orange-200 font-black">$1</span>');
+        }
+
+        // === [3. LOGIKA STYLE CARD] ===
+        if (displayType.includes('Fitrah')) {
+            iconClass = 'fa-bowl-rice'; bgIcon = 'bg-emerald-100 text-emerald-600'; borderClass = 'hover:border-emerald-200';
+        } else if (displayType.includes('Maal')) {
+            iconClass = 'fa-sack-dollar'; bgIcon = 'bg-amber-100 text-amber-600'; borderClass = 'hover:border-amber-200';
+        } else if (displayType.includes('Kampus')) {
+            iconClass = 'fa-school'; bgIcon = 'bg-rose-100 text-rose-600'; borderClass = 'hover:border-rose-200';
+        } else if (displayType.includes('Beasiswa')) {
+            iconClass = 'fa-user-graduate'; bgIcon = 'bg-sky-100 text-sky-600'; borderClass = 'hover:border-sky-200';
+        } else if (displayType.includes('Umum')) {
+            iconClass = 'fa-parachute-box'; bgIcon = 'bg-violet-100 text-violet-600'; borderClass = 'hover:border-violet-200';
+        } else {
+            iconClass = 'fa-hand-holding-heart'; bgIcon = 'bg-orange-100 text-orange-600'; borderClass = 'hover:border-orange-200';
         }
 
         const dateObj = new Date(item.Timestamp);
-        const date = dateObj.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
-        const time = dateObj.toLocaleTimeString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        const date = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const time = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
         const alumniYear = item.DetailAlumni || item.detailAlumni;
         const alumniBadge = alumniYear ?
-            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni Tahun ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` :
-            '';
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
 
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
@@ -2415,10 +2426,13 @@ function renderRiwayatList() {
 
                 <div class="text-left sm:text-right w-full sm:w-auto pl-[4.5rem] sm:pl-0 mt-[-10px] sm:mt-0">
                     <span class="block font-black text-xl text-slate-800 mb-1 tracking-tight group-hover:text-brand-orange transition-colors">
-                        ${parseInt(nominal).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}
+                        ${nominalHTML}
                     </span>
-                    <div class="flex items-center sm:justify-end gap-2 text-xs text-slate-400 font-medium">
-                        <i class="far fa-clock"></i> ${date} • ${time}
+                    <div class="flex flex-col sm:items-end gap-2">
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                            <i class="far fa-clock"></i> ${date} • ${time}
+                        </div>
+                        ${statusBadgeHTML}
                     </div>
                 </div>
             </div>
