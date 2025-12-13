@@ -1,3 +1,86 @@
+// --- IMPORT FIREBASE ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// --- CONFIG FIREBASE (PASTE DARI CONSOLE SEPERTI DI ADMIN KEMARIN) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
+  authDomain: "lazismu-auth.firebaseapp.com",
+  projectId: "lazismu-auth",
+  storageBucket: "lazismu-auth.firebasestorage.app",
+  messagingSenderId: "398570239500",
+  appId: "1:398570239500:web:0b3e96109a4bf304ebe029"
+};
+
+// --- INIT ---
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+let currentUser = null; // Menyimpan data user yang sedang login
+
+// Fungsi Login Google
+window.doLogin = async function() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        console.log("Login sukses:", user.displayName);
+        // Toast akan muncul dari fungsi showToast yang sudah ada
+        showToast(`Selamat datang, ${user.displayName.split(' ')[0]}!`, 'success');
+    } catch (error) {
+        console.error(error);
+        showToast("Gagal login Google", 'error');
+    }
+}
+
+// Fungsi Logout
+window.doLogout = function() {
+    signOut(auth).then(() => {
+        showToast("Berhasil keluar", 'success');
+        location.reload();
+    });
+}
+
+// Pasang Listener Tombol Login (Karena type=module, onclick HTML kadang ga jalan langsung)
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLogin = document.getElementById('btn-google-login');
+    if(btnLogin) btnLogin.addEventListener('click', window.doLogin);
+});
+
+// Satpam Pemantau (Cek status login)
+onAuthStateChanged(auth, (user) => {
+    const btnLogin = document.getElementById('btn-google-login');
+    const profileMenu = document.getElementById('user-profile-menu');
+    
+    if (user) {
+        // User Login: Sembunyikan tombol login, Munculkan profil
+        currentUser = user;
+        if(btnLogin) btnLogin.classList.add('hidden');
+        if(profileMenu) {
+            profileMenu.classList.remove('hidden');
+            document.getElementById('user-avatar').src = user.photoURL;
+            document.getElementById('user-name').textContent = user.displayName;
+        }
+        
+        // --- AUTO-FILL FORMULIR (KEJAIBANNYA DI SINI) ---
+        // Kita isi formulir donasi otomatis
+        const inputNama = document.getElementById('nama-muzakki-input');
+        const inputEmail = document.getElementById('email');
+        
+        if(inputNama) inputNama.value = user.displayName;
+        if(inputEmail) {
+            inputEmail.value = user.email;
+            inputEmail.readOnly = true; // Email dikunci biar ga diubah (validasi)
+            inputEmail.classList.add('bg-slate-100');
+        }
+
+    } else {
+        // User Belum Login
+        currentUser = null;
+        if(btnLogin) btnLogin.classList.remove('hidden');
+        if(profileMenu) profileMenu.classList.add('hidden');
+    }
+});
+
 /**
  * ============================================================================
  * SCRIPT UTAMA WEBSITE DONASI LAZISMU (UPDATED)
@@ -8,6 +91,50 @@
  * - Perbaikan logika deteksi data eksternal
  */
 
+// Tampilkan Riwayat Donasi Pribadi
+window.showMyHistory = function() {
+    if (!currentUser) return showToast("Silakan login terlebih dahulu");
+
+    const modal = document.getElementById('my-history-modal');
+    const container = document.getElementById('my-history-content');
+    modal.classList.remove('hidden');
+    
+    // Ambil data riwayat yang sudah ada di memori (riwayatData dari script.js lama)
+    // Filter hanya yang email-nya sama dengan email Google User
+    const myData = riwayatData.allData.filter(item => 
+        (item.Email && item.Email.toLowerCase() === currentUser.email.toLowerCase())
+    );
+
+    if (myData.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10">
+                <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-500 text-2xl"><i class="fas fa-hand-holding-heart"></i></div>
+                <h4 class="font-bold text-slate-700">Belum Ada Riwayat</h4>
+                <p class="text-sm text-slate-400 mt-2">Donasi yang Anda lakukan dengan email ini akan muncul di sini.</p>
+            </div>`;
+    } else {
+        let html = '';
+        myData.forEach(d => {
+            const statusColor = d.Status === 'Terverifikasi' ? 'text-green-600 bg-green-50 border-green-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200';
+            const statusIcon = d.Status === 'Terverifikasi' ? 'fa-check-circle' : 'fa-clock';
+            
+            html += `
+            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${d.JenisDonasi}</p>
+                    <h4 class="font-black text-slate-800 text-lg">${formatRupiah(d.Nominal)}</h4>
+                    <p class="text-xs text-slate-500 mt-1"><i class="far fa-calendar-alt mr-1"></i> ${new Date(d.Timestamp).toLocaleDateString()}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold border ${statusColor} flex items-center gap-1">
+                        <i class="fas ${statusIcon}"></i> ${d.Status || 'Proses'}
+                    </span>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+}
 // ============================================================================
 // 1. KONFIGURASI (PENGATURAN DASAR)
 // ============================================================================
@@ -2571,3 +2698,14 @@ window.addEventListener('scroll', () => {
         header.classList.add('bg-white/80');
     }
 });
+
+// --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
+window.showPage = showPage;
+window.filterNews = filterNews;
+window.closeNewsModal = closeNewsModal;
+window.openNewsModal = openNewsModal;
+window.closeQrisModal = closeQrisModal;
+window.openQrisModal = openQrisModal;
+window.copyText = copyText;
+window.loadMoreNews = loadMoreNews;
+window.init = init;
