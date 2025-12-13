@@ -308,6 +308,31 @@
                 <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
             </a>
 
+            <button id="btn-google-login" class="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 transition font-bold text-sm bg-white shadow-sm">
+                <i class="fab fa-google"></i> 
+                <span id="label-login">Masuk / Daftar</span>
+            </button>
+            
+            <div id="user-profile-menu" class="hidden relative group">
+                <button class="flex items-center gap-2 px-3 py-2 rounded-full bg-slate-50 border border-slate-200 hover:bg-white transition">
+                    <img id="user-avatar" src="" class="w-8 h-8 rounded-full border border-slate-200">
+                    <div class="text-left hidden lg:block">
+                        <p id="user-name" class="text-[10px] font-bold text-slate-800 leading-tight">Nama User</p>
+                        <p class="text-[9px] text-green-600 font-bold">Donatur</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-slate-400 ml-1"></i>
+                </button>
+                
+                <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden hidden group-hover:block animate-fade-in-up">
+                    <a href="#riwayat-saya" onclick="showMyHistory()" class="block px-4 py-3 text-sm text-slate-600 hover:bg-orange-50 hover:text-orange-600 font-bold border-b border-slate-50">
+                        <i class="fas fa-history mr-2"></i> Riwayat Saya
+                    </a>
+                    <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 font-bold">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                    </button>
+                </div>
+            </div>
+
             <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-500 hover:bg-orange-50 rounded-full transition-all">
                 <i class="fas fa-bars text-xl"></i>
             </button>
@@ -2366,13 +2391,30 @@
         </div>
     </div>
 
+    <div id="my-history-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" aria-modal="true">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onclick="document.getElementById('my-history-modal').classList.add('hidden')"></div>
+        <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col animate-fade-in-up">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800">Riwayat Kebaikan Saya</h3>
+                    <p class="text-xs text-slate-500">Daftar donasi yang tercatat atas email Anda.</p>
+                </div>
+                <button onclick="document.getElementById('my-history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-red-100 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="my-history-content" class="p-6 overflow-y-auto custom-scrollbar space-y-4 bg-slate-50 flex-1">
+                <p class="text-center text-slate-400">Memuat data...</p>
+            </div>
+        </div>
+    </div>
+
     <script src="data-santri.js"></script>
     <script src="data-kelas.js"></script>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 
 </body>
 </html>
+
 
 
 
