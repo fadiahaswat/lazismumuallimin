@@ -19,16 +19,51 @@ const provider = new GoogleAuthProvider();
 let currentUser = null; // Menyimpan data user yang sedang login
 
 // Fungsi Login Google
+// Fungsi Login Google (DIPERBAIKI)
 window.doLogin = async function() {
+    const btn = document.getElementById('btn-google-login');
+    
+    // 1. Kunci tombol agar tidak bisa diklik berkali-kali (Mencegah Error Cancelled Request)
+    if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        btn.style.cursor = "not-allowed";
+    }
+
     try {
+        // 2. Coba Buka Popup Login
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        
         console.log("Login sukses:", user.displayName);
-        // Toast akan muncul dari fungsi showToast yang sudah ada
         showToast(`Selamat datang, ${user.displayName.split(' ')[0]}!`, 'success');
+        
+        // (Opsional) Jika sukses, biarkan tombol tetap disabled karena user akan berubah jadi profil
+        
     } catch (error) {
-        console.error(error);
-        showToast("Gagal login Google", 'error');
+        console.error("Login Error:", error);
+
+        // 3. Penanganan Error Khusus
+        if (error.code === 'auth/popup-blocked') {
+            alert("Jendela Login diblokir browser!\n\nSilakan cek ikon 'Pop-up blocked' di ujung kanan kolom alamat website (Address Bar) dan izinkan akses.");
+        } 
+        else if (error.code === 'auth/popup-closed-by-user') {
+            showToast("Login dibatalkan", 'warning');
+        } 
+        else if (error.code === 'auth/cancelled-popup-request') {
+            // Error ini muncul jika ada request tumpang tindih (biasanya aman diabaikan)
+            console.warn("Menghindari multiple popup.");
+        } 
+        else {
+            showToast("Gagal login: " + error.message, 'error');
+        }
+
+        // 4. Jika Gagal, Buka Kembali Tombolnya
+        if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+        }
     }
 }
 
