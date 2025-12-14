@@ -1766,47 +1766,49 @@ function setupWizardLogic() {
 
             donasiData.metode = method.value;
 
-            // 1. Reset ke Nominal Asli dulu
+            // [LOGIKA BARU: RESET & KODE UNIK]
+            
+            // 1. Pastikan kita punya data nominal asli yang bersih
+            // Jika undefined (misal user langsung lompat), ambil dari nominal saat ini
             if (!donasiData.nominalAsli) {
-                donasiData.nominalAsli = donasiData.nominal; 
-            } else {
-                donasiData.nominal = donasiData.nominalAsli;
+                donasiData.nominalAsli = donasiData.nominal;
             }
 
-            // 2. Hitung Kode Unik
+            // 2. SELALU Reset donasiData.nominal ke nilai murni (tanpa kode unik)
+            donasiData.nominal = donasiData.nominalAsli;
+
+            // 3. Generate Kode Unik & Hitung Total
             if (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS') {
-                // Pastikan fungsi generateUniqueCode() sudah ada di bagian atas file
                 const kodeUnik = generateUniqueCode(); 
                 donasiData.kodeUnik = kodeUnik;
+                
+                // Total = Nominal Murni + Kode Unik
                 donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
             } else {
+                // Tunai = Tidak ada kode unik
                 donasiData.kodeUnik = 0;
                 donasiData.nominalTotal = donasiData.nominalAsli;
             }
 
-            // 3. Update Data Tampilan
+            // 4. Update Data Tampilan Ringkasan (Summary)
             document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
             
             const elNominalSummary = document.getElementById('summary-nominal');
             elNominalSummary.innerText = formatRupiah(donasiData.nominalTotal);
 
-            // === [FITUR BARU: INFO KODE UNIK] ===
-            // Hapus pesan lama jika ada (biar ga numpuk kalau diklik berkali-kali)
+            // Tampilkan Info Kode Unik jika ada
             const oldMsg = document.getElementById('msg-kode-unik-summary');
             if (oldMsg) oldMsg.remove();
 
-            // Jika ada kode unik, tambahkan pesan visual
             if (donasiData.kodeUnik > 0) {
                 const htmlPesan = `
-                    <div id="msg-kode-unik-summary" class="mt-2 text-right">
+                    <div id="msg-kode-unik-summary" class="mt-2 text-right animate-fade-in-up">
                         <span class="inline-block bg-yellow-50 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded border border-yellow-200">
-                            <i class="fas fa-asterisk text-[8px] mr-1"></i>Termasuk Kode Unik: ${donasiData.kodeUnik}
+                            <i class="fas fa-asterisk text-[8px] mr-1"></i>Kode Unik: ${donasiData.kodeUnik} (Masuk ke donasi)
                         </span>
                     </div>`;
-                // Sisipkan tepat setelah elemen nominal
                 elNominalSummary.insertAdjacentHTML('afterend', htmlPesan);
             }
-            // ====================================
             
             document.getElementById('summary-nama').innerText = donasiData.nama;
             document.getElementById('summary-hp').innerText = donasiData.hp;
