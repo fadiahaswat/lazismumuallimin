@@ -77,6 +77,7 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.readOnly = true;
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         }
+        if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
 
         // 4. Load Data Personal untuk Dashboard (Fungsi baru nanti)
         // if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
@@ -2725,6 +2726,228 @@ window.addEventListener('scroll', () => {
         header.classList.add('bg-white/80');
     }
 });
+
+/* ============================================================================
+   13. LOGIKA DASHBOARD PERSONAL & KWITANSI (NEW FEATURE)
+   ============================================================================ */
+
+// Panggil fungsi ini di dalam onAuthStateChanged saat user login (di bagian Tahap 1 tadi)
+// Contoh: if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
+
+let myDonations = []; // Menyimpan data donasi khusus user yang login
+
+window.loadPersonalDashboard = async function(userEmail) {
+    // 1. Pastikan Data Riwayat Sudah Ada
+    if (!riwayatData.isLoaded) {
+        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
+        await loadRiwayat();
+    }
+
+    // 2. Filter Data Berdasarkan Email
+    // Catatan Keamanan: Idealnya filtering ini dilakukan di Server (Google Apps Script)
+    // agar data orang lain tidak terkirim ke browser. Ini solusi sementara.
+    if (riwayatData.allData && userEmail) {
+        myDonations = riwayatData.allData.filter(item => 
+            item.Email && item.Email.toLowerCase() === userEmail.toLowerCase()
+        );
+    }
+
+    // 3. Update Tampilan Dashboard
+    updateDashboardUI();
+}
+
+function updateDashboardUI() {
+    // A. Update Profil Header
+    const user = currentUser; // Variabel global dari auth firebase
+    if (user) {
+        document.getElementById('dash-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
+        document.getElementById('dash-name').innerText = user.displayName.split(' ')[0]; // Nama depan saja
+    }
+
+    // B. Hitung Statistik
+    let totalDonasi = 0;
+    let frekuensi = myDonations.length;
+    let lastDonasi = null;
+
+    myDonations.forEach((d, index) => {
+        totalDonasi += parseInt(d.Nominal) || 0;
+        // Karena data diurutkan dari baru ke lama (di loadRiwayat), yang pertama adalah yang terbaru
+        if (index === 0) lastDonasi = d; 
+    });
+
+    // C. Render Angka Statistik
+    animateValue(document.getElementById('dash-stat-total'), 0, totalDonasi, 1500, true);
+    animateValue(document.getElementById('dash-stat-freq'), 0, frekuensi, 1000);
+    
+    if (lastDonasi) {
+        document.getElementById('dash-stat-last').innerText = formatRupiah(lastDonasi.Nominal);
+        document.getElementById('dash-stat-last-date').innerText = timeAgo(lastDonasi.Timestamp);
+    } else {
+        document.getElementById('dash-stat-last').innerText = "-";
+        document.getElementById('dash-stat-last-date').innerText = "Belum ada donasi";
+    }
+
+    // D. Gamifikasi Level Donatur
+    const levelBadge = document.getElementById('dash-level');
+    if (totalDonasi > 10000000) {
+        levelBadge.innerHTML = `<span class="text-purple-600"><i class="fas fa-crown"></i> Muhsinin Utama</span>`;
+    } else if (totalDonasi > 1000000) {
+        levelBadge.innerHTML = `<span class="text-blue-600"><i class="fas fa-medal"></i> Donatur Setia</span>`;
+    } else if (frekuensi > 0) {
+        levelBadge.innerHTML = `<span class="text-green-600"><i class="fas fa-user-check"></i> Sahabat Lazismu</span>`;
+    } else {
+        levelBadge.innerText = "Donatur Baru";
+    }
+
+    // E. Render Tabel Riwayat
+    renderPersonalHistoryTable();
+}
+
+function renderPersonalHistoryTable() {
+    const tbody = document.getElementById('dash-history-body');
+    const emptyState = document.getElementById('dash-empty-state');
+    
+    if (myDonations.length === 0) {
+        tbody.innerHTML = '';
+        tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
+        emptyState.classList.remove('hidden'); // Munculkan pesan kosong
+        return;
+    }
+
+    tbody.parentElement.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    tbody.innerHTML = '';
+
+    myDonations.forEach(item => {
+        const dateObj = new Date(item.Timestamp);
+        const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        
+        let statusClass = item.Status === 'Terverifikasi' 
+            ? 'bg-green-100 text-green-700 border-green-200' 
+            : 'bg-yellow-100 text-yellow-700 border-yellow-200';
+        
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition border-b border-slate-50 last:border-0';
+        row.innerHTML = `
+            <td class="p-5 whitespace-nowrap">
+                <div class="font-bold text-slate-700">${dateStr}</div>
+                <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
+            </td>
+            <td class="p-5">
+                <div class="font-bold text-slate-700">${item.JenisDonasi}</div>
+                <div class="text-xs text-slate-500">${item.SubJenis || '-'}</div>
+            </td>
+            <td class="p-5 font-bold text-slate-700">
+                ${formatRupiah(item.Nominal)}
+            </td>
+            <td class="p-5 text-center">
+                <span class="px-3 py-1 rounded-full text-xs font-bold border bg-white text-slate-500">
+                    ${item.MetodePembayaran}
+                </span>
+            </td>
+            <td class="p-5 text-center">
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border ${statusClass}">
+                    ${item.Status === 'Terverifikasi' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-clock"></i>'}
+                    ${item.Status || 'Proses'}
+                </span>
+            </td>
+            <td class="p-5 text-center">
+                <button onclick='downloadReceipt(${JSON.stringify(item)})' class="text-slate-400 hover:text-orange-600 transition p-2" title="Download Kwitansi">
+                    <i class="fas fa-file-invoice"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Fitur Refresh Manual
+window.refreshDashboard = async function() {
+    const btn = document.querySelector('button[onclick="refreshDashboard()"] i');
+    if(btn) btn.classList.add('fa-spin');
+    
+    // Paksa ambil data baru dari server (abaikan cache riwayatData.isLoaded)
+    riwayatData.isLoaded = false; 
+    if (currentUser) {
+        await loadPersonalDashboard(currentUser.email);
+        showToast("Data berhasil diperbarui", "success");
+    }
+    
+    if(btn) btn.classList.remove('fa-spin');
+}
+
+// --- FITUR GENERATE PDF KWITANSI (Client-Side) ---
+window.downloadReceipt = function(data) {
+    if (!window.jspdf) {
+        showToast("Sedang memuat library PDF...", "warning");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: [210, 99] // Ukuran 1/3 A4 (Kwitansi Panjang)
+    });
+
+    // Desain Sederhana Kwitansi
+    // Header Warna
+    doc.setFillColor(241, 90, 34); // Brand Orange
+    doc.rect(0, 0, 10, 99, 'F'); 
+
+    // Logo & Judul
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.setTextColor(50, 50, 50);
+    doc.text("BUKTI DONASI ZIS", 20, 15);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Lazismu Mu'allimin Yogyakarta", 20, 20);
+
+    // Garis Pemisah
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 25, 190, 25);
+
+    // Isi Data
+    const startY = 35;
+    const lineHeight = 7;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    
+    doc.text("Tanggal", 20, startY);
+    doc.text(": " + new Date(data.Timestamp).toLocaleDateString('id-ID'), 50, startY);
+
+    doc.text("Donatur", 20, startY + lineHeight);
+    doc.text(": " + (data.NamaDonatur || currentUser.displayName), 50, startY + lineHeight);
+
+    doc.text("Untuk", 20, startY + lineHeight * 2);
+    doc.text(": " + data.JenisDonasi + (data.SubJenis ? ` (${data.SubJenis})` : ''), 50, startY + lineHeight * 2);
+
+    doc.text("Metode", 20, startY + lineHeight * 3);
+    doc.text(": " + data.MetodePembayaran, 50, startY + lineHeight * 3);
+
+    // Nominal Besar
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(241, 90, 34);
+    doc.text(formatRupiah(data.Nominal), 190, startY + lineHeight * 2, { align: "right" });
+
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Status: " + (data.Status || "Dalam Proses"), 190, startY + lineHeight * 3, { align: "right" });
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(180, 180, 180);
+    doc.text("Terima kasih atas kepercayaan Anda. Semoga Allah memberkahi harta Anda.", 20, 85);
+    doc.text("Dokumen ini sah dicetak secara komputerisasi.", 20, 89);
+
+    // Simpan File
+    doc.save(`Kwitansi_Lazismu_${data.Timestamp}.pdf`);
+    showToast("Kwitansi berhasil diunduh!", "success");
+}
 
 // --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
 window.showPage = showPage;
