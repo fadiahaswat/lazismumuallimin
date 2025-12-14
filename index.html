@@ -2231,6 +2231,112 @@
 
     </div>
 </section>
+        <section id="page-dashboard" class="page-section hidden bg-slate-50 min-h-screen pt-28 pb-20">
+    <div class="container max-w-6xl mx-auto px-4 md:px-8">
+        
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 mb-10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-10 -mt-10"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8">
+                <div class="relative">
+                    <img id="dash-avatar" src="" class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover">
+                    <div class="absolute bottom-1 right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
+                </div>
+                <div class="text-center md:text-left flex-1">
+                    <h2 class="text-3xl font-black text-slate-800 mb-1">Ahlan Wa Sahlan, <span id="dash-name" class="text-orange-600">User</span>!</h2>
+                    <p class="text-slate-500 mb-4">Terima kasih telah menjadi bagian dari kebaikan.</p>
+                    
+                    <div class="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
+                        <i class="fas fa-medal text-yellow-500"></i>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wide">Status: <span id="dash-level" class="text-slate-800">Donatur Pemula</span></span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-3 w-full md:w-auto">
+                    <button onclick="showPage('donasi')" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold shadow-lg shadow-orange-600/20 transition transform active:scale-95">
+                        <i class="fas fa-plus-circle mr-2"></i> Donasi Baru
+                    </button>
+                    <button onclick="doLogout()" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl font-bold transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition group">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Donasi</p>
+                </div>
+                <h3 id="dash-stat-total" class="text-3xl font-black text-slate-800">Rp 0</h3>
+            </div>
+            
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition group">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaksi Sukses</p>
+                </div>
+                <h3 id="dash-stat-freq" class="text-3xl font-black text-slate-800">0 <span class="text-base font-bold text-slate-400">kali</span></h3>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition group">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terakhir</p>
+                </div>
+                <h3 id="dash-stat-last" class="text-lg font-bold text-slate-800 line-clamp-1">-</h3>
+                <p id="dash-stat-last-date" class="text-xs text-slate-400 mt-1">Belum ada donasi</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <i class="fas fa-list-ul text-orange-500"></i> Riwayat Transaksi
+                </h3>
+                <button onclick="refreshDashboard()" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-orange-500 hover:border-orange-200 flex items-center justify-center transition" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="p-5 border-b border-slate-100">Tanggal</th>
+                            <th class="p-5 border-b border-slate-100">Jenis Donasi</th>
+                            <th class="p-5 border-b border-slate-100">Nominal</th>
+                            <th class="p-5 border-b border-slate-100 text-center">Metode</th>
+                            <th class="p-5 border-b border-slate-100 text-center">Status</th>
+                            <th class="p-5 border-b border-slate-100 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dash-history-body" class="text-sm text-slate-600 font-medium">
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-slate-400">
+                                <i class="fas fa-spinner fa-spin mr-2"></i> Sedang memuat data Anda...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="dash-empty-state" class="hidden p-10 text-center">
+                <div class="inline-block p-4 rounded-full bg-slate-100 mb-4">
+                    <i class="far fa-folder-open text-3xl text-slate-400"></i>
+                </div>
+                <p class="text-slate-500">Belum ada riwayat donasi yang tercatat.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
     </main>
 
     <footer class="bg-slate-950 text-white pt-20 pb-8 relative overflow-hidden font-sans border-t border-slate-800">
@@ -2438,4 +2544,5 @@
 
 </body>
 </html>
+
 
