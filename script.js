@@ -2907,8 +2907,7 @@ function loadImage(url) {
     });
 }
 
-// --- FUNGSI UTAMA: DOWNLOAD RECEIPT (Update: Sesuai Template Ultimate) ---
-// Gantikan fungsi downloadReceipt yang lama dengan ini
+// --- FUNGSI UTAMA: DOWNLOAD RECEIPT (FIXED TYPE ERROR) ---
 window.downloadReceipt = async function(data) {
     if (!window.jspdf) {
         showToast("Sedang memuat library PDF...", "warning");
@@ -2937,59 +2936,60 @@ window.downloadReceipt = async function(data) {
         } catch (e) {
             console.error("MasterTemplate.png tidak ditemukan!", e);
             showToast("Template gambar gagal dimuat. Pastikan file sudah diupload.", "error");
-            // Fallback background putih jika gambar error
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, 210, 148, 'F');
         }
 
-        // 3. Persiapan Data
+        // 3. Persiapan Data (KONVERSI KE STRING AGAR TIDAK ERROR)
         const tgl = new Date(data.Timestamp);
         const dStr = String(tgl.getDate()).padStart(2, '0');
         const mStr = String(tgl.getMonth() + 1).padStart(2, '0');
         const yStr = String(tgl.getFullYear()).slice(-2);
         
-        const namaDonatur = data.NamaDonatur || currentUser?.displayName || "Hamba Allah";
+        // [FIX UTAMA DI SINI]: Bungkus semua data opsional dengan String()
+        const namaDonatur = String(data.NamaDonatur || currentUser?.displayName || "Hamba Allah");
         const nominal = parseInt(data.Nominal) || 0;
         const terbilangText = terbilang(nominal) + " Rupiah";
         const noKwitansi = data.KodeUnik ? `INV-${data.KodeUnik}` : `ZIS-${Math.floor(Math.random()*10000)}`;
-        const alamat = data.Alamat || "-";
-        const hp = data.NoHP || data.hp || "-";
+        
+        // Paksa jadi string untuk mencegah error jsPDF
+        const alamat = String(data.Alamat || "-");
+        const hp = String(data.NoHP || data.hp || "-"); 
 
-        // 4. Konfigurasi Font (Ala Tulisan Tangan / Ketikan)
-        doc.setTextColor(0, 0, 128); // Warna Navy Blue (#000080)
+        // 4. Konfigurasi Font
+        doc.setTextColor(0, 0, 128); // Warna Navy Blue
         doc.setFont("times", "bolditalic"); 
         doc.setFontSize(12);
 
-        // --- 5. ISIAN DATA (KOORDINAT PRESISI) ---
+        // --- 5. ISIAN DATA ---
         
-        // A. NOMOR (Posisi: Top 19.3mm -> Y ~23.3)
+        // A. NOMOR
         doc.text(noKwitansi, 70.4, 23.3); 
 
-        // B. TANGGAL (Pecah per digit) -> Y ~23.0
+        // B. TANGGAL
         const yTgl = 23.0; 
         doc.text(dStr[0], 163.0, yTgl);
         doc.text(dStr[1], 168.3, yTgl);
         doc.text(mStr[0], 174.9, yTgl);
         doc.text(mStr[1], 180.2, yTgl);
         doc.text("2", 187.3, yTgl); 
-        doc.text("0", 190.0, yTgl); // Hardcode tahun depannya 20..
+        doc.text("0", 190.0, yTgl); 
         doc.text(yStr[0], 193.0, yTgl);
         doc.text(yStr[1], 196.0, yTgl);
 
         // C. IDENTITAS
-        doc.text(namaDonatur, 89.7, 36.2); // Nama
+        doc.text(namaDonatur, 89.7, 36.2);
         
         doc.setFontSize(10); 
-        doc.text(alamat.substring(0, 50), 89.7, 42.0); // Alamat (dipotong biar gak nabrak)
-        doc.text(hp, 152.9, 49.6); // No HP
+        doc.text(alamat.substring(0, 50), 89.7, 42.0); 
+        doc.text(hp, 152.9, 49.6); // Sekarang aman karena sudah String
         doc.setFontSize(12);
 
         // D. LOGIKA JENIS & NOMINAL
-        const jenis = data.JenisDonasi || "";
-        const subJenis = data.SubJenis || "";
+        const jenis = String(data.JenisDonasi || "");
+        const subJenis = String(data.SubJenis || "");
         const displayNominal = formatRupiah(nominal);
 
-        // Koordinat Baris
         const yZakat = 73.5; 
         const yInfaq = 79.5; 
         const yLain  = 85.5;  
@@ -3000,57 +3000,49 @@ window.downloadReceipt = async function(data) {
             doc.text(displayNominal, 111.9, yInfaq); 
         } else {
             doc.text(displayNominal, 111.9, yLain); 
-            // Tulis nama jenisnya di kolom "Lain-lain" sebelah kiri
             doc.setFontSize(9);
             doc.text(`(${jenis})`, 72, yLain); 
             doc.setFontSize(12);
         }
 
         // E. TOTAL & TERBILANG
-        doc.setFontSize(14); // Total lebih besar
+        doc.setFontSize(14);
         doc.text(displayNominal, 111.9, 93.0); 
 
         doc.setFontSize(11);
-        // Pecah terbilang jadi beberapa baris jika panjang
         const terbilangLines = doc.splitTextToSize(terbilangText + " #", 108); 
         doc.text(terbilangLines, 89.7, 99.1);
 
-        // F. CHECKLIST METODE BAYAR (V)
+        // F. CHECKLIST
         doc.setFontSize(16);
-        doc.setFont("helvetica", "bold"); // Font tebal untuk centang
+        doc.setFont("helvetica", "bold");
         const metode = data.MetodePembayaran || "Tunai";
         
         if (metode === 'Tunai') {
-            doc.text("V", 180.0, 72.0); // Posisi Checkbox Kas
+            doc.text("V", 180.0, 72.0); 
         } else {
-            doc.text("V", 180.0, 78.0); // Posisi Checkbox Bank
-            
-            // Tulis Nama Bank/QRIS
+            doc.text("V", 180.0, 78.0); 
             doc.setFontSize(10);
             doc.setFont("times", "italic");
             doc.text("Transfer/QRIS", 193.0, 79.0);
         }
 
-        // G. TANDA TANGAN (Otomatis Admin)
+        // G. TANDA TANGAN
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(0); // Hitam
+        doc.setTextColor(0); 
         
-        // Donatur (Kanan)
         doc.text(`( ${namaDonatur} )`, 169.0, 132.0, {align:'center'});
-        
-        // Admin (Kiri)
         doc.text("( Admin Lazismu )", 100.0, 132.0, {align:'center'});
 
-        // 6. Simpan File
+        // Simpan File
         doc.save(`Kwitansi_${noKwitansi}.pdf`);
         showToast("Kwitansi berhasil diunduh!", "success");
 
     } catch (err) {
         console.error(err);
-        showToast("Gagal membuat PDF: " + err.message, "error");
+        showToast("Gagal: " + err.message, "error");
     } finally {
-        // Kembalikan tombol jadi icon semula
         if(btn) btn.innerHTML = originalText;
     }
 }
