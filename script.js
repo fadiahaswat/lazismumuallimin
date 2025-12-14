@@ -18,51 +18,46 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 let currentUser = null; // Menyimpan data user yang sedang login
 
-// Fungsi Login Google
-// Fungsi Login Google (DIPERBAIKI)
+// GANTI FUNGSI doLogin DENGAN INI:
+
 window.doLogin = async function() {
     const btn = document.getElementById('btn-google-login');
+    const label = document.getElementById('label-login');
     
-    // 1. Kunci tombol agar tidak bisa diklik berkali-kali (Mencegah Error Cancelled Request)
+    // 1. Matikan tombol biar tidak bisa diklik berkali-kali
     if (btn) {
         btn.disabled = true;
-        btn.style.opacity = "0.5";
-        btn.style.cursor = "not-allowed";
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        if(label) label.innerText = "Memproses...";
     }
 
     try {
-        // 2. Coba Buka Popup Login
+        // 2. Eksekusi Login
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         
         console.log("Login sukses:", user.displayName);
-        showToast(`Selamat datang, ${user.displayName.split(' ')[0]}!`, 'success');
+        showToast(`Ahlan Wa Sahlan, ${user.displayName.split(' ')[0]}!`, 'success');
         
-        // (Opsional) Jika sukses, biarkan tombol tetap disabled karena user akan berubah jadi profil
+        // Tombol biarkan mati karena halaman akan berubah tampilan (kena onAuthStateChanged)
         
     } catch (error) {
         console.error("Login Error:", error);
 
-        // 3. Penanganan Error Khusus
+        // Handle error khusus
         if (error.code === 'auth/popup-blocked') {
-            alert("Jendela Login diblokir browser!\n\nSilakan cek ikon 'Pop-up blocked' di ujung kanan kolom alamat website (Address Bar) dan izinkan akses.");
-        } 
-        else if (error.code === 'auth/popup-closed-by-user') {
+            alert("Popup Login terblokir browser. Izinkan popup untuk situs ini.");
+        } else if (error.code === 'auth/popup-closed-by-user') {
             showToast("Login dibatalkan", 'warning');
-        } 
-        else if (error.code === 'auth/cancelled-popup-request') {
-            // Error ini muncul jika ada request tumpang tindih (biasanya aman diabaikan)
-            console.warn("Menghindari multiple popup.");
-        } 
-        else {
+        } else {
             showToast("Gagal login: " + error.message, 'error');
         }
 
-        // 4. Jika Gagal, Buka Kembali Tombolnya
+        // 3. Hidupkan tombol lagi jika gagal
         if (btn) {
             btn.disabled = false;
-            btn.style.opacity = "1";
-            btn.style.cursor = "pointer";
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            if(label) label.innerText = "Masuk Akun";
         }
     }
 }
@@ -81,12 +76,6 @@ window.doLogout = function() {
         window.location.reload();
     });
 }
-
-// Pasang Listener Tombol Login (Karena type=module, onclick HTML kadang ga jalan langsung)
-document.addEventListener('DOMContentLoaded', () => {
-    const btnLogin = document.getElementById('btn-google-login');
-    if(btnLogin) btnLogin.addEventListener('click', window.doLogin);
-});
 
 // --- UPDATE SCRIPT.JS (Bagian Auth Listener) ---
 
