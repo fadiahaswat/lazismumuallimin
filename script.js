@@ -2876,77 +2876,183 @@ window.refreshDashboard = async function() {
     if(btn) btn.classList.remove('fa-spin');
 }
 
-// --- FITUR GENERATE PDF KWITANSI (Client-Side) ---
-window.downloadReceipt = function(data) {
+/* ============================================================================
+   14. FITUR KWITANSI ULTIMATE (IMAGE TEMPLATE SUPPORT)
+   ============================================================================ */
+
+// --- HELPER 1: TERBILANG (Mengubah Angka jadi Kalimat) ---
+function terbilang(angka) {
+    const bil = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+    angka = parseInt(angka);
+    if (isNaN(angka)) return "";
+    if (angka < 12) return bil[angka];
+    if (angka < 20) return terbilang(angka - 10) + " Belas";
+    if (angka < 100) return terbilang(Math.floor(angka / 10)) + " Puluh " + terbilang(angka % 10);
+    if (angka < 200) return "Seratus " + terbilang(angka - 100);
+    if (angka < 1000) return terbilang(Math.floor(angka / 100)) + " Ratus " + terbilang(angka % 100);
+    if (angka < 2000) return "Seribu " + terbilang(angka - 1000);
+    if (angka < 1000000) return terbilang(Math.floor(angka / 1000)) + " Ribu " + terbilang(angka % 1000);
+    if (angka < 1000000000) return terbilang(Math.floor(angka / 1000000)) + " Juta " + terbilang(angka % 1000000);
+    return "";
+}
+
+// --- HELPER 2: LOAD IMAGE (Untuk memuat background MasterTemplate.png) ---
+function loadImage(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; 
+        img.src = url;
+        img.onload = () => resolve(img);
+        img.onerror = (e) => reject(e);
+    });
+}
+
+// --- FUNGSI UTAMA: DOWNLOAD RECEIPT (Update: Sesuai Template Ultimate) ---
+// Gantikan fungsi downloadReceipt yang lama dengan ini
+window.downloadReceipt = async function(data) {
     if (!window.jspdf) {
         showToast("Sedang memuat library PDF...", "warning");
         return;
     }
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: [210, 99] // Ukuran 1/3 A4 (Kwitansi Panjang)
-    });
+    // Indikator Loading di Tombol
+    const btn = document.activeElement;
+    const originalText = btn ? btn.innerHTML : '';
+    if(btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-    // Desain Sederhana Kwitansi
-    // Header Warna
-    doc.setFillColor(241, 90, 34); // Brand Orange
-    doc.rect(0, 0, 10, 99, 'F'); 
+    try {
+        const { jsPDF } = window.jspdf;
+        
+        // 1. Setup Dokumen A5 Landscape (210mm x 148mm)
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: [210, 148]
+        });
 
-    // Logo & Judul
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.setTextColor(50, 50, 50);
-    doc.text("BUKTI DONASI ZIS", 20, 15);
-    
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text("Lazismu Mu'allimin Yogyakarta", 20, 20);
+        // 2. Muat Background Template
+        try {
+            const imgTemplate = await loadImage('MasterTemplate.png');
+            doc.addImage(imgTemplate, 'PNG', 0, 0, 210, 148);
+        } catch (e) {
+            console.error("MasterTemplate.png tidak ditemukan!", e);
+            showToast("Template gambar gagal dimuat. Pastikan file sudah diupload.", "error");
+            // Fallback background putih jika gambar error
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 0, 210, 148, 'F');
+        }
 
-    // Garis Pemisah
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, 25, 190, 25);
+        // 3. Persiapan Data
+        const tgl = new Date(data.Timestamp);
+        const dStr = String(tgl.getDate()).padStart(2, '0');
+        const mStr = String(tgl.getMonth() + 1).padStart(2, '0');
+        const yStr = String(tgl.getFullYear()).slice(-2);
+        
+        const namaDonatur = data.NamaDonatur || currentUser?.displayName || "Hamba Allah";
+        const nominal = parseInt(data.Nominal) || 0;
+        const terbilangText = terbilang(nominal) + " Rupiah";
+        const noKwitansi = data.KodeUnik ? `INV-${data.KodeUnik}` : `ZIS-${Math.floor(Math.random()*10000)}`;
+        const alamat = data.Alamat || "-";
+        const hp = data.NoHP || data.hp || "-";
 
-    // Isi Data
-    const startY = 35;
-    const lineHeight = 7;
-    
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    
-    doc.text("Tanggal", 20, startY);
-    doc.text(": " + new Date(data.Timestamp).toLocaleDateString('id-ID'), 50, startY);
+        // 4. Konfigurasi Font (Ala Tulisan Tangan / Ketikan)
+        doc.setTextColor(0, 0, 128); // Warna Navy Blue (#000080)
+        doc.setFont("times", "bolditalic"); 
+        doc.setFontSize(12);
 
-    doc.text("Donatur", 20, startY + lineHeight);
-    doc.text(": " + (data.NamaDonatur || currentUser.displayName), 50, startY + lineHeight);
+        // --- 5. ISIAN DATA (KOORDINAT PRESISI) ---
+        
+        // A. NOMOR (Posisi: Top 19.3mm -> Y ~23.3)
+        doc.text(noKwitansi, 70.4, 23.3); 
 
-    doc.text("Untuk", 20, startY + lineHeight * 2);
-    doc.text(": " + data.JenisDonasi + (data.SubJenis ? ` (${data.SubJenis})` : ''), 50, startY + lineHeight * 2);
+        // B. TANGGAL (Pecah per digit) -> Y ~23.0
+        const yTgl = 23.0; 
+        doc.text(dStr[0], 163.0, yTgl);
+        doc.text(dStr[1], 168.3, yTgl);
+        doc.text(mStr[0], 174.9, yTgl);
+        doc.text(mStr[1], 180.2, yTgl);
+        doc.text("2", 187.3, yTgl); 
+        doc.text("0", 190.0, yTgl); // Hardcode tahun depannya 20..
+        doc.text(yStr[0], 193.0, yTgl);
+        doc.text(yStr[1], 196.0, yTgl);
 
-    doc.text("Metode", 20, startY + lineHeight * 3);
-    doc.text(": " + data.MetodePembayaran, 50, startY + lineHeight * 3);
+        // C. IDENTITAS
+        doc.text(namaDonatur, 89.7, 36.2); // Nama
+        
+        doc.setFontSize(10); 
+        doc.text(alamat.substring(0, 50), 89.7, 42.0); // Alamat (dipotong biar gak nabrak)
+        doc.text(hp, 152.9, 49.6); // No HP
+        doc.setFontSize(12);
 
-    // Nominal Besar
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(241, 90, 34);
-    doc.text(formatRupiah(data.Nominal), 190, startY + lineHeight * 2, { align: "right" });
+        // D. LOGIKA JENIS & NOMINAL
+        const jenis = data.JenisDonasi || "";
+        const subJenis = data.SubJenis || "";
+        const displayNominal = formatRupiah(nominal);
 
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Status: " + (data.Status || "Dalam Proses"), 190, startY + lineHeight * 3, { align: "right" });
+        // Koordinat Baris
+        const yZakat = 73.5; 
+        const yInfaq = 79.5; 
+        const yLain  = 85.5;  
 
-    // Footer
-    doc.setFontSize(8);
-    doc.setTextColor(180, 180, 180);
-    doc.text("Terima kasih atas kepercayaan Anda. Semoga Allah memberkahi harta Anda.", 20, 85);
-    doc.text("Dokumen ini sah dicetak secara komputerisasi.", 20, 89);
+        if (jenis.includes('Zakat') || jenis.includes('Fitrah') || jenis.includes('Maal')) {
+            doc.text(displayNominal, 111.9, yZakat); 
+        } else if (jenis.includes('Infaq') || subJenis.includes('Infaq')) {
+            doc.text(displayNominal, 111.9, yInfaq); 
+        } else {
+            doc.text(displayNominal, 111.9, yLain); 
+            // Tulis nama jenisnya di kolom "Lain-lain" sebelah kiri
+            doc.setFontSize(9);
+            doc.text(`(${jenis})`, 72, yLain); 
+            doc.setFontSize(12);
+        }
 
-    // Simpan File
-    doc.save(`Kwitansi_Lazismu_${data.Timestamp}.pdf`);
-    showToast("Kwitansi berhasil diunduh!", "success");
+        // E. TOTAL & TERBILANG
+        doc.setFontSize(14); // Total lebih besar
+        doc.text(displayNominal, 111.9, 93.0); 
+
+        doc.setFontSize(11);
+        // Pecah terbilang jadi beberapa baris jika panjang
+        const terbilangLines = doc.splitTextToSize(terbilangText + " #", 108); 
+        doc.text(terbilangLines, 89.7, 99.1);
+
+        // F. CHECKLIST METODE BAYAR (V)
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold"); // Font tebal untuk centang
+        const metode = data.MetodePembayaran || "Tunai";
+        
+        if (metode === 'Tunai') {
+            doc.text("V", 180.0, 72.0); // Posisi Checkbox Kas
+        } else {
+            doc.text("V", 180.0, 78.0); // Posisi Checkbox Bank
+            
+            // Tulis Nama Bank/QRIS
+            doc.setFontSize(10);
+            doc.setFont("times", "italic");
+            doc.text("Transfer/QRIS", 193.0, 79.0);
+        }
+
+        // G. TANDA TANGAN (Otomatis Admin)
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0); // Hitam
+        
+        // Donatur (Kanan)
+        doc.text(`( ${namaDonatur} )`, 169.0, 132.0, {align:'center'});
+        
+        // Admin (Kiri)
+        doc.text("( Admin Lazismu )", 100.0, 132.0, {align:'center'});
+
+        // 6. Simpan File
+        doc.save(`Kwitansi_${noKwitansi}.pdf`);
+        showToast("Kwitansi berhasil diunduh!", "success");
+
+    } catch (err) {
+        console.error(err);
+        showToast("Gagal membuat PDF: " + err.message, "error");
+    } finally {
+        // Kembalikan tombol jadi icon semula
+        if(btn) btn.innerHTML = originalText;
+    }
 }
 
 // --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
