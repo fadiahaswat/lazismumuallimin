@@ -273,92 +273,118 @@
     </div>
 </div>
 
-    <header id="main-header" class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
+    <header id="main-header" class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-2xl border-b border-slate-200/60 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)]">
     
-    <div class="h-1 w-full bg-gradient-to-r from-orange-500 via-yellow-400 to-green-500"></div>
+    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-orange-500 via-yellow-400 to-green-500 shadow-[0_0_10px_rgba(251,146,60,0.5)]"></div>
 
-    <nav class="container max-w-7xl mx-auto px-4 md:px-8 py-3 flex justify-between items-center relative">
+    <nav class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center relative">
         
-        <a href="#home" class="flex items-center gap-4 group cursor-pointer select-none" onclick="showPage('home')">
-            <img src="logo.png" alt="Logo Lazismu" class="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105">
-        </a>
-
-        <div class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1 bg-slate-100/50 p-1.5 rounded-full border border-white/50 shadow-inner">
-            <a href="#home" onclick="showPage('home'); return false;" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2">
-                <i class="fas fa-home text-xs mb-0.5"></i> Beranda
-            </a>
-            <a href="#tentang" onclick="showPage('tentang'); return false;" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2">
-                <i class="fas fa-info-circle text-xs mb-0.5"></i> Tentang
-            </a>
-            <a href="#berita" onclick="showPage('berita'); return false;" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2">
-                <i class="fas fa-newspaper text-xs mb-0.5"></i> Berita
-            </a>
-            <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2">
-                <i class="fas fa-chart-line text-xs mb-0.5"></i> Laporan
-            </a>
-            <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link px-4 py-2 rounded-full text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2">
-                <i class="fas fa-table text-xs mb-0.5"></i> Rekap
+        <div class="flex-shrink-0 flex items-center gap-4 group cursor-pointer w-[140px] md:w-[180px]">
+            <a href="#home" onclick="showPage('home')" class="block">
+                <img src="logo.png" alt="Logo Lazismu" class="h-10 md:h-11 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-sm">
             </a>
         </div>
 
-        <div class="flex items-center gap-3">
-            <a href="#donasi" onclick="showPage('donasi'); return false;" class="group relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
-                <i class="fas fa-heart text-xs animate-pulse"></i> 
-                <span>Donasi</span>
+        <div class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center p-1.5 rounded-full bg-slate-100/80 border border-slate-200/80 shadow-inner backdrop-blur-sm gap-1">
+            
+            <div class="flex items-center gap-1 mr-1">
+                <a href="#home" onclick="showPage('home'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
+                    <i class="fas fa-home text-[10px] group-hover:text-orange-500 transition-colors"></i> Beranda
+                </a>
+                <a href="#tentang" onclick="showPage('tentang'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
+                    <i class="fas fa-info-circle text-[10px] group-hover:text-orange-500 transition-colors"></i> Tentang
+                </a>
+                <a href="#berita" onclick="showPage('berita'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
+                    <i class="fas fa-newspaper text-[10px] group-hover:text-orange-500 transition-colors"></i> Berita
+                </a>
+                <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
+                    <i class="fas fa-chart-line text-[10px] group-hover:text-orange-500 transition-colors"></i> Laporan
+                </a>
+                <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
+                    <i class="fas fa-table text-[10px] group-hover:text-orange-500 transition-colors"></i> Rekap
+                </a>
+            </div>
+
+            <div class="h-6 w-px bg-slate-300 mx-1"></div> <a href="#donasi" onclick="showPage('donasi'); return false;" class="group relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-full font-bold text-xs shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2 ml-1">
+                <i class="fas fa-heart text-[10px] animate-pulse"></i> 
+                <span>DONASI</span>
                 <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
             </a>
+        </div>
 
-            <button id="btn-google-login" class="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 transition font-bold text-sm bg-white shadow-sm">
-                <i class="fab fa-google"></i> 
-                <span id="label-login">Masuk / Daftar</span>
+        <div class="flex items-center justify-end gap-3 w-[140px] md:w-[180px]">
+            
+            <button id="btn-google-login" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50/50 transition-all font-bold text-xs shadow-sm group">
+                <div class="p-1 bg-white rounded-full border border-slate-100 group-hover:border-orange-100">
+                    <i class="fab fa-google text-xs"></i>
+                </div>
+                <span id="label-login">Masuk Akun</span>
             </button>
             
-            <div id="user-profile-menu" class="hidden relative group">
-                <button class="flex items-center gap-2 px-3 py-2 rounded-full bg-slate-50 border border-slate-200 hover:bg-white transition">
-                    <img id="user-avatar" src="" class="w-8 h-8 rounded-full border border-slate-200">
-                    <div class="text-left hidden lg:block">
-                        <p id="user-name" class="text-[10px] font-bold text-slate-800 leading-tight">Nama User</p>
-                        <p class="text-[9px] text-green-600 font-bold">Donatur</p>
+            <div id="user-profile-menu" class="hidden relative group z-50">
+                <button class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-orange-300 transition-all">
+                    <div class="relative">
+                        <img id="user-avatar" src="" class="w-8 h-8 rounded-full border-2 border-slate-100 object-cover">
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
-                    <i class="fas fa-chevron-down text-xs text-slate-400 ml-1"></i>
+                    <div class="text-left hidden xl:block">
+                        <p id="user-name" class="text-[10px] font-bold text-slate-800 leading-tight truncate max-w-[80px]">User</p>
+                        <p class="text-[9px] text-slate-400 font-medium">Donatur</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-orange-500 transition-colors ml-1"></i>
                 </button>
                 
-                <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden hidden group-hover:block animate-fade-in-up">
-                    <a href="#riwayat-saya" onclick="showMyHistory()" class="block px-4 py-3 text-sm text-slate-600 hover:bg-orange-50 hover:text-orange-600 font-bold border-b border-slate-50">
-                        <i class="fas fa-history mr-2"></i> Riwayat Saya
+                <div class="absolute right-0 top-full mt-3 w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden hidden group-hover:block animate-fade-in-up origin-top-right ring-1 ring-slate-900/5">
+                    <div class="px-4 py-3 bg-slate-50/50 border-b border-slate-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Akun Saya</p>
+                    </div>
+                    <a href="#riwayat-saya" onclick="showMyHistory()" class="block px-4 py-3 text-xs text-slate-600 hover:bg-orange-50 hover:text-orange-600 font-bold transition-colors flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-history"></i></div>
+                        Riwayat Donasi
                     </a>
-                    <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 font-bold">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                    <a href="#profile" class="block px-4 py-3 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-600 font-bold transition-colors flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-user-cog"></i></div>
+                        Pengaturan
+                    </a>
+                    <div class="h-px bg-slate-100 my-1"></div>
+                    <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-xs text-red-500 hover:bg-red-50 font-bold transition-colors flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-lg bg-red-100 text-red-500 flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></div>
+                        Keluar
                     </button>
                 </div>
             </div>
 
-            <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-500 hover:bg-orange-50 rounded-full transition-all">
-                <i class="fas fa-bars text-xl"></i>
+            <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-all border border-transparent hover:border-orange-200">
+                <i class="fas fa-bars text-lg"></i>
             </button>
         </div>
 
-        <div id="menu-links" class="hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-xl border-t border-slate-100 flex-col p-4 space-y-2 lg:hidden animate-fade-in-up origin-top z-40">
-    <a href="#home" onclick="showPage('home'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-home"></i></div> Beranda
-    </a>
-    <a href="#tentang" onclick="showPage('tentang'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-500"><i class="fas fa-info"></i></div> Tentang Kami
-    </a>
-    <a href="#berita" onclick="showPage('berita'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500"><i class="fas fa-newspaper"></i></div> Kabar Berita
-    </a>
-    <a href="#riwayat" onclick="showPage('riwayat'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500"><i class="fas fa-chart-pie"></i></div> Laporan & Statistik
-    </a>
-    <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 font-bold text-sm flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500"><i class="fas fa-table"></i></div> Rekapitulasi
-    </a>
-</div>
+        <div id="menu-links" class="hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-2xl border-t border-slate-100 flex-col p-4 space-y-2 lg:hidden animate-fade-in-up origin-top z-40 rounded-b-3xl">
+            <a href="#donasi" onclick="showPage('donasi'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="block w-full text-center bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-xl font-bold text-sm shadow-md mb-4">
+                <i class="fas fa-heart animate-pulse mr-2"></i> DONASI SEKARANG
+            </a>
+
+            <div class="grid grid-cols-2 gap-2">
+                <a href="#home" onclick="showPage('home'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link px-4 py-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-orange-200 text-slate-600 font-bold text-xs flex flex-col items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-home text-lg text-slate-400"></i> Beranda
+                </a>
+                <a href="#tentang" onclick="showPage('tentang'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link px-4 py-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-orange-200 text-slate-600 font-bold text-xs flex flex-col items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-info-circle text-lg text-slate-400"></i> Tentang
+                </a>
+                <a href="#berita" onclick="showPage('berita'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link px-4 py-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-orange-200 text-slate-600 font-bold text-xs flex flex-col items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-newspaper text-lg text-slate-400"></i> Berita
+                </a>
+                <a href="#riwayat" onclick="showPage('riwayat'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link px-4 py-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-orange-200 text-slate-600 font-bold text-xs flex flex-col items-center justify-center gap-2 transition-all">
+                    <i class="fas fa-chart-line text-lg text-slate-400"></i> Laporan
+                </a>
+            </div>
+             <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="nav-link block px-4 py-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-orange-200 text-slate-600 font-bold text-xs text-center transition-all">
+                <i class="fas fa-table mr-2 text-slate-400"></i> Rekapitulasi Data
+            </a>
+        </div>
 
     </nav>
 </header>
-
     <main class="flex-grow">
         
         <section id="page-home" class="page-section">
@@ -2414,6 +2440,7 @@
 
 </body>
 </html>
+
 
 
 
