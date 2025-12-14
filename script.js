@@ -2852,7 +2852,7 @@ function renderPersonalHistoryTable() {
                 </span>
             </td>
             <td class="p-5 text-center">
-                <button onclick='downloadReceipt(${JSON.stringify(item)})' class="text-slate-400 hover:text-orange-600 transition p-2" title="Download Kwitansi">
+                <button onclick='openReceiptModal(${JSON.stringify(item)})' class="text-slate-400 hover:text-orange-600 transition p-2" title="Lihat Kwitansi">
                     <i class="fas fa-file-invoice"></i>
                 </button>
             </td>
