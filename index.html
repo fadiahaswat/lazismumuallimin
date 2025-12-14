@@ -313,51 +313,49 @@
         </div>
 
         <div class="flex items-center justify-end gap-3 w-[140px] md:w-[180px]">
-            
-            <button id="btn-google-login" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50/50 transition-all font-bold text-xs shadow-sm group">
-                <div class="p-1 bg-white rounded-full border border-slate-100 group-hover:border-orange-100">
-                    <i class="fab fa-google text-xs"></i>
-                </div>
-                <span id="label-login">Masuk Akun</span>
-            </button>
-            
-            <div id="user-profile-menu" class="hidden relative group z-50">
-                <button class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-orange-300 transition-all">
-                    <div class="relative">
-                        <img id="user-avatar" src="" class="w-8 h-8 rounded-full border-2 border-slate-100 object-cover">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
-                    </div>
-                    <div class="text-left hidden xl:block">
-                        <p id="user-name" class="text-[10px] font-bold text-slate-800 leading-tight truncate max-w-[80px]">User</p>
-                        <p class="text-[9px] text-slate-400 font-medium">Donatur</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-orange-500 transition-colors ml-1"></i>
-                </button>
-                
-                <div class="absolute right-0 top-full mt-3 w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden hidden group-hover:block animate-fade-in-up origin-top-right ring-1 ring-slate-900/5">
-                    <div class="px-4 py-3 bg-slate-50/50 border-b border-slate-100">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Akun Saya</p>
-                    </div>
-                    <a href="#riwayat-saya" onclick="showMyHistory()" class="block px-4 py-3 text-xs text-slate-600 hover:bg-orange-50 hover:text-orange-600 font-bold transition-colors flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-history"></i></div>
-                        Riwayat Donasi
-                    </a>
-                    <a href="#profile" class="block px-4 py-3 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-600 font-bold transition-colors flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-user-cog"></i></div>
-                        Pengaturan
-                    </a>
-                    <div class="h-px bg-slate-100 my-1"></div>
-                    <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-xs text-red-500 hover:bg-red-50 font-bold transition-colors flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-red-100 text-red-500 flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></div>
-                        Keluar
-                    </button>
-                </div>
+    
+    <div id="login-btn-wrapper">
+        <button id="btn-google-login" onclick="doLogin()" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50/50 transition-all font-bold text-xs shadow-sm group">
+            <div class="p-1 bg-white rounded-full border border-slate-100 group-hover:border-orange-100">
+                <i class="fab fa-google text-xs"></i>
             </div>
+            <span id="label-login">Masuk Akun</span>
+        </button>
+    </div>
 
-            <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-all border border-transparent hover:border-orange-200">
-                <i class="fas fa-bars text-lg"></i>
+    <div id="user-profile-menu" class="hidden relative group z-50">
+        <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-orange-300 transition-all">
+            <div class="relative">
+                <img id="user-avatar" src="https://ui-avatars.com/api/?name=User" class="w-8 h-8 rounded-full border-2 border-slate-100 object-cover">
+                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+            </div>
+            <div class="text-left hidden xl:block">
+                <p id="user-name" class="text-[10px] font-bold text-slate-800 leading-tight truncate max-w-[80px]">Memuat...</p>
+                <p class="text-[9px] text-slate-400 font-medium">Donatur</p>
+            </div>
+            <i class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-orange-500 transition-colors ml-1"></i>
+        </button>
+        
+        <div id="profile-dropdown-content" class="absolute right-0 top-full mt-3 w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden hidden group-hover:block animate-fade-in-up origin-top-right ring-1 ring-slate-900/5">
+            <div class="px-4 py-3 bg-slate-50/50 border-b border-slate-100">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Akun Saya</p>
+            </div>
+            <a href="#dashboard" onclick="showPage('dashboard')" class="block px-4 py-3 text-xs text-slate-600 hover:bg-orange-50 hover:text-orange-600 font-bold transition-colors flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-th-large"></i></div>
+                Dashboard Saya
+            </a>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-xs text-red-500 hover:bg-red-50 font-bold transition-colors flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-red-100 text-red-500 flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></div>
+                Keluar
             </button>
         </div>
+    </div>
+
+    <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-all border border-transparent hover:border-orange-200">
+        <i class="fas fa-bars text-lg"></i>
+    </button>
+</div>
 
         <div id="menu-links" class="hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-2xl border-t border-slate-100 flex-col p-4 space-y-2 lg:hidden animate-fade-in-up origin-top z-40 rounded-b-3xl">
             <a href="#donasi" onclick="showPage('donasi'); document.getElementById('menu-links').classList.add('hidden'); return false;" class="block w-full text-center bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-xl font-bold text-sm shadow-md mb-4">
@@ -2440,3 +2438,4 @@
 
 </body>
 </html>
+
