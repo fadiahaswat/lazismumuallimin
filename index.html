@@ -387,205 +387,110 @@
 </header>
     <main class="flex-grow">
         
-        <section id="page-home" class="page-section bg-slate-50 relative overflow-hidden">
-    
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 left-0 w-full h-[85vh] bg-slate-950 rounded-bl-[10rem] rounded-br-[5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden isolate z-0">
+        <section id="page-home" class="page-section bg-slate-50 relative">
+
+    <div class="relative bg-slate-950 rounded-b-[4rem] md:rounded-b-[5rem] pt-32 pb-56 md:pb-64 overflow-hidden isolate shadow-2xl">
+        
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-orange-500/20 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+        <div class="absolute bottom-0 right-0 w-[800px] h-[600px] bg-blue-600/10 rounded-full blur-[100px] -z-10"></div>
+
+        <div class="container max-w-5xl mx-auto px-4 text-center relative z-10">
             
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:6rem_6rem] opacity-30 mix-blend-overlay"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_800px_at_100%_200px,#ffffff0a,transparent)]"></div>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in-up hover:bg-white/10 transition cursor-default shadow-lg shadow-black/20">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <span class="text-xs font-bold text-slate-200 tracking-widest uppercase">Lembaga Amil Zakat Terpercaya</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-[1.1] tracking-tight animate-fade-in-up">
+                Amanah Mengelola, <br class="hidden md:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-yellow-200 to-orange-300 animate-shimmer bg-[length:200%_auto]">
+                    Memberdaya Sesama
+                </span>
+            </h1>
+
+            <p class="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 font-light leading-relaxed animate-fade-in-up delay-100">
+                Salurkan Zakat, Infaq, dan Shodaqoh Anda melalui Lazismu Mu'allimin Yogyakarta. Transparan, mudah, dan berdampak langsung bagi umat.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 animate-fade-in-up delay-200">
+                <button onclick="showPage('donasi')" class="group relative overflow-hidden px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold text-lg shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all duration-300">
+                    <span class="relative z-10 flex items-center gap-3">
+                        <i class="fas fa-heart text-xl animate-pulse"></i> 
+                        Tunaikan ZIS
+                    </span>
+                    <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
+                </button>
+
+                <button id="btn-hubungi-hero" class="group px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-1">
+                    <span class="flex items-center gap-3">
+                        <i class="fab fa-whatsapp text-xl text-emerald-400"></i> 
+                        Konsultasi
+                    </span>
+                </button>
+            </div>
             
-            <div class="absolute -top-[30%] -left-[10%] w-[600px] h-[600px] bg-orange-500/30 rounded-full blur-[140px] mix-blend-screen animate-pulse-slow"></div>
-            <div class="absolute top-[20%] -right-[20%] w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[160px] mix-blend-screen"></div>
-            <div class="absolute bottom-[10%] left-[20%] w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[140px] mix-blend-screen"></div>
         </div>
     </div>
 
-    <div class="container max-w-7xl mx-auto px-4 md:px-8 pt-32 md:pt-44 pb-32 relative z-10">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-20 -mt-32 md:-mt-40 mb-20">
+        
+        <div class="bg-white rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] border border-slate-100 p-8 md:p-12 relative overflow-hidden backdrop-blur-xl">
             
-            <div class="text-left animate-fade-in-up">
-                <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md mb-8 shadow-lg shadow-black/5">
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-gradient-to-r from-green-400 to-emerald-500"></span>
-                    </span>
-                    <span class="text-xs font-bold text-white tracking-wider uppercase drop-shadow-sm">Lembaga Amil Zakat Terpercaya</span>
-                </div>
+            <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-b from-orange-50/50 to-transparent rounded-full blur-3xl -z-10 opacity-60"></div>
+            <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-t from-blue-50/50 to-transparent rounded-full blur-3xl -z-10 opacity-60"></div>
 
-                <h1 class="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight tracking-tight drop-shadow-lg">
-                    Amanah Mengelola,<br>
-                    <span class="relative whitespace-nowrap">
-                        <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-yellow-200 to-orange-300 animate-shimmer bg-[length:200%_auto]">
-                            Memberdaya Sesama.
-                        </span>
-                        <svg aria-hidden="true" viewBox="0 0 418 42" class="absolute left-0 top-2/3 h-[0.58em] w-full fill-orange-500/30 blur-[1px]" preserveAspectRatio="none"><path d="M203.371.916c-26.013-2.078-76.686 1.963-124.73 9.946L67.3 12.749C35.421 18.062 18.2 21.766 6.004 25.934 1.244 27.561.828 27.778.874 28.61c.047.832.682 1.109 4.645 1.296 14.823.7 49.196-1.42 93.637-5.342 8.975-.791 19.964-1.817 31.732-2.978 14.452-1.425 36.274-3.583 64.022-6.24 27.748-2.657 49.165-4.49 61.398-5.235 8.439-.515 21.264-.648 43.712-1.563 22.448-.915 35.821-2.332 41.204-3.932 2.559-.762 2.274-2.246-.272-3.586-8.895-4.686-22.388-9.005-44.009-13.23-23.85-4.655-54.292-8.515-96.708-11.432-21.208-1.458-36.196-2.083-36.828-2.474-.546-.338-.138-2.011 1.528-2.944 1.666-.933 2.737-1.637 2.19-2.814l-.547-1.176z"></path></svg>
-                    </span>
-                </h1>
-
-                <p class="text-slate-300 text-lg md:text-xl max-w-xl mb-10 font-medium leading-relaxed drop-shadow">
-                    Platform resmi Lazismu Mu'allimin Yogyakarta. Salurkan Zakat, Infaq, dan Shodaqoh Anda dengan mudah, transparan, dan berdampak langsung.
-                </p>
-
-                <div class="flex flex-wrap gap-4 mb-14">
-                    <button onclick="showPage('donasi')" class="group relative z-10 overflow-hidden px-8 py-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 text-white font-bold text-lg shadow-[0_10px_30px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(249,115,22,0.6)] transition-all duration-300 hover:-translate-y-1 active:translate-y-0 active:scale-95 ring-2 ring-orange-500/50 ring-offset-2 ring-offset-slate-950">
-                        <span class="relative z-10 flex items-center gap-3">
-                            <i class="fas fa-hand-holding-heart text-2xl group-hover:animate-wiggle"></i> 
-                            Tunaikan ZIS Sekarang
-                        </span>
-                        <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
-                    </button>
-
-                    <button id="btn-hubungi-hero" class="group relative z-10 overflow-hidden px-8 py-4 rounded-2xl bg-white/5 border-2 border-white/10 text-white font-bold text-lg backdrop-blur-sm hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-1">
-                        <span class="flex items-center gap-3">
-                            <i class="fab fa-whatsapp text-2xl text-emerald-400 group-hover:scale-110 transition"></i> 
-                            Konsultasi & Layanan
-                        </span>
-                    </button>
-                </div>
-
-                <div class="flex flex-wrap gap-x-8 gap-y-4 text-slate-400 font-medium text-sm border-t border-white/10 pt-6">
-                    <div class="flex items-center gap-2 group">
-                        <i class="fas fa-check-circle text-orange-500 group-hover:text-orange-400 transition"></i> <span class="group-hover:text-slate-200 transition">Amanah & Terpercaya</span>
-                    </div>
-                    <div class="flex items-center gap-2 group">
-                        <i class="fas fa-shield-alt text-blue-500 group-hover:text-blue-400 transition"></i> <span class="group-hover:text-slate-200 transition">Transparan & Akuntabel</span>
-                    </div>
-                    <div class="flex items-center gap-2 group">
-                        <i class="fas fa-bolt text-yellow-500 group-hover:text-yellow-400 transition"></i> <span class="group-hover:text-slate-200 transition">Proses Cepat & Mudah</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hidden md:block relative h-full animate-fade-in-up delay-200">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] perspective-1000 pointer-events-none">
-                    <div class="absolute top-[20%] left-[20%] text-orange-500/20 text-[15rem] animate-float-slow -rotate-[15deg] drop-shadow-[0_20px_50px_rgba(249,115,22,0.3)]" style="animation-duration: 8s;">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="absolute top-[50%] right-[10%] text-blue-500/20 text-[10rem] animate-float-slow rotate-[25deg] drop-shadow-[0_20px_50px_rgba(59,130,246,0.3)]" style="animation-duration: 10s; animation-delay: 1s;">
-                        <i class="fas fa-donate"></i>
-                    </div>
-                     <div class="absolute bottom-[20%] left-[30%] text-emerald-500/20 text-[8rem] animate-float-slow -rotate-[35deg] drop-shadow-[0_20px_50px_rgba(16,185,129,0.3)]" style="animation-duration: 12s; animation-delay: 2s;">
-                        <i class="fas fa-hand-holding-heart"></i>
-                    </div>
-                    <svg class="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:rgb(249,115,22);stop-opacity:0.6" />
-                                <stop offset="100%" style="stop-color:rgb(59,130,246);stop-opacity:0.6" />
-                            </linearGradient>
-                        </defs>
-                         <circle cx="30%" cy="30%" r="5" fill="url(#grad1)" class="animate-ping-slow" />
-                         <circle cx="70%" cy="60%" r="8" fill="url(#grad1)" class="animate-ping-slow" style="animation-delay: 1.5s;" />
-                         <path d="M150 150 Q 300 50 450 300" stroke="url(#grad1)" stroke-width="2" fill="none" stroke-dasharray="10,10" class="animate-pulse-slow"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-30 -mt-40 md:-mt-48 mb-20">
-        <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 p-8 md:px-12 md:py-10 relative overflow-hidden mb-8 group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-all duration-500">
-             <div class="absolute -top-[200px] -right-[200px] w-[400px] h-[400px] bg-orange-100/60 rounded-full blur-[100px] mix-blend-multiply transition-all duration-500 group-hover:scale-110"></div>
-             <div class="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-blue-100/60 rounded-full blur-[100px] mix-blend-multiply transition-all duration-500 group-hover:scale-110"></div>
-
-            <div class="flex flex-col md:flex-row justify-between items-end relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-slate-100 pb-8 gap-6 text-center md:text-left">
                 <div>
-                    <div class="inline-flex items-center gap-3 mb-3 bg-green-50/80 border border-green-100 px-4 py-1.5 rounded-full">
-                        <span class="relative flex h-2.5 w-2.5">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                        </span>
-                        <span class="text-green-700 text-xs font-extrabold uppercase tracking-widest">Real-time Dashboard</span>
-                    </div>
-                    <h2 class="text-3xl md:text-5xl font-black text-slate-900 leading-tight">
-                        Dampak Kebaikan Anda,<br>
-                        <span class="text-slate-500">Tercatat & Transparan.</span>
-                    </h2>
+                    <h2 class="text-3xl font-black text-slate-800 mb-2">Capaian Kebaikan</h2>
+                    <p class="text-slate-500">Laporan penghimpunan dana secara real-time.</p>
                 </div>
-                 <a href="#" onclick="showPage('riwayat'); return false;" class="group/btn flex items-center gap-3 text-slate-700 font-bold bg-white hover:bg-slate-50 pl-6 pr-2 py-2 rounded-full border-2 border-slate-100 hover:border-orange-200 transition-all duration-300 mt-8 md:mt-0 shadow-sm hover:shadow-md hover:scale-105 hover:-translate-y-1">
-                    <span class="text-sm">Lihat Laporan Lengkap</span>
-                    <div class="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-md group-hover/btn:bg-orange-600 transition-all duration-300 group-hover/btn:rotate-45">
-                        <i class="fas fa-arrow-up text-sm"></i>
-                    </div>
+                <a href="#" onclick="showPage('riwayat'); return false;" class="flex items-center gap-2 text-sm font-bold text-orange-600 bg-orange-50 px-5 py-2.5 rounded-full hover:bg-orange-100 transition-colors">
+                    Lihat Detail <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <div class="group relative bg-white/80 backdrop-blur-lg p-8 rounded-[2.5rem] border-2 border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_60px_-20px_rgba(249,115,22,0.2)] hover:border-orange-500/30 z-10 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="absolute -right-8 -bottom-8 text-9xl text-orange-500/5 z-0 group-hover:scale-110 transition-transform duration-500"><i class="fas fa-hand-holding-heart"></i></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <div class="relative z-10 flex flex-col h-full justify-between">
-                    <div class="flex justify-between items-start mb-6">
-                         <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fas fa-hand-holding-heart"></i>
-                        </div>
+                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg hover:border-orange-200 transition-all duration-300 group text-center md:text-left">
+                    <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl mb-4 mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hand-holding-heart"></i>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Total Donasi Terkumpul</p>
-                        <h3 id="stat-total-donasi" class="text-3xl lg:text-4xl font-black text-slate-900 group-hover:text-orange-600 transition-colors">Rp 0</h3>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Donasi</p>
+                    <h3 id="stat-total-donasi" class="text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">Rp 0</h3>
+                </div>
+
+                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg hover:border-blue-200 transition-all duration-300 group text-center md:text-left">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Transaksi</p>
+                    <h3 id="stat-total-transaksi" class="text-2xl font-black text-slate-800 group-hover:text-blue-600 transition-colors">0</h3>
+                </div>
+
+                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg hover:border-teal-200 transition-all duration-300 group text-center md:text-left">
+                    <div class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mb-4 mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Rata-rata</p>
+                    <h3 id="stat-donasi-rata" class="text-2xl font-black text-slate-800 group-hover:text-teal-600 transition-colors">Rp 0</h3>
+                </div>
+
+                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg hover:border-yellow-200 transition-all duration-300 group text-center md:text-left">
+                    <div class="w-14 h-14 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl mb-4 mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Donasi Tertinggi</p>
+                    <h3 id="stat-donasi-tertinggi" class="text-2xl font-black text-slate-800 group-hover:text-yellow-600 transition-colors">Rp 0</h3>
+                    <div class="mt-2 inline-block bg-white border border-slate-200 rounded-lg px-2 py-1">
+                        <p id="stat-donasi-tertinggi-nama" class="text-[10px] text-slate-500 font-bold truncate max-w-[120px]">-</p>
                     </div>
                 </div>
+
             </div>
-
-            <div class="group relative bg-white/80 backdrop-blur-lg p-8 rounded-[2.5rem] border-2 border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_60px_-20px_rgba(59,130,246,0.2)] hover:border-blue-500/30 z-10 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="absolute -right-8 -bottom-8 text-9xl text-blue-500/5 z-0 group-hover:scale-110 transition-transform duration-500"><i class="fas fa-receipt"></i></div>
-
-                <div class="relative z-10 flex flex-col h-full justify-between">
-                    <div class="flex justify-between items-start mb-6">
-                         <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-400 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-blue-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Total Transaksi Kebaikan</p>
-                        <h3 id="stat-total-transaksi" class="text-3xl lg:text-4xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">0</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative bg-white/80 backdrop-blur-lg p-8 rounded-[2.5rem] border-2 border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_60px_-20px_rgba(16,185,129,0.2)] hover:border-emerald-500/30 z-10 overflow-hidden">
-                 <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                 <div class="absolute -right-8 -bottom-8 text-9xl text-emerald-500/5 z-0 group-hover:scale-110 transition-transform duration-500"><i class="fas fa-chart-pie"></i></div>
-
-                <div class="relative z-10 flex flex-col h-full justify-between">
-                    <div class="flex justify-between items-start mb-6">
-                         <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-teal-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fas fa-balance-scale"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Rata-rata Donasi</p>
-                        <h3 id="stat-donasi-rata" class="text-3xl lg:text-4xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">Rp 0</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative bg-white/80 backdrop-blur-lg p-8 rounded-[2.5rem] border-2 border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_60px_-20px_rgba(234,179,8,0.2)] hover:border-yellow-500/30 z-10 overflow-hidden">
-                 <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                 <div class="absolute -right-8 -bottom-8 text-9xl text-yellow-500/5 z-0 group-hover:scale-110 transition-transform duration-500"><i class="fas fa-crown"></i></div>
-
-                <div class="relative z-10 flex flex-col h-full justify-between">
-                    <div class="flex justify-between items-start mb-6">
-                         <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg shadow-yellow-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Donasi Tertinggi</p>
-                        <h3 id="stat-donasi-tertinggi" class="text-3xl lg:text-4xl font-black text-slate-900 group-hover:text-yellow-600 transition-colors">Rp 0</h3>
-                         <div class="mt-3 inline-flex items-center gap-2 bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-1.5 max-w-full backdrop-blur-sm">
-                             <i class="fas fa-user-circle text-slate-400 text-xs"></i>
-                             <p id="stat-donasi-tertinggi-nama" class="text-xs text-slate-600 truncate font-bold tracking-tight">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -2470,6 +2375,7 @@
 
 </body>
 </html>
+
 
 
 
