@@ -32,11 +32,18 @@ window.doLogin = async function() {
     }
 }
 
-// Fungsi Logout
+// Fungsi Logout (DIPERBAIKI)
 window.doLogout = function() {
     signOut(auth).then(() => {
         showToast("Berhasil keluar", 'success');
-        location.reload();
+        
+        // 1. Paksa URL kembali ke Home (hapus #dashboard)
+        window.location.hash = "#home";
+        
+        // 2. Refresh halaman untuk membersihkan memori data user
+        // Menggunakan replace agar history back tidak kembali ke dashboard
+        window.location.replace(window.location.pathname + "#home");
+        window.location.reload();
     });
 }
 
