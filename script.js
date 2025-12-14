@@ -1539,7 +1539,11 @@ function setupWizardLogic() {
         btn.onclick = () => {
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
+            
             donasiData.nominal = parseInt(btn.dataset.nominal);
+            // [FIX] Simpan sebagai nominal asli setiap kali user memilih
+            donasiData.nominalAsli = donasiData.nominal; 
+            
             const customInput = document.getElementById('nominal-custom');
             if (customInput) customInput.value = formatRupiah(donasiData.nominal);
         };
@@ -1550,6 +1554,10 @@ function setupWizardLogic() {
         nominalCustom.addEventListener('input', function() {
             let val = this.value.replace(/\D/g, '');
             donasiData.nominal = parseInt(val) || 0;
+            
+            // [FIX] Simpan sebagai nominal asli setiap kali user mengetik
+            donasiData.nominalAsli = donasiData.nominal; 
+            
             this.value = formatRupiah(donasiData.nominal);
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
         });
