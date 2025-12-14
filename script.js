@@ -46,40 +46,67 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnLogin) btnLogin.addEventListener('click', window.doLogin);
 });
 
+// --- UPDATE SCRIPT.JS (Bagian Auth Listener) ---
+
 // Satpam Pemantau (Cek status login)
 onAuthStateChanged(auth, (user) => {
-    const btnLogin = document.getElementById('btn-google-login');
+    const btnWrapper = document.getElementById('login-btn-wrapper'); // Gunakan wrapper
     const profileMenu = document.getElementById('user-profile-menu');
+    const inputNama = document.getElementById('nama-muzakki-input');
+    const inputEmail = document.getElementById('email');
     
     if (user) {
-        // User Login: Sembunyikan tombol login, Munculkan profil
-        currentUser = user;
-        if(btnLogin) btnLogin.classList.add('hidden');
-        if(profileMenu) {
+        // --- USER LOGIN ---
+        currentUser = user; // Simpan ke variabel global
+
+        // 1. UI Header: Sembunyikan tombol login, Munculkan profil
+        if (btnWrapper) btnWrapper.style.display = 'none'; // Pakai inline style biar keras
+        if (profileMenu) {
             profileMenu.classList.remove('hidden');
-            document.getElementById('user-avatar').src = user.photoURL;
-            document.getElementById('user-name').textContent = user.displayName;
+            profileMenu.classList.add('flex'); // Pastikan flex aktif
         }
+
+        // 2. Isi Data Profil di Header
+        if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL || "https://ui-avatars.com/api/?name=" + user.displayName;
+        if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
         
-        // --- AUTO-FILL FORMULIR (KEJAIBANNYA DI SINI) ---
-        // Kita isi formulir donasi otomatis
-        const inputNama = document.getElementById('nama-muzakki-input');
-        const inputEmail = document.getElementById('email');
-        
+        // 3. Auto-Fill Form Donasi
         if(inputNama) inputNama.value = user.displayName;
         if(inputEmail) {
             inputEmail.value = user.email;
-            inputEmail.readOnly = true; // Email dikunci biar ga diubah (validasi)
-            inputEmail.classList.add('bg-slate-100');
+            inputEmail.readOnly = true;
+            inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         }
 
+        // 4. Load Data Personal untuk Dashboard (Fungsi baru nanti)
+        // if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
+
     } else {
-        // User Belum Login
+        // --- USER BELUM LOGIN / LOGOUT ---
         currentUser = null;
-        if(btnLogin) btnLogin.classList.remove('hidden');
-        if(profileMenu) profileMenu.classList.add('hidden');
+
+        // 1. UI Header: Munculkan tombol login
+        if (btnWrapper) btnWrapper.style.display = 'block';
+        if (profileMenu) {
+            profileMenu.classList.add('hidden');
+            profileMenu.classList.remove('flex');
+        }
+
+        // 2. Reset Form Donasi
+        if(inputNama) inputNama.value = '';
+        if(inputEmail) {
+            inputEmail.value = '';
+            inputEmail.readOnly = false;
+            inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
+        }
     }
 });
+
+// Helper untuk dropdown profil di mobile/touch
+window.toggleProfileDropdown = function() {
+    const dropdown = document.getElementById('profile-dropdown-content');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
 
 /**
  * ============================================================================
