@@ -2958,218 +2958,32 @@ function formatHP(hp) {
     return clean;
 }
 
-// --- FUNGSI 1: BUKA MODAL PREVIEW ---
-window.openReceiptModal = function(data) {
-    currentReceiptData = data;
-    const modal = document.getElementById('receipt-modal');
-    if (!modal) return;
+// --- FITUR CETAK KWITANSI (Pop-Up Window) ---
+// Ganti fungsi openReceiptModal yang lama dengan ini:
 
-    // 1. Persiapan Data
-    const tgl = new Date(data.Timestamp);
-    const dStr = String(tgl.getDate()).padStart(2, '0');
-    const mStr = String(tgl.getMonth() + 1).padStart(2, '0');
-    const yStr = String(tgl.getFullYear()).slice(-2); // Ambil 2 digit terakhir (25)
-    
-    const nama = data.NamaDonatur || currentUser?.displayName || "Hamba Allah";
-    const nominal = parseInt(data.Nominal) || 0;
-    const nominalStr = formatRupiah(nominal);
-    const terbilangStr = terbilang(nominal) + " Rupiah #";
-    const hp = formatHP(data.NoHP || data.hp);
-    const alamat = data.Alamat || "-";
-    const jenis = data.JenisDonasi || "";
-    const subJenis = data.SubJenis || "";
-    const metode = data.MetodePembayaran || "Tunai";
-
-    // 2. Isi DOM Modal (Sesuai ID di HTML Modal)
-    document.getElementById('prev-nomor').innerText = ""; // Kosongkan Nomor
-    
-    document.getElementById('prev-d1').innerText = dStr[0];
-    document.getElementById('prev-d2').innerText = dStr[1];
-    document.getElementById('prev-m1').innerText = mStr[0];
-    document.getElementById('prev-m2').innerText = mStr[1];
-    document.getElementById('prev-y1').innerText = yStr[0];
-    document.getElementById('prev-y2').innerText = yStr[1];
-
-    document.getElementById('prev-nama').innerText = nama;
-    document.getElementById('prev-alamat').innerText = alamat.substring(0, 45); // Potong jika kepanjangan
-    document.getElementById('prev-hp').innerText = hp;
-
-    // Reset Nominal Fields
-    document.getElementById('prev-zakat').innerText = "";
-    document.getElementById('prev-infaq').innerText = "";
-    document.getElementById('prev-lain').innerText = "";
-    document.getElementById('prev-ket-lain').innerText = "";
-
-    // Isi Nominal Sesuai Jenis
-    if (jenis.includes('Zakat') || jenis.includes('Fitrah') || jenis.includes('Maal')) {
-        document.getElementById('prev-zakat').innerText = nominalStr;
-    } else if (jenis.includes('Infaq') || subJenis.includes('Infaq')) {
-        document.getElementById('prev-infaq').innerText = nominalStr;
-    } else {
-        document.getElementById('prev-lain').innerText = nominalStr;
-        document.getElementById('prev-ket-lain').innerText = `(${jenis})`;
-    }
-
-    document.getElementById('prev-total').innerText = nominalStr;
-
-    // Terbilang (Pecah baris manual untuk preview)
-    if (terbilangStr.length > 55) {
-        const splitIdx = terbilangStr.lastIndexOf(' ', 55);
-        document.getElementById('prev-terbilang-1').innerText = terbilangStr.substring(0, splitIdx);
-        document.getElementById('prev-terbilang-2').innerText = terbilangStr.substring(splitIdx + 1);
-    } else {
-        document.getElementById('prev-terbilang-1').innerText = terbilangStr;
-        document.getElementById('prev-terbilang-2').innerText = "";
-    }
-
-    // Checkbox & Metode
-    document.getElementById('prev-chk-kas').innerText = "";
-    document.getElementById('prev-chk-bank').innerText = "";
-    document.getElementById('prev-nama-bank').innerText = "";
-
-    if (metode === 'Tunai') {
-        document.getElementById('prev-chk-kas').innerText = "V";
-    } else {
-        document.getElementById('prev-chk-bank').innerText = "V";
-        document.getElementById('prev-nama-bank').innerText = "Transfer/QRIS";
-    }
-
-    document.getElementById('prev-penyetor').innerText = `( ${nama} )`;
-
-    // 3. Tampilkan Modal
-    modal.classList.remove('hidden');
-    
-    // 4. Auto-Scale agar muat di layar (Responsif)
-    setTimeout(resizeReceiptModal, 50);
-}
-
-// Helper: Auto-Resize Preview Modal
-function resizeReceiptModal() {
-    const workspace = document.getElementById('receipt-workspace');
-    if(!workspace) return;
-    const parent = workspace.parentElement;
-    const scale = Math.min(parent.clientWidth / 800, 1); // 800px approx width 210mm
-    workspace.style.transform = `scale(${scale})`;
-    workspace.style.marginBottom = `-${(1 - scale) * 560}px`; // Adjust spacing margin bottom
-}
-window.addEventListener('resize', resizeReceiptModal);
-
-// --- FUNGSI 2: DOWNLOAD PDF (DIPANGGIL DARI MODAL) ---
-window.downloadCurrentReceipt = async function() {
-    const data = currentReceiptData;
-    if (!data || !window.jspdf) return;
-
-    const btn = document.activeElement;
-    const oldText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Proses...';
-
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [210, 148] });
-
-        // 1. Muat Template
-        try {
-            const img = await loadImage('MasterTemplate.png');
-            doc.addImage(img, 'PNG', 0, 0, 210, 148);
-        } catch (e) {
-            doc.setFillColor(255,255,255); doc.rect(0,0,210,148,'F'); // Fallback
-        }
-
-        // 2. Setting Font (Times Italic Bold mirip Kalam di PDF)
-        doc.setTextColor(0, 0, 128); // Tinta Biru
-        doc.setFont("times", "bolditalic"); 
-        doc.setFontSize(13); // Ukuran disesuaikan
-
-        // 3. Mapping Koordinat (CSS top + 4.5mm offset baseline)
-        const offset = 4.5;
+window.openReceiptWindow = function(itemData) {
+    // 1. Siapkan Paket Data yang Bersih dari baris tabel yang diklik
+    const paketData = {
+        nama: itemData.NamaDonatur || itemData.nama || "Hamba Allah",
+        alamat: itemData.Alamat || "-",
+        hp: itemData.NoHP || itemData.hp || "-",
+        nominal: itemData.Nominal || itemData.nominal || 0,
         
-        // Data
-        const tgl = new Date(data.Timestamp);
-        const dStr = String(tgl.getDate()).padStart(2, '0');
-        const mStr = String(tgl.getMonth() + 1).padStart(2, '0');
-        const yStr = String(tgl.getFullYear()).slice(-2);
-        const nama = String(data.NamaDonatur || currentUser?.displayName || "Hamba Allah");
-        const nominal = parseInt(data.Nominal) || 0;
-        const nominalStr = formatRupiah(nominal);
-        const terbilangStr = terbilang(nominal) + " Rupiah #";
-        const hp = formatHP(data.NoHP || data.hp);
-        const alamat = String(data.Alamat || "-").substring(0, 50);
-        const jenis = String(data.JenisDonasi || "");
-        const subJenis = String(data.SubJenis || "");
-        const metode = data.MetodePembayaran || "Tunai";
-
-        // === ISI PDF (X, Y) ===
+        // Cek jenis dan sub-jenis untuk penempatan kolom
+        jenis: itemData.JenisDonasi || itemData.type || "Infaq",
+        sub: itemData.SubJenis || "", // Misal: Pengembangan Kampus
         
-        // Nomor (KOSONG)
-        // doc.text("", 70.4, 19.3 + offset);
+        metode: itemData.MetodePembayaran || itemData.metode || "Tunai",
+        tanggal: itemData.Timestamp || new Date().toISOString()
+    };
 
-        // Tanggal
-        const yTgl = 19.0 + offset;
-        doc.text(dStr[0], 163.0, yTgl); doc.text(dStr[1], 168.3, yTgl);
-        doc.text(mStr[0], 174.9, yTgl); doc.text(mStr[1], 180.2, yTgl);
-        doc.text(yStr[0], 187.3, yTgl); doc.text(yStr[1], 192.1, yTgl);
+    // 2. Simpan ke "Saku Celana" Browser (LocalStorage)
+    // Nama kuncinya 'tiket_cetak_kwitansi' harus sama dengan yang ada di cetak.html
+    localStorage.setItem('tiket_cetak_kwitansi', JSON.stringify(paketData));
 
-        // Identitas
-        doc.text(nama, 89.7, 32.2 + offset);
-        doc.setFontSize(11);
-        doc.text(alamat, 89.7, 38.0 + offset);
-        doc.setFontSize(13);
-        doc.text(hp, 152.9, 45.6 + offset);
-
-        // Nominal
-        const xNom = 111.9;
-        if (jenis.includes('Zakat') || jenis.includes('Fitrah') || jenis.includes('Maal')) {
-            doc.text(nominalStr, xNom, 69.5 + offset);
-        } else if (jenis.includes('Infaq') || subJenis.includes('Infaq')) {
-            doc.text(nominalStr, xNom, 75.5 + offset);
-        } else {
-            doc.text(nominalStr, xNom, 81.5 + offset);
-            doc.setFontSize(9);
-            doc.text(`(${jenis})`, 71.9, 81.5 + offset); // Keterangan lain
-            doc.setFontSize(13);
-        }
-        
-        // Total
-        doc.setFontSize(14);
-        doc.text(nominalStr, xNom, 88.0 + offset + 1); // +1 biar agak turun dikit (tebal)
-
-        // Terbilang
-        doc.setFontSize(11);
-        if (terbilangStr.length > 55) {
-            const splitIdx = terbilangStr.lastIndexOf(' ', 55);
-            doc.text(terbilangStr.substring(0, splitIdx), 89.7, 95.1 + offset);
-            doc.text(terbilangStr.substring(splitIdx + 1), 89.7, 101.2 + offset);
-        } else {
-            doc.text(terbilangStr, 89.7, 95.1 + offset);
-        }
-
-        // Checkbox & Bank
-        doc.setFontSize(22);
-        if (metode === 'Tunai') {
-            doc.text("V", 180.0, 68.0 + offset + 1); // Kas
-        } else {
-            doc.text("V", 180.0, 73.9 + offset + 1); // Bank
-            doc.setFontSize(10);
-            doc.text("Transfer/QRIS", 193.0, 75.0 + offset);
-        }
-
-        // Tanda Tangan
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(0); // Hitam
-        doc.text(`( ${nama} )`, 169.0, 137.0, {align: 'center'}); // Penyetor
-        doc.text("( Admin Lazismu )", 109.0, 137.0, {align: 'center'}); // Penerima
-
-        // Simpan
-        doc.save(`Kwitansi_${nama.replace(/\s/g,'_')}_${dStr}${mStr}${yStr}.pdf`);
-        showToast("PDF Berhasil Diunduh", "success");
-
-    } catch (e) {
-        console.error(e);
-        showToast("Error: " + e.message, "error");
-    } finally {
-        btn.innerHTML = oldText;
-    }
+    // 3. Buka File cetak.html di Jendela Baru
+    // width=900,height=700 agar pas ukurannya di layar PC
+    window.open('cetak.html', '_blank', 'width=900,height=700,menubar=no,toolbar=no');
 }
 
 function closeReceiptModal() {
