@@ -3,116 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Kwitansi - Lazismu</title>
+    <title>Cetak Kwitansi Lazismu</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Kalam:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        :root { --ink-color: #000080; /* Warna Biru Tinta */ }
-        
-        body { 
-            margin: 0; padding: 20px; 
-            background: #e2e8f0; 
-            display: flex; flex-direction: column; align-items: center; 
-            font-family: 'Inter', sans-serif; 
+        :root {
+            --ink-color: #000080; /* Warna Tinta Biru */
+            --paper-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        /* Tombol Print (Akan hilang saat dicetak) */
-        .action-bar { margin-bottom: 20px; display: flex; gap: 15px; }
-        .btn { 
-            padding: 12px 25px; border: none; border-radius: 10px; 
-            font-weight: bold; cursor: pointer; color: white; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            display: flex; align-items: center; gap: 8px;
+        body { 
+            margin: 0; padding: 40px; 
+            background: #cbd5e1; /* Background abu-abu biar kontras */
+            display: flex; flex-direction: column; align-items: center; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
         }
+
+        /* --- TOMBOL AKSI (Akan hilang saat diprint) --- */
+        .action-bar {
+            position: fixed; bottom: 30px; 
+            background: white; padding: 10px 20px; 
+            border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex; gap: 15px; z-index: 1000;
+        }
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 30px;
+            font-weight: bold; cursor: pointer; color: white;
+            display: flex; align-items: center; gap: 8px;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
         .btn-print { background: #F15A22; }
         .btn-close { background: #334155; }
 
-        /* Kertas Kwitansi */
-        .workspace { 
-            position: relative; 
-            width: 210mm; height: 148mm; /* Ukuran A5 */
-            background-image: url('MasterTemplate.png'); /* Pastikan gambar ada */
-            background-size: 100% 100%; 
-            background-color: white; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+        /* --- KERTAS KWITANSI (FIXED A5) --- */
+        .workspace {
+            width: 210mm; height: 148mm; /* Ukuran Pas A5 */
+            position: relative;
+            background-image: url('MasterTemplate.png'); 
+            background-size: 100% 100%;
+            background-color: white;
+            box-shadow: var(--paper-shadow);
             overflow: hidden;
         }
 
-        /* Teks Isian (Read Only) */
+        /* --- ISIAN DATA (READ ONLY) --- */
         .field { 
             position: absolute; 
             white-space: nowrap; 
-            font-family: 'Kalam', cursive; /* Font Tulis Tangan */
+            font-family: 'Kalam', cursive; 
             font-weight: 700; font-size: 14pt; 
             color: var(--ink-color); 
-            z-index: 10; display: flex; align-items: flex-end;
-            line-height: 1; pointer-events: none; /* Anti Edit */
+            z-index: 10; 
+            display: flex; align-items: flex-end;
+            line-height: 1; pointer-events: none;
         }
 
-        /* --- KOORDINAT (Posisi Teks) --- */
+        /* === KOORDINAT PRESISI (JANGAN DIUBAH) === */
+        
+        /* 1. Header */
         .pos-nomor { top: 18.0mm; left: 70.4mm; width: 44.1mm; font-size: 12pt; }
         
-        /* Tanggal Pecahan */
-        .tgl { top: 19mm; text-align: center; width: 5mm; }
+        /* 2. Tanggal Pecahan */
+        .tgl { top: 19mm; text-align: center; width: 5mm; justify-content: center; }
         #d1 { left: 163.0mm; } #d2 { left: 168.3mm; }
         #m1 { left: 174.9mm; } #m2 { left: 180.2mm; }
         #y1 { left: 187.3mm; } #y2 { left: 192.1mm; }
 
+        /* 3. Identitas */
         .pos-nama   { top: 32.2mm; left: 89.7mm; width: 110mm; }
         .pos-alamat { top: 38.0mm; left: 89.7mm; width: 110mm; font-size: 11pt; }
         .pos-hp     { top: 45.6mm; left: 152.9mm; width: 47mm; }
 
-        /* Uang */
-        .uang-ket { left: 68.0mm; width: 33mm; text-align: right; justify-content: flex-end; padding-right: 5px; font-size: 10pt; }
-        .uang-nom { left: 111.9mm; width: 64mm; }
+        /* 4. Tabel Nominal (Zakat/Infaq/Lain) */
+        .col-ket { left: 68.0mm; width: 33mm; justify-content: flex-end; padding-right: 5px; font-size: 10pt; text-align: right; }
+        .col-nom { left: 111.9mm; width: 64mm; }
         
-        .baris-zakat { top: 69.5mm; }
-        .baris-infaq { top: 75.5mm; }
-        .baris-lain  { top: 81.5mm; }
-        .pos-total   { top: 88.0mm; left: 111.9mm; width: 64mm; font-weight: 800; font-size: 16pt; }
+        .row-zakat { top: 69.5mm; }
+        .row-infaq { top: 75.5mm; }
+        .row-lain  { top: 81.5mm; }
+        
+        .pos-total { top: 88.0mm; left: 111.9mm; width: 64mm; font-weight: 800; font-size: 16pt; }
 
-        /* Terbilang */
+        /* 5. Terbilang */
         .pos-tb1 { top: 95.1mm; left: 89.7mm; width: 110mm; font-size: 11pt; }
         .pos-tb2 { top: 101.2mm; left: 89.7mm; width: 110mm; font-size: 11pt; }
 
-        /* Checkbox & Metode */
-        .chk { font-size: 20pt; font-family: sans-serif; font-weight: bold; color: #000; }
-        .chk-kas { top: 68.0mm; left: 179.5mm; }
-        .chk-bank { top: 74.0mm; left: 179.5mm; }
+        /* 6. Checkbox & Bank */
+        .chk { font-size: 20pt; font-family: sans-serif; font-weight: bold; color: #000; display: flex; justify-content: center; width: 6mm; }
+        .chk-kas  { top: 68.0mm; left: 178.5mm; }
+        .chk-bank { top: 74.0mm; left: 178.5mm; }
         .pos-bank { top: 75.0mm; left: 193.0mm; font-size: 10pt; font-family: sans-serif; }
 
-        /* Tanda Tangan */
-        .pos-ttd-kiri { top: 127.9mm; left: 89.5mm; width: 39mm; justify-content: center; font-size: 10pt; font-family: sans-serif; color: #000; }
+        /* 7. Tanda Tangan */
+        .pos-ttd-kiri  { top: 127.9mm; left: 89.5mm; width: 39mm; justify-content: center; font-size: 10pt; font-family: sans-serif; color: #000; }
         .pos-ttd-kanan { top: 127.9mm; left: 149.5mm; width: 39mm; justify-content: center; font-size: 10pt; font-family: sans-serif; color: #000; }
 
-        /* Gambar Tambahan */
-        .box-qr { position: absolute; top: 113mm; left: 132mm; width: 15mm; height: 15mm; z-index: 20; }
-        .img-overlay { position: absolute; z-index: 5; mix-blend-mode: multiply; opacity: 0.85; }
+        /* 8. Gambar Aset */
+        .box-qr { position: absolute; top: 113mm; left: 132mm; width: 15mm; height: 15mm; z-index: 20; opacity: 0.9; }
+        .img-overlay { position: absolute; z-index: 5; mix-blend-mode: multiply; opacity: 0.85; pointer-events: none; }
         .img-stempel { top: 106.2mm; left: 62.4mm; width: 39.9mm; }
-        .img-ttd { top: 106.2mm; left: 70.4mm; width: 61.4mm; }
+        .img-ttd     { top: 106.2mm; left: 70.4mm; width: 61.4mm; }
 
-        /* Aturan Cetak (PENTING) */
+        /* --- SETTINGAN PRINT --- */
         @media print {
-            body { background: none; margin: 0; padding: 0; }
+            body { margin: 0; padding: 0; background: none; }
             .action-bar { display: none !important; }
-            .workspace { box-shadow: none; margin: 0; page-break-after: always; }
+            .workspace { box-shadow: none; margin: 0; page-break-after: always; -webkit-print-color-adjust: exact; }
             @page { size: A5 landscape; margin: 0; }
         }
     </style>
 </head>
 <body>
-
-    <div class="action-bar">
-        <button class="btn btn-print" onclick="window.print()">
-            <i class="fas fa-print"></i> Cetak Sekarang
-        </button>
-        <button class="btn btn-close" onclick="window.close()">
-            <i class="fas fa-times"></i> Tutup
-        </button>
-    </div>
 
     <div class="workspace">
         <div id="nomor" class="field pos-nomor"></div>
@@ -125,14 +131,14 @@
         <div id="alamat" class="field pos-alamat"></div>
         <div id="hp" class="field pos-hp"></div>
 
-        <div id="ket-zakat" class="field uang-ket baris-zakat"></div>
-        <div id="nom-zakat" class="field uang-nom baris-zakat"></div>
+        <div id="ket-zakat" class="field col-ket row-zakat"></div>
+        <div id="nom-zakat" class="field col-nom row-zakat"></div>
 
-        <div id="ket-infaq" class="field uang-ket baris-infaq"></div>
-        <div id="nom-infaq" class="field uang-nom baris-infaq"></div>
+        <div id="ket-infaq" class="field col-ket row-infaq"></div>
+        <div id="nom-infaq" class="field col-nom row-infaq"></div>
 
-        <div id="ket-lain" class="field uang-ket baris-lain"></div>
-        <div id="nom-lain" class="field uang-nom baris-lain"></div>
+        <div id="ket-lain"  class="field col-ket row-lain"></div>
+        <div id="nom-lain"  class="field col-nom row-lain"></div>
 
         <div id="total" class="field pos-total"></div>
 
@@ -151,26 +157,33 @@
         <img src="ttd.png" class="img-overlay img-ttd" onerror="this.style.display='none'">
     </div>
 
+    <div class="action-bar">
+        <button class="btn btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> Cetak Kwitansi
+        </button>
+        <button class="btn btn-close" onclick="window.close()">
+            <i class="fas fa-times"></i> Tutup
+        </button>
+    </div>
+
     <script>
-        // --- OTAK OTOMATIS ---
         window.onload = function() {
-            // 1. Ambil data yang dikirim dari Dashboard
+            // 1. AMBIL DATA DARI DASHBOARD
             const rawData = localStorage.getItem('tiket_cetak_kwitansi');
             
             if (!rawData) {
-                alert("Tidak ada data! Silakan buka dari Dashboard.");
+                alert("Data tidak ditemukan! Buka halaman ini melalui Dashboard.");
                 return;
             }
             const data = JSON.parse(rawData);
 
-            // 2. Fungsi Helper (Bantu-bantu)
+            // 2. HELPER FUNCTIONS
             const set = (id, val) => {
                 const el = document.getElementById(id);
                 if(el) el.innerText = val || "-";
             };
             const formatRp = (num) => "Rp " + parseInt(num).toLocaleString('id-ID');
             
-            // Fungsi Terbilang Sederhana
             const terbilang = (a) => {
                 const bil=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];
                 let n=Math.abs(parseInt(a));
@@ -185,34 +198,39 @@
                 return "";
             };
 
-            // 3. ISI DATA KE KERTAS (MAPPING)
+            // 3. MAPPING DATA KE HTML
             
-            // Generate Nomor Kwitansi Unik (Contoh: INV/240520/123)
-            const todayStr = new Date().toISOString().slice(2,10).replace(/-/g,'');
-            const rand = Math.floor(Math.random()*900)+100;
-            set('nomor', `INV/${todayStr}/${rand}`);
+            // A. Nomor Invoice (Otomatis jika tidak ada)
+            let noInv = data.nomor || "";
+            if(!noInv || noInv.length < 5) {
+                const todayStr = new Date().toISOString().slice(2,10).replace(/-/g,'');
+                const rand = Math.floor(Math.random()*900)+100;
+                noInv = `INV/${todayStr}/${rand}`;
+            }
+            set('nomor', noInv);
 
-            // Tanggal
-            const tgl = new Date(data.tanggal);
+            // B. Tanggal (Pecah Digit)
+            const tgl = new Date(data.tanggal || new Date());
             const d = String(tgl.getDate()).padStart(2,'0');
             const m = String(tgl.getMonth()+1).padStart(2,'0');
             const y = String(tgl.getFullYear()).slice(-2);
+            
             set('d1', d[0]); set('d2', d[1]);
             set('m1', m[0]); set('m2', m[1]);
             set('y1', y[0]); set('y2', y[1]);
 
-            // Biodata
+            // C. Identitas
             set('nama', data.nama);
             set('alamat', data.alamat);
             set('hp', data.hp);
             set('penyetor', `( ${data.nama} )`);
 
-            // Nominal (Logika Penempatan Pintar)
+            // D. Logika Penempatan Nominal (Zakat vs Infaq vs Lainnya)
             const nominal = parseInt(data.nominal);
             const jenis = (data.jenis || "").toLowerCase();
             const sub = (data.sub || "").toLowerCase();
 
-            // Reset dulu
+            // Bersihkan field dulu
             set('nom-zakat',''); set('ket-zakat','');
             set('nom-infaq',''); set('ket-infaq','');
             set('nom-lain','');  set('ket-lain','');
@@ -221,35 +239,36 @@
                 set('nom-zakat', formatRp(nominal));
             } else if (jenis.includes('infaq') || jenis.includes('shadaqah')) {
                 set('nom-infaq', formatRp(nominal));
-                if(sub) set('ket-infaq', `(${data.sub})`); // Tampilkan detail infaq (misal: Beasiswa)
+                if(sub && sub !== jenis) set('ket-infaq', `(${data.sub})`);
             } else {
                 set('nom-lain', formatRp(nominal));
                 set('ket-lain', `(${data.jenis})`);
             }
             set('total', formatRp(nominal));
 
-            // Terbilang (Pecah 2 baris)
+            // E. Terbilang (Wrap Text 2 Baris)
             let textBilang = terbilang(nominal) + " Rupiah #";
-            if(textBilang.length > 50) {
-                // Potong pintar (cari spasi)
-                let potong = textBilang.lastIndexOf(' ', 50);
-                set('tb1', textBilang.substring(0, potong));
-                set('tb2', textBilang.substring(potong));
+            if(textBilang.length > 55) {
+                let cutIndex = textBilang.lastIndexOf(' ', 55);
+                set('tb1', textBilang.substring(0, cutIndex));
+                set('tb2', textBilang.substring(cutIndex));
             } else {
                 set('tb1', textBilang);
             }
 
-            // Checkbox
-            if (data.metode === 'Tunai') {
+            // F. Checkbox Metode
+            const mtd = (data.metode || "").toLowerCase();
+            if (mtd === 'tunai' || mtd === 'cash') {
                 set('chk-kas', 'V');
             } else {
                 set('chk-bank', 'V');
-                set('nama-bank', 'Transfer/QRIS');
+                set('nama-bank', data.metode || 'Transfer');
             }
 
-            // QR Code
+            // G. Generate QR Code
+            const qrText = `LAZISMU VALID\n${noInv}\n${data.nama}\nRp ${nominal}\n${data.tanggal}`;
             new QRCode(document.getElementById("qrcode"), {
-                text: `LAZISMU VALID\n${data.nama}\nRp ${nominal}\n${data.tanggal}`,
+                text: qrText,
                 width: 55, height: 55,
                 colorDark : "#000", colorLight : "#fff",
                 correctLevel : QRCode.CorrectLevel.L
