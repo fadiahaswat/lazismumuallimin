@@ -15,7 +15,8 @@
             --primary: #ff7b00;
             --bg-grad: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             --shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
-            --ink-color: #000080; /* Warna Tinta Biru */
+            --ink-color: #000080; /* Warna Biru Tinta Sama Semua */
+            --font-size-isian: 16pt; /* Ukuran Font Dibesarkan */
         }
 
         /* --- UI UTAMA --- */
@@ -49,48 +50,54 @@
             border-radius: 4px; font-family: 'Lato', sans-serif; color: #000; overflow: hidden; 
         }
 
-        /* --- PERUBAHAN: Field Tidak Bisa Diedit --- */
+        /* --- FIELD ISIAN (Settingan Seragam) --- */
         .editable { 
             position: absolute; line-height: 1.0; white-space: nowrap; overflow: hidden; 
-            font-family: 'Kalam', cursive; font-weight: 700; font-size: 14pt; 
+            
+            /* FONT DISAMAKAN SEMUA DI SINI */
+            font-family: 'Kalam', cursive; 
+            font-weight: 700; 
+            font-size: var(--font-size-isian); 
             color: var(--ink-color); 
-            /* Hapus border & background agar terlihat menyatu seperti tulisan asli */
+            
             background: transparent; border: none; 
             z-index: 10; min-width: 10px; min-height: 24px; padding: 2px 4px; 
             display: flex; align-items: flex-end; 
             pointer-events: none; /* Anti Klik */
         }
 
-        /* KOORDINAT (Plek Ketiplek dari kode Anda) */
-        .pos-nomor { top: 18.0mm; left: 70.4mm; width: 44.1mm; font-size: 12pt; } 
+        /* KOORDINAT PRESISI */
+        .pos-nomor { top: 18.0mm; left: 70.4mm; width: 44.1mm; font-size: 14pt; } /* Sedikit lebih kecil agar muat */
+        
         .tgl-box { justify-content: center; } 
         .tgl-d1 { top: 19mm; left: 163.0mm; width: 5.0mm; } .tgl-d2 { top: 19mm; left: 168.3mm; width: 4.8mm; }
         .tgl-m1 { top: 19mm; left: 174.9mm; width: 5.0mm; } .tgl-m2 { top: 19mm; left: 180.2mm; width: 4.8mm; }
         .tgl-y1 { top: 19mm; left: 187.3mm; width: 5.0mm; } .tgl-y2 { top: 19mm; left: 192.1mm; width: 5.0mm; }
 
         .nama { top: 32.2mm; left: 89.7mm; width: 110.6mm; height: 8mm; }
-        .alamat { top: 38.0mm; left: 89.7mm; width: 110.6mm; height: 8mm; font-size: 11pt; }
-        .telepon-fax { top: 45.6mm; left: 89.7mm; width: 54.0mm; }
+        .alamat { top: 38.0mm; left: 89.7mm; width: 110.6mm; height: 8mm; font-size: 12pt; } /* Alamat agak kecil biar muat */
         .no-hp { top: 45.6mm; left: 152.9mm; width: 47.1mm; }
 
-        .jenis-zakat { top: 69.5mm; left: 68.0mm; width: 33.1mm; justify-content: flex-end; padding-right: 5px; font-size: 10pt; text-align: right; }
+        /* Style Kolom Jenis (Kanan Rata) */
+        .jenis-zakat { top: 69.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
         .nominal-zakat { top: 69.5mm; left: 111.9mm; width: 64.0mm; }
         
-        .jenis-infaq { top: 75.5mm; left: 80.9mm; width: 20.1mm; justify-content: flex-end; padding-right: 5px; font-size: 10pt; text-align: right; }
+        .jenis-infaq { top: 75.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
         .nominal-infaq { top: 75.5mm; left: 111.9mm; width: 66.1mm; }
         
-        .jenis-lain { top: 81.5mm; left: 71.9mm; width: 29.1mm; justify-content: flex-end; padding-right: 5px; font-size: 10pt; text-align: right; }
+        .jenis-lain { top: 81.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
         .nominal-lain { top: 81.5mm; left: 111.9mm; width: 66.1mm; }
         
-        .nominal-total { top: 88.0mm; left: 111.9mm; width: 66.1mm; font-weight: 800; font-size: 16pt; }
+        .nominal-total { top: 88.0mm; left: 111.9mm; width: 66.1mm; font-weight: 800; font-size: 18pt; }
 
-        .chk { justify-content: center; align-items: center; font-size: 22pt; line-height: 0.8; font-family: sans-serif; color: #000; }
-        .centang-kas { top: 70.0mm; left: 178.5mm; width: 5.0mm; }
-        .centang-bank { top: 75.9mm; left: 178.5mm; width: 5.0mm; }
-        .nama-bank { top: 75.0mm; left: 193.0mm; width: 20mm; font-size: 10pt; font-family: sans-serif; color: #000; }
+        /* Centang */
+        .chk { justify-content: center; align-items: center; font-size: 24pt; line-height: 0.8; font-family: 'Kalam', cursive; }
+        .centang-kas { top: 68.0mm; left: 178.5mm; width: 6.0mm; }
+        .centang-bank { top: 74.0mm; left: 178.5mm; width: 6.0mm; }
+        .nama-bank { top: 75.0mm; left: 193.0mm; width: 20mm; font-size: 12pt; font-family: 'Kalam', cursive; }
 
-        .terbilang-1 { top: 95.1mm; left: 89.7mm; width: 110.0mm; font-size: 11pt; }
-        .terbilang-2 { top: 101.2mm; left: 89.7mm; width: 110.0mm; font-size: 11pt; }
+        .terbilang-1 { top: 95.1mm; left: 89.7mm; width: 110.0mm; font-size: 12pt; }
+        .terbilang-2 { top: 101.2mm; left: 89.7mm; width: 110.0mm; font-size: 12pt; }
 
         /* Gambar & QR */
         .box-qrcode { 
@@ -102,8 +109,8 @@
         .stempel { top: 106.2mm; left: 62.4mm; width: 39.9mm; }
         .tempat-ttd { top: 106.2mm; left: 70.4mm; width: 61.4mm; }
 
-        .penerima { top: 127.9mm; left: 89.5mm; width: 39.0mm; justify-content: center; font-family: sans-serif; font-size: 10pt; color: #000; }
-        .penyetor { top: 127.9mm; left: 149.5mm; width: 39.0mm; justify-content: center; font-family: sans-serif; font-size: 10pt; color: #000; }
+        /* Tanda Tangan */
+        .penyetor { top: 127.9mm; left: 149.5mm; width: 39.0mm; justify-content: center; font-size: 12pt; color: #000; }
 
         @media print {
             body { background: none; margin: 0; padding: 0; display: block; }
@@ -159,7 +166,6 @@
             <img class="img-overlay stempel" src="stempel.png" onerror="this.style.display='none'">
             <img class="img-overlay tempat-ttd" src="ttd.png" onerror="this.style.display='none'">
 
-            <div class="editable penerima">( Admin Lazismu )</div>
             <div id="penyetor" class="editable penyetor"></div>
         </div>
     </div>
@@ -169,7 +175,9 @@
 
     // 1. Fungsi Bantu (Helper)
     const Utils = {
-        formatRupiah: (angka) => "Rp " + parseInt(angka).toLocaleString('id-ID'),
+        // Hapus Rp di depan (Poin 5)
+        formatRupiah: (angka) => parseInt(angka).toLocaleString('id-ID'),
+        
         terbilang: (angka) => {
             const bil = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
             let n = Math.abs(parseInt(angka));
@@ -186,6 +194,11 @@
         set: (id, val) => {
             const el = document.getElementById(id);
             if (el) el.innerText = val || "";
+        },
+        // Helper untuk membersihkan kata "Zakat" atau "Infaq" dari string agar tidak dobel
+        cleanLabel: (str, removeWord) => {
+            if(!str) return "";
+            return str.replace(new RegExp(removeWord, 'gi'), '').trim();
         }
     };
 
@@ -203,36 +216,38 @@
 
         // === ISI DATA KE FORMULIR ===
 
-        // A. Nomor Invoice (Generate jika kosong)
-        let noInv = data.nomor || "";
-        if(!noInv || noInv.length < 5) {
-            const todayStr = new Date().toISOString().slice(2,10).replace(/-/g,'');
-            const rand = Math.floor(Math.random()*900)+100;
-            noInv = `INV/${todayStr}/${rand}`;
-        }
-        Utils.set('nomor', noInv);
-
-        // B. Pecah Tanggal (DD MM YY)
-        const tgl = new Date(data.tanggal || new Date());
+        // A. Tanggal (Diambil dari Data Transaksi, BUKAN HARI INI - Poin 1)
+        const tgl = new Date(data.tanggal || new Date()); // Data.tanggal dari dashboard
         const d = String(tgl.getDate()).padStart(2, '0');
         const m = String(tgl.getMonth() + 1).padStart(2, '0');
-        const y = String(tgl.getFullYear()).slice(-2);
+        const y = String(tgl.getFullYear()).slice(-2); // Ambil 2 digit tahun
 
         Utils.set('d1', d[0]); Utils.set('d2', d[1]);
         Utils.set('m1', m[0]); Utils.set('m2', m[1]);
         Utils.set('y1', y[0]); Utils.set('y2', y[1]);
 
-        // C. Biodata
+        // B. Nomor Invoice (Poin 1 & 4)
+        // Format: INV/YYMMDD/085339
+        let noInv = data.nomor || "";
+        if(!noInv || noInv.length < 5) {
+            const dateStr = y + m + d; // Menggunakan tanggal data (bukan hari ini)
+            // Tambah Nol di depan (Poin 4: 085339)
+            const rand = Math.floor(Math.random() * 1000000).toString().padStart(6, '0'); 
+            noInv = `INV/${dateStr}/${rand}`;
+        }
+        Utils.set('nomor', noInv);
+
+        // C. Identitas
         Utils.set('nama', data.nama);
         Utils.set('alamat', data.alamat || "-");
         Utils.set('no-hp', data.hp || "-");
         Utils.set('penyetor', `( ${data.nama} )`);
 
-        // D. Nominal Otomatis (Zakat vs Infaq vs Lain)
+        // D. Nominal & Penempatan Jenis (Poin 8)
         const nominal = parseInt(data.nominal);
         const jenis = (data.jenis || "").toLowerCase();
         const sub = (data.sub || "").toLowerCase();
-        const fmtNominal = Utils.formatRupiah(nominal);
+        const fmtNominal = Utils.formatRupiah(nominal); // Tanpa Rp (Poin 5)
 
         // Kosongkan dulu
         Utils.set('jenis-zakat',''); Utils.set('nominal-zakat','');
@@ -240,21 +255,41 @@
         Utils.set('jenis-lain','');  Utils.set('nominal-lain','');
 
         if (jenis.includes('zakat') || jenis.includes('fitrah') || jenis.includes('maal')) {
+            // ZAKAT
             Utils.set('nominal-zakat', fmtNominal);
+            // Langsung tulis jenis spesifiknya (Fitrah/Maal) di kolom jenis
+            let labelZakat = Utils.cleanLabel(data.jenis, 'Zakat'); // Hapus kata "Zakat" biar gak dobel
+            if(!labelZakat && jenis.includes('fitrah')) labelZakat = 'Fitrah';
+            if(!labelZakat && jenis.includes('maal')) labelZakat = 'Maal';
+            Utils.set('jenis-zakat', labelZakat);
+
         } else if (jenis.includes('infaq') || jenis.includes('shadaqah')) {
+            // INFAQ
             Utils.set('nominal-infaq', fmtNominal);
-            // Jika ada detail (misal: Beasiswa), tampilkan di keterangan
-            if(sub && !sub.includes('infaq')) Utils.set('jenis-infaq', `(${data.sub})`);
+            
+            // Prioritas label: Sub Jenis (misal: Beasiswa) -> Jenis (misal: Infaq Umum)
+            let labelInfaq = "";
+            if (sub && !sub.includes('infaq')) {
+                labelInfaq = sub; // Contoh: "Pendidikan" dari "Infaq Pendidikan"
+            } else {
+                labelInfaq = Utils.cleanLabel(data.jenis, 'Infaq');
+            }
+            
+            // Bersihkan kata-kata umum agar singkat
+            labelInfaq = labelInfaq.replace('Pengembangan', '').trim();
+            
+            Utils.set('jenis-infaq', labelInfaq);
+
         } else {
+            // LAINNYA
             Utils.set('nominal-lain', fmtNominal);
-            Utils.set('jenis-lain', `(${data.jenis})`);
+            Utils.set('jenis-lain', data.jenis);
         }
         Utils.set('nominal-total', fmtNominal);
 
-        // E. Terbilang (Wrap Text 2 Baris)
-        let textBilang = Utils.terbilang(nominal) + " Rupiah #";
+        // E. Terbilang (Poin 7: Hapus Pagar)
+        let textBilang = Utils.terbilang(nominal) + " Rupiah"; // Tanpa #
         if (textBilang.length > 50) {
-            // Potong pintar di spasi terdekat
             let cutIndex = textBilang.lastIndexOf(' ', 50);
             Utils.set('terbilang-1', textBilang.substring(0, cutIndex));
             Utils.set('terbilang-2', textBilang.substring(cutIndex));
@@ -273,7 +308,7 @@
 
         // G. Generate QR Code
         new QRCode(document.getElementById("qrcode"), {
-            text: `LZ-MUA VALID\nNo: ${noInv}\nNama: ${data.nama}\nJml: ${fmtNominal}\nTgl: ${d}-${m}-20${y}`,
+            text: `LAZISMU VALID\nNo: ${noInv}\nNama: ${data.nama}\nJml: ${fmtNominal}\nTgl: ${d}-${m}-20${y}`,
             width: 55, height: 55,
             colorDark : "#000000", colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.L
