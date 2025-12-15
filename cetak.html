@@ -15,8 +15,8 @@
             --primary: #ff7b00;
             --bg-grad: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             --shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
-            --ink-color: #000080; /* Warna Biru Tinta Sama Semua */
-            --font-size-isian: 16pt; /* Ukuran Font Dibesarkan */
+            --ink-color: #000080; /* Warna Tinta Biru (Seragam) */
+            --font-size-isian: 16pt; /* Ukuran Font (Seragam) */
         }
 
         /* --- UI UTAMA --- */
@@ -50,11 +50,11 @@
             border-radius: 4px; font-family: 'Lato', sans-serif; color: #000; overflow: hidden; 
         }
 
-        /* --- FIELD ISIAN (Settingan Seragam) --- */
+        /* --- SETTINGAN FONT & WARNA SERAGAM --- */
         .editable { 
             position: absolute; line-height: 1.0; white-space: nowrap; overflow: hidden; 
             
-            /* FONT DISAMAKAN SEMUA DI SINI */
+            /* FONT & WARNA SERAGAM DI SINI */
             font-family: 'Kalam', cursive; 
             font-weight: 700; 
             font-size: var(--font-size-isian); 
@@ -63,11 +63,11 @@
             background: transparent; border: none; 
             z-index: 10; min-width: 10px; min-height: 24px; padding: 2px 4px; 
             display: flex; align-items: flex-end; 
-            pointer-events: none; /* Anti Klik */
+            pointer-events: none;
         }
 
         /* KOORDINAT PRESISI */
-        .pos-nomor { top: 18.0mm; left: 70.4mm; width: 44.1mm; font-size: 14pt; } /* Sedikit lebih kecil agar muat */
+        .pos-nomor { top: 18.0mm; left: 70.4mm; width: 44.1mm; }
         
         .tgl-box { justify-content: center; } 
         .tgl-d1 { top: 19mm; left: 163.0mm; width: 5.0mm; } .tgl-d2 { top: 19mm; left: 168.3mm; width: 4.8mm; }
@@ -75,29 +75,34 @@
         .tgl-y1 { top: 19mm; left: 187.3mm; width: 5.0mm; } .tgl-y2 { top: 19mm; left: 192.1mm; width: 5.0mm; }
 
         .nama { top: 32.2mm; left: 89.7mm; width: 110.6mm; height: 8mm; }
-        .alamat { top: 38.0mm; left: 89.7mm; width: 110.6mm; height: 8mm; font-size: 12pt; } /* Alamat agak kecil biar muat */
+        .alamat { top: 38.0mm; left: 89.7mm; width: 110.6mm; height: 8mm; font-size: 14pt; } /* Alamat agak kecil dikit biar muat */
         .no-hp { top: 45.6mm; left: 152.9mm; width: 47.1mm; }
 
-        /* Style Kolom Jenis (Kanan Rata) */
-        .jenis-zakat { top: 69.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
+        /* Kanan Rata untuk Jenis */
+        .jenis-zakat { top: 69.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; }
         .nominal-zakat { top: 69.5mm; left: 111.9mm; width: 64.0mm; }
         
-        .jenis-infaq { top: 75.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
+        .jenis-infaq { top: 75.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; }
         .nominal-infaq { top: 75.5mm; left: 111.9mm; width: 66.1mm; }
         
-        .jenis-lain { top: 81.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; font-size: 12pt; }
+        .jenis-lain { top: 81.5mm; left: 65.0mm; width: 36.1mm; justify-content: flex-end; padding-right: 5px; }
         .nominal-lain { top: 81.5mm; left: 111.9mm; width: 66.1mm; }
         
-        .nominal-total { top: 88.0mm; left: 111.9mm; width: 66.1mm; font-weight: 800; font-size: 18pt; }
+        .nominal-total { top: 88.0mm; left: 111.9mm; width: 66.1mm; font-weight: 800; font-size: 18pt; } /* Total sedikit lebih besar */
 
-        /* Centang */
-        .chk { justify-content: center; align-items: center; font-size: 24pt; line-height: 0.8; font-family: 'Kalam', cursive; }
+        /* Centang & Bank (Warna & Ukuran disamakan) */
+        .chk { 
+            justify-content: center; align-items: center; 
+            font-size: 24pt; /* Centang tetap besar agar pas kotak */
+            line-height: 0.8; 
+            color: var(--ink-color); /* Biru */
+        }
         .centang-kas { top: 68.0mm; left: 178.5mm; width: 6.0mm; }
         .centang-bank { top: 74.0mm; left: 178.5mm; width: 6.0mm; }
-        .nama-bank { top: 75.0mm; left: 193.0mm; width: 20mm; font-size: 12pt; font-family: 'Kalam', cursive; }
+        .nama-bank { top: 75.0mm; left: 193.0mm; width: 20mm; font-size: 14pt; color: var(--ink-color); }
 
-        .terbilang-1 { top: 95.1mm; left: 89.7mm; width: 110.0mm; font-size: 12pt; }
-        .terbilang-2 { top: 101.2mm; left: 89.7mm; width: 110.0mm; font-size: 12pt; }
+        .terbilang-1 { top: 95.1mm; left: 89.7mm; width: 110.0mm; font-size: 14pt; }
+        .terbilang-2 { top: 101.2mm; left: 89.7mm; width: 110.0mm; font-size: 14pt; }
 
         /* Gambar & QR */
         .box-qrcode { 
@@ -109,8 +114,13 @@
         .stempel { top: 106.2mm; left: 62.4mm; width: 39.9mm; }
         .tempat-ttd { top: 106.2mm; left: 70.4mm; width: 61.4mm; }
 
-        /* Tanda Tangan */
-        .penyetor { top: 127.9mm; left: 149.5mm; width: 39.0mm; justify-content: center; font-size: 12pt; color: #000; }
+        /* Tanda Tangan (Warna Biru) */
+        .penyetor { 
+            top: 127.9mm; left: 149.5mm; width: 39.0mm; 
+            justify-content: center; 
+            font-size: 14pt; /* Samakan */
+            color: var(--ink-color); /* Biru */
+        }
 
         @media print {
             body { background: none; margin: 0; padding: 0; display: block; }
@@ -173,9 +183,8 @@
 <script>
     // --- SKRIP OTOMATIS (READ ONLY) ---
 
-    // 1. Fungsi Bantu (Helper)
     const Utils = {
-        // Hapus Rp di depan (Poin 5)
+        // Poin 5: Hapus Rp di depan
         formatRupiah: (angka) => parseInt(angka).toLocaleString('id-ID'),
         
         terbilang: (angka) => {
@@ -195,16 +204,13 @@
             const el = document.getElementById(id);
             if (el) el.innerText = val || "";
         },
-        // Helper untuk membersihkan kata "Zakat" atau "Infaq" dari string agar tidak dobel
         cleanLabel: (str, removeWord) => {
             if(!str) return "";
             return str.replace(new RegExp(removeWord, 'gi'), '').trim();
         }
     };
 
-    // 2. Logika Utama Saat Halaman Dibuka
     window.onload = function() {
-        // Ambil data yang dikirim dari Dashboard (localStorage)
         const rawData = localStorage.getItem('tiket_cetak_kwitansi');
         
         if (!rawData) {
@@ -214,42 +220,46 @@
         
         const data = JSON.parse(rawData);
 
-        // === ISI DATA KE FORMULIR ===
-
-        // A. Tanggal (Diambil dari Data Transaksi, BUKAN HARI INI - Poin 1)
-        const tgl = new Date(data.tanggal || new Date()); // Data.tanggal dari dashboard
+        // A. Tanggal (Diambil dari Data Transaksi)
+        const tgl = new Date(data.tanggal || new Date());
         const d = String(tgl.getDate()).padStart(2, '0');
         const m = String(tgl.getMonth() + 1).padStart(2, '0');
-        const y = String(tgl.getFullYear()).slice(-2); // Ambil 2 digit tahun
+        const y = String(tgl.getFullYear()).slice(-2);
 
         Utils.set('d1', d[0]); Utils.set('d2', d[1]);
         Utils.set('m1', m[0]); Utils.set('m2', m[1]);
         Utils.set('y1', y[0]); Utils.set('y2', y[1]);
 
-        // B. Nomor Invoice (Poin 1 & 4)
-        // Format: INV/YYMMDD/085339
+        // B. Nomor Invoice (Poin 1: Maksimal 3 Digit belakang)
         let noInv = data.nomor || "";
         if(!noInv || noInv.length < 5) {
-            const dateStr = y + m + d; // Menggunakan tanggal data (bukan hari ini)
-            // Tambah Nol di depan (Poin 4: 085339)
-            const rand = Math.floor(Math.random() * 1000000).toString().padStart(6, '0'); 
-            noInv = `INV/${dateStr}/${rand}`;
+            const dateStr = y + m + d; 
+            // Buat 3 digit random jika tidak ada nomor urut dari database
+            const rand3 = Math.floor(Math.random() * 999) + 1;
+            const seq = String(rand3).padStart(3, '0');
+            noInv = `INV/${dateStr}/${seq}`;
         }
         Utils.set('nomor', noInv);
 
-        // C. Identitas
+        // C. Identitas & Poin 4 (Auto Tambah Nol HP)
         Utils.set('nama', data.nama);
         Utils.set('alamat', data.alamat || "-");
-        Utils.set('no-hp', data.hp || "-");
+        
+        let hpRaw = (data.hp || "-").toString().trim();
+        if (hpRaw !== "-" && !hpRaw.startsWith('0') && !hpRaw.startsWith('62') && !hpRaw.startsWith('+')) {
+            hpRaw = "0" + hpRaw;
+        }
+        Utils.set('no-hp', hpRaw);
+        
         Utils.set('penyetor', `( ${data.nama} )`);
 
-        // D. Nominal & Penempatan Jenis (Poin 8)
+        // D. Nominal & Penempatan Jenis
         const nominal = parseInt(data.nominal);
         const jenis = (data.jenis || "").toLowerCase();
         const sub = (data.sub || "").toLowerCase();
-        const fmtNominal = Utils.formatRupiah(nominal); // Tanpa Rp (Poin 5)
+        const fmtNominal = Utils.formatRupiah(nominal); 
 
-        // Kosongkan dulu
+        // Reset
         Utils.set('jenis-zakat',''); Utils.set('nominal-zakat','');
         Utils.set('jenis-infaq',''); Utils.set('nominal-infaq','');
         Utils.set('jenis-lain','');  Utils.set('nominal-lain','');
@@ -257,8 +267,7 @@
         if (jenis.includes('zakat') || jenis.includes('fitrah') || jenis.includes('maal')) {
             // ZAKAT
             Utils.set('nominal-zakat', fmtNominal);
-            // Langsung tulis jenis spesifiknya (Fitrah/Maal) di kolom jenis
-            let labelZakat = Utils.cleanLabel(data.jenis, 'Zakat'); // Hapus kata "Zakat" biar gak dobel
+            let labelZakat = Utils.cleanLabel(data.jenis, 'Zakat');
             if(!labelZakat && jenis.includes('fitrah')) labelZakat = 'Fitrah';
             if(!labelZakat && jenis.includes('maal')) labelZakat = 'Maal';
             Utils.set('jenis-zakat', labelZakat);
@@ -266,18 +275,13 @@
         } else if (jenis.includes('infaq') || jenis.includes('shadaqah')) {
             // INFAQ
             Utils.set('nominal-infaq', fmtNominal);
-            
-            // Prioritas label: Sub Jenis (misal: Beasiswa) -> Jenis (misal: Infaq Umum)
             let labelInfaq = "";
             if (sub && !sub.includes('infaq')) {
-                labelInfaq = sub; // Contoh: "Pendidikan" dari "Infaq Pendidikan"
+                labelInfaq = sub;
             } else {
                 labelInfaq = Utils.cleanLabel(data.jenis, 'Infaq');
             }
-            
-            // Bersihkan kata-kata umum agar singkat
             labelInfaq = labelInfaq.replace('Pengembangan', '').trim();
-            
             Utils.set('jenis-infaq', labelInfaq);
 
         } else {
@@ -288,7 +292,7 @@
         Utils.set('nominal-total', fmtNominal);
 
         // E. Terbilang (Poin 7: Hapus Pagar)
-        let textBilang = Utils.terbilang(nominal) + " Rupiah"; // Tanpa #
+        let textBilang = Utils.terbilang(nominal) + " Rupiah"; 
         if (textBilang.length > 50) {
             let cutIndex = textBilang.lastIndexOf(' ', 50);
             Utils.set('terbilang-1', textBilang.substring(0, cutIndex));
@@ -308,7 +312,7 @@
 
         // G. Generate QR Code
         new QRCode(document.getElementById("qrcode"), {
-            text: `LAZISMU VALID\nNo: ${noInv}\nNama: ${data.nama}\nJml: ${fmtNominal}\nTgl: ${d}-${m}-20${y}`,
+            text: `LAZISMU MU'ALLIMIN VALID\nNo: ${noInv}\nTgl: ${d}-${m}-20${y}\nNama: ${data.nama}\nJml: ${fmtNominal}`,
             width: 55, height: 55,
             colorDark : "#000000", colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.L
