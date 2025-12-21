@@ -2179,42 +2179,63 @@ function setupHistoryLogic() {
     }
 }
 
-// Mengambil data riwayat dari Google Sheet
+// Mengambil data riwayat PUBLIK (Safe Mode)
 async function loadRiwayat() {
+    // 1. Cek jika data sudah ada, stop
     if (riwayatData.isLoaded) return;
 
     const loader = document.getElementById('riwayat-loading');
     const content = document.getElementById('riwayat-content');
+    const noData = document.getElementById('riwayat-no-data');
 
+    // Tampilkan loader
     if (loader) loader.classList.remove('hidden');
     if (content) content.classList.add('hidden');
+    if (noData) noData.classList.add('hidden');
 
     try {
-        const res = await fetch(GAS_API_URL);
-        const json = await res.json();
+        // 🔥 UPDATE: Panggil endpoint khusus Public Stats
+        // Ini hanya mengambil 20 data terakhir yang sudah disensor (tanpa HP/Email)
+        const response = await fetch(`${GAS_API_URL}?action=getPublicStats`);
+        const json = await response.json();
 
         if (json.status === 'success') {
-            riwayatData.allData = json.data.reverse();
+            // Backend sudah mengirim urutan Terbaru -> Terlama
+            // Jadi tidak perlu .reverse() lagi, kecuali Anda ingin yang lama di atas.
+            riwayatData.allData = json.data; 
             riwayatData.isLoaded = true;
 
-            calculateStats(); // Hitung total donasi dll
-            renderHomeLatestDonations(); // Tampilkan di halaman depan
-            renderPagination();
-            renderRiwayatList();
+            // Render UI
+            // Catatan: calculateStats hanya akan menghitung total dari 20 data yang dimuat
+            if (typeof calculateStats === 'function') calculateStats(); 
             
-            // Render leaderboard jika data sudah siap
-            renderGlobalLeaderboard();
+            if (typeof renderHomeLatestDonations === 'function') renderHomeLatestDonations();
+            
+            // Pagination mungkin tidak diperlukan jika data hanya 20, 
+            // tapi tetap dipanggil agar UI tidak error
+            if (typeof renderPagination === 'function') renderPagination(); 
+            
+            if (typeof renderRiwayatList === 'function') renderRiwayatList();
+            
+            // Leaderboard mungkin tidak akurat karena hanya sample 20 data
+            // Sebaiknya disembunyikan atau dimatikan jika menggunakan mode aman ini
+            // if (typeof renderGlobalLeaderboard === 'function') renderGlobalLeaderboard();
 
+            // Sembunyikan loader, tampilkan konten
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
 
+            // Handle Kosong
             if (riwayatData.allData.length === 0) {
-                const noData = document.getElementById('riwayat-no-data');
                 if (noData) noData.classList.remove('hidden');
             }
+        } else {
+            throw new Error(json.message || "Gagal memuat data");
         }
+
     } catch (e) {
-        if (loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+        console.error("Load Riwayat Error:", e);
+        if (loader) loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal memuat data donasi terbaru.</div>';
     }
 }
 
