@@ -2179,63 +2179,42 @@ function setupHistoryLogic() {
     }
 }
 
-// Mengambil data riwayat PUBLIK (Safe Mode)
+// Mengambil data riwayat dari Google Sheet
 async function loadRiwayat() {
     if (riwayatData.isLoaded) return;
 
     const loader = document.getElementById('riwayat-loading');
     const content = document.getElementById('riwayat-content');
-    const noData = document.getElementById('riwayat-no-data');
 
-    // Tampilkan loader
     if (loader) loader.classList.remove('hidden');
     if (content) content.classList.add('hidden');
-    if (noData) noData.classList.add('hidden');
 
     try {
-        // 🔥 Panggil endpoint
-        const response = await fetch(`${GAS_API_URL}?action=getPublicStats`);
-        const json = await response.json();
+        const res = await fetch(GAS_API_URL);
+        const json = await res.json();
 
         if (json.status === 'success') {
-            // 1. SIMPAN DATA LIST (Untuk Tabel & Ticker)
-            // Backend mengirim: { summary: {...}, list: [...] }
-            riwayatData.allData = json.data.list; 
+            riwayatData.allData = json.data.reverse();
             riwayatData.isLoaded = true;
 
-            // 2. AMBIL DATA SUMMARY (TOTAL ASLI DARI SERVER)
-            // Ini berisi total donasi milyaran rupiah yang dihitung server
-            const serverStats = json.data.summary; 
-
-            // 3. UPDATE TAMPILAN STATISTIK
-            // Kita kirim serverStats ke fungsi calculateStats
-            if (typeof calculateStats === 'function') {
-                calculateStats(serverStats); 
-            }
+            calculateStats(); // Hitung total donasi dll
+            renderHomeLatestDonations(); // Tampilkan di halaman depan
+            renderPagination();
+            renderRiwayatList();
             
-            // 4. RENDER KOMPONEN LAIN
-            if (typeof renderHomeLatestDonations === 'function') renderHomeLatestDonations();
-            if (typeof renderPagination === 'function') renderPagination();
-            if (typeof renderRiwayatList === 'function') renderRiwayatList();
-            
-            // Leaderboard (Opsional)
-            if (typeof renderGlobalLeaderboard === 'function') renderGlobalLeaderboard();
+            // Render leaderboard jika data sudah siap
+            renderGlobalLeaderboard();
 
-            // Sembunyikan loader
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
 
-            // Handle Kosong
             if (riwayatData.allData.length === 0) {
+                const noData = document.getElementById('riwayat-no-data');
                 if (noData) noData.classList.remove('hidden');
             }
-        } else {
-            throw new Error(json.message || "Gagal memuat data");
         }
-
     } catch (e) {
-        console.error("Load Riwayat Error:", e);
-        if (loader) loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal memuat data donasi terbaru.</div>';
+        if (loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
     }
 }
 
@@ -2389,11 +2368,9 @@ function renderHomeLatestDonations() {
 }
 
 // Menghitung statistik donasi (Total, Rata-rata, dll)
-function calculateStats(serverSummary = null) {
-    const data = riwayatData.allData; // Ini cuma 100 data terakhir (untuk hitungan harian/sample)
-    
-    // --- VARIABEL UNTUK HITUNGAN MANUAL (SAMPLE) ---
-    let sampleTotal = 0;
+function calculateStats() {
+    const data = riwayatData.allData;
+    let total = 0;
     let todayTotal = 0;
     let maxDonation = 0;
     let maxDonationName = "-";
@@ -2404,26 +2381,21 @@ function calculateStats(serverSummary = null) {
     const santriFreqMTs = {}, santriFreqMA = {};
     const donationTypes = {};
 
-    let totalFitrah = 0; // Hanya dari sample 100
-    let totalMaal = 0;   // Hanya dari sample 100
-    let totalInfaq = 0;  // Hanya dari sample 100
+    let totalFitrah = 0;
+    let totalMaal = 0;
+    let totalInfaq = 0;
 
-    // 1. LOOPING DATA (Hanya untuk leaderboard & jenis donasi hari ini)
     data.forEach(d => {
         const val = parseInt(d.Nominal) || 0;
-        sampleTotal += val; // Total dari 100 data terakhir
-
-        // Cek Tertinggi (Sample)
+        total += val;
         if (val > maxDonation) {
             maxDonation = val;
             maxDonationName = d.NamaDonatur || "Hamba Allah";
         }
 
-        // Cek Hari Ini
         const dateObj = new Date(d.Timestamp);
         if (dateObj.toDateString() === todayStr) todayTotal += val;
 
-        // Jenis Donasi
         const typeName = d.JenisDonasi || "Lainnya";
         donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
 
@@ -2431,7 +2403,6 @@ function calculateStats(serverSummary = null) {
         else if (typeName.includes('Maal')) totalMaal += val;
         else if (typeName.includes('Infaq')) totalInfaq += val;
 
-        // Leaderboard Kelas/Santri
         const rombel = d.KelasSantri || d.rombelSantri;
         const nama = d.NamaSantri || d.namaSantri;
 
@@ -2449,63 +2420,64 @@ function calculateStats(serverSummary = null) {
         }
     });
 
-    // --- 2. TENTUKAN ANGKA UTAMA (STATISTIK GLOBAL) ---
-    let grandTotal = 0;
-    let totalCount = 0;
-
-    if (serverSummary) {
-        // JIKA ADA DATA SERVER (Ini yang Benar/Akurat)
-        grandTotal = serverSummary.totalDonasi;
-        totalCount = serverSummary.totalDonatur;
-    } else {
-        // Fallback jika error (pakai data sample)
-        grandTotal = sampleTotal;
-        totalCount = data.length;
-    }
-
-    // --- 3. UPDATE TAMPILAN KE LAYAR ---
-
-    // A. Statistik Halaman Depan (Home)
-    const elTotal = document.getElementById('stat-total-donasi');
-    if (elTotal) animateValue(elTotal, 0, grandTotal, 2000, true); // Pakai Grand Total
-
-    const elTrans = document.getElementById('stat-total-transaksi');
-    if (elTrans) animateValue(elTrans, 0, totalCount, 1500); // Pakai Total Count
-
-    const elRata = document.getElementById('stat-donasi-rata');
-    // Rata-rata = Total Uang / Total Orang
-    if (elRata) animateValue(elRata, 0, totalCount ? grandTotal / totalCount : 0, 1500, true);
-
-    // B. Statistik Halaman Laporan (Riwayat)
-    const elRTotal = document.getElementById('stat-r-total');
-    if (elRTotal) animateValue(elRTotal, 0, grandTotal, 2000, true); // Pakai Grand Total
-
-    const elRTrans = document.getElementById('stat-r-transaksi');
-    if (elRTrans) animateValue(elRTrans, 0, totalCount, 1500); // Pakai Total Count
-
-    // C. Statistik Sample (Hari ini & Tertinggi) - Tetap ambil dari sample list
-    const elMax = document.getElementById('stat-donasi-tertinggi');
-    if (elMax) animateValue(elMax, 0, maxDonation, 1500, true);
-    
-    const elMaxName = document.getElementById('stat-donasi-tertinggi-nama');
-    if (elMaxName) elMaxName.innerText = maxDonationName;
-
-    const elRHari = document.getElementById('stat-r-hari-ini');
-    if (elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
-
-    // D. Jenis Donasi Terpopuler
     const getPopular = (obj) => {
         let popular = "-";
         let max = 0;
         for (const [key, count] of Object.entries(obj)) {
-            if (count > max) { max = count; popular = key; }
+            if (count > max) {
+                max = count;
+                popular = key;
+            }
         }
         return popular;
     };
-    const elRTipe = document.getElementById('stat-r-tipe-top');
-    if (elRTipe) elRTipe.innerText = getPopular(donationTypes);
 
-    // E. Detail Per Kategori (Hanya Sample)
+    const popularType = getPopular(donationTypes);
+
+    const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = txt;
+    };
+    const getMax = (map, type = 'val') => {
+        let maxK = 'N/A',
+            maxV = 0;
+        for (const [k, v] of Object.entries(map)) {
+            if (v > maxV) {
+                maxV = v;
+                maxK = k;
+            }
+        }
+        return {
+            key: maxK,
+            val: type === 'val' ? formatRupiah(maxV) : maxV + 'x'
+        };
+    };
+
+    const elTotal = document.getElementById('stat-total-donasi');
+    if (elTotal) animateValue(elTotal, 0, total, 2000, true);
+
+    const elTrans = document.getElementById('stat-total-transaksi');
+    if (elTrans) animateValue(elTrans, 0, data.length, 1500);
+
+    const elRata = document.getElementById('stat-donasi-rata');
+    if (elRata) animateValue(elRata, 0, data.length ? total / data.length : 0, 1500, true);
+
+    const elMax = document.getElementById('stat-donasi-tertinggi');
+    if (elMax) animateValue(elMax, 0, maxDonation, 1500, true);
+    setText('stat-donasi-tertinggi-nama', maxDonationName);
+
+    const elRTotal = document.getElementById('stat-r-total');
+    if (elRTotal) animateValue(elRTotal, 0, total, 2000, true);
+
+    const elRTrans = document.getElementById('stat-r-transaksi');
+    if (elRTrans) animateValue(elRTrans, 0, data.length, 1500);
+
+    const elRHari = document.getElementById('stat-r-hari-ini');
+    if (elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
+
+    const elRTipe = document.getElementById('stat-r-tipe-top');
+    if (elRTipe) elRTipe.innerText = popularType;
+
     const elDetFitrah = document.getElementById('stat-detail-fitrah');
     if (elDetFitrah) animateValue(elDetFitrah, 0, totalFitrah, 1500, true);
 
@@ -2515,21 +2487,6 @@ function calculateStats(serverSummary = null) {
     const elDetInfaq = document.getElementById('stat-detail-infaq');
     if (elDetInfaq) animateValue(elDetInfaq, 0, totalInfaq, 1500, true);
 
-    // F. Leaderboard (Helper)
-    const getMax = (map, type = 'val') => {
-        let maxK = 'N/A', maxV = 0;
-        for (const [k, v] of Object.entries(map)) {
-            if (v > maxV) { maxV = v; maxK = k; }
-        }
-        return { key: maxK, val: type === 'val' ? formatRupiah(maxV) : maxV + 'x' };
-    };
-
-    const setText = (id, txt) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = txt;
-    };
-
-    // Update Leaderboard UI
     const mtsClass = getMax(classMapMTs);
     setText('stat-mts-kelas-max', mtsClass.key);
     setText('stat-mts-kelas-total', mtsClass.val);
@@ -2820,82 +2777,24 @@ window.addEventListener('scroll', () => {
 
 let myDonations = []; // Menyimpan data donasi khusus user yang login
 
-/**
- * FUNGSI BARU: Load Dashboard Personal (Aman & Cepat)
- * Menggunakan Server-Side Filtering via endpoint 'getPersonalHistory'
- */
 window.loadPersonalDashboard = async function(userEmail) {
-    // Validasi email
-    if (!userEmail) {
-        console.warn("Email user tidak ditemukan.");
-        return;
+    // 1. Pastikan Data Riwayat Sudah Ada
+    if (!riwayatData.isLoaded) {
+        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
+        await loadRiwayat();
     }
 
-    // 1. Tampilkan Loading State di Tabel Dashboard
-    // Agar user tahu sistem sedang bekerja
-    const tbody = document.getElementById('dash-history-body');
-    if (tbody) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="p-8 text-center text-slate-400">
-                    <div class="flex flex-col items-center justify-center gap-2">
-                        <i class="fas fa-circle-notch fa-spin text-2xl text-orange-500"></i>
-                        <span class="text-sm">Mengambil data donasi Anda...</span>
-                    </div>
-                </td>
-            </tr>
-        `;
+    // 2. Filter Data Berdasarkan Email
+    // Catatan Keamanan: Idealnya filtering ini dilakukan di Server (Google Apps Script)
+    // agar data orang lain tidak terkirim ke browser. Ini solusi sementara.
+    if (riwayatData.allData && userEmail) {
+        myDonations = riwayatData.allData.filter(item => 
+            item.Email && item.Email.toLowerCase() === userEmail.toLowerCase()
+        );
     }
 
-    try {
-        // 2. Request Data ke Server (Google Apps Script)
-        // Mengirim parameter action='getPersonalHistory' dan email user
-        const params = new URLSearchParams({
-            action: 'getPersonalHistory',
-            email: userEmail
-        });
-
-        const response = await fetch(`${GAS_API_URL}?${params.toString()}`);
-        const json = await response.json();
-
-        // 3. Proses Hasil
-        if (json.status === 'success') {
-            // Simpan ke variabel global 'myDonations'
-            // Data ini HANYA berisi donasi milik user ini saja.
-            myDonations = json.data;
-            
-            // Render ulang tampilan tabel dashboard
-            updateDashboardUI(); 
-            
-            // Update statistik personal (Total Donasi, Frekuensi, dll)
-            updatePersonalStats(); 
-        } else {
-            console.error("Gagal memuat data personal:", json.message);
-            if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-red-400">Gagal memuat data.</td></tr>`;
-        }
-
-    } catch (error) {
-        console.error("Network Error:", error);
-        if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-red-400">Terjadi kesalahan koneksi.</td></tr>`;
-    }
-};
-
-// Helper kecil untuk update statistik di kartu atas dashboard
-function updatePersonalStats() {
-    if (!myDonations) return;
-
-    const totalNominal = myDonations.reduce((sum, item) => sum + (parseInt(item.Nominal) || 0), 0);
-    const totalFrekuensi = myDonations.length;
-    // Cari donasi terakhir
-    const lastDonation = myDonations.length > 0 ? myDonations[myDonations.length - 1].Nominal : 0;
-
-    // Update Elemen HTML (Pastikan ID elemen sesuai dengan HTML Anda)
-    // Contoh ID: user-total-donation, user-donation-count
-    const elTotal = document.getElementById('user-total-donation');
-    const elCount = document.getElementById('user-donation-count');
-    
-    if(elTotal) elTotal.innerText = formatRupiah(totalNominal);
-    if(elCount) elCount.innerText = totalFrekuensi + "x";
+    // 3. Update Tampilan Dashboard
+    updateDashboardUI();
 }
 
 function updateDashboardUI() {
