@@ -2389,9 +2389,11 @@ function renderHomeLatestDonations() {
 }
 
 // Menghitung statistik donasi (Total, Rata-rata, dll)
-function calculateStats() {
-    const data = riwayatData.allData;
-    let total = 0;
+function calculateStats(serverSummary = null) {
+    const data = riwayatData.allData; // Ini cuma 100 data terakhir (untuk hitungan harian/sample)
+    
+    // --- VARIABEL UNTUK HITUNGAN MANUAL (SAMPLE) ---
+    let sampleTotal = 0;
     let todayTotal = 0;
     let maxDonation = 0;
     let maxDonationName = "-";
@@ -2402,21 +2404,26 @@ function calculateStats() {
     const santriFreqMTs = {}, santriFreqMA = {};
     const donationTypes = {};
 
-    let totalFitrah = 0;
-    let totalMaal = 0;
-    let totalInfaq = 0;
+    let totalFitrah = 0; // Hanya dari sample 100
+    let totalMaal = 0;   // Hanya dari sample 100
+    let totalInfaq = 0;  // Hanya dari sample 100
 
+    // 1. LOOPING DATA (Hanya untuk leaderboard & jenis donasi hari ini)
     data.forEach(d => {
         const val = parseInt(d.Nominal) || 0;
-        total += val;
+        sampleTotal += val; // Total dari 100 data terakhir
+
+        // Cek Tertinggi (Sample)
         if (val > maxDonation) {
             maxDonation = val;
             maxDonationName = d.NamaDonatur || "Hamba Allah";
         }
 
+        // Cek Hari Ini
         const dateObj = new Date(d.Timestamp);
         if (dateObj.toDateString() === todayStr) todayTotal += val;
 
+        // Jenis Donasi
         const typeName = d.JenisDonasi || "Lainnya";
         donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
 
@@ -2424,6 +2431,7 @@ function calculateStats() {
         else if (typeName.includes('Maal')) totalMaal += val;
         else if (typeName.includes('Infaq')) totalInfaq += val;
 
+        // Leaderboard Kelas/Santri
         const rombel = d.KelasSantri || d.rombelSantri;
         const nama = d.NamaSantri || d.namaSantri;
 
@@ -2441,64 +2449,63 @@ function calculateStats() {
         }
     });
 
-    const getPopular = (obj) => {
-        let popular = "-";
-        let max = 0;
-        for (const [key, count] of Object.entries(obj)) {
-            if (count > max) {
-                max = count;
-                popular = key;
-            }
-        }
-        return popular;
-    };
+    // --- 2. TENTUKAN ANGKA UTAMA (STATISTIK GLOBAL) ---
+    let grandTotal = 0;
+    let totalCount = 0;
 
-    const popularType = getPopular(donationTypes);
+    if (serverSummary) {
+        // JIKA ADA DATA SERVER (Ini yang Benar/Akurat)
+        grandTotal = serverSummary.totalDonasi;
+        totalCount = serverSummary.totalDonatur;
+    } else {
+        // Fallback jika error (pakai data sample)
+        grandTotal = sampleTotal;
+        totalCount = data.length;
+    }
 
-    const setText = (id, txt) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = txt;
-    };
-    const getMax = (map, type = 'val') => {
-        let maxK = 'N/A',
-            maxV = 0;
-        for (const [k, v] of Object.entries(map)) {
-            if (v > maxV) {
-                maxV = v;
-                maxK = k;
-            }
-        }
-        return {
-            key: maxK,
-            val: type === 'val' ? formatRupiah(maxV) : maxV + 'x'
-        };
-    };
+    // --- 3. UPDATE TAMPILAN KE LAYAR ---
 
+    // A. Statistik Halaman Depan (Home)
     const elTotal = document.getElementById('stat-total-donasi');
-    if (elTotal) animateValue(elTotal, 0, total, 2000, true);
+    if (elTotal) animateValue(elTotal, 0, grandTotal, 2000, true); // Pakai Grand Total
 
     const elTrans = document.getElementById('stat-total-transaksi');
-    if (elTrans) animateValue(elTrans, 0, data.length, 1500);
+    if (elTrans) animateValue(elTrans, 0, totalCount, 1500); // Pakai Total Count
 
     const elRata = document.getElementById('stat-donasi-rata');
-    if (elRata) animateValue(elRata, 0, data.length ? total / data.length : 0, 1500, true);
+    // Rata-rata = Total Uang / Total Orang
+    if (elRata) animateValue(elRata, 0, totalCount ? grandTotal / totalCount : 0, 1500, true);
 
-    const elMax = document.getElementById('stat-donasi-tertinggi');
-    if (elMax) animateValue(elMax, 0, maxDonation, 1500, true);
-    setText('stat-donasi-tertinggi-nama', maxDonationName);
-
+    // B. Statistik Halaman Laporan (Riwayat)
     const elRTotal = document.getElementById('stat-r-total');
-    if (elRTotal) animateValue(elRTotal, 0, total, 2000, true);
+    if (elRTotal) animateValue(elRTotal, 0, grandTotal, 2000, true); // Pakai Grand Total
 
     const elRTrans = document.getElementById('stat-r-transaksi');
-    if (elRTrans) animateValue(elRTrans, 0, data.length, 1500);
+    if (elRTrans) animateValue(elRTrans, 0, totalCount, 1500); // Pakai Total Count
+
+    // C. Statistik Sample (Hari ini & Tertinggi) - Tetap ambil dari sample list
+    const elMax = document.getElementById('stat-donasi-tertinggi');
+    if (elMax) animateValue(elMax, 0, maxDonation, 1500, true);
+    
+    const elMaxName = document.getElementById('stat-donasi-tertinggi-nama');
+    if (elMaxName) elMaxName.innerText = maxDonationName;
 
     const elRHari = document.getElementById('stat-r-hari-ini');
     if (elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
 
+    // D. Jenis Donasi Terpopuler
+    const getPopular = (obj) => {
+        let popular = "-";
+        let max = 0;
+        for (const [key, count] of Object.entries(obj)) {
+            if (count > max) { max = count; popular = key; }
+        }
+        return popular;
+    };
     const elRTipe = document.getElementById('stat-r-tipe-top');
-    if (elRTipe) elRTipe.innerText = popularType;
+    if (elRTipe) elRTipe.innerText = getPopular(donationTypes);
 
+    // E. Detail Per Kategori (Hanya Sample)
     const elDetFitrah = document.getElementById('stat-detail-fitrah');
     if (elDetFitrah) animateValue(elDetFitrah, 0, totalFitrah, 1500, true);
 
@@ -2508,6 +2515,21 @@ function calculateStats() {
     const elDetInfaq = document.getElementById('stat-detail-infaq');
     if (elDetInfaq) animateValue(elDetInfaq, 0, totalInfaq, 1500, true);
 
+    // F. Leaderboard (Helper)
+    const getMax = (map, type = 'val') => {
+        let maxK = 'N/A', maxV = 0;
+        for (const [k, v] of Object.entries(map)) {
+            if (v > maxV) { maxV = v; maxK = k; }
+        }
+        return { key: maxK, val: type === 'val' ? formatRupiah(maxV) : maxV + 'x' };
+    };
+
+    const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = txt;
+    };
+
+    // Update Leaderboard UI
     const mtsClass = getMax(classMapMTs);
     setText('stat-mts-kelas-max', mtsClass.key);
     setText('stat-mts-kelas-total', mtsClass.val);
