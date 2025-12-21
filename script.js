@@ -2179,88 +2179,63 @@ function setupHistoryLogic() {
     }
 }
 
-// =========================================================================
-// FUNGSI LOAD RIWAYAT (SINKRON DENGAN BACKEND BARU)
-// =========================================================================
+// Mengambil data riwayat PUBLIK (Safe Mode)
 async function loadRiwayat() {
-    // 1. Cek jika data sudah ada di memori, stop agar hemat kuota
     if (riwayatData.isLoaded) return;
 
     const loader = document.getElementById('riwayat-loading');
     const content = document.getElementById('riwayat-content');
     const noData = document.getElementById('riwayat-no-data');
 
-    // Tampilkan loader, sembunyikan konten
+    // Tampilkan loader
     if (loader) loader.classList.remove('hidden');
     if (content) content.classList.add('hidden');
     if (noData) noData.classList.add('hidden');
 
     try {
-        console.log("Mengambil data statistik publik...");
-
-        // Panggil Endpoint Backend
+        // 🔥 Panggil endpoint
         const response = await fetch(`${GAS_API_URL}?action=getPublicStats`);
         const json = await response.json();
 
         if (json.status === 'success') {
-            
-            // -----------------------------------------------------------
-            // A. UPDATE TOTAL STATISTIK (DARI SERVER - AKURAT 100%)
-            // -----------------------------------------------------------
-            // Kita ambil angka total dari 'summary' yang dihitung server
-            const serverTotalMoney = json.data.summary.totalDonasi;  
-            const serverTotalPeople = json.data.summary.totalDonatur;
-
-            // Cari elemen HTML Total Donasi (Pastikan ID ini ada di HTML Anda)
-            const elTotalUang = document.getElementById('total-donation-amount'); 
-            const elTotalOrang = document.getElementById('total-donation-count');
-
-            // Format Rupiah dan Update UI
-            if (elTotalUang) {
-                // Gunakan fungsi formatRupiah yang sudah ada
-                elTotalUang.innerText = formatRupiah(serverTotalMoney); 
-            }
-            if (elTotalOrang) {
-                elTotalOrang.innerText = serverTotalPeople + " Donatur";
-            }
-
-            // -----------------------------------------------------------
-            // B. UPDATE LIST DATA (UNTUK TABEL / TICKER)
-            // -----------------------------------------------------------
-            // Data array sekarang ada di dalam properti .list
+            // 1. SIMPAN DATA LIST (Untuk Tabel & Ticker)
+            // Backend mengirim: { summary: {...}, list: [...] }
             riwayatData.allData = json.data.list; 
             riwayatData.isLoaded = true;
 
-            // Render ke UI (Memanggil fungsi render yang sudah ada)
-            // Tidak perlu calculateStats() lagi karena total sudah dari server
+            // 2. AMBIL DATA SUMMARY (TOTAL ASLI DARI SERVER)
+            // Ini berisi total donasi milyaran rupiah yang dihitung server
+            const serverStats = json.data.summary; 
+
+            // 3. UPDATE TAMPILAN STATISTIK
+            // Kita kirim serverStats ke fungsi calculateStats
+            if (typeof calculateStats === 'function') {
+                calculateStats(serverStats); 
+            }
             
+            // 4. RENDER KOMPONEN LAIN
             if (typeof renderHomeLatestDonations === 'function') renderHomeLatestDonations();
+            if (typeof renderPagination === 'function') renderPagination();
             if (typeof renderRiwayatList === 'function') renderRiwayatList();
             
-            // Render pagination (opsional)
-            if (typeof renderPagination === 'function') renderPagination();
+            // Leaderboard (Opsional)
+            if (typeof renderGlobalLeaderboard === 'function') renderGlobalLeaderboard();
 
-            // -----------------------------------------------------------
-            // C. FINALISASI UI
-            // -----------------------------------------------------------
             // Sembunyikan loader
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
 
-            // Cek jika benar-benar kosong (0 donatur)
-            if (serverTotalPeople === 0) {
+            // Handle Kosong
+            if (riwayatData.allData.length === 0) {
                 if (noData) noData.classList.remove('hidden');
             }
-
         } else {
-            throw new Error(json.message || "Gagal memuat data dari server");
+            throw new Error(json.message || "Gagal memuat data");
         }
 
     } catch (e) {
         console.error("Load Riwayat Error:", e);
-        if (loader) {
-            loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal terhubung ke server. Coba muat ulang.</div>';
-        }
+        if (loader) loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal memuat data donasi terbaru.</div>';
     }
 }
 
