@@ -2179,63 +2179,88 @@ function setupHistoryLogic() {
     }
 }
 
-// Mengambil data riwayat PUBLIK (Safe Mode)
+// =========================================================================
+// FUNGSI LOAD RIWAYAT (SINKRON DENGAN BACKEND BARU)
+// =========================================================================
 async function loadRiwayat() {
-    // 1. Cek jika data sudah ada, stop
+    // 1. Cek jika data sudah ada di memori, stop agar hemat kuota
     if (riwayatData.isLoaded) return;
 
     const loader = document.getElementById('riwayat-loading');
     const content = document.getElementById('riwayat-content');
     const noData = document.getElementById('riwayat-no-data');
 
-    // Tampilkan loader
+    // Tampilkan loader, sembunyikan konten
     if (loader) loader.classList.remove('hidden');
     if (content) content.classList.add('hidden');
     if (noData) noData.classList.add('hidden');
 
     try {
-        // 🔥 UPDATE: Panggil endpoint khusus Public Stats
-        // Ini hanya mengambil 20 data terakhir yang sudah disensor (tanpa HP/Email)
+        console.log("Mengambil data statistik publik...");
+
+        // Panggil Endpoint Backend
         const response = await fetch(`${GAS_API_URL}?action=getPublicStats`);
         const json = await response.json();
 
         if (json.status === 'success') {
-            // Backend sudah mengirim urutan Terbaru -> Terlama
-            // Jadi tidak perlu .reverse() lagi, kecuali Anda ingin yang lama di atas.
-            riwayatData.allData = json.data; 
+            
+            // -----------------------------------------------------------
+            // A. UPDATE TOTAL STATISTIK (DARI SERVER - AKURAT 100%)
+            // -----------------------------------------------------------
+            // Kita ambil angka total dari 'summary' yang dihitung server
+            const serverTotalMoney = json.data.summary.totalDonasi;  
+            const serverTotalPeople = json.data.summary.totalDonatur;
+
+            // Cari elemen HTML Total Donasi (Pastikan ID ini ada di HTML Anda)
+            const elTotalUang = document.getElementById('total-donation-amount'); 
+            const elTotalOrang = document.getElementById('total-donation-count');
+
+            // Format Rupiah dan Update UI
+            if (elTotalUang) {
+                // Gunakan fungsi formatRupiah yang sudah ada
+                elTotalUang.innerText = formatRupiah(serverTotalMoney); 
+            }
+            if (elTotalOrang) {
+                elTotalOrang.innerText = serverTotalPeople + " Donatur";
+            }
+
+            // -----------------------------------------------------------
+            // B. UPDATE LIST DATA (UNTUK TABEL / TICKER)
+            // -----------------------------------------------------------
+            // Data array sekarang ada di dalam properti .list
+            riwayatData.allData = json.data.list; 
             riwayatData.isLoaded = true;
 
-            // Render UI
-            // Catatan: calculateStats hanya akan menghitung total dari 20 data yang dimuat
-            if (typeof calculateStats === 'function') calculateStats(); 
+            // Render ke UI (Memanggil fungsi render yang sudah ada)
+            // Tidak perlu calculateStats() lagi karena total sudah dari server
             
             if (typeof renderHomeLatestDonations === 'function') renderHomeLatestDonations();
-            
-            // Pagination mungkin tidak diperlukan jika data hanya 20, 
-            // tapi tetap dipanggil agar UI tidak error
-            if (typeof renderPagination === 'function') renderPagination(); 
-            
             if (typeof renderRiwayatList === 'function') renderRiwayatList();
             
-            // Leaderboard mungkin tidak akurat karena hanya sample 20 data
-            // Sebaiknya disembunyikan atau dimatikan jika menggunakan mode aman ini
-            // if (typeof renderGlobalLeaderboard === 'function') renderGlobalLeaderboard();
+            // Render pagination (opsional)
+            if (typeof renderPagination === 'function') renderPagination();
 
-            // Sembunyikan loader, tampilkan konten
+            // -----------------------------------------------------------
+            // C. FINALISASI UI
+            // -----------------------------------------------------------
+            // Sembunyikan loader
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
 
-            // Handle Kosong
-            if (riwayatData.allData.length === 0) {
+            // Cek jika benar-benar kosong (0 donatur)
+            if (serverTotalPeople === 0) {
                 if (noData) noData.classList.remove('hidden');
             }
+
         } else {
-            throw new Error(json.message || "Gagal memuat data");
+            throw new Error(json.message || "Gagal memuat data dari server");
         }
 
     } catch (e) {
         console.error("Load Riwayat Error:", e);
-        if (loader) loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal memuat data donasi terbaru.</div>';
+        if (loader) {
+            loader.innerHTML = '<div class="text-center text-red-500 py-4">Gagal terhubung ke server. Coba muat ulang.</div>';
+        }
     }
 }
 
