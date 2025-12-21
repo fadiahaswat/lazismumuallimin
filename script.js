@@ -2777,24 +2777,82 @@ window.addEventListener('scroll', () => {
 
 let myDonations = []; // Menyimpan data donasi khusus user yang login
 
+/**
+ * FUNGSI BARU: Load Dashboard Personal (Aman & Cepat)
+ * Menggunakan Server-Side Filtering via endpoint 'getPersonalHistory'
+ */
 window.loadPersonalDashboard = async function(userEmail) {
-    // 1. Pastikan Data Riwayat Sudah Ada
-    if (!riwayatData.isLoaded) {
-        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
-        await loadRiwayat();
+    // Validasi email
+    if (!userEmail) {
+        console.warn("Email user tidak ditemukan.");
+        return;
     }
 
-    // 2. Filter Data Berdasarkan Email
-    // Catatan Keamanan: Idealnya filtering ini dilakukan di Server (Google Apps Script)
-    // agar data orang lain tidak terkirim ke browser. Ini solusi sementara.
-    if (riwayatData.allData && userEmail) {
-        myDonations = riwayatData.allData.filter(item => 
-            item.Email && item.Email.toLowerCase() === userEmail.toLowerCase()
-        );
+    // 1. Tampilkan Loading State di Tabel Dashboard
+    // Agar user tahu sistem sedang bekerja
+    const tbody = document.getElementById('dash-history-body');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="p-8 text-center text-slate-400">
+                    <div class="flex flex-col items-center justify-center gap-2">
+                        <i class="fas fa-circle-notch fa-spin text-2xl text-orange-500"></i>
+                        <span class="text-sm">Mengambil data donasi Anda...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
     }
 
-    // 3. Update Tampilan Dashboard
-    updateDashboardUI();
+    try {
+        // 2. Request Data ke Server (Google Apps Script)
+        // Mengirim parameter action='getPersonalHistory' dan email user
+        const params = new URLSearchParams({
+            action: 'getPersonalHistory',
+            email: userEmail
+        });
+
+        const response = await fetch(`${GAS_API_URL}?${params.toString()}`);
+        const json = await response.json();
+
+        // 3. Proses Hasil
+        if (json.status === 'success') {
+            // Simpan ke variabel global 'myDonations'
+            // Data ini HANYA berisi donasi milik user ini saja.
+            myDonations = json.data;
+            
+            // Render ulang tampilan tabel dashboard
+            updateDashboardUI(); 
+            
+            // Update statistik personal (Total Donasi, Frekuensi, dll)
+            updatePersonalStats(); 
+        } else {
+            console.error("Gagal memuat data personal:", json.message);
+            if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-red-400">Gagal memuat data.</td></tr>`;
+        }
+
+    } catch (error) {
+        console.error("Network Error:", error);
+        if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-red-400">Terjadi kesalahan koneksi.</td></tr>`;
+    }
+};
+
+// Helper kecil untuk update statistik di kartu atas dashboard
+function updatePersonalStats() {
+    if (!myDonations) return;
+
+    const totalNominal = myDonations.reduce((sum, item) => sum + (parseInt(item.Nominal) || 0), 0);
+    const totalFrekuensi = myDonations.length;
+    // Cari donasi terakhir
+    const lastDonation = myDonations.length > 0 ? myDonations[myDonations.length - 1].Nominal : 0;
+
+    // Update Elemen HTML (Pastikan ID elemen sesuai dengan HTML Anda)
+    // Contoh ID: user-total-donation, user-donation-count
+    const elTotal = document.getElementById('user-total-donation');
+    const elCount = document.getElementById('user-donation-count');
+    
+    if(elTotal) elTotal.innerText = formatRupiah(totalNominal);
+    if(elCount) elCount.innerText = totalFrekuensi + "x";
 }
 
 function updateDashboardUI() {
