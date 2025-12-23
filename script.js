@@ -971,20 +971,23 @@ function renderGlobalLeaderboard() {
     // Loading State
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
         container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-16 space-y-4">
+            <div class="flex flex-col items-center justify-center py-20 space-y-6">
                 <div class="relative">
-                    <div class="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-75"></div>
-                    <div class="relative bg-white p-4 rounded-full shadow-sm border border-orange-100">
-                        <i class="fas fa-trophy text-4xl text-orange-400 animate-pulse"></i>
+                    <div class="absolute inset-0 bg-orange-200 rounded-full animate-ping opacity-50"></div>
+                    <div class="relative bg-white p-6 rounded-full shadow-lg border border-orange-100">
+                        <i class="fas fa-trophy text-5xl text-orange-400 animate-pulse"></i>
                     </div>
                 </div>
-                <p class="text-slate-400 font-medium text-sm animate-pulse">Sedang memuat data perolehan kelas...</p>
+                <div class="text-center">
+                    <p class="text-slate-800 font-bold text-lg">Mengambil Data...</p>
+                    <p class="text-slate-400 text-sm">Mohon tunggu sebentar</p>
+                </div>
             </div>
         `;
         return;
     }
 
-    // 1. Agregasi Data per Kelas
+    // 1. Agregasi Data per Kelas (LOGIKA TETAP)
     const classTotals = {};
     riwayatData.allData.forEach(d => {
         const rombel = d.KelasSantri || d.rombelSantri;
@@ -994,7 +997,7 @@ function renderGlobalLeaderboard() {
         }
     });
 
-    // 2. Sort & Structure
+    // 2. Sort & Structure (LOGIKA TETAP)
     const leaderboard = Object.keys(classTotals).map(key => ({
         kelas: key,
         total: classTotals[key]
@@ -1002,9 +1005,12 @@ function renderGlobalLeaderboard() {
 
     if (leaderboard.length === 0) {
         container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-12 border-2 border-dashed border-slate-200 rounded-3xl">
-                <i class="far fa-folder-open text-4xl text-slate-300 mb-2"></i>
-                <p class="text-slate-400 font-medium">Belum ada data donasi masuk.</p>
+            <div class="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
+                <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="far fa-folder-open text-3xl text-slate-300"></i>
+                </div>
+                <p class="text-slate-500 font-bold">Belum ada data donasi masuk.</p>
+                <p class="text-slate-400 text-sm mt-1">Data akan muncul setelah transaksi pertama.</p>
             </div>`;
         return;
     }
@@ -1014,27 +1020,29 @@ function renderGlobalLeaderboard() {
 
     // 3. Render HTML
     let html = `
-        <div class="max-w-4xl mx-auto px-2">
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 border border-orange-100 shadow-sm">
-                    <span class="relative flex h-2 w-2">
+        <div class="max-w-4xl mx-auto px-2 font-sans">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 border border-orange-100 shadow-sm hover:bg-orange-100 transition-colors cursor-default">
+                    <span class="relative flex h-2.5 w-2.5">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
                     </span>
                     Live Update
                 </div>
-                <h3 class="text-3xl font-black text-slate-800 mb-2 tracking-tight">Klasemen Kebaikan</h3>
-                <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi tertinggi antar kelas.</p>
+                <h3 class="text-3xl md:text-4xl font-black text-slate-800 mb-3 tracking-tight">Klasemen Kebaikan</h3>
+                <p class="text-slate-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                    Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi tertinggi antar kelas secara <i>real-time</i>.
+                </p>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-5">
     `;
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
         const percent = (item.total / maxVal) * 100;
         
-        // Ambil Data Wali & Musyrif
+        // Ambil Data Wali & Musyrif (LOGIKA TETAP)
         const meta = (typeof classMetaData !== 'undefined' ? classMetaData[item.kelas] : null) || { 
             wali: '-', 
             musyrif: '-' 
@@ -1046,68 +1054,89 @@ function renderGlobalLeaderboard() {
         let amountClass = "text-slate-800";
         let progressGradient = "bg-slate-200";
         let glowEffect = "";
+        let iconColor = "text-slate-400";
 
-        // Styling Juara
+        // Styling Juara (DESAIN BARU)
         if (rank === 1) {
-            cardClass = "bg-gradient-to-r from-yellow-50 via-white to-white border-yellow-300 shadow-xl shadow-yellow-500/10 ring-1 ring-yellow-100 relative overflow-hidden transform hover:-translate-y-1";
-            rankBadge = `<div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-300/50"><i class="fas fa-crown text-xs mb-0.5"></i><span class="font-black text-lg md:text-xl leading-none">1</span></div>`;
-            progressGradient = "bg-gradient-to-r from-yellow-400 to-orange-500";
-            amountClass = "text-yellow-700";
-            glowEffect = `<div class="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-10 pointer-events-none"></div>`;
+            // Gold Theme
+            cardClass = "bg-gradient-to-r from-amber-50 via-white to-white border-amber-300 shadow-xl shadow-amber-500/10 ring-1 ring-amber-100 relative overflow-hidden transform hover:-translate-y-1 z-10";
+            rankBadge = `
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-500/30 ring-2 ring-white">
+                    <i class="fas fa-crown text-[10px] mb-0.5 animate-bounce"></i>
+                    <span class="font-black text-2xl leading-none">1</span>
+                </div>`;
+            progressGradient = "bg-gradient-to-r from-amber-400 to-orange-500";
+            amountClass = "text-amber-600";
+            textClass = "text-slate-800";
+            iconColor = "text-amber-400";
+            glowEffect = `<div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-amber-400 rounded-full blur-[60px] opacity-10 pointer-events-none"></div>`;
         } 
         else if (rank === 2) {
-            cardClass = "bg-white border-slate-300 shadow-md transform hover:-translate-y-0.5";
-            rankBadge = `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-black text-lg border border-slate-300">2</div>`;
+            // Silver Theme
+            cardClass = "bg-white border-slate-200 shadow-lg shadow-slate-200/50 transform hover:-translate-y-0.5 z-0";
+            rankBadge = `
+                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-black text-xl border border-slate-200">
+                    2
+                </div>`;
             progressGradient = "bg-slate-400";
+            amountClass = "text-slate-700";
         } 
         else if (rank === 3) {
-            cardClass = "bg-white border-orange-200 shadow-md transform hover:-translate-y-0.5";
-            rankBadge = `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-black text-lg border border-orange-200">3</div>`;
+            // Bronze Theme
+            cardClass = "bg-white border-orange-100 shadow-lg shadow-orange-100/50 transform hover:-translate-y-0.5 z-0";
+            rankBadge = `
+                <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-black text-xl border border-orange-100">
+                    3
+                </div>`;
             progressGradient = "bg-orange-400";
             amountClass = "text-orange-800";
         } 
         else {
-            cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors";
-            rankBadge = `<div class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 border border-slate-200 flex items-center justify-center text-sm font-bold">#${rank}</div>`;
+            // Standard
+            cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors hover:shadow-md";
+            rankBadge = `
+                <div class="w-10 h-10 rounded-lg bg-slate-50 text-slate-400 border border-slate-100 flex items-center justify-center text-sm font-bold">
+                    #${rank}
+                </div>`;
             progressGradient = "bg-slate-200";
         }
 
         html += `
-            <div class="relative p-4 md:p-5 rounded-2xl border ${cardClass} group transition-all duration-500">
+            <div class="relative p-5 md:p-6 rounded-[1.5rem] border ${cardClass} group transition-all duration-500">
                 ${glowEffect}
                 
                 <div class="flex items-start gap-4 md:gap-6 relative z-10">
-                    <div class="shrink-0 mt-1">
+                    <div class="shrink-0 pt-1">
                         ${rankBadge}
                     </div>
 
                     <div class="flex-1 min-w-0">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-3 md:gap-8 mb-4">
                             
                             <div class="w-full">
-                                <h4 class="font-black text-xl md:text-2xl ${textClass} mb-2 tracking-tight">Kelas ${item.kelas}</h4>
+                                <h4 class="font-black text-xl md:text-2xl ${textClass} mb-3 tracking-tight">Kelas ${item.kelas}</h4>
                                 
-                                <div class="flex flex-col gap-1.5">
-                                    <div class="flex items-start gap-3 text-xs md:text-sm text-slate-600 font-medium">
-                                        <div class="w-5 shrink-0 flex justify-center mt-0.5"><i class="fas fa-chalkboard-user text-blue-400"></i></div>
-                                        <span class="leading-tight break-words">${meta.wali}</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div class="flex items-center gap-2.5 text-xs md:text-sm text-slate-500 bg-slate-50/50 rounded-lg py-1.5 px-2.5 border border-slate-50 group-hover:border-slate-100 transition-colors">
+                                        <i class="fas fa-chalkboard-user ${rank === 1 ? 'text-blue-500' : 'text-slate-400'}"></i>
+                                        <span class="truncate font-medium">${meta.wali}</span>
                                     </div>
-                                    <div class="flex items-start gap-3 text-xs md:text-sm text-slate-600 font-medium">
-                                        <div class="w-5 shrink-0 flex justify-center mt-0.5"><i class="fas fa-user-shield text-emerald-400"></i></div>
-                                        <span class="leading-tight break-words">${meta.musyrif}</span>
+                                    <div class="flex items-center gap-2.5 text-xs md:text-sm text-slate-500 bg-slate-50/50 rounded-lg py-1.5 px-2.5 border border-slate-50 group-hover:border-slate-100 transition-colors">
+                                        <i class="fas fa-user-shield ${rank === 1 ? 'text-emerald-500' : 'text-slate-400'}"></i>
+                                        <span class="truncate font-medium">${meta.musyrif}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-1 md:mt-0 md:text-right shrink-0">
-                                <span class="block font-black text-xl md:text-2xl ${amountClass}">${formatRupiah(item.total)}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block md:inline">Terkumpul</span>
+                            <div class="mt-2 md:mt-0 md:text-right shrink-0">
+                                <span class="block font-black text-xl md:text-3xl ${amountClass} tracking-tight">${formatRupiah(item.total)}</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block md:inline mt-0.5">Total Terhimpun</span>
                             </div>
                         </div>
                         
-                        <div class="w-full h-2.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100 mt-2">
-                            <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:brightness-110 shadow-sm" style="width: ${percent}%">
-                                <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
+                        <div class="relative w-full h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                            <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:scale-x-[1.01] origin-left" style="width: ${percent}%">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 h-full skew-x-12 animate-[shimmer_2s_infinite]"></div>
                             </div>
                         </div>
                     </div>
@@ -1118,19 +1147,22 @@ function renderGlobalLeaderboard() {
 
     html += `
             </div>
-            <div class="mt-12 flex items-center justify-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-                <i class="fas fa-sync-alt text-xs text-slate-400 animate-spin-slow"></i>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Realtime Data Integration</span>
+            
+            <div class="mt-12 text-center">
+                <div class="inline-flex items-center gap-2 text-slate-400 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+                    <i class="fas fa-sync-alt text-xs animate-spin-slow"></i>
+                    <span class="text-[10px] uppercase font-bold tracking-widest">Realtime Data Integration</span>
+                </div>
             </div>
         </div>
         
         <style>
             @keyframes shimmer {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(100%); }
+                0% { transform: translateX(-150%) skewX(-12deg); }
+                100% { transform: translateX(250%) skewX(-12deg); }
             }
             .animate-spin-slow {
-                animation: spin 3s linear infinite;
+                animation: spin 4s linear infinite;
             }
             @keyframes spin {
                 from { transform: rotate(0deg); }
