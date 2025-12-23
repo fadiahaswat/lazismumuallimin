@@ -968,26 +968,18 @@ function renderGlobalLeaderboard() {
     const container = document.getElementById('rekap-placeholder');
     if (!container) return;
 
-    // Loading State
+    // Loading State (Desain Baru)
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
         container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-20 space-y-6">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-orange-200 rounded-full animate-ping opacity-50"></div>
-                    <div class="relative bg-white p-6 rounded-full shadow-lg border border-orange-100">
-                        <i class="fas fa-trophy text-5xl text-orange-400 animate-pulse"></i>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <p class="text-slate-800 font-bold text-lg">Mengambil Data...</p>
-                    <p class="text-slate-400 text-sm">Mohon tunggu sebentar</p>
-                </div>
+            <div class="flex flex-col items-center justify-center py-24">
+                <div class="w-24 h-24 rounded-full border-4 border-orange-100 border-t-orange-500 animate-spin mb-6"></div>
+                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Sedang Menghitung Donasi...</h3>
             </div>
         `;
         return;
     }
 
-    // 1. Agregasi Data per Kelas (LOGIKA TETAP)
+    // 1. Agregasi Data (LOGIKA TETAP)
     const classTotals = {};
     riwayatData.allData.forEach(d => {
         const rombel = d.KelasSantri || d.rombelSantri;
@@ -1004,171 +996,131 @@ function renderGlobalLeaderboard() {
     })).sort((a, b) => b.total - a.total);
 
     if (leaderboard.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
-                <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
-                    <i class="far fa-folder-open text-3xl text-slate-300"></i>
-                </div>
-                <p class="text-slate-500 font-bold">Belum ada data donasi masuk.</p>
-                <p class="text-slate-400 text-sm mt-1">Data akan muncul setelah transaksi pertama.</p>
-            </div>`;
+        container.innerHTML = `<div class="p-10 text-center border-2 border-dashed border-slate-300 rounded-xl">Data Kosong</div>`;
         return;
     }
 
-    // Max value for progress bars
     const maxVal = leaderboard[0].total;
 
-    // 3. Render HTML
+    // 3. Render HTML (DESAIN REVOLUSIONER)
     let html = `
-        <div class="max-w-4xl mx-auto px-2 font-sans">
+        <div class="max-w-5xl mx-auto px-4 font-sans">
             <div class="text-center mb-12">
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 border border-orange-100 shadow-sm hover:bg-orange-100 transition-colors cursor-default">
-                    <span class="relative flex h-2.5 w-2.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
-                    </span>
-                    Live Update
-                </div>
-                <h3 class="text-3xl md:text-4xl font-black text-slate-800 mb-3 tracking-tight">Klasemen Kebaikan</h3>
-                <p class="text-slate-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-                    Berlomba-lomba dalam kebaikan. Berikut adalah perolehan donasi tertinggi antar kelas secara <i>real-time</i>.
-                </p>
+                <span class="inline-block py-1 px-3 rounded-lg bg-slate-900 text-white text-xs font-bold tracking-widest mb-3 uppercase">Realtime Leaderboard</span>
+                <h3 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase">
+                    Klasemen <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500">Donasi</span>
+                </h3>
             </div>
-            
-            <div class="space-y-5">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
     `;
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
         const percent = (item.total / maxVal) * 100;
         
-        // Ambil Data Wali & Musyrif (LOGIKA TETAP)
+        // Data Meta
         const meta = (typeof classMetaData !== 'undefined' ? classMetaData[item.kelas] : null) || { 
             wali: '-', 
             musyrif: '-' 
         };
 
-        let cardClass = "";
-        let rankBadge = "";
-        let textClass = "text-slate-700";
-        let amountClass = "text-slate-800";
-        let progressGradient = "bg-slate-200";
-        let glowEffect = "";
-        let iconColor = "text-slate-400";
+        // --- LOGIKA TAMPILAN BERBEDA UNTUK TOP 3 VS SISANYA ---
+        
+        if (rank <= 3) {
+            // === DESAIN KARTU PODIUM (VERTIKAL) UNTUK JUARA 1-3 ===
+            let theme = {};
+            
+            if (rank === 1) {
+                theme = {
+                    bg: "bg-gradient-to-b from-yellow-50 to-white border-yellow-400 ring-4 ring-yellow-400/20",
+                    badge: "bg-yellow-500 text-white",
+                    icon: "fa-crown animate-bounce",
+                    text: "text-yellow-700",
+                    glow: "shadow-[0_20px_50px_-12px_rgba(234,179,8,0.3)]",
+                    col: "md:col-span-1 md:-mt-8 order-1 md:order-2 z-20" // Juara 1 naik ke atas & di tengah
+                };
+            } else if (rank === 2) {
+                theme = {
+                    bg: "bg-white border-slate-300",
+                    badge: "bg-slate-400 text-white",
+                    icon: "fa-medal",
+                    text: "text-slate-600",
+                    glow: "shadow-xl",
+                    col: "md:col-span-1 order-2 md:order-1 z-10" // Kiri
+                };
+            } else {
+                theme = {
+                    bg: "bg-white border-orange-200",
+                    badge: "bg-orange-700 text-white",
+                    icon: "fa-medal",
+                    text: "text-orange-800",
+                    glow: "shadow-xl",
+                    col: "md:col-span-1 order-3 md:order-3 z-10" // Kanan
+                };
+            }
 
-        // Styling Juara (DESAIN BARU)
-        if (rank === 1) {
-            // Gold Theme
-            cardClass = "bg-gradient-to-r from-amber-50 via-white to-white border-amber-300 shadow-xl shadow-amber-500/10 ring-1 ring-amber-100 relative overflow-hidden transform hover:-translate-y-1 z-10";
-            rankBadge = `
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex flex-col items-center justify-center shadow-lg shadow-orange-500/30 ring-2 ring-white">
-                    <i class="fas fa-crown text-[10px] mb-0.5 animate-bounce"></i>
-                    <span class="font-black text-2xl leading-none">1</span>
-                </div>`;
-            progressGradient = "bg-gradient-to-r from-amber-400 to-orange-500";
-            amountClass = "text-amber-600";
-            textClass = "text-slate-800";
-            iconColor = "text-amber-400";
-            glowEffect = `<div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-amber-400 rounded-full blur-[60px] opacity-10 pointer-events-none"></div>`;
-        } 
-        else if (rank === 2) {
-            // Silver Theme
-            cardClass = "bg-white border-slate-200 shadow-lg shadow-slate-200/50 transform hover:-translate-y-0.5 z-0";
-            rankBadge = `
-                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-black text-xl border border-slate-200">
-                    2
-                </div>`;
-            progressGradient = "bg-slate-400";
-            amountClass = "text-slate-700";
-        } 
-        else if (rank === 3) {
-            // Bronze Theme
-            cardClass = "bg-white border-orange-100 shadow-lg shadow-orange-100/50 transform hover:-translate-y-0.5 z-0";
-            rankBadge = `
-                <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-black text-xl border border-orange-100">
-                    3
-                </div>`;
-            progressGradient = "bg-orange-400";
-            amountClass = "text-orange-800";
-        } 
-        else {
-            // Standard
-            cardClass = "bg-white border-slate-100 hover:border-slate-300 transition-colors hover:shadow-md";
-            rankBadge = `
-                <div class="w-10 h-10 rounded-lg bg-slate-50 text-slate-400 border border-slate-100 flex items-center justify-center text-sm font-bold">
-                    #${rank}
-                </div>`;
-            progressGradient = "bg-slate-200";
-        }
-
-        html += `
-            <div class="relative p-5 md:p-6 rounded-[1.5rem] border ${cardClass} group transition-all duration-500">
-                ${glowEffect}
-                
-                <div class="flex items-start gap-4 md:gap-6 relative z-10">
-                    <div class="shrink-0 pt-1">
-                        ${rankBadge}
+            html += `
+                <div class="${theme.col} relative flex flex-col items-center text-center p-6 rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
+                    
+                    <div class="w-16 h-16 rounded-2xl ${theme.badge} flex items-center justify-center text-2xl shadow-lg mb-4 rotate-3">
+                        <i class="fas ${theme.icon}"></i>
                     </div>
 
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-3 md:gap-8 mb-4">
-                            
-                            <div class="w-full">
-                                <h4 class="font-black text-xl md:text-2xl ${textClass} mb-3 tracking-tight">Kelas ${item.kelas}</h4>
-                                
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    <div class="flex items-center gap-2.5 text-xs md:text-sm text-slate-500 bg-slate-50/50 rounded-lg py-1.5 px-2.5 border border-slate-50 group-hover:border-slate-100 transition-colors">
-                                        <i class="fas fa-chalkboard-user ${rank === 1 ? 'text-blue-500' : 'text-slate-400'}"></i>
-                                        <span class="truncate font-medium">${meta.wali}</span>
-                                    </div>
-                                    <div class="flex items-center gap-2.5 text-xs md:text-sm text-slate-500 bg-slate-50/50 rounded-lg py-1.5 px-2.5 border border-slate-50 group-hover:border-slate-100 transition-colors">
-                                        <i class="fas fa-user-shield ${rank === 1 ? 'text-emerald-500' : 'text-slate-400'}"></i>
-                                        <span class="truncate font-medium">${meta.musyrif}</span>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="mb-4">
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Terkumpul</span>
+                        <h4 class="text-3xl font-black ${theme.text} tracking-tight">${formatRupiah(item.total)}</h4>
+                    </div>
 
-                            <div class="mt-2 md:mt-0 md:text-right shrink-0">
-                                <span class="block font-black text-xl md:text-3xl ${amountClass} tracking-tight">${formatRupiah(item.total)}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block md:inline mt-0.5">Total Terhimpun</span>
-                            </div>
+                    <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${item.kelas}</h5>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${meta.wali}</p>
+                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${meta.musyrif}</p>
                         </div>
-                        
-                        <div class="relative w-full h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
-                            <div class="h-full rounded-full ${progressGradient} transition-all duration-1000 ease-out relative overflow-hidden group-hover:scale-x-[1.01] origin-left" style="width: ${percent}%">
-                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 h-full skew-x-12 animate-[shimmer_2s_infinite]"></div>
-                            </div>
-                        </div>
+                    </div>
+
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
+                        <div class="h-full ${rank === 1 ? 'bg-yellow-500' : 'bg-slate-800'} w-full" style="width: ${percent}%"></div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        } 
+        else {
+            // === DESAIN LIST COMPACT (HORIZONTAL) UNTUK PERINGKAT 4+ ===
+            // Mereka akan mengambil lebar penuh (col-span-3)
+            
+            html += `
+                <div class="md:col-span-3 order-last group bg-white p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow-sm flex flex-col md:flex-row items-center gap-4 transition-all hover:bg-slate-50">
+                    
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-sm border border-slate-200">
+                        #${rank}
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left w-full">
+                        <div class="flex items-center justify-center md:justify-start gap-2">
+                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h5>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${meta.wali}</span>
+                        </div>
+                        
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+                             <div class="h-full bg-slate-400" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 text-right">
+                        <span class="block font-bold text-slate-700 text-lg">${formatRupiah(item.total)}</span>
+                    </div>
+                </div>
+            `;
+        }
     });
 
     html += `
-            </div>
-            
-            <div class="mt-12 text-center">
-                <div class="inline-flex items-center gap-2 text-slate-400 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
-                    <i class="fas fa-sync-alt text-xs animate-spin-slow"></i>
-                    <span class="text-[10px] uppercase font-bold tracking-widest">Realtime Data Integration</span>
-                </div>
+            </div> <div class="mt-8 text-center text-slate-400 text-xs font-mono">
+                *Data diurutkan berdasarkan nominal tertinggi
             </div>
         </div>
-        
-        <style>
-            @keyframes shimmer {
-                0% { transform: translateX(-150%) skewX(-12deg); }
-                100% { transform: translateX(250%) skewX(-12deg); }
-            }
-            .animate-spin-slow {
-                animation: spin 4s linear infinite;
-            }
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        </style>
     `;
 
     container.innerHTML = html;
