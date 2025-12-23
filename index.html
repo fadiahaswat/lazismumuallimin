@@ -1096,60 +1096,75 @@
         </div>
 
         <!-- NEW: Layanan Offline Smart Card -->
-        <div class="max-w-3xl mx-auto px-4 mt-16 text-center">
-            <div class="group relative inline-flex flex-col md:flex-row items-center gap-5 bg-white p-4 pr-4 md:pr-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 hover:border-emerald-200 transition-all duration-300 hover:-translate-y-1">
+        <div class="max-w-4xl mx-auto px-4 mt-16">
+            <div class="group relative flex flex-col md:flex-row bg-white rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
                 
-                <!-- Icon Area -->
-                <div class="w-16 h-16 md:w-24 md:h-24 rounded-[1.5rem] bg-gradient-to-br from-emerald-50 to-green-100 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform duration-500 self-start md:self-center">
-                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-emerald-600">
-                        <i class="fas fa-hand-holding-usd text-lg group-hover:animate-bounce"></i>
-                    </div>
+                <div class="relative h-64 md:h-auto md:w-5/12 shrink-0">
+                    <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                    <img src="kantor.png" alt="Depan Kantor Lazismu Mu'allimin" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
                 </div>
-
-                <!-- Text Content -->
-                <div class="text-center md:text-left flex-1 min-w-0 px-2 md:px-0">
-                    <div class="inline-flex items-center gap-2 mb-1">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Layanan Offline</p>
+        
+                <div class="flex-1 p-6 md:p-8 md:pl-6 flex flex-col justify-center text-center md:text-left relative z-20 bg-white">
+                    
+                    <div class="mb-4 flex justify-center md:justify-start">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider leading-none mt-[1px]">Layanan Kantor Fisik</span>
+                        </div>
                     </div>
                     
-                    <h4 class="text-lg font-bold text-slate-800 leading-tight mb-1">Lazismu Mu'allimin</h4>
-                    <p class="text-xs text-slate-500 mb-3 flex items-center justify-center md:justify-start gap-1">
-                        <i class="fas fa-map-marker-alt text-emerald-500"></i>
-                        Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta
+                    <h3 class="text-2xl font-bold text-slate-800 leading-tight mb-3">Lazismu Mu'allimin</h3>
+                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3">
+                        <i class="fas fa-map-marker-alt text-emerald-500 text-lg mt-0.5 shrink-0"></i>
+                        <span>Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta, Daerah Istimewa Yogyakarta</span>
                     </p>
-
-                    <!-- Jam Operasional Badge -->
-                    <div class="flex flex-wrap justify-center md:justify-start gap-2">
-                        <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Senin - Jumat">
-                            <i class="far fa-clock text-orange-500 text-[10px]"></i>
-                            <div class="text-[10px] text-slate-600 font-medium">
-                                <span class="font-bold">Sen-Jum:</span> 08.00-15.00
+        
+                    <div class="mb-8">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Jam Operasional</h4>
+                        <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                            <div class="group/badge bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Senin - Jumat">
+                                <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-500 flex items-center justify-center group-hover/badge:bg-orange-500 group-hover/badge:text-white transition-colors">
+                                    <i class="far fa-clock text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Sabtu">
-                            <i class="far fa-calendar-alt text-blue-500 text-[10px]"></i>
-                            <div class="text-[10px] text-slate-600 font-medium">
-                                <span class="font-bold">Sabtu:</span> 08.00-12.00
+                            <div class="group/badge bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Sabtu">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center group-hover/badge:bg-blue-500 group-hover/badge:text-white transition-colors">
+                                    <i class="far fa-calendar-alt text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Sabtu</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="bg-red-50 border border-red-100 rounded-lg px-2 py-1 flex items-center gap-1.5" title="Jam Istirahat">
-                            <i class="fas fa-mug-hot text-red-500 text-[10px]"></i>
-                            <div class="text-[10px] text-red-600 font-medium">
-                                <span class="font-bold">Rehat:</span> 12.00-13.00
+                            <div class="group/badge bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Jam Istirahat">
+                                <div class="w-8 h-8 rounded-lg bg-red-100 text-red-500 flex items-center justify-center group-hover/badge:bg-red-500 group-hover/badge:text-white transition-colors">
+                                    <i class="fas fa-mug-hot text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Rehat (Jum'at)</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">11.30 - 13.00</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+        
+                    <div class="mt-auto">
+                        <a href="https://goo.gl/maps/YOUR_ACTUAL_MAP_LINK_HERE" target="_blank" class="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold tracking-wide transition-all shadow-xl shadow-slate-900/20 hover:shadow-emerald-600/30 group/btn">
+                            <span>Buka Google Maps</span>
+                            <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+        
                 </div>
-
-                <!-- Action Button -->
-                <a href="https://maps.app.goo.gl/Lp1CYYvfVHYS4PGn7" target="_blank" class="w-full md:w-auto bg-slate-900 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-xs transition-colors shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 group/btn shrink-0">
-                    <span>Buka Maps</span>
-                    <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
-                </a>
             </div>
         </div>
-
     </div>
 </section>
 
@@ -2724,4 +2739,5 @@
 
 </body>
 </html>
+
 
