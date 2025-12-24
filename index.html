@@ -1501,244 +1501,399 @@
 
         <section id="page-beautifikasi" class="page-section hidden bg-slate-50 min-h-screen relative overflow-hidden" style="padding-top: 0 !important;">
     
-    <div class="relative bg-slate-900 pt-32 pb-64 rounded-b-[4rem] overflow-visible shadow-2xl">
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] animate-pulse"></div>
-            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[100px]"></div>
+    <div class="relative bg-slate-900 pt-32 pb-72 rounded-b-[4rem] overflow-visible shadow-2xl z-10">
+        <div class="absolute inset-0 overflow-hidden rounded-b-[4rem]">
+            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-600/10 rounded-full blur-[120px] animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[100px]"></div>
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
         </div>
 
         <div class="container max-w-6xl mx-auto px-6 relative z-10 text-center text-white">
-            <div class="inline-flex items-center gap-2 py-2 px-5 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-sm font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
-                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
+            <div class="inline-flex items-center gap-3 py-2 px-6 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-sm font-bold tracking-widest uppercase mb-8 backdrop-blur-md shadow-lg shadow-emerald-500/20 hover:bg-white/10 transition-all cursor-default">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
                 Ramadhan 1447 H Project
             </div>
             
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight tracking-tight">
-                Wajah Baru <br>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight tracking-tight drop-shadow-2xl">
+                Menyempurnakan <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-white to-teal-200 animate-shimmer" style="background-size: 200% auto;">
                     "The Future City"
                 </span>
             </h1>
             
-            <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light">
-                Menyempurnakan ekosistem pendidikan yang asri, modern, dan berkemajuan di <span class="text-emerald-400 font-semibold">Kampus Terpadu Mu’allimin Sedayu</span>.
+            <p class="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 font-light leading-relaxed">
+                Program Prioritas Beautifikasi & Penataan Ruang <br>
+                <span class="text-emerald-400 font-semibold border-b border-emerald-500/30 pb-1">Kampus Terpadu Mu’allimin Sedayu</span>
             </p>
 
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <button onclick="showPage('donasi')" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold shadow-lg shadow-emerald-500/30 transition-all transform hover:-translate-y-1">
-                    Mulai Berwakaf
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-5 mb-12">
+                <button onclick="showPage('donasi')" class="w-full sm:w-auto px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold text-lg shadow-lg shadow-emerald-500/30 transition-all transform hover:-translate-y-1 hover:ring-4 ring-emerald-500/20">
+                    <i class="fas fa-hand-holding-heart mr-2"></i> Mulai Berwakaf
                 </button>
-                <a href="#progres-fisik" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full font-bold backdrop-blur-sm transition-all">
-                    Lihat Progres
+                <a href="#progres-fisik" class="w-full sm:w-auto px-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-full font-bold text-lg backdrop-blur-sm transition-all group">
+                    Lihat Progres <i class="fas fa-arrow-down ml-2 group-hover:translate-y-1 transition-transform"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="container max-w-6xl mx-auto px-4 relative z-20 -mt-48 mb-24">
-        <div class="rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-900/40 border-8 border-white group relative bg-slate-800">
+    <div class="container max-w-6xl mx-auto px-4 relative z-20 -mt-56 mb-24">
+        <div class="rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-900/50 border-8 border-white group relative bg-slate-800">
             <img src="kampusterpadufront.png" 
-                 class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-[2000ms] ease-out" 
+                 class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-[3000ms] ease-out" 
                  alt="Kampus Terpadu Tampak Depan">
             
-            <div class="absolute bottom-6 left-6 bg-slate-900/80 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 text-white shadow-lg">
-                <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mb-1">Visualisasi</p>
-                <p class="text-lg font-bold">Tampak Depan Kawasan</p>
+            <div class="absolute bottom-6 left-6 right-6 md:right-auto md:w-auto bg-slate-900/80 backdrop-blur-xl px-6 py-4 rounded-2xl border-l-4 border-emerald-500 text-white shadow-lg">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-widest mb-0.5">Visualisasi Kawasan</p>
+                        <p class="text-lg font-bold leading-none">Tampak Depan (Gerbang Utama)</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 pb-24">
         
-        <div class="flex flex-col lg:flex-row items-center gap-12 mb-24">
-            <div class="lg:w-1/2">
-                <div class="relative rounded-3xl overflow-hidden shadow-xl rotate-2 hover:rotate-0 transition-all duration-500 border-4 border-white">
-                    <img src="jokowi.jpg" class="w-full h-full object-cover" alt="Sejarah">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                        <p class="text-white font-serif italic">"Muallimin adalah aset bangsa..."</p>
+        <div class="flex flex-col lg:flex-row items-start gap-12 mb-28">
+            <div class="lg:w-5/12 sticky top-24">
+                <div class="relative rounded-[2rem] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-all duration-700 border-[6px] border-white group">
+                    <img src="jokowi.jpg" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt="Presiden Jokowi di Muallimin">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8">
+                        <div class="w-12 h-1 bg-emerald-500 mb-4 rounded-full"></div>
+                        <p class="text-white font-serif italic text-lg leading-relaxed mb-2">
+                            "Madrasah Mu'allimin adalah aset bangsa yang melahirkan kader-kader pemimpin..."
+                        </p>
+                        <p class="text-emerald-400 text-xs font-bold uppercase tracking-widest">
+                            Milad 1 Abad Mu'allimin
+                        </p>
                     </div>
                 </div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-[url('https://www.transparenttextures.com/patterns/dots.png')] opacity-30 -z-10"></div>
             </div>
-            <div class="lg:w-1/2">
-                <span class="text-emerald-600 font-bold uppercase tracking-wider text-sm mb-2 block">Sejarah & Cita-cita</span>
-                <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-6">Membangun Peradaban</h2>
-                <div class="prose prose-lg text-slate-600 leading-relaxed">
+
+            <div class="lg:w-7/12">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">
+                    <i class="fas fa-history"></i> Sejarah & Visi
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6 leading-tight">
+                    Membangun Peradaban <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Di Abad Kedua</span>
+                </h2>
+                
+                <div class="prose prose-lg text-slate-600 leading-relaxed text-justify">
                     <p>
-                        Memasuki abad keduanya, Madrasah Mu'allimin Muhammadiyah sedang mengukir sejarah baru. 
-                        Kampus Terpadu Sedayu adalah manifestasi dari visi besar pendidikan yang mencerahkan.
+                        Memasuki abad keduanya, Madrasah Mu'allimin Muhammadiyah tidak hanya mengenang sejarah, tetapi sedang <strong>mengukir sejarah baru</strong>. Cita-cita besar untuk mewujudkan institusi pendidikan tingkat menengah yang unggul dan bertaraf internasional kini bermanifestasi dalam wujud <strong>Kampus Terpadu Mu'allimin di Sedayu</strong>.
                     </p>
                     <p>
-                        Kini, tugas kita adalah menyempurnakan kepingan terakhirnya: <strong>Keindahan & Kenyamanan Lingkungan</strong> agar santri betah menuntut ilmu.
+                        Kampus ini dirancang sebagai <em>"The Future City"</em>, sebuah kota masa depan yang mencerminkan pandangan pendidikan Muhammadiyah: modern, berwawasan tajdid, namun tetap bersumber pada Al-Qur'an dan As-Sunnah.
                     </p>
-                </div>
-            </div>
-        </div>
-
-        <div id="progres-fisik" class="mb-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black text-slate-800">Laporan Pembangunan</h2>
-                <div class="w-20 h-1 bg-emerald-500 mx-auto mt-4 rounded-full"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-slate-100 group">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="muallimin_terpadu.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Masjid">
-                        <div class="absolute top-4 right-4 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">100% SELESAI</div>
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg text-slate-800 mb-2">Fasilitas Utama</h4>
-                        <p class="text-slate-500 text-sm">Masjid Hj. Yuliana, Asrama MTs, Madrasah A, Embung & Sport Center.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl overflow-hidden shadow-xl ring-4 ring-orange-500/20 group relative transform md:-translate-y-4">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="Exterior 1.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Konstruksi">
-                        <div class="absolute inset-0 bg-orange-900/10"></div>
-                        <div class="absolute top-4 right-4 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-full animate-pulse">ON PROGRESS</div>
-                    </div>
-                    <div class="p-6 bg-orange-50/30">
-                        <h4 class="font-bold text-lg text-slate-800 mb-2">Fokus Saat Ini</h4>
-                        <p class="text-slate-500 text-sm">Gedung Math'am (Makan), Rumah Pamong, dan Asrama D.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-slate-100 group opacity-80 hover:opacity-100">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="auditorium.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0" alt="Masa Depan">
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">RENCANA</div>
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg text-slate-800 mb-2">Visi Masa Depan</h4>
-                        <p class="text-slate-500 text-sm">Cyber Center & Auditorium Akbar.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-24">
-            <div class="rounded-[3rem] overflow-hidden shadow-2xl relative group h-[500px] md:h-[700px] border-4 border-white">
-                <img src="kampusterpaduback.png" 
-                     class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-[3000ms]" 
-                     alt="Kampus Terpadu Tampak Belakang">
-                
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
-                
-                <div class="absolute bottom-0 left-0 w-full p-8 md:p-12">
-                    <div class="max-w-3xl">
-                        <span class="inline-block px-4 py-1 rounded-full bg-white/20 backdrop-blur border border-white/30 text-white text-xs font-bold uppercase tracking-wider mb-4">
-                            Bird's Eye View
-                        </span>
-                        <h2 class="text-3xl md:text-5xl font-black text-white mb-4 drop-shadow-md">
-                            Landscape Kota Masa Depan
-                        </h2>
-                        <p class="text-slate-200 text-lg md:text-xl font-light leading-relaxed max-w-2xl drop-shadow-sm">
-                            Gambaran utuh dari sisi belakang kawasan. Terlihat integrasi antara asrama, sekolah, dan fasilitas penunjang yang hijau dan tertata rapi.
+                    <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-xl my-6">
+                        <p class="italic text-emerald-900 m-0 font-medium">
+                            "Setelah Presiden RI Ir. H. Joko Widodo mengapresiasi langsung maket pembangunan ini, kini ikhtiar tersebut telah berdiri tegak. Di Ramadhan 1447 H ini, mari kita sempurnakan wajahnya agar menjadi hunian yang asri."
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mb-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-4">Fokus: Beautifikasi & Tata Ruang</h2>
-                <p class="text-slate-500">Kenyamanan lingkungan adalah kunci keberhasilan pendidikan.</p>
+        <div id="progres-fisik" class="mb-28 scroll-mt-32">
+            <div class="text-center mb-16">
+                <span class="text-emerald-600 font-bold tracking-widest text-sm uppercase block mb-2">Transparansi Muhsinin</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Laporan Progres Pembangunan</h2>
+                <div class="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="soft-card p-6 flex flex-col items-center text-center group hover:-translate-y-2 transition-transform">
-                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 shadow-md">
-                        <img src="embung.jpg" class="w-full h-full object-cover" alt="Embung">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="soft-card p-0 group overflow-hidden border-t-4 border-emerald-500 h-full flex flex-col">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="muallimin_terpadu.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Fasilitas Existing">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Existing</span>
+                            <h4 class="text-white font-bold text-lg">Telah Terbangun</h4>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/90 text-emerald-700 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"><i class="fas fa-check"></i></div>
                     </div>
-                    <h4 class="font-bold text-lg text-slate-800 mb-2">Revitalisasi Embung</h4>
-                    <p class="text-sm text-slate-500">Jogging track & taman edukasi.</p>
+                    <div class="p-8 flex-1 bg-white">
+                        <p class="text-slate-500 text-sm mb-4">Alhamdulillah, tulang punggung aktivitas pendidikan telah beroperasi penuh:</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Gedung Madrasah A</strong>: Pusat KBM Modern.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Masjid Hj. Yuliana</strong> (Klinik & Perpustakaan).</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Asrama MTs</strong> (3 Tower A,B,C).</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-700">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Embung & Sport Center</strong>.</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="soft-card p-6 flex flex-col items-center text-center group hover:-translate-y-2 transition-transform">
-                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 shadow-md">
-                        <img src="pedestrian.jpg" class="w-full h-full object-cover" alt="Jalan">
+
+                <div class="soft-card p-0 group overflow-hidden border-t-4 border-orange-500 h-full flex flex-col relative transform md:-translate-y-4 shadow-2xl ring-4 ring-orange-500/10 z-10">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="Exterior 1.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="On Progress">
+                        <div class="absolute inset-0 bg-orange-900/20"></div>
+                        <div class="absolute top-4 right-4 bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg animate-pulse flex items-center gap-2">
+                            <i class="fas fa-hard-hat"></i> ON PROGRESS
+                        </div>
+                        <div class="absolute bottom-4 left-4">
+                            <h4 class="text-white font-bold text-lg drop-shadow-md">Sedang Dikebut</h4>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg text-slate-800 mb-2">Jalur Pedestrian</h4>
-                    <p class="text-sm text-slate-500">Akses jalan teduh & ramah disabilitas.</p>
+                    <div class="p-8 flex-1 bg-orange-50/40">
+                        <p class="text-slate-600 text-sm mb-4 font-medium">Mohon doa restu untuk penyelesaian fasilitas vital:</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-utensils"></i></div>
+                                <div>
+                                    <strong class="block text-orange-700">Gedung Math'am</strong>
+                                    <span class="text-xs text-slate-500">Ruang makan higienis & beradab.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-home"></i></div>
+                                <div>
+                                    <strong class="block text-orange-700">Rumah Pamong</strong>
+                                    <span class="text-xs text-slate-500">Hunian pengasuh 24 jam.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-building"></i></div>
+                                <div>
+                                    <strong class="block text-orange-700">Asrama D</strong>
+                                    <span class="text-xs text-slate-500">Ekspansi hunian santri.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="soft-card p-6 flex flex-col items-center text-center group hover:-translate-y-2 transition-transform">
-                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 shadow-md">
-                        <img src="garden.jpg" class="w-full h-full object-cover" alt="Taman">
+
+                <div class="soft-card p-0 group overflow-hidden border-t-4 border-blue-500 h-full flex flex-col opacity-90 hover:opacity-100 transition-opacity">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="auditorium.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0" alt="Future Plan">
+                        <div class="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Vision</span>
+                            <h4 class="text-white font-bold text-lg">Rencana Masa Depan</h4>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg text-slate-800 mb-2">Penghijauan</h4>
-                    <p class="text-sm text-slate-500">Pohon peneduh di area asrama.</p>
+                    <div class="p-8 flex-1 bg-white">
+                        <p class="text-slate-500 text-sm mb-4">Amanah besar sesuai Masterplan yang akan diwujudkan:</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3 text-sm text-slate-700">
+                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Cyber Center</strong> (Layanan Terpadu).</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-slate-700">
+                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Auditorium</strong> (Pertemuan Akbar).</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-slate-700">
+                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Madrasah B</strong>.</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-16 mb-16 shadow-2xl bg-slate-900">
+        <div class="mb-28">
+            <div class="rounded-[3rem] overflow-hidden shadow-2xl relative group h-[500px] md:h-[700px] border-8 border-white bg-slate-900">
+                <img src="kampusterpaduback.png" 
+                     class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-[4000ms] ease-in-out opacity-90" 
+                     alt="Kampus Terpadu Tampak Belakang">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-transparent to-transparent"></div>
+                
+                <div class="absolute bottom-0 left-0 w-full p-8 md:p-16">
+                    <div class="max-w-3xl animate-fade-in-up">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-6">
+                            <i class="fas fa-map"></i> Bird's Eye View Masterplan
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-black text-white mb-6 drop-shadow-xl leading-tight">
+                            Wujud Utuh <br><span class="text-emerald-400">Kota Peradaban</span>
+                        </h2>
+                        <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border-l-4 border-emerald-500">
+                            <p class="text-slate-100 text-lg font-light leading-relaxed">
+                                "Inilah gambaran masa depan ketika seluruh ikhtiar kita telah tunai. Sebuah ekosistem pendidikan yang hijau, megah, dan mendunia, tempat ribuan kader umat ditempa."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-28">
+            <div class="text-center mb-16">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-2 block">Program Ramadhan 1447 H</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Fokus: Beautifikasi & Tata Ruang</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    "Gedung megah akan terasa gersang tanpa tata ruang yang baik. Kenyamanan santri adalah prioritas utama."
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                    <div class="h-56 relative overflow-hidden">
+                        <img src="embung.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Embung">
+                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                            <i class="fas fa-water mr-1"></i> AREA DANAU
+                        </div>
+                    </div>
+                    <div class="p-8 text-center flex-1">
+                        <h4 class="font-bold text-xl text-slate-800 mb-3">Revitalisasi Embung</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Menyulap embung menjadi <strong>taman edukasi</strong> dengan pembuatan <em>jogging track</em>, pagar pengaman, dan lampu taman estetik.
+                        </p>
+                    </div>
+                </div>
+                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                    <div class="h-56 relative overflow-hidden">
+                        <img src="pedestrian.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Pedestrian">
+                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                            <i class="fas fa-shoe-prints mr-1"></i> KONEKTIVITAS
+                        </div>
+                    </div>
+                    <div class="p-8 text-center flex-1">
+                        <h4 class="font-bold text-xl text-slate-800 mb-3">Jalur Pedestrian</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Menghubungkan Asrama, Masjid, & Sekolah dengan jalur yang <strong>teduh, ramah disabilitas, dan estetik</strong>.
+                        </p>
+                    </div>
+                </div>
+                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                    <div class="h-56 relative overflow-hidden">
+                        <img src="garden.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Taman">
+                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                            <i class="fas fa-leaf mr-1"></i> PENGHIJAUAN
+                        </div>
+                    </div>
+                    <div class="p-8 text-center flex-1">
+                        <h4 class="font-bold text-xl text-slate-800 mb-3">Taman Asrama</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Penataan taman di sekitar Gedung Math'am dan Asrama D untuk <strong>mengurangi debu</strong> dan menyejukkan udara.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-20 mb-20 shadow-2xl bg-slate-900 border-[6px] border-white">
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[120px]"></div>
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/20 rounded-full blur-[150px] animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-600/20 rounded-full blur-[150px]"></div>
             
             <div class="relative z-10 text-center">
-                <h2 class="text-3xl md:text-4xl font-black text-white mb-10">Pilih Paket Jariyah</h2>
+                <span class="text-emerald-400 font-bold tracking-[0.2em] text-xs uppercase mb-6 block">Investasi Akhirat</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-12">Pilih Paket Jariyah Anda</h2>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                    <div class="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-emerald-500/20 transition-all cursor-pointer group">
-                        <div class="text-4xl mb-3">🌳</div>
-                        <h4 class="font-bold text-white mb-1">Jariyah Oksigen</h4>
-                        <p class="text-emerald-300 text-xl font-black">Rp 500rb</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]">🌳</div>
+                        <h4 class="font-bold text-white text-lg mb-2">Jariyah Oksigen</h4>
+                        <p class="text-emerald-300 text-3xl font-black mb-3">500rb</p>
+                        <p class="text-slate-400 text-xs border-t border-white/10 pt-3">1 Bibit Pohon + Perawatan</p>
                     </div>
-                    <div class="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-blue-500/20 transition-all cursor-pointer group">
-                        <div class="text-4xl mb-3">🧱</div>
-                        <h4 class="font-bold text-white mb-1">Meter Surga</h4>
-                        <p class="text-emerald-300 text-xl font-black">Rp 1 Juta</p>
+                    
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-blue-500/20 hover:border-blue-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.3)]">🧱</div>
+                        <h4 class="font-bold text-white text-lg mb-2">Meter Surga</h4>
+                        <p class="text-blue-300 text-3xl font-black mb-3">1 Juta</p>
+                        <p class="text-slate-400 text-xs border-t border-white/10 pt-3">1 m² Jalur Pedestrian</p>
                     </div>
-                    <div class="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-yellow-500/20 transition-all cursor-pointer group">
-                        <div class="text-4xl mb-3">💡</div>
-                        <h4 class="font-bold text-white mb-1">Cahaya Ilmu</h4>
-                        <p class="text-emerald-300 text-xl font-black">Rp 2.5 Juta</p>
+                    
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-yellow-500/20 hover:border-yellow-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]">💡</div>
+                        <h4 class="font-bold text-white text-lg mb-2">Cahaya Ilmu</h4>
+                        <p class="text-yellow-300 text-3xl font-black mb-3">2.5 Juta</p>
+                        <p class="text-slate-400 text-xs border-t border-white/10 pt-3">Titik Lampu PJU Kawasan</p>
                     </div>
-                    <div class="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-purple-500/20 transition-all cursor-pointer group">
-                        <div class="text-4xl mb-3">🏗️</div>
-                        <h4 class="font-bold text-white mb-1">Wakaf Tunai</h4>
-                        <p class="text-emerald-300 text-xl font-black">Bebas</p>
+                    
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-purple-400 shadow-[0_0_20px_rgba(192,132,252,0.3)]">🏗️</div>
+                        <h4 class="font-bold text-white text-lg mb-2">Wakaf Tunai</h4>
+                        <p class="text-purple-300 text-3xl font-black mb-3">Bebas</p>
+                        <p class="text-slate-400 text-xs border-t border-white/10 pt-3">Nominal Sesuai Keikhlasan</p>
                     </div>
                 </div>
 
-                <button onclick="showPage('donasi')" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-10 py-5 rounded-full font-bold text-xl shadow-lg transition-all transform hover:-translate-y-1">
-                    Tunaikan Wakaf Sekarang
+                <div class="max-w-xl mx-auto mb-10">
+                    <p class="text-slate-300 italic text-sm">
+                        "Siapa yang membangun masjid (fasilitas umat) karena Allah, maka Allah akan membangun baginya semisal itu di surga." <br>(HR. Bukhari & Muslim)
+                    </p>
+                </div>
+
+                <button onclick="showPage('donasi')" class="relative overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-12 py-6 rounded-full font-bold text-xl shadow-[0_10px_40px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-2 active:scale-95 group">
+                    <span class="relative z-10 flex items-center gap-3">
+                        Tunaikan Wakaf Sekarang <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </span>
+                    <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
                 </button>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg">
-                <h3 class="font-bold text-slate-800 text-xl mb-6 flex items-center gap-3">
-                    <i class="fas fa-university text-orange-500"></i> Rekening Resmi
+            <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl">
+                <h3 class="font-bold text-slate-800 text-2xl mb-8 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500"><i class="fas fa-university"></i></span>
+                    Rekening Resmi
                 </h3>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                        <img src="bank-bsi.png" class="h-8 w-16 object-contain">
+                <div class="space-y-5">
+                    <div class="flex items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all group">
+                        <div class="w-16 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow-sm">
+                            <img src="bank-bsi.png" class="h-full w-auto object-contain">
+                        </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">BSI</p>
-                            <p class="font-mono font-black text-xl text-slate-700">7930 030 303</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank Syariah Indonesia</p>
+                            <div class="flex items-center gap-3">
+                                <p class="font-mono font-black text-2xl text-slate-700 tracking-tight">7930 030 303</p>
+                                <button onclick="navigator.clipboard.writeText('7930030303')" class="text-slate-300 hover:text-emerald-500 transition-colors" title="Copy"><i class="far fa-copy"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                        <img src="bank-bni.png" class="h-6 w-16 object-contain">
+                    <div class="flex items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all group">
+                        <div class="w-16 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow-sm">
+                            <img src="bank-bni.png" class="h-full w-auto object-contain">
+                        </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Muamalat</p>
-                            <p class="font-mono font-black text-xl text-slate-700">123 4567 890</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank Muamalat</p>
+                            <div class="flex items-center gap-3">
+                                <p class="font-mono font-black text-2xl text-slate-700 tracking-tight">123 4567 890</p>
+                                <button onclick="navigator.clipboard.writeText('1234567890')" class="text-slate-300 hover:text-emerald-500 transition-colors" title="Copy"><i class="far fa-copy"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-emerald-600 p-8 rounded-[2rem] text-white flex flex-col justify-center text-center shadow-lg">
-                <i class="fab fa-whatsapp text-4xl mb-4 mx-auto"></i>
-                <h3 class="font-bold text-xl mb-2">Konfirmasi Donasi</h3>
-                <p class="text-emerald-100 text-sm mb-6">Mohon konfirmasi agar tercatat rapi.</p>
-                <a href="https://wa.me/6281196961918?text=Konfirmasi..." target="_blank" class="bg-white text-emerald-700 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all">
-                    Chat Admin
-                </a>
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-10 rounded-[2.5rem] text-white flex flex-col justify-center text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <div class="absolute bottom-0 left-0 w-40 h-40 bg-black/10 rounded-full blur-3xl -ml-10 -mb-10"></div>
+                
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-inner">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h3 class="font-bold text-3xl mb-3">Konfirmasi Donasi</h3>
+                    <p class="text-emerald-100 text-sm mb-8 leading-relaxed max-w-xs mx-auto">
+                        Agar donasi tercatat rapi dalam laporan dan didoakan oleh para santri, mohon konfirmasi setelah transfer.
+                    </p>
+                    <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20Program%20Beautifikasi%20Ramadhan." target="_blank" class="w-full bg-white text-emerald-700 py-4 rounded-xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-lg flex items-center justify-center gap-3 group">
+                        Chat Admin Sekarang <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -3060,6 +3215,7 @@
 
 </body>
 </html>
+
 
 
 
