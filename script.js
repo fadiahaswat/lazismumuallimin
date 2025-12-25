@@ -3024,6 +3024,33 @@ function closeReceiptModal() {
     document.getElementById('receipt-modal').classList.add('hidden');
 }
 
+// --- [TAMBAHAN BARU] FITUR DIRECT DONASI BEAUTIFIKASI ---
+window.startBeautificationDonation = function() {
+    // 1. Buka Halaman Donasi
+    showPage('donasi');
+
+    // 2. Reset ke Langkah 1
+    goToStep(1);
+
+    // 3. Otomatis Pilih "Infaq"
+    const btnInfaq = document.querySelector('button[data-type="Infaq"]');
+    if (btnInfaq) {
+        btnInfaq.click(); // Ini akan memicu logika tampilkan sub-opsi
+    }
+
+    // 4. Beri jeda sedikit agar animasi UI Infaq selesai, lalu pilih "Pengembangan Kampus"
+    setTimeout(() => {
+        const btnKampus = document.querySelector('button[data-type-infaq="Infaq Pengembangan Kampus"]');
+        if (btnKampus) {
+            btnKampus.click(); // Ini akan memilih sub-kategori
+            
+            // Scroll ke tombol lanjut agar user sadar sudah terpilih
+            const nav = document.getElementById('step-1-nav-default');
+            if(nav) nav.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 300);
+}
+
 // --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
 window.showPage = showPage;
 window.filterNews = filterNews;
@@ -3033,4 +3060,5 @@ window.closeQrisModal = closeQrisModal;
 window.openQrisModal = openQrisModal;
 window.copyText = copyText;
 window.loadMoreNews = loadMoreNews;
+window.startBeautificationDonation = startBeautificationDonation; // <-- TAMBAHKAN INI
 window.init = init;
