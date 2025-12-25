@@ -109,6 +109,7 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         }
         if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
+        if (suggestionCard) suggestionCard.classList.add('hidden');
 
         // 4. Load Data Personal untuk Dashboard (Fungsi baru nanti)
         // if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
@@ -130,6 +131,11 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.value = '';
             inputEmail.readOnly = false;
             inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
+        }
+      // [TAMBAHAN BARU] Munculkan lagi saran login jika user logout saat di step 3
+        const step3Visible = document.getElementById('donasi-step-3');
+        if (suggestionCard && step3Visible && !step3Visible.classList.contains('hidden')) {
+            suggestionCard.classList.remove('hidden');
         }
     }
 });
