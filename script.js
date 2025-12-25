@@ -1195,7 +1195,7 @@ function renderRekapTable(cls) {
 
         // Hitung Donasi (Cek Nama & Kelas ASLI si Anak)
         riwayatData.allData.forEach(d => {
-            const matchNama = d.NamaSantri && d.NamaSantri.includes(s.nama);
+            const matchNama = d.NamaSantri && s.nama && d.NamaSantri.trim() === s.nama.trim();
             const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
 
             if (matchNama && matchKelas) {
