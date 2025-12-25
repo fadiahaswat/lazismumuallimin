@@ -2764,17 +2764,16 @@ let myDonations = []; // Menyimpan data donasi khusus user yang login
 window.loadPersonalDashboard = async function(userEmail) {
     // 1. Pastikan Data Riwayat Sudah Ada
     if (!riwayatData.isLoaded) {
-        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
         await loadRiwayat();
     }
 
-    // 2. Filter Data Berdasarkan Email
-    // Catatan Keamanan: Idealnya filtering ini dilakukan di Server (Google Apps Script)
-    // agar data orang lain tidak terkirim ke browser. Ini solusi sementara.
+    // 2. Filter Data Berdasarkan Email (PERBAIKAN DI SINI)
     if (riwayatData.allData && userEmail) {
-        myDonations = riwayatData.allData.filter(item => 
-            item.Email && item.Email.toLowerCase() === userEmail.toLowerCase()
-        );
+        myDonations = riwayatData.allData.filter(item => {
+            // Pastikan item.Email ada, lalu paksa ubah ke String sebelum toLowerCase
+            if (!item.Email) return false;
+            return String(item.Email).toLowerCase() === userEmail.toLowerCase();
+        });
     }
 
     // 3. Update Tampilan Dashboard
