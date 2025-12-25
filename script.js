@@ -2084,10 +2084,21 @@ function setupWizardLogic() {
         successContinue.onclick = () => {
             const modal = document.getElementById('success-modal');
             if (modal) modal.classList.add('hidden');
+            
+            // [TAMBAHAN WAJIB] Tandai data sebagai 'kotor' agar dimuat ulang
+            riwayatData.isLoaded = false; 
+            
+            // Jika pengguna sedang di halaman Dashboard/Riwayat, refresh otomatis
+            // Cek hash URL saat ini
+            const currentHash = window.location.hash;
+            if (currentHash === '#riwayat') {
+                loadRiwayat(); // Muat ulang tabel riwayat
+            } else if (currentHash === '#dashboard' && typeof currentUser !== 'undefined') {
+                loadPersonalDashboard(currentUser.email); // Muat ulang dashboard
+            }
+
             const paymentInstr = document.getElementById('donasi-payment-instructions');
-            if (paymentInstr) paymentInstr.scrollIntoView({
-                behavior: 'smooth'
-            });
+            if (paymentInstr) paymentInstr.scrollIntoView({ behavior: 'smooth' });
         };
     }
 
