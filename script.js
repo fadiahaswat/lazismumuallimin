@@ -229,7 +229,8 @@ let riwayatData = {
     allData: [],          
     isLoaded: false,      
     currentPage: 1,       
-    itemsPerPage: 10      
+    itemsPerPage: 10,
+    isLoading: false // Tambahkan ini
 };
 
 let timeFilterState = 'all';
