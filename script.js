@@ -1376,6 +1376,14 @@ function setupWizardLogic() {
 
             // 3. Tambahkan Warna Spesifik Sesuai Tipe
             const type = btn.dataset.type;
+          
+          // [TAMBAHAN WAJIB] Reset Nominal & Input saat ganti jenis
+            donasiData.nominal = 0;
+            donasiData.nominalAsli = 0; // Penting untuk logika kode unik
+            const inputCustom = document.getElementById('nominal-custom');
+            if(inputCustom) inputCustom.value = ''; // Kosongkan tampilan input
+            document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected')); // Hapus seleksi tombol
+          
             if (type === 'Zakat Fitrah') {
                 btn.classList.add('border-emerald-500', 'bg-emerald-50');
             } else if (type === 'Zakat Maal') {
