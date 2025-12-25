@@ -2636,6 +2636,39 @@
                 </div>
 
                 <div id="donasi-step-3" class="donasi-step-container hidden">
+                    <div id="login-suggestion-card" class="hidden mb-6 bg-blue-50 border border-blue-100 rounded-2xl p-5 relative overflow-hidden animate-fade-in-up">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <i class="fab fa-google text-6xl text-blue-500 transform rotate-12"></i>
+                        </div>
+                    
+                        <div class="relative z-10">
+                            <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                                <i class="fas fa-user-circle text-blue-600"></i> Simpan Riwayat Kebaikan Anda?
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600 mb-5">
+                                <ul class="space-y-2">
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check-circle text-green-500"></i> Isi data otomatis (Anti Ribet)</li>
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check-circle text-green-500"></i> Riwayat tercatat di Dashboard</li>
+                                </ul>
+                                <ul class="space-y-2">
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check-circle text-green-500"></i> Pantau status verifikasi</li>
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check-circle text-green-500"></i> Login aman dengan Google</li>
+                                </ul>
+                            </div>
+                    
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button onclick="doLogin()" class="flex-1 bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 px-4 py-3 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all active:scale-95 group">
+                                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4">
+                                    Login Google
+                                </button>
+                                
+                                <button onclick="hideLoginSuggestion()" class="flex-1 bg-transparent border border-transparent text-slate-400 hover:text-slate-600 px-4 py-3 rounded-xl font-bold text-xs transition-all">
+                                    Lanjut Tanpa Akun
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="bg-slate-100 p-1.5 rounded-2xl flex gap-1 mb-6">
                         <label class="flex-1 text-center cursor-pointer relative">
                             <input type="radio" name="donatur-tipe" value="santri" class="hidden peer" checked>
@@ -3345,6 +3378,7 @@
 
 </body>
 </html>
+
 
 
 
