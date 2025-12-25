@@ -3074,6 +3074,16 @@ function startBeautificationDonation(nominalPaket = 0) {
     }, 300); // Jeda transisi tampilkan opsi infaq
 }
 
+window.hideLoginSuggestion = function() {
+    const card = document.getElementById('login-suggestion-card');
+    if (card) {
+        card.classList.add('hidden');
+        // Opsional: Fokus ke input nama agar user langsung ngetik
+        const inputNama = document.getElementById('nama-muzakki-input');
+        if(inputNama) inputNama.focus();
+    }
+}
+
 // ============================================================
 // PENTING: DAFTARKAN FUNGSI AGAR BISA DIPANGGIL HTML
 // ============================================================
