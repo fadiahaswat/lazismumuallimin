@@ -422,6 +422,16 @@ function generateUniqueCode() {
     return Math.floor(Math.random() * 999) + 1;
 }
 
+function escapeHtml(text) {
+    if (!text) return text;
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // ============================================================================
 // 6. PENGOLAHAN DATA SANTRI (DIPERBAIKI)
 // ============================================================================
