@@ -1563,18 +1563,24 @@ function setupWizardLogic() {
         };
     }
 
-    // --- LANGKAH 2: Tentukan Nominal ---
+    // --- LANGKAH 2: Tentukan Nominal (LOGIKA TOMBOL PRESET) ---
     document.querySelectorAll('.nominal-btn').forEach(btn => {
         btn.onclick = () => {
+            // 1. Visual: Hapus seleksi lama, tambahkan ke yang baru
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             
+            // 2. Ambil data angka dari tombol
             donasiData.nominal = parseInt(btn.dataset.nominal);
-            // [FIX] Simpan sebagai nominal asli setiap kali user memilih
-            donasiData.nominalAsli = donasiData.nominal; 
+            donasiData.nominalAsli = donasiData.nominal;
             
+            // 3. Masukkan ke Input Custom (PERBAIKAN DI SINI)
             const customInput = document.getElementById('nominal-custom');
-            if (customInput) customInput.value = formatRupiah(donasiData.nominal);
+            if (customInput) {
+                // GANTI: customInput.value = formatRupiah(donasiData.nominal);
+                // MENJADI: Gunakan toLocaleString agar hanya angka dan titik (100.000)
+                customInput.value = donasiData.nominal.toLocaleString('id-ID');
+            }
         };
     });
 
