@@ -1651,6 +1651,15 @@ function setupWizardLogic() {
                 } else {
                     if (alumniInput) alumniInput.classList.add('hidden');
                 }
+              // [TAMBAHAN WAJIB] Hapus data santri dari memori agar tidak ikut terkirim
+                donasiData.namaSantri = '';
+                donasiData.nisSantri = '';
+                donasiData.rombelSantri = '';
+                
+                // Reset juga dropdown di UI agar sinkron saat kembali lagi
+                if(santriLevel) santriLevel.value = '';
+                if(santriRombel) { santriRombel.innerHTML = '<option value="">Rombel</option>'; santriRombel.disabled = true; }
+                if(santriNama) { santriNama.innerHTML = '<option value="">Pilih Nama Santri</option>'; santriNama.disabled = true; }
             }
         };
     });
