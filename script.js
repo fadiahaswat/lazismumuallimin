@@ -2195,7 +2195,9 @@ function setupHistoryLogic() {
 
 // Mengambil data riwayat dari Google Sheet
 async function loadRiwayat() {
-    if (riwayatData.isLoaded) return;
+    if (riwayatData.isLoaded || riwayatData.isLoading) return; 
+    
+    riwayatData.isLoading = true; // Set flag loading
 
     const loader = document.getElementById('riwayat-loading');
     const content = document.getElementById('riwayat-content');
@@ -2229,6 +2231,8 @@ async function loadRiwayat() {
         }
     } catch (e) {
         if (loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+    } finally {
+        riwayatData.isLoading = false; // Matikan flag loading selesai (sukses/gagal)
     }
 }
 
