@@ -1578,20 +1578,30 @@ function setupWizardLogic() {
         };
     });
 
+    // --- PERBAIKAN: Input Nominal Custom ---
     const nominalCustom = document.getElementById('nominal-custom');
     if (nominalCustom) {
         nominalCustom.addEventListener('input', function() {
+            // 1. Ambil hanya angkanya
             let val = this.value.replace(/\D/g, '');
+            
+            // 2. Simpan ke data
             donasiData.nominal = parseInt(val) || 0;
+            donasiData.nominalAsli = donasiData.nominal;
             
-            // [FIX] Simpan sebagai nominal asli setiap kali user mengetik
-            donasiData.nominalAsli = donasiData.nominal; 
+            // 3. Tampilkan KEMBALI ke input HANYA ANGKA + TITIK (Tanpa Rp)
+            if (val === '') {
+                this.value = '';
+            } else {
+                // Menggunakan toLocaleString('id-ID') agar muncul titik ribuan (Contoh: 100.000)
+                this.value = donasiData.nominal.toLocaleString('id-ID');
+            }
             
-            this.value = formatRupiah(donasiData.nominal);
+            // Hapus seleksi tombol preset jika user mengetik
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
         });
     }
-
+  
     const btnNextStep3 = document.querySelector('[data-next-step="3"]');
     if (btnNextStep3) {
         btnNextStep3.onclick = () => {
