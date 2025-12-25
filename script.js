@@ -80,21 +80,26 @@ window.doLogout = function() {
 // --- UPDATE SCRIPT.JS (Bagian Auth Listener) ---
 
 // Satpam Pemantau (Cek status login)
+// Satpam Pemantau (Cek status login)
 onAuthStateChanged(auth, (user) => {
-    const btnWrapper = document.getElementById('login-btn-wrapper'); // Gunakan wrapper
+    // 1. DEFINISIKAN SEMUA VARIABEL ELEMENT DI SINI (PALING ATAS)
+    const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
     
+    // [PERBAIKAN] Variabel ini harus ada di sini agar dikenal di if maupun else
+    const suggestionCard = document.getElementById('login-suggestion-card'); 
+    
     if (user) {
         // --- USER LOGIN ---
-        currentUser = user; // Simpan ke variabel global
+        currentUser = user; 
 
         // 1. UI Header: Sembunyikan tombol login, Munculkan profil
-        if (btnWrapper) btnWrapper.style.display = 'none'; // Pakai inline style biar keras
+        if (btnWrapper) btnWrapper.style.display = 'none';
         if (profileMenu) {
             profileMenu.classList.remove('hidden');
-            profileMenu.classList.add('flex'); // Pastikan flex aktif
+            profileMenu.classList.add('flex');
         }
 
         // 2. Isi Data Profil di Header
@@ -108,11 +113,12 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.readOnly = true;
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         }
+        
+        // 4. Load Dashboard
         if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
-        if (suggestionCard) suggestionCard.classList.add('hidden');
 
-        // 4. Load Data Personal untuk Dashboard (Fungsi baru nanti)
-        // if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
+        // [LOGIKA BARU] Sembunyikan kartu saran login karena user SUDAH login
+        if (suggestionCard) suggestionCard.classList.add('hidden');
 
     } else {
         // --- USER BELUM LOGIN / LOGOUT ---
@@ -132,7 +138,8 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.readOnly = false;
             inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
         }
-      // [TAMBAHAN BARU] Munculkan lagi saran login jika user logout saat di step 3
+
+        // [LOGIKA BARU] Munculkan kartu saran login jika user ada di Step 3
         const step3Visible = document.getElementById('donasi-step-3');
         if (suggestionCard && step3Visible && !step3Visible.classList.contains('hidden')) {
             suggestionCard.classList.remove('hidden');
