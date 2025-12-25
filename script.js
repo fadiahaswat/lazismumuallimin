@@ -2625,7 +2625,7 @@ function renderRiwayatList() {
         const subType = item.SubJenis || item.subType || "";
         const displayType = subType || type;
         const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
-        const donaturName = item.NamaDonatur || item.nama || 'Hamba Allah';
+        const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
         // === [1. LOGIKA STATUS MAKER-CHECKER] ===
