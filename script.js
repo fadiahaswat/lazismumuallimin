@@ -2314,8 +2314,8 @@ function renderHomeLatestDonations() {
         <div>
             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Muzaki</p>
             
-            <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${item.NamaDonatur || 'Hamba Allah'}">
-                ${item.NamaDonatur || 'Hamba Allah'}
+            <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}">
+                ${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}
             </h5>
 
             <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-orange-200 group-hover:bg-orange-50/30 transition-colors">
