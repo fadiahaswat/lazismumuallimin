@@ -1844,59 +1844,188 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl">
-                <h3 class="font-bold text-slate-800 text-2xl mb-8 flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500"><i class="fas fa-university"></i></span>
-                    Rekening Resmi
-                </h3>
-                <div class="space-y-5">
-                    <div class="flex items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all group">
-                        <div class="w-16 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow-sm">
-                            <img src="bank-bsi.png" class="h-full w-auto object-contain">
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank Syariah Indonesia</p>
-                            <div class="flex items-center gap-3">
-                                <p class="font-mono font-black text-2xl text-slate-700 tracking-tight">7930 030 303</p>
-                                <button onclick="navigator.clipboard.writeText('7930030303')" class="text-slate-300 hover:text-emerald-500 transition-colors" title="Copy"><i class="far fa-copy"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all group">
-                        <div class="w-16 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow-sm">
-                            <img src="bank-bni.png" class="h-full w-auto object-contain">
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank Muamalat</p>
-                            <div class="flex items-center gap-3">
-                                <p class="font-mono font-black text-2xl text-slate-700 tracking-tight">123 4567 890</p>
-                                <button onclick="navigator.clipboard.writeText('1234567890')" class="text-slate-300 hover:text-emerald-500 transition-colors" title="Copy"><i class="far fa-copy"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="absolute inset-0 opacity-30 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px]" style="animation-delay: 2s"></div>
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+    </div>
 
-            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-10 rounded-[2.5rem] text-white flex flex-col justify-center text-center shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
-                <div class="absolute bottom-0 left-0 w-40 h-40 bg-black/10 rounded-full blur-3xl -ml-10 -mb-10"></div>
+    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+        
+        <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-xs font-black tracking-widest uppercase mb-4 border border-orange-200">Donasi Mudah</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
+            <p class="text-slate-500 text-lg">Pilih metode transfer bank, scan QRIS, atau kunjungi kantor layanan kami.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
                 
-                <div class="relative z-10">
-                    <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-inner">
-                        <i class="fab fa-whatsapp"></i>
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
+                        </div>
+                        <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
                     </div>
-                    <h3 class="font-bold text-3xl mb-3">Konfirmasi Donasi</h3>
-                    <p class="text-emerald-100 text-sm mb-8 leading-relaxed max-w-xs mx-auto">
-                        Agar donasi tercatat rapi dalam laporan dan didoakan oleh para santri, mohon konfirmasi setelah transfer.
-                    </p>
-                    <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20Program%20Beautifikasi%20Ramadhan." target="_blank" class="w-full bg-white text-emerald-700 py-4 rounded-xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-lg flex items-center justify-center gap-3 group">
-                        Chat Admin Sekarang <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                    </div>
+
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-orange-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BNI">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BNI</div>
+                    </div>
+
+                    <a href="https://drive.google.com/uc?export=download&id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-orange-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
                     </a>
                 </div>
             </div>
+
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
+                
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
+                        </div>
+                        <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
+                    </div>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                    </div>
+
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-teal-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BSI">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BSI</div>
+                    </div>
+
+                    <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-teal-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-teal-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div class="h-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                
+                <div class="p-8 flex flex-col h-full">
+                    <div class="text-center mb-6">
+                        <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
+                        </div>
+                        <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
+                            <i class="far fa-copy"></i> Salin No. Rek
+                        </button>
+                    </div>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                    </div>
+
+                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-blue-200 transition-colors">
+                        <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BPD">
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BPD</div>
+                    </div>
+
+                    <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-blue-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-blue-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </a>
+                </div>
+            </div>
+
         </div>
 
+        <div class="max-w-4xl mx-auto px-4 mt-16">
+            <div class="group relative flex flex-col md:flex-row bg-white rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                
+                <div class="relative h-64 md:h-auto md:w-5/12 shrink-0">
+                    <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                    <img src="kantor.jpg" alt="Depan Kantor Lazismu Mu'allimin" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                </div>
+       
+                <div class="flex-1 p-6 md:p-8 md:pl-6 flex flex-col justify-center text-center md:text-left relative z-20 bg-white">
+                    
+                    <div class="mb-4 flex justify-center md:justify-start">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider leading-none mt-[1px]">Layanan Kantor Fisik</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 leading-tight mb-3">Kantor Layanan Lazismu Madrasah Mu'allimin Muhammadiyah Yogyakarta</h3>
+                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3">
+                        <i class="fas fa-map-marker-alt text-emerald-500 text-lg mt-0.5 shrink-0"></i>
+                        <span>Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta, Daerah Istimewa Yogyakarta</span>
+                    </p>
+       
+                    <div class="mb-8">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Jam Operasional</h4>
+                        <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                            <div class="group/badge bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Senin - Jumat">
+                                <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-500 flex items-center justify-center group-hover/badge:bg-orange-500 group-hover/badge:text-white transition-colors">
+                                    <i class="far fa-clock text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p>
+                                </div>
+                            </div>
+                            <div class="group/badge bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Sabtu">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center group-hover/badge:bg-blue-500 group-hover/badge:text-white transition-colors">
+                                    <i class="far fa-calendar-alt text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Sabtu</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p>
+                                </div>
+                            </div>
+                            <div class="group/badge bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors" title="Jam Istirahat">
+                                <div class="w-8 h-8 rounded-lg bg-red-100 text-red-500 flex items-center justify-center group-hover/badge:bg-red-500 group-hover/badge:text-white transition-colors">
+                                    <i class="fas fa-mug-hot text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Rehat (Jum'at)</p>
+                                    <p class="text-xs text-slate-700 font-bold leading-none">11.30 - 13.00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+       
+                    <div class="mt-auto">
+                        <a href="https://maps.app.goo.gl/YourRealMapLink" target="_blank" class="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold tracking-wide transition-all shadow-xl shadow-slate-900/20 hover:shadow-emerald-600/30 group/btn">
+                            <span>Buka Google Maps</span>
+                            <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+       
+                </div>
+            </div>
+        </div>
+    </div>
+        
     </div>
 </section>
 
@@ -3215,6 +3344,7 @@
 
 </body>
 </html>
+
 
 
 
