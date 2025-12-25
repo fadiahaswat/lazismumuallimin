@@ -158,10 +158,9 @@ window.showMyHistory = function() {
     const container = document.getElementById('my-history-content');
     modal.classList.remove('hidden');
     
-    // Ambil data riwayat yang sudah ada di memori (riwayatData dari script.js lama)
-    // Filter hanya yang email-nya sama dengan email Google User
+    // PERBAIKAN DI SINI: Gunakan String() untuk keamanan tipe data
     const myData = riwayatData.allData.filter(item => 
-        (item.Email && item.Email.toLowerCase() === currentUser.email.toLowerCase())
+        (item.Email && String(item.Email).toLowerCase() === currentUser.email.toLowerCase())
     );
 
     if (myData.length === 0) {
