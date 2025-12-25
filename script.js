@@ -1349,6 +1349,16 @@ function goToStep(step) {
         void target.offsetWidth;
         target.classList.add('animate-fade-in-up');
     }
+    if (step === 3) {
+          const suggestionCard = document.getElementById('login-suggestion-card');
+          
+          // Hanya munculkan jika: Card ada DAN User belum login (currentUser null)
+          if (suggestionCard && !currentUser) {
+              suggestionCard.classList.remove('hidden');
+          } else if (suggestionCard) {
+              suggestionCard.classList.add('hidden');
+          }
+    }
 
     const indicator = document.getElementById('wizard-step-indicator');
     const bar = document.getElementById('wizard-progress-bar');
