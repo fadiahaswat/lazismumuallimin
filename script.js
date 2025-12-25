@@ -158,11 +158,13 @@ window.showMyHistory = function() {
     const container = document.getElementById('my-history-content');
     modal.classList.remove('hidden');
     
-    // PERBAIKAN DI SINI: Gunakan String() untuk keamanan tipe data
-    const myData = riwayatData.allData.filter(item => 
-        (item.Email && String(item.Email).toLowerCase() === currentUser.email.toLowerCase())
-    );
-
+    // Ambil data riwayat yang sudah ada di memori
+    // PERBAIKAN: Gunakan String() agar aman dari data angka
+    const myData = riwayatData.allData.filter(item => {
+        if (!item.Email) return false;
+        return String(item.Email).toLowerCase() === currentUser.email.toLowerCase();
+    });
+  
     if (myData.length === 0) {
         container.innerHTML = `
             <div class="text-center py-10">
@@ -2763,15 +2765,22 @@ let myDonations = []; // Menyimpan data donasi khusus user yang login
 window.loadPersonalDashboard = async function(userEmail) {
     // 1. Pastikan Data Riwayat Sudah Ada
     if (!riwayatData.isLoaded) {
+        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
         await loadRiwayat();
     }
 
-    // 2. Filter Data Berdasarkan Email (PERBAIKAN DI SINI)
+    // 2. Filter Data Berdasarkan Email (DIPERBAIKI)
     if (riwayatData.allData && userEmail) {
         myDonations = riwayatData.allData.filter(item => {
-            // Pastikan item.Email ada, lalu paksa ubah ke String sebelum toLowerCase
+            // Cek apakah item.Email ada isinya (tidak kosong/null)
             if (!item.Email) return false;
-            return String(item.Email).toLowerCase() === userEmail.toLowerCase();
+            
+            // Konversi paksa ke String dulu baru di-lowercase
+            // Ini mencegah error jika data di Excel berupa Angka/No HP
+            const emailData = String(item.Email).toLowerCase();
+            const emailUser = String(userEmail).toLowerCase();
+            
+            return emailData === emailUser;
         });
     }
 
