@@ -82,27 +82,27 @@ window.doLogout = function() {
 // Satpam Pemantau (Cek status login)
 onAuthStateChanged(auth, (user) => {
     // 1. DEFINISIKAN SEMUA VARIABEL UI DI SINI (PALING ATAS)
-    // Agar bisa dibaca baik saat Login maupun Logout
+    // Agar bisa dibaca baik saat Login maupun Logout (Mencegah ReferenceError)
     const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
     
-    // [PERBAIKAN] Definisi variabel ini WAJIB ada di luar if/else
+    // [PERBAIKAN UTAMA] Variabel ini didefinisikan DI LUAR if/else
     const suggestionCard = document.getElementById('login-suggestion-card'); 
     
     if (user) {
         // --- KONDISI: USER LOGIN ---
         currentUser = user; 
 
-        // 1. UI Header
+        // 1. UI Header: Sembunyikan tombol login, Munculkan profil
         if (btnWrapper) btnWrapper.style.display = 'none';
         if (profileMenu) {
             profileMenu.classList.remove('hidden');
             profileMenu.classList.add('flex');
         }
 
-        // 2. Isi Data Profil Header
+        // 2. Isi Data Profil di Header
         if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL || "https://ui-avatars.com/api/?name=" + user.displayName;
         if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
         
@@ -114,7 +114,7 @@ onAuthStateChanged(auth, (user) => {
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         }
         
-        // 4. Load Dashboard Data
+        // 4. Load Data Personal untuk Dashboard
         if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
 
         // [LOGIKA BARU] Sembunyikan kartu saran login karena user SUDAH login
@@ -124,7 +124,7 @@ onAuthStateChanged(auth, (user) => {
         // --- KONDISI: USER BELUM LOGIN / LOGOUT ---
         currentUser = null;
 
-        // 1. UI Header
+        // 1. UI Header: Munculkan tombol login
         if (btnWrapper) btnWrapper.style.display = 'block';
         if (profileMenu) {
             profileMenu.classList.add('hidden');
@@ -141,7 +141,8 @@ onAuthStateChanged(auth, (user) => {
 
         // [LOGIKA BARU] Munculkan kartu saran login jika user logout saat sedang di Step 3
         const step3Visible = document.getElementById('donasi-step-3');
-        // Sekarang 'suggestionCard' sudah dikenali di sini karena didefinisikan di atas
+        
+        // Cek apakah elemen ada, sedang terlihat, dan user belum login
         if (suggestionCard && step3Visible && !step3Visible.classList.contains('hidden')) {
             suggestionCard.classList.remove('hidden');
         }
@@ -3109,17 +3110,29 @@ window.hideLoginSuggestion = function() {
 }
 
 // ============================================================
-// PENTING: DAFTARKAN FUNGSI AGAR BISA DIPANGGIL HTML
+// JEMBATAN PENGHUBUNG (EXPOSE KE GLOBAL WINDOW)
 // ============================================================
-window.startBeautificationDonation = startBeautificationDonation;
 
-// --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
+// 1. Auth
+window.doLogin = doLogin;
+window.doLogout = doLogout;
+
+// 2. Navigasi & UI
 window.showPage = showPage;
-window.filterNews = filterNews;
-window.closeNewsModal = closeNewsModal;
-window.openNewsModal = openNewsModal;
-window.closeQrisModal = closeQrisModal;
-window.openQrisModal = openQrisModal;
 window.copyText = copyText;
+window.hideLoginSuggestion = hideLoginSuggestion; // <-- PENTING
+
+// 3. Fitur Berita
+window.filterNews = filterNews;
 window.loadMoreNews = loadMoreNews;
+window.openNewsModal = openNewsModal;
+window.closeNewsModal = closeNewsModal;
+
+// 4. Fitur QRIS & Donasi
+window.openQrisModal = openQrisModal;
+window.closeQrisModal = closeQrisModal;
+window.openReceiptWindow = openReceiptWindow; // <-- Untuk Cetak Bukti
+window.startBeautificationDonation = startBeautificationDonation; // <-- Untuk Paket
+
+// 5. Init
 window.init = init;
