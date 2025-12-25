@@ -3024,32 +3024,60 @@ function closeReceiptModal() {
     document.getElementById('receipt-modal').classList.add('hidden');
 }
 
-// --- [TAMBAHAN BARU] FITUR DIRECT DONASI BEAUTIFIKASI ---
-window.startBeautificationDonation = function() {
+// ============================================================
+// TAMBAHAN FITUR: DONASI OTOMATIS (BEAUTIFIKASI)
+// ============================================================
+
+function startBeautificationDonation(nominalPaket = 0) {
     // 1. Buka Halaman Donasi
     showPage('donasi');
-
+    
     // 2. Reset ke Langkah 1
     goToStep(1);
 
-    // 3. Otomatis Pilih "Infaq"
+    // 3. Otomatis Klik Tombol "Infaq"
     const btnInfaq = document.querySelector('button[data-type="Infaq"]');
-    if (btnInfaq) {
-        btnInfaq.click(); // Ini akan memicu logika tampilkan sub-opsi
-    }
+    if (btnInfaq) btnInfaq.click();
 
-    // 4. Beri jeda sedikit agar animasi UI Infaq selesai, lalu pilih "Pengembangan Kampus"
+    // 4. Tunggu animasi sebentar, lalu pilih "Pengembangan Kampus"
     setTimeout(() => {
         const btnKampus = document.querySelector('button[data-type-infaq="Infaq Pengembangan Kampus"]');
-        if (btnKampus) {
-            btnKampus.click(); // Ini akan memilih sub-kategori
+        if (btnKampus) btnKampus.click();
+
+        // 5. Tunggu lagi, lalu pindah ke langkah Nominal
+        setTimeout(() => {
+            goToStep(2); 
+
+            const inputCustom = document.getElementById('nominal-custom');
             
-            // Scroll ke tombol lanjut agar user sadar sudah terpilih
-            const nav = document.getElementById('step-1-nav-default');
-            if(nav) nav.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, 300);
+            if (nominalPaket > 0) {
+                // Jika memilih paket (misal 500rb)
+                donasiData.nominal = nominalPaket;
+                donasiData.nominalAsli = nominalPaket;
+                
+                if(inputCustom) inputCustom.value = formatRupiah(nominalPaket);
+                
+                // Matikan seleksi tombol biasa agar tidak bingung
+                document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
+                
+                showToast(`Paket Donasi ${formatRupiah(nominalPaket)} terpilih`, 'success');
+            } else {
+                // Jika memilih Wakaf Tunai (Bebas)
+                donasiData.nominal = 0;
+                donasiData.nominalAsli = 0;
+                if(inputCustom) {
+                    inputCustom.value = '';
+                    inputCustom.focus();
+                }
+            }
+        }, 500); // Jeda transisi ke step 2
+    }, 300); // Jeda transisi tampilkan opsi infaq
 }
+
+// ============================================================
+// PENTING: DAFTARKAN FUNGSI AGAR BISA DIPANGGIL HTML
+// ============================================================
+window.startBeautificationDonation = startBeautificationDonation;
 
 // --- JEMBATAN PENGHUBUNG (Agar HTML bisa panggil fungsi di module) ---
 window.showPage = showPage;
@@ -3060,5 +3088,4 @@ window.closeQrisModal = closeQrisModal;
 window.openQrisModal = openQrisModal;
 window.copyText = copyText;
 window.loadMoreNews = loadMoreNews;
-window.startBeautificationDonation = startBeautificationDonation; // <-- TAMBAHKAN INI
 window.init = init;
