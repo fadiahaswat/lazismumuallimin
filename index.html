@@ -436,34 +436,15 @@
             Salurkan Zakat, Infaq, dan Shodaqoh Anda melalui Lazismu Mu'allimin Yogyakarta untuk menebar kebaikan bagi pendidikan kader umat dan kemanusiaan.
         </p>
 
-        <!-- REFACTORED: Unified Button Component Classes -->
-        <style>
-        .btn-primary {
-            @apply px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all duration-300 active:scale-95 flex items-center gap-2;
-        }
-        .btn-secondary {
-            @apply px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 flex items-center gap-2;
-        }
-        .btn-accent {
-            @apply px-8 py-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold backdrop-blur-sm hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-1 flex items-center gap-2;
-        }
-        .card-soft {
-            @apply bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-slate-900/20 border border-white/60 p-8 md:p-12 relative overflow-hidden;
-        }
-        .nav-button {
-            @apply px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 group;
-        }
-        </style>
-
         <!-- REFACTORED: Hero Button Section -->
         <div class="flex flex-wrap justify-center gap-4 mb-16 animate-fade-in-up">
-            <button onclick="showPage('donasi')" class="btn-primary">
+            <button onclick="showPage('donasi')" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all duration-300 active:scale-95">
                 <i class="fas fa-hand-holding-heart text-xl"></i> Tunaikan ZIS
             </button>
-            <button onclick="scrollToSection('qris-section')" class="btn-secondary">
+            <button onclick="scrollToSection('qris-section')" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1">
                 <i class="fas fa-wallet text-blue-400"></i> Transfer & QRIS
             </button>
-            <button id="btn-hubungi-hero" class="btn-accent">
+            <button id="btn-hubungi-hero" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold backdrop-blur-sm hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-1">
                 <i class="fab fa-whatsapp text-xl"></i> Konsultasi
             </button>
         </div>
