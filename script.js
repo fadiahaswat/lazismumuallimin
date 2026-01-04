@@ -532,6 +532,9 @@ function scrollToSection(sectionId) {
     }, 500);
 }
 
+// WAJIB DITAMBAHKAN:
+window.scrollToSection = scrollToSection;
+
 function handleInitialLoad() {
     const hash = window.location.hash.replace('#', '') || 'home';
     if (document.getElementById(`page-${hash}`)) {
