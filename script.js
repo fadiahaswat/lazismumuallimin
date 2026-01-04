@@ -2824,17 +2824,6 @@ function closeQrisModal() {
     }, 200);
 }
 
-// Helper function untuk scroll ke section tertentu
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-        });
-    }
-}
-
 // Efek bayangan pada Header saat digulir (Scroll Effect)
 window.addEventListener('scroll', () => {
     const header = document.getElementById('main-header');
