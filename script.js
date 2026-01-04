@@ -522,13 +522,14 @@ function showPage(pageId) {
 }
 
 function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
+    showPage('home');
+    setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
-    }
+    }, 500);
 }
 
 function handleInitialLoad() {
@@ -2028,7 +2029,7 @@ function setupWizardLogic() {
                                         <img src="bank-bni.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank BNI</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">3440 000 348</p>
                                     </div>
                                 </div>
@@ -2043,7 +2044,7 @@ function setupWizardLogic() {
                                         <img src="bank-bsi.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">BSI (Syariah)</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">7930 030 303</p>
                                     </div>
                                 </div>
@@ -2058,7 +2059,7 @@ function setupWizardLogic() {
                                         <img src="bank-bpd.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">BPD DIY Syariah</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">801 241 004 624</p>
                                     </div>
                                 </div>
@@ -2189,13 +2190,11 @@ function setupHistoryLogic() {
     // Filter jenis donasi, metode, dan tanggal
     ['filter-jenis', 'filter-metode', 'filter-start-date', 'filter-end-date'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            el.onchange = () => {
-                riwayatData.currentPage = 1;
-                renderRiwayatList();
-                renderPagination();
-            };
-        }
+        if (el) el.onchange = () => {
+            riwayatData.currentPage = 1;
+            renderRiwayatList();
+            renderPagination();
+        };
     });
 
     // Filter cepat waktu (Hari ini, Minggu ini, dll)
@@ -2501,6 +2500,8 @@ function calculateStats() {
         }
         return popular;
     };
+
+    const popularType = getPopular(donationTypes);
 
     const setText = (id, txt) => {
         const el = document.getElementById(id);
@@ -2927,11 +2928,13 @@ function renderPersonalHistoryTable() {
         tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
         emptyState.classList.remove('hidden'); // Munculkan pesan kosong
         return;
-    } else {
-        if (emptyState) emptyState.classList.add('hidden');
     }
 
-    tbody.innerHTML = myDonations.map(item => {
+    tbody.parentElement.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    tbody.innerHTML = '';
+
+    myDonations.forEach(item => {
         const dateObj = new Date(item.Timestamp);
         const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         
@@ -3149,6 +3152,3 @@ window.startBeautificationDonation = startBeautificationDonation; // <-- Untuk P
 
 // 5. Init
 window.init = init;
-
-// Expose ke global scope
-window.scrollToSection = scrollToSection;
