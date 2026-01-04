@@ -1168,61 +1168,68 @@ function renderRekapTable(cls) {
 
     // === SKENARIO 1: PILIHAN KHUSUS TAHFIZH (VIA ID 'tahfizh-...') ===
     if (cls.startsWith('tahfizh-')) {
-        // Ambil target level, misal "4,6" jadi array ["4", "6"]
         const targetLevels = cls.replace('tahfizh-', '').split(',');
 
         targetLevels.forEach(lvl => {
             if (santriDB[lvl]) {
                 Object.keys(santriDB[lvl]).forEach(realClass => {
                     const classData = santriDB[lvl][realClass];
-                    // FILTER: Hanya ambil yang punya Musyrif Khusus (Tidak Kosong)
-                    const filtered = classData.filter(s => s.musyrifKhusus && s.musyrifKhusus.trim() !== "");
+                    
+                    // --- LOGIKA FILTER BARU ---
+                    // Ambil nama Musyrif Kelas (Asrama) untuk kelas ini
+                    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[realClass] : null) || { musyrif: '' };
+                    const mKelas = (meta.musyrif || "").trim().toLowerCase();
+
+                    // Filter: Ambil santri yg punya Musyrif Khusus DAN Musyrifnya BEDA dengan Musyrif Kelas
+                    const filtered = classData.filter(s => {
+                        const mTahfizh = (s.musyrifKhusus || "").trim().toLowerCase();
+                        
+                        // 1. Harus punya musyrif tahfizh
+                        if (!mTahfizh) return false;
+                        
+                        // 2. Namanya harus BEDA dengan musyrif kelas
+                        // (Ini yang membuat anak 2A & 2B tidak masuk sini, tapi anak 2C masuk)
+                        return mTahfizh !== mKelas;
+                    });
+                    
                     students = students.concat(filtered);
                 });
             }
         });
 
         namaWali = "Gabungan Lintas Kelas";
-        // Ambil nama musyrif dari anak pertama yg ditemukan (misal: Ust. Faiz)
         namaMusyrif = students.length > 0 ? students[0].musyrifKhusus : "-";
     } 
     
-    // === SKENARIO 2: PILIHAN KELAS STANDAR (MISAL '4A') ===
+    // === SKENARIO 2: PILIHAN KELAS STANDAR (Misal '2A', '2B') ===
     else {
         const level = cls.charAt(0);
-        // AMBIL SEMUA: Tidak ada filter, jadi anak Tahfizh pun tetap masuk sini untuk laporan Wali Kelas.
+        // Tampilkan SEMUA (termasuk Tahfizh yang musyrifnya sama)
         students = santriDB[level] ? santriDB[level][cls] : [];
         
-        // Ambil info Wali Kelas & Musyrif default dari data-kelas.js
         const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
             wali: '-',
             musyrif: '-'
         };
         namaWali = meta.wali;
-        namaMusyrif = meta.musyrif; // Menampilkan Musyrif Asrama (Reguler)
+        namaMusyrif = meta.musyrif; 
     }
 
-    // === RENDER TABEL ===
-
+    // === RENDER TABEL (TIDAK ADA PERUBAHAN LOGIKA DI BAWAH INI) ===
     if (students.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td></tr>';
-        
-        // Kosongkan header info
         document.getElementById('rekap-wali').innerText = "-";
         document.getElementById('rekap-musyrif').innerText = "-";
         document.getElementById('rekap-total-kelas').innerText = "Rp 0";
         return;
     }
 
-    // Urutkan nama (Penting untuk kelas gabungan)
     students.sort((a, b) => a.nama.localeCompare(b.nama));
-
     let totalKelas = 0;
 
     students.forEach((s, index) => {
         let qris = 0, transfer = 0, tunai = 0;
 
-        // Hitung Donasi (Cek Nama & Kelas ASLI si Anak)
         riwayatData.allData.forEach(d => {
             const matchNama = d.NamaSantri && s.nama && d.NamaSantri.trim() === s.nama.trim();
             const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
@@ -1238,15 +1245,12 @@ function renderRekapTable(cls) {
         const subtotal = qris + transfer + tunai;
         totalKelas += subtotal;
 
-        // Label Kelas (Muncul jika mode Tahfizh Gabungan, biar Ust Faiz tau asalnya)
         const badgeKelas = cls.startsWith('tahfizh-') ? 
             `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
 
-        // Label Tahfizh (Muncul jika mode Kelas Biasa, biar Wali Kelas tau statusnya)
+        // Label Tahfizh (Tetap muncul di semua mode, asalkan punya data musyrif khusus)
         let labelTahfizh = '';
-        // LOGIKA: Tag tetap muncul selama anak tersebut punya Musyrif Khusus, 
-        // tidak peduli siapa Musyrif Asramanya (agar Ustadz bisa membedakan).
-        if (!cls.startsWith('tahfizh-') && s.musyrifKhusus) {
+        if (s.musyrifKhusus) {
              labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
 
@@ -1265,7 +1269,6 @@ function renderRekapTable(cls) {
         tbody.appendChild(tr);
     });
 
-    // Update Header Tabel dengan Data yang Benar
     const elWali = document.getElementById('rekap-wali');
     const elMusyrif = document.getElementById('rekap-musyrif');
     const elTotal = document.getElementById('rekap-total-kelas');
