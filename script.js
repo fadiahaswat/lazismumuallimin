@@ -3150,16 +3150,5 @@ window.startBeautificationDonation = startBeautificationDonation; // <-- Untuk P
 // 5. Init
 window.init = init;
 
-// Helper function untuk scroll ke section tertentu
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-        });
-    }
-}
-
 // Expose ke global scope
 window.scrollToSection = scrollToSection;
