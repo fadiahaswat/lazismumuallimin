@@ -912,24 +912,34 @@ function setupRekapLogic() {
             });
 
             // ============================================================
-            // 2. AUTO-DETECT TAHFIZH (LOGIKA OTOMATIS)
+            // 2. AUTO-DETECT TAHFIZH (LOGIKA BARU: CEK BEDA MUSYRIF)
             // ============================================================
             
-            // Cek apakah di level ini ada setidaknya 1 anak yang punya Musyrif Khusus?
-            let adaAnakTahfizh = false;
+            let adaAnakTahfizhBedaMusyrif = false;
+
             classes.forEach(namaKelas => {
                 const dataSatuKelas = santriDB[lvl][namaKelas];
-                // Cek jika ada murid yang kolom musyrifKhusus-nya terisi
-                if (dataSatuKelas.some(s => s.musyrifKhusus && s.musyrifKhusus.trim() !== "")) {
-                    adaAnakTahfizh = true;
+                
+                // Ambil Data Musyrif Kelas (Reguler) dari data-kelas.js
+                // Pastikan handle jika classMetaData belum ada/undefined
+                const metaKelas = (typeof classMetaData !== 'undefined' ? classMetaData[namaKelas] : null) || { musyrif: '' };
+                const musyrifKelas = (metaKelas.musyrif || "").trim().toLowerCase();
+
+                // Cek apakah ada santri yang punya Musyrif Khusus DAN Berbeda dengan Musyrif Kelas
+                if (dataSatuKelas.some(s => {
+                    const musyrifTahfizh = (s.musyrifKhusus || "").trim().toLowerCase();
+                    // Syarat: Punya Musyrif Khusus DAN Namanya Beda dengan Musyrif Kelas
+                    return musyrifTahfizh !== "" && musyrifTahfizh !== musyrifKelas;
+                })) {
+                    adaAnakTahfizhBedaMusyrif = true;
                 }
             });
 
-            // Jika ditemukan anak tahfizh, OTOMATIS buatkan tombolnya
-            if (adaAnakTahfizh) {
+            // Jika ditemukan anak tahfizh yang musyrifnya BEDA, munculkan tombol gabungan
+            if (adaAnakTahfizhBedaMusyrif) {
                 // Kecuali untuk kasus spesial (4 & 6), kita pakai nama standar
                 if (lvl !== '4' && lvl !== '6') {
-                    clsSelect.appendChild(createOption(`tahfizh-${lvl}`, `Kelas ${lvl} Tahfizh`));
+                    clsSelect.appendChild(createOption(`tahfizh-${lvl}`, `Kelas ${lvl} Tahfizh (Khusus)`));
                 }
             }
 
