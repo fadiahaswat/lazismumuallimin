@@ -1244,6 +1244,8 @@ function renderRekapTable(cls) {
 
         // Label Tahfizh (Muncul jika mode Kelas Biasa, biar Wali Kelas tau statusnya)
         let labelTahfizh = '';
+        // LOGIKA: Tag tetap muncul selama anak tersebut punya Musyrif Khusus, 
+        // tidak peduli siapa Musyrif Asramanya (agar Ustadz bisa membedakan).
         if (!cls.startsWith('tahfizh-') && s.musyrifKhusus) {
              labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
