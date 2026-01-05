@@ -320,14 +320,13 @@ function updateUIForLogin(user) {
 
     // Load Data Dashboard
     if (typeof loadPersonalDashboard === 'function') {
-        const dashboardId = user.linkedEmail || user.email || user.uid;
-        loadPersonalDashboard(dashboardId); 
-        
-        // [TAMBAHAN] Jika user login saat berada di halaman Dashboard, refresh datanya
-        if (window.location.hash === '#dashboard') {
-            loadPersonalDashboard(dashboardId);
-        }
+    // REVISI: Kirim seluruh object user, bukan cuma string ID
+    loadPersonalDashboard(user); 
+    
+    if (window.location.hash === '#dashboard') {
+        loadPersonalDashboard(user);
     }
+}
   if (typeof loadPersonalDashboard === 'function') {
         const dashboardId = user.linkedEmail || user.email || user.uid;
         loadPersonalDashboard(dashboardId);
