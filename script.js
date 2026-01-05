@@ -1841,25 +1841,29 @@ function setupWizardLogic() {
             // [LOGIKA BARU: RESET & KODE UNIK]
             
             // 1. Pastikan kita punya data nominal asli yang bersih
-            // Jika undefined (misal user langsung lompat), ambil dari nominal saat ini
             if (!donasiData.nominalAsli) {
                 donasiData.nominalAsli = donasiData.nominal;
             }
 
-            // 2. SELALU Reset donasiData.nominal ke nilai murni (tanpa kode unik)
-            donasiData.nominal = donasiData.nominalAsli;
+            // 2. Default: Reset Kode Unik ke 0 dan Total ke Nominal Asli
+            donasiData.kodeUnik = 0;
+            donasiData.nominalTotal = donasiData.nominalAsli;
 
-            // 3. Generate Kode Unik & Hitung Total
-            if (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS') {
+            // 3. Cek apakah perlu Generate Kode Unik?
+            // Syarat: 
+            // a. Metode adalah Transfer atau QRIS (Digital)
+            // b. Jenis donasi BUKAN Zakat Fitrah (karena nominal sudah fix per jiwa)
+            // c. Jenis donasi BUKAN Zakat Maal (karena nominal sudah unik hasil hitungan nisab)
+            
+            const isDigital = (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS');
+            const isZakat = (donasiData.type === 'Zakat Fitrah' || donasiData.type === 'Zakat Maal');
+
+            if (isDigital && !isZakat) {
                 const kodeUnik = generateUniqueCode(); 
                 donasiData.kodeUnik = kodeUnik;
                 
                 // Total = Nominal Murni + Kode Unik
                 donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
-            } else {
-                // Tunai = Tidak ada kode unik
-                donasiData.kodeUnik = 0;
-                donasiData.nominalTotal = donasiData.nominalAsli;
             }
 
             // 4. Update Data Tampilan Ringkasan (Summary)
@@ -1868,7 +1872,7 @@ function setupWizardLogic() {
             const elNominalSummary = document.getElementById('summary-nominal');
             elNominalSummary.innerText = formatRupiah(donasiData.nominalTotal);
 
-            // Tampilkan Info Kode Unik jika ada
+            // Tampilkan Info Kode Unik HANYA JIKA ADA (kodeUnik > 0)
             const oldMsg = document.getElementById('msg-kode-unik-summary');
             if (oldMsg) oldMsg.remove();
 
