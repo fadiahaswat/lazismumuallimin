@@ -1858,6 +1858,7 @@ function setupWizardLogic() {
             const isDigital = (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS');
             const isZakat = (donasiData.type === 'Zakat Fitrah' || donasiData.type === 'Zakat Maal');
 
+            // HANYA generate jika Digital DAN BUKAN Zakat
             if (isDigital && !isZakat) {
                 const kodeUnik = generateUniqueCode(); 
                 donasiData.kodeUnik = kodeUnik;
@@ -1876,6 +1877,7 @@ function setupWizardLogic() {
             const oldMsg = document.getElementById('msg-kode-unik-summary');
             if (oldMsg) oldMsg.remove();
 
+            // Pesan peringatan hanya muncul jika ada kode unik
             if (donasiData.kodeUnik > 0) {
                 const htmlPesan = `
                     <div id="msg-kode-unik-summary" class="mt-2 text-right animate-fade-in-up">
