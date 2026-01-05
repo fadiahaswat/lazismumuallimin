@@ -556,6 +556,15 @@ async function init() {
         if (typeof santriData !== 'undefined' && santriData.length > 0) {
             console.log("Data Santri OK:", santriData.length);
             parseSantriData();
+          // === [MULAI PERBAIKAN] ===
+            // Tambahkan kode ini tepat setelah parseSantriData()
+            // Tujuannya: Jika user sudah login duluan sebelum data siap, 
+            // kita refresh UI-nya sekarang karena data sudah ada.
+            if (currentUser && currentUser.isSantri) {
+                console.log("Database siap, memperbarui data formulir user...");
+                updateUIForLogin(currentUser);
+            }
+            // === [AKHIR PERBAIKAN] ===
         } else {
             console.warn("Data santri kosong/gagal dimuat.");
         }
