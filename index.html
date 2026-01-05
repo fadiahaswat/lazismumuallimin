@@ -2978,61 +2978,62 @@
                 </div>
 
                 <div id="donasi-step-4" class="donasi-step-container hidden">
-                    <p class="text-center text-slate-500 mb-6 text-sm">Silakan pilih metode pembayaran yang paling nyaman bagi Anda.</p>
+    <p class="text-center text-slate-500 mb-6 text-sm">Silakan pilih metode pembayaran yang paling nyaman bagi Anda.</p>
 
-                    <div id="div-sudah-transfer" class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100 hidden"> <label class="flex items-start gap-3 cursor-pointer">
-        <div class="relative flex items-center">
-            <input type="checkbox" id="check-sudah-transfer" class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 transition-all checked:border-blue-500 checked:bg-blue-500 hover:shadow-md">
-            <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+    <div class="space-y-3 mb-6">
+        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50 has-[:checked]:shadow-md group">
+            <input type="radio" name="payment-method" value="QRIS" class="peer sr-only">
+            <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-qrcode"></i></div>
+            <div class="flex-1">
+                <h5 class="font-bold text-slate-800 text-lg">QRIS (E-Wallet)</h5>
+                <p class="text-xs text-slate-500">GoPay, OVO, Dana, ShopeePay, Mobile Banking</p>
             </div>
-        </div>
-        <div class="text-xs text-slate-600">
-            <span class="font-bold text-blue-700">Saya sudah melakukan transfer</span>
-            <p class="mt-0.5 opacity-80">Centang ini jika Anda sudah mengirim dana (Nominal akan disesuaikan tanpa kode unik).</p>
-        </div>
-    </label>
-</div>
-                    
-                    <div class="space-y-3 mb-8">
-                        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50 has-[:checked]:shadow-md group">
-                            <input type="radio" name="payment-method" value="QRIS" class="peer sr-only">
-                            <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-qrcode"></i></div>
-                            <div class="flex-1">
-                                <h5 class="font-bold text-slate-800 text-lg">QRIS (E-Wallet)</h5>
-                                <p class="text-xs text-slate-500">GoPay, OVO, Dana, ShopeePay, Mobile Banking</p>
-                            </div>
-                            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-orange-500 peer-checked:bg-orange-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
-                        </label>
+            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-orange-500 peer-checked:bg-orange-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
+        </label>
 
-                        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:shadow-md group">
-                            <input type="radio" name="payment-method" value="Transfer" class="peer sr-only">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-university"></i></div>
-                            <div class="flex-1">
-                                <h5 class="font-bold text-slate-800 text-lg">Transfer Bank</h5>
-                                <p class="text-xs text-slate-500">BNI, BSI, BPD DIY Syariah</p>
-                            </div>
-                            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-500 peer-checked:bg-blue-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
-                        </label>
+        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:shadow-md group">
+            <input type="radio" name="payment-method" value="Transfer" class="peer sr-only">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-university"></i></div>
+            <div class="flex-1">
+                <h5 class="font-bold text-slate-800 text-lg">Transfer Bank</h5>
+                <p class="text-xs text-slate-500">BNI, BSI, BPD DIY Syariah</p>
+            </div>
+            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-500 peer-checked:bg-blue-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
+        </label>
 
-                        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition-all has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50 has-[:checked]:shadow-md group">
-                            <input type="radio" name="payment-method" value="Tunai" class="peer sr-only">
-                            <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-money-bill-wave"></i></div>
-                            <div class="flex-1">
-                                <h5 class="font-bold text-slate-800 text-lg">Tunai (Cash)</h5>
-                                <p class="text-xs text-slate-500">Serahkan langsung di Kantor Layanan</p>
-                            </div>
-                            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-teal-500 peer-checked:bg-teal-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
-                        </label>
-                    </div>
+        <label class="relative flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-slate-100 cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition-all has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50 has-[:checked]:shadow-md group">
+            <input type="radio" name="payment-method" value="Tunai" class="peer sr-only">
+            <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="flex-1">
+                <h5 class="font-bold text-slate-800 text-lg">Tunai (Cash)</h5>
+                <p class="text-xs text-slate-500">Serahkan langsung di Kantor Layanan</p>
+            </div>
+            <div class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-teal-500 peer-checked:bg-teal-500 flex items-center justify-center text-white opacity-20 peer-checked:opacity-100 transition"><i class="fas fa-check text-xs"></i></div>
+        </label>
+    </div>
 
-                    <div class="flex justify-between items-center border-t border-slate-100 pt-6">
-                        <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-50 transition">Kembali</button>
-                        <button data-next-step="5" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95 flex items-center gap-2">
-                            Lanjut <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
+    <div id="div-sudah-transfer" class="mb-8 p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-100 hidden animate-fade-in-up"> 
+        <label class="flex items-center gap-4 cursor-pointer group">
+            <div class="relative flex items-center">
+                <input type="checkbox" id="check-sudah-transfer" class="peer h-6 w-6 cursor-pointer appearance-none rounded-lg border-2 border-slate-300 transition-all checked:border-blue-600 checked:bg-blue-600 hover:border-blue-400">
+                <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                    <i class="fas fa-check text-xs"></i>
                 </div>
+            </div>
+            <div class="flex-1">
+                <span class="block font-bold text-blue-800 text-sm group-hover:text-blue-600 transition-colors">Saya sudah melakukan transfer</span>
+                <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Centang jika dana sudah dikirim. Nominal akan dicatat pas tanpa kode unik.</p>
+            </div>
+        </label>
+    </div>
+
+    <div class="flex justify-between items-center border-t border-slate-100 pt-6">
+        <button data-prev-step="3" class="text-slate-400 hover:text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-50 transition">Kembali</button>
+        <button data-next-step="5" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95 flex items-center gap-2">
+            Lanjut <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
 
                 <div id="donasi-step-5" class="donasi-step-container hidden">
                     <div class="bg-slate-50 rounded-2xl p-6 mb-6 border border-slate-100">
@@ -3618,5 +3619,6 @@
 </body>
 
 </html>
+
 
 
