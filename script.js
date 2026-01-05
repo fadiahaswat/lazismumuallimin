@@ -20,131 +20,191 @@ let currentUser = null; // Menyimpan data user yang sedang login
 
 // GANTI FUNGSI doLogin DENGAN INI:
 
-window.doLogin = async function() {
-    const btn = document.getElementById('btn-google-login');
+// Buka Modal Pilihan Login
+window.doLogin = function() {
+    const modal = document.getElementById('login-modal');
+    if(modal) modal.classList.remove('hidden');
+}
+
+// Tutup Modal
+window.closeLoginModal = function() {
+    const modal = document.getElementById('login-modal');
+    if(modal) modal.classList.add('hidden');
+}
+
+// --- 1. LOGIN GOOGLE (FIREBASE) ---
+window.loginWithGoogle = async function() {
+    closeLoginModal(); // Tutup modal dulu
     const label = document.getElementById('label-login');
-    
-    // 1. Matikan tombol biar tidak bisa diklik berkali-kali
-    if (btn) {
-        btn.disabled = true;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-        if(label) label.innerText = "Memproses...";
-    }
+    if(label) label.innerText = "Memproses...";
 
     try {
-        // 2. Eksekusi Login
         const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        
-        console.log("Login sukses:", user.displayName);
-        showToast(`Ahlan Wa Sahlan, ${user.displayName.split(' ')[0]}!`, 'success');
-        
-        // Tombol biarkan mati karena halaman akan berubah tampilan (kena onAuthStateChanged)
-        
+        console.log("Login Google Sukses:", result.user.displayName);
+        // UI akan diupdate otomatis oleh onAuthStateChanged
     } catch (error) {
-        console.error("Login Error:", error);
-
-        // Handle error khusus
-        if (error.code === 'auth/popup-blocked') {
-            alert("Popup Login terblokir browser. Izinkan popup untuk situs ini.");
-        } else if (error.code === 'auth/popup-closed-by-user') {
-            showToast("Login dibatalkan", 'warning');
-        } else {
-            showToast("Gagal login: " + error.message, 'error');
-        }
-
-        // 3. Hidupkan tombol lagi jika gagal
-        if (btn) {
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            if(label) label.innerText = "Masuk Akun";
-        }
+        console.error(error);
+        showToast("Gagal login Google", 'error');
+        if(label) label.innerText = "Masuk Akun";
     }
 }
 
-// Fungsi Logout (DIPERBAIKI)
+// --- 2. LOGIN NIS (LOCAL DATA) ---
+window.loginWithNIS = function() {
+    const nisInput = document.getElementById('login-nis').value.trim();
+    const passInput = document.getElementById('login-pass').value.trim();
+
+    if (!nisInput || !passInput) return showToast("Mohon isi NIS dan Password", "warning");
+
+    // Pastikan data santri sudah dimuat dari data-santri.js
+    if (typeof santriData === 'undefined' || santriData.length === 0) {
+        return showToast("Data Santri sedang dimuat, coba sesaat lagi...", "warning");
+    }
+
+    // CARI SANTRI DI DATABASE LOKAL
+    // Kita cari yang NIS-nya cocok (pastikan tipe data sama, jadi pakai String())
+    const santri = santriData.find(s => String(s.nis) === String(nisInput));
+
+    if (santri) {
+        // CEK PASSWORD (SEMENTARA PASSWORD = NIS)
+        if (passInput === String(santri.nis)) {
+            
+            // SUKSES! Buat Mock User Object (Meniru struktur Firebase User)
+            const mockUser = {
+                uid: "nis_" + santri.nis,
+                displayName: santri.nama,
+                email: santri.nis + "@santri.muallimin", // Email dummy
+                photoURL: `https://ui-avatars.com/api/?name=${encodeURIComponent(santri.nama)}&background=10b981&color=fff`,
+                isSantri: true, // Flag khusus
+                rombel: santri.kelas || santri.rombel,
+                nis: santri.nis
+            };
+
+            // Simpan ke LocalStorage (Agar tahan refresh)
+            localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
+
+            // Update UI secara manual
+            updateUIForLogin(mockUser);
+            
+            closeLoginModal();
+            showToast(`Ahlan, ${santri.nama.split(' ')[0]}!`, 'success');
+
+        } else {
+            showToast("Password salah (Gunakan NIS)", "error");
+        }
+    } else {
+        showToast("NIS tidak ditemukan", "error");
+    }
+}
+
 window.doLogout = function() {
+    // 1. Logout Firebase
     signOut(auth).then(() => {
+        // 2. Logout Santri (Hapus Storage)
+        localStorage.removeItem('lazismu_user_santri');
+        
         showToast("Berhasil keluar", 'success');
         
-        // 1. Paksa URL kembali ke Home (hapus #dashboard)
+        // 3. Reset UI & Redirect
+        updateUIForLogout(); // Panggil fungsi reset UI manual biar instan
         window.location.hash = "#home";
-        
-        // 2. Refresh halaman untuk membersihkan memori data user
-        // Menggunakan replace agar history back tidak kembali ke dashboard
         window.location.replace(window.location.pathname + "#home");
         window.location.reload();
     });
 }
 
-// --- UPDATE SCRIPT.JS (Bagian Auth Listener) ---
+// --- FUNGSI UPDATE TAMPILAN (Bisa dipanggil Firebase atau NIS) ---
+function updateUIForLogin(user) {
+    currentUser = user; // Set variabel global
 
-// Satpam Pemantau (Cek status login)
-onAuthStateChanged(auth, (user) => {
-    // 1. DEFINISIKAN SEMUA VARIABEL UI DI SINI (PALING ATAS)
-    // Agar bisa dibaca baik saat Login maupun Logout (Mencegah ReferenceError)
+    // 1. UI Header
     const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
+    
+    if (btnWrapper) btnWrapper.style.display = 'none';
+    if (profileMenu) {
+        profileMenu.classList.remove('hidden');
+        profileMenu.classList.add('flex');
+    }
+
+    // 2. Isi Data Profil
+    if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL;
+    if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
+
+    // 3. Auto-Fill Form Donasi
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
     
-    // [PERBAIKAN UTAMA] Variabel ini didefinisikan DI LUAR if/else
-    const suggestionCard = document.getElementById('login-suggestion-card'); 
+    if(inputNama) inputNama.value = user.displayName;
     
-    if (user) {
-        // --- KONDISI: USER LOGIN ---
-        currentUser = user; 
-
-        // 1. UI Header: Sembunyikan tombol login, Munculkan profil
-        if (btnWrapper) btnWrapper.style.display = 'none';
-        if (profileMenu) {
-            profileMenu.classList.remove('hidden');
-            profileMenu.classList.add('flex');
-        }
-
-        // 2. Isi Data Profil di Header
-        if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL || "https://ui-avatars.com/api/?name=" + user.displayName;
-        if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
-        
-        // 3. Auto-Fill Form Donasi
-        if(inputNama) inputNama.value = user.displayName;
-        if(inputEmail) {
+    // Jika Login Santri, email dummy jangan ditampilkan/diisi agar user bisa isi email ortu asli
+    if(inputEmail) {
+        if (!user.isSantri) { 
             inputEmail.value = user.email;
             inputEmail.readOnly = true;
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
-        }
-        
-        // 4. Load Data Personal untuk Dashboard
-        if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
-
-        // [LOGIKA BARU] Sembunyikan kartu saran login karena user SUDAH login
-        if (suggestionCard) suggestionCard.classList.add('hidden');
-
-    } else {
-        // --- KONDISI: USER BELUM LOGIN / LOGOUT ---
-        currentUser = null;
-
-        // 1. UI Header: Munculkan tombol login
-        if (btnWrapper) btnWrapper.style.display = 'block';
-        if (profileMenu) {
-            profileMenu.classList.add('hidden');
-            profileMenu.classList.remove('flex');
-        }
-
-        // 2. Reset Form Donasi
-        if(inputNama) inputNama.value = '';
-        if(inputEmail) {
-            inputEmail.value = '';
+        } else {
+            // Kalau santri, biarkan kosong/editable untuk email notifikasi
             inputEmail.readOnly = false;
             inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
         }
+    }
 
-        // [LOGIKA BARU] Munculkan kartu saran login jika user logout saat sedang di Step 3
-        const step3Visible = document.getElementById('donasi-step-3');
-        
-        // Cek apakah elemen ada, sedang terlihat, dan user belum login
-        if (suggestionCard && step3Visible && !step3Visible.classList.contains('hidden')) {
-            suggestionCard.classList.remove('hidden');
+    // 4. Load Dashboard (Jika ada fitur ini)
+    if (typeof loadPersonalDashboard === 'function') {
+        // Untuk santri, dashboardnya mungkin berbeda, tapi sementara pakai email dummy
+        loadPersonalDashboard(user.email); 
+    }
+
+    // 5. Sembunyikan kartu saran login
+    const suggestionCard = document.getElementById('login-suggestion-card');
+    if (suggestionCard) suggestionCard.classList.add('hidden');
+}
+
+function updateUIForLogout() {
+    currentUser = null;
+
+    const btnWrapper = document.getElementById('login-btn-wrapper');
+    const profileMenu = document.getElementById('user-profile-menu');
+    
+    if (btnWrapper) btnWrapper.style.display = 'block';
+    if (profileMenu) {
+        profileMenu.classList.add('hidden');
+        profileMenu.classList.remove('flex');
+    }
+
+    // Reset Label Tombol Login (jika sebelumnya "Memproses...")
+    const label = document.getElementById('label-login');
+    if(label) label.innerText = "Masuk Akun";
+
+    // Reset Form
+    const inputNama = document.getElementById('nama-muzakki-input');
+    const inputEmail = document.getElementById('email');
+    if(inputNama) inputNama.value = '';
+    if(inputEmail) {
+        inputEmail.value = '';
+        inputEmail.readOnly = false;
+        inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
+    }
+}
+
+// --- LISTENER AUTH UTAMA ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Login via Google (Firebase)
+        // Hapus sesi santri jika ada (biar gak bentrok)
+        localStorage.removeItem('lazismu_user_santri');
+        updateUIForLogin(user);
+    } else {
+        // Firebase Logout. TAPI, Cek dulu apakah ada sesi Santri di LocalStorage?
+        const santriSession = localStorage.getItem('lazismu_user_santri');
+        if (santriSession) {
+            // Ada sesi santri, restore login
+            const santriUser = JSON.parse(santriSession);
+            updateUIForLogin(santriUser);
+        } else {
+            // Benar-benar logout
+            updateUIForLogout();
         }
     }
 });
