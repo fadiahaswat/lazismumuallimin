@@ -3324,6 +3324,60 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div id="santri-profile-card" class="hidden bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm mb-10 relative overflow-hidden transition-all duration-500">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -mr-10 -mt-10 z-0"></div>
+    
+    <div class="relative z-10">
+        <h3 class="font-black text-lg text-slate-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-id-card text-orange-500"></i> Biodata Santri
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 text-sm">
+            
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Nama Lengkap</span>
+                <span id="dash-nama" class="font-bold text-slate-800 text-lg border-b border-transparent group-hover:border-slate-200 transition-colors w-fit">-</span>
+            </div>
+
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Nomor Induk (NIS)</span>
+                <span id="dash-nis" class="font-mono font-bold text-slate-600 bg-slate-50 px-2 py-1 rounded w-fit">-</span>
+            </div>
+
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Kelas</span>
+                <span id="dash-kelas" class="font-bold text-slate-800">-</span>
+            </div>
+
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Asrama</span>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-building text-slate-300"></i>
+                    <span id="dash-asrama" class="font-bold text-slate-800">-</span>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-3 h-px bg-slate-100 my-2"></div>
+
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Wali Kelas</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xs"><i class="fas fa-user-tie"></i></div>
+                    <span id="dash-wali" class="font-bold text-slate-800">-</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col group">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Musyrif</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xs"><i class="fas fa-user-shield"></i></div>
+                    <span id="dash-musyrif" class="font-bold text-slate-800">-</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 group hover:-translate-y-1">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
@@ -3741,3 +3795,4 @@
 </body>
 
 </html>
+
