@@ -3404,24 +3404,28 @@ window.saveNewPassword = function() {
     document.getElementById('pass-modal').classList.add('hidden');
 }
 
-// --- 2. FITUR GANTI AVATAR EMOJI ---
+// --- FITUR GANTI AVATAR EMOJI (DIPERBAIKI) ---
 window.openAvatarModal = function() {
-    toggleUserDropdown();
+    toggleUserDropdown(); // Tutup menu dropdown
     const modal = document.getElementById('avatar-modal');
-    modal.classList.remove('hidden');
+    if(modal) modal.classList.remove('hidden');
 
-    const emojis = ["😎", "🤓", "🤠", "😊", "😇", "🤖", "👻", "🐯", "🐱", "🐶", "🦁", "🐼", "🐸", "🎓", "🕌"];
+    const emojis = ["😎", "🤓", "🤠", "😊", "😇", "🤖", "👻", "🐯", "🐱", "🐶", "🦁", "🐼", "🐸", "🎓", "🕌", "🚀", "⭐", "🔥", "⚽", "🎨"];
     const grid = document.getElementById('emoji-grid');
-    grid.innerHTML = '';
+    if(!grid) return;
+    
+    grid.innerHTML = ''; // Reset grid
 
     emojis.forEach(emoji => {
-        // Buat URL Avatar dari Emoji (pake UI Avatars SVG trick atau Canvas, tapi biar simpel kita simpan emojinya sbg string dataURI dummy atau langsung render emoji)
-        // Agar konsisten dengan src image, kita pake API UI-Avatars dgn background custom
-        
         const btn = document.createElement('button');
-        btn.className = "text-3xl hover:scale-125 transition p-2 bg-slate-50 rounded-xl";
+        btn.className = "text-3xl hover:scale-110 hover:bg-orange-100 transition p-3 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm cursor-pointer";
         btn.innerHTML = emoji;
-        btn.onclick = () => saveAvatar(emoji);
+        
+        // Event Listener langsung pada elemen
+        btn.onclick = function() {
+            saveAvatar(emoji);
+        };
+        
         grid.appendChild(btn);
     });
 }
@@ -3429,25 +3433,34 @@ window.openAvatarModal = function() {
 window.saveAvatar = function(emoji) {
     if (!currentUser || !currentUser.isSantri) return;
 
-    // Trik: Gunakan API ui-avatars dengan format nama = emoji (kadang support, kadang engga).
-    // Lebih aman: Simpan emoji sbg identifier, lalu di render render sbg gambar.
-    // TAPI biar simpel dan masuk ke <img src>, kita pakai layanan 'dummyimage' text atau SVG.
+    // --- PERBAIKAN LOGIKA SVG ---
+    // Menggunakan encodeURIComponent agar Emoji (Unicode) tidak error
+    const svgString = `
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <style>text{font-family:sans-serif}</style>
+        <rect width='100%' height='100%' fill='#f1f5f9'/>
+        <text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='70'>${emoji}</text>
+    </svg>`;
     
-    // Solusi Elegan: Bikin SVG Data URI sendiri
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
-    const avatarUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+    // Konversi ke Data URI yang aman
+    const avatarUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString.trim())}`;
 
-    // Simpan
+    // 1. Simpan ke Local Storage
     SantriManager.savePrefs(currentUser.nis, { avatar: avatarUrl });
     
-    // Update Tampilan Langsung
-    document.getElementById('user-avatar').src = avatarUrl;
-    currentUser.photoURL = avatarUrl;
+    // 2. Update Tampilan di Header
+    const imgEl = document.getElementById('user-avatar');
+    if(imgEl) imgEl.src = avatarUrl;
+
+    // 3. Update Tampilan di Dashboard (jika sedang terbuka)
+    const dashEl = document.getElementById('dash-avatar');
+    if(dashEl) dashEl.src = avatarUrl;
     
-    // Update Sesi Storage Login
+    // 4. Update Objek User di Memori
+    currentUser.photoURL = avatarUrl;
     localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
 
-    showToast("Avatar diperbarui!", "success");
+    showToast("Avatar berhasil diganti!", "success");
     document.getElementById('avatar-modal').classList.add('hidden');
 }
 
