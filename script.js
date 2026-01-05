@@ -328,6 +328,15 @@ function updateUIForLogin(user) {
             loadPersonalDashboard(dashboardId);
         }
     }
+  if (typeof loadPersonalDashboard === 'function') {
+        const dashboardId = user.linkedEmail || user.email || user.uid;
+        loadPersonalDashboard(dashboardId);
+        
+        // [TAMBAHAN BARU] Load Profil Santri ke Dashboard
+        if (user.isSantri) {
+            loadStudentProfileToDashboard(user);
+        }
+    }
 }
 
 function updateUIForLogout() {
