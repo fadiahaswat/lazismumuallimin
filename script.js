@@ -260,29 +260,28 @@ function updateUIForLogin(user) {
     }
 
     // KHUSUS SANTRI: Auto-Select Dropdown Data Santri di Step 3
-    // KHUSUS SANTRI: Auto-Select Dropdown Data Santri di Step 3 (VERSI FIX)
     if (user.isSantri) {
-        // 1. Set Variabel Global Donasi
+        // 1. UPDATE VARIABEL GLOBAL (Penting agar data tersimpan saat lanjut step)
         donasiData.donaturTipe = 'santri';
         donasiData.namaSantri = user.displayName;
         donasiData.nisSantri = user.nis;
         donasiData.rombelSantri = user.rombel;
 
-        // 2. Klik Radio Button "Via Santri"
+        // 2. KLIK RADIO BUTTON "VIA SANTRI" (Visual Saja)
         const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
         if (radioSantri) {
             radioSantri.checked = true;
-            // Kita panggil onchange manual untuk memunculkan div detail, TAPI tanpa reset data
+            // Tampilkan div detail tanpa memicu event 'change' yang mereset data
             const santriDetails = document.getElementById('santri-details');
             if (santriDetails) santriDetails.classList.remove('hidden');
         }
 
-        // 3. ISI DROPDOWN SECARA PAKSA (Bypass Event Listener biar instan)
+        // 3. ISI DROPDOWN SECARA PAKSA (BYPASS EVENT LISTENER)
         const levelSelect = document.getElementById('santri-level-select');
         const rombelSelect = document.getElementById('santri-rombel-select');
         const namaSelect = document.getElementById('santri-nama-select');
         
-        // Ambil Level dari Kelas (Misal "1A" -> Level "1")
+        // Ambil Level dari Kelas User (Misal "1A" -> Level "1")
         const currentLevel = user.rombel.charAt(0); 
 
         // A. Isi Level
@@ -290,44 +289,48 @@ function updateUIForLogin(user) {
             levelSelect.value = currentLevel;
         }
 
-        // B. Isi Rombel (Kita bangun option-nya manual di sini agar tidak nunggu delay)
-        if (rombelSelect && santriDB[currentLevel]) {
-            rombelSelect.innerHTML = '<option value="">Rombel</option>';
+        // B. Isi Rombel (Bangun option manual dari santriDB)
+        if (rombelSelect && typeof santriDB !== 'undefined' && santriDB[currentLevel]) {
+            let options = '<option value="">Rombel</option>';
+            // Loop data kelas dari database lokal
             Object.keys(santriDB[currentLevel]).forEach(r => {
-                rombelSelect.innerHTML += `<option value="${r}">${r}</option>`;
+                options += `<option value="${r}">${r}</option>`;
             });
+            rombelSelect.innerHTML = options;
             rombelSelect.disabled = false;
-            rombelSelect.value = user.rombel; // Pilih Rombel Santri
+            rombelSelect.value = user.rombel; // PILIH KELAS SANTRI
         }
 
-        // C. Isi Nama Santri
-        if (namaSelect && santriDB[currentLevel] && santriDB[currentLevel][user.rombel]) {
-            namaSelect.innerHTML = '<option value="">Pilih Nama Santri</option>';
+        // C. Isi Nama Santri (Bangun option manual)
+        if (namaSelect && typeof santriDB !== 'undefined' && santriDB[currentLevel] && santriDB[currentLevel][user.rombel]) {
+            let options = '<option value="">Pilih Nama Santri</option>';
+            // Loop teman sekelas dari database lokal
             santriDB[currentLevel][user.rombel].forEach(s => {
-                // Value dropdown formatnya: Nama::NIS::Rombel
+                // Value format wajib: Nama::NIS::Rombel
                 const val = `${s.nama}::${s.nis}::${s.rombel}`;
-                namaSelect.innerHTML += `<option value="${val}">${s.nama}</option>`;
+                options += `<option value="${val}">${s.nama}</option>`;
             });
+            namaSelect.innerHTML = options;
             namaSelect.disabled = false;
             
-            // Pilih Nama Santri
+            // PILIH NAMA USER YANG LOGIN
             const userValue = `${user.displayName}::${user.nis}::${user.rombel}`;
             namaSelect.value = userValue;
         }
 
-        // 4. Otomatis Klik "A/n Santri" dan Isi Nama
+        // 4. OTOMATIS ISI NAMA MUZAKKI (FORM DONASI)
         const radioName = document.querySelector('input[name="nama-choice"][value="santri"]');
         const inputNama = document.getElementById('nama-muzakki-input');
 
         if (radioName) {
-            radioName.disabled = false; // Aktifkan radio button
-            radioName.checked = true;   // Pilih radio button
+            radioName.disabled = false; // Aktifkan pilihan "A/n Santri"
+            radioName.checked = true;   // Pilih otomatis
         }
 
         if (inputNama) {
             inputNama.value = `A/n Santri: ${user.displayName}`;
             inputNama.readOnly = true;
-            inputNama.classList.add('bg-slate-100', 'text-slate-500'); // Efek visual terkunci
+            inputNama.classList.add('bg-slate-100', 'text-slate-500'); // Efek terkunci
         }
     }
 
