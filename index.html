@@ -3285,44 +3285,49 @@
     </div>
 </section>
         <section id="page-dashboard" class="page-section hidden bg-slate-50 min-h-screen pt-28 pb-24 relative overflow-x-hidden">
-    <div class="absolute top-0 left-0 w-full h-[30rem] bg-gradient-to-b from-orange-50/80 via-white/50 to-transparent pointer-events-none"></div>
-    <div class="absolute top-20 right-[-10%] w-[500px] h-[500px] bg-blue-100/30 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute top-0 left-0 w-full h-[35rem] bg-gradient-to-b from-orange-50/80 via-white/60 to-transparent pointer-events-none"></div>
+    <div class="absolute top-20 right-[-5%] w-[600px] h-[600px] bg-blue-100/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+    <div class="absolute top-40 left-[-5%] w-[400px] h-[400px] bg-green-100/20 rounded-full blur-[100px] pointer-events-none"></div>
 
     <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-10">
         
-        <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white/60 ring-1 ring-slate-100 mb-8 relative overflow-hidden group">
+        <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-[0_15px_60px_-15px_rgba(0,0,0,0.05)] border border-white/60 ring-1 ring-slate-100 mb-8 relative overflow-hidden group">
             <div class="absolute top-[-20%] right-[-10%] w-80 h-80 bg-orange-100/60 rounded-full blur-[60px] group-hover:bg-orange-200/50 transition-all duration-1000"></div>
-            <div class="absolute bottom-[-20%] left-[-10%] w-60 h-60 bg-green-100/50 rounded-full blur-[60px] pointer-events-none"></div>
             
-            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-10">
-                <div class="relative shrink-0">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-orange-400 to-red-500 blur-lg rounded-full opacity-30 animate-pulse"></div>
-                    <img id="dash-avatar" src="" class="relative w-28 h-28 md:w-32 md:h-32 rounded-full border-[5px] border-white shadow-2xl object-cover ring-1 ring-slate-100">
-                    <div class="absolute bottom-2 right-2 w-8 h-8 bg-emerald-500 border-4 border-white rounded-full shadow-md flex items-center justify-center" title="Akun Aktif">
-                        <i class="fas fa-check text-[10px] text-white"></i>
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                <div class="relative shrink-0 group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-orange-400 to-red-500 blur-xl rounded-full opacity-20 animate-pulse"></div>
+                    <img id="dash-avatar" src="" class="relative w-32 h-32 rounded-full border-[6px] border-white shadow-2xl object-cover ring-1 ring-slate-100">
+                    <div class="absolute bottom-2 right-2 w-9 h-9 bg-emerald-500 border-4 border-white rounded-full shadow-lg flex items-center justify-center" title="Akun Aktif">
+                        <i class="fas fa-check text-xs text-white"></i>
                     </div>
                 </div>
                 
-                <div class="text-center md:text-left flex-1 space-y-2">
-                    <h2 class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight leading-tight">
-                        Ahlan Wa Sahlan, <br>
-                        <span id="dash-name" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">User</span>! 👋
-                    </h2>
-                    <p class="text-slate-500 text-lg font-medium max-w-lg mx-auto md:mx-0">Terima kasih telah menjadi bagian dari gerakan kebaikan ini.</p>
+                <div class="text-center md:text-left flex-1 space-y-3">
+                    <div>
+                        <span class="inline-block py-1 px-3 rounded-lg bg-orange-50 border border-orange-100 text-[10px] font-bold tracking-widest text-orange-600 uppercase mb-2">Dashboard Donatur</span>
+                        <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight">
+                            Ahlan Wa Sahlan, <br>
+                            <span id="dash-name" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">User</span>! 👋
+                        </h2>
+                    </div>
+                    <p class="text-slate-500 text-lg font-medium max-w-lg mx-auto md:mx-0 leading-relaxed">
+                        Terima kasih telah menjadi bagian dari gerakan kebaikan ini. Semoga rezeki Anda semakin berkah.
+                    </p>
                     
-                    <div class="pt-2">
+                    <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
                         <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm">
-                            <div class="w-6 h-6 bg-yellow-100 rounded-full text-yellow-600 flex items-center justify-center"><i class="fas fa-crown text-xs"></i></div>
+                            <div class="w-6 h-6 bg-yellow-100 rounded-full text-yellow-600 flex items-center justify-center"><i class="fas fa-crown text-[10px]"></i></div>
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Status: <span id="dash-level" class="text-slate-800 font-black">Donatur</span></span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="flex flex-col gap-3 w-full md:w-auto shrink-0 min-w-[180px]">
-                    <button onclick="showPage('donasi')" class="px-6 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-2xl font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 group/btn">
-                        <i class="fas fa-heart text-lg group-hover/btn:animate-pulse"></i> Donasi Baru
+                <div class="flex flex-col gap-3 w-full md:w-auto shrink-0 min-w-[200px]">
+                    <button onclick="showPage('donasi')" class="w-full px-6 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-xl shadow-slate-900/20 hover:bg-orange-600 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 group/btn">
+                        <i class="fas fa-heart text-lg text-red-500 group-hover/btn:text-white transition-colors"></i> Donasi Baru
                     </button>
-                    <button onclick="doLogout()" class="px-6 py-4 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 group/out shadow-sm">
+                    <button onclick="doLogout()" class="w-full px-6 py-4 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 group/out shadow-sm hover:shadow-md">
                         <i class="fas fa-sign-out-alt group-hover/out:-translate-x-1 transition-transform"></i> Keluar
                     </button>
                 </div>
@@ -3333,124 +3338,135 @@
             
             <div id="santri-profile-card" class="hidden md:col-span-3 bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden transition-all duration-500 animate-fade-in-up">
                 
-                <div class="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
-                    <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-lg">
+                <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 text-orange-600 flex items-center justify-center text-xl shadow-inner">
                         <i class="fas fa-id-card-alt"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-xl text-slate-800 leading-none">Biodata Santri</h3>
-                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Informasi Akademik</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1.5">Informasi Akademik & Asrama</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-orange-200 hover:bg-orange-50/30 transition-all group">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Lengkap</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-orange-500 group-hover:border-orange-200 transition-colors"><i class="fas fa-user"></i></div>
-                            <span id="dash-nama" class="font-bold text-slate-800 text-base truncate">Loading...</span>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nama Lengkap</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-user"></i></div>
+                            <span id="dash-nama" class="font-bold text-slate-800 text-base md:text-lg truncate">Loading...</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-orange-200 hover:bg-orange-50/30 transition-all group">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nomor Induk (NIS)</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-orange-500 group-hover:border-orange-200 transition-colors"><i class="fas fa-fingerprint"></i></div>
-                            <span id="dash-nis" class="font-mono font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 text-sm">...</span>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nomor Induk (NIS)</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-fingerprint"></i></div>
+                            <span id="dash-nis" class="font-mono font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200 text-sm group-hover:bg-orange-50 group-hover:text-orange-700 group-hover:border-orange-100 transition-colors">...</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-orange-200 hover:bg-orange-50/30 transition-all group">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Kelas</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-orange-500 group-hover:border-orange-200 transition-colors"><i class="fas fa-chalkboard"></i></div>
-                            <span id="dash-kelas" class="font-bold text-slate-800 text-base">...</span>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Kelas</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-chalkboard"></i></div>
+                            <span id="dash-kelas" class="font-bold text-slate-800 text-lg">...</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group sm:col-span-2 lg:col-span-1">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Asrama / Gedung</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-blue-500 group-hover:border-blue-200 transition-colors"><i class="fas fa-building"></i></div>
-                            <span id="dash-asrama" class="font-bold text-slate-800 text-sm md:text-base truncate">...</span>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:shadow-blue-500/5 transition-all group duration-300 sm:col-span-2 lg:col-span-1">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-blue-500 transition-colors">Asrama / Gedung</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all shadow-sm"><i class="fas fa-building"></i></div>
+                            <span id="dash-asrama" class="font-bold text-slate-800 text-sm md:text-base truncate leading-tight">...</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all group">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Wali Kelas</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-emerald-500 group-hover:border-emerald-200 transition-colors"><i class="fas fa-user-tie"></i></div>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-lg hover:shadow-emerald-500/5 transition-all group duration-300">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Wali Kelas</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all shadow-sm"><i class="fas fa-user-tie"></i></div>
                             <span id="dash-wali" class="font-bold text-slate-800 text-sm truncate">...</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all group">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Musyrif Asrama</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-xs group-hover:text-emerald-500 group-hover:border-emerald-200 transition-colors"><i class="fas fa-user-shield"></i></div>
+                    <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-lg hover:shadow-emerald-500/5 transition-all group duration-300">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Musyrif Asrama</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white text-slate-400 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all shadow-sm"><i class="fas fa-user-shield"></i></div>
                             <span id="dash-musyrif" class="font-bold text-slate-800 text-sm truncate">...</span>
                         </div>
                     </div>
 
                 </div>
-                
-                <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -mr-16 -mt-16 pointer-events-none opacity-50"></div>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-green-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+            <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-green-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden flex flex-col justify-center min-h-[180px]">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-[3rem] -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-green-50 to-transparent rounded-tr-3xl"></div>
                 
-                <div class="flex items-center gap-4 mb-4 relative z-10">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-200 text-emerald-700 flex items-center justify-center text-xl shadow-inner group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fas fa-wallet"></i>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Donasi</p>
                     </div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Donasi</p>
+                    <h3 id="dash-stat-total" class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight group-hover:text-green-600 transition-colors">Rp 0</h3>
+                    <div class="w-12 h-1 bg-slate-100 rounded-full mt-4 overflow-hidden">
+                        <div class="h-full bg-green-500 w-0 group-hover:w-full transition-all duration-1000"></div>
+                    </div>
                 </div>
-                <h3 id="dash-stat-total" class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight group-hover:text-emerald-600 transition-colors">Rp 0</h3>
             </div>
             
-            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+            <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden flex flex-col justify-center min-h-[180px]">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-[3rem] -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
 
-                <div class="flex items-center gap-4 mb-4 relative z-10">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-200 text-indigo-700 flex items-center justify-center text-xl shadow-inner group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fas fa-receipt"></i>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Frekuensi</p>
                     </div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaksi</p>
+                    <h3 id="dash-stat-freq" class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight group-hover:text-blue-600 transition-colors">0 <span class="text-base font-bold text-slate-400">x</span></h3>
+                    <div class="w-12 h-1 bg-slate-100 rounded-full mt-4 overflow-hidden">
+                        <div class="h-full bg-blue-500 w-0 group-hover:w-full transition-all duration-1000 delay-100"></div>
+                    </div>
                 </div>
-                <h3 id="dash-stat-freq" class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors">0 <span class="text-base font-bold text-slate-400">kali</span></h3>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-purple-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+            <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden flex flex-col justify-center min-h-[180px]">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-[3rem] -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
 
-                <div class="flex items-center gap-4 mb-4 relative z-10">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-100 to-fuchsia-200 text-fuchsia-700 flex items-center justify-center text-xl shadow-inner group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fas fa-history"></i>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terakhir</p>
                     </div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terakhir</p>
+                    <h3 id="dash-stat-last" class="text-lg md:text-xl font-black text-slate-800 line-clamp-1 group-hover:text-purple-600 transition-colors mb-2">-</h3>
+                    <p id="dash-stat-last-date" class="text-[10px] font-bold text-slate-500 bg-slate-50 inline-block px-3 py-1 rounded-lg border border-slate-200">Belum ada data</p>
                 </div>
-                <h3 id="dash-stat-last" class="text-lg md:text-xl font-black text-slate-800 line-clamp-1 group-hover:text-fuchsia-600 transition-colors">-</h3>
-                <p id="dash-stat-last-date" class="text-[10px] font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-2 py-1 rounded-md border border-slate-100">Belum ada data</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden relative">
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden relative mb-10">
             <div class="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white relative z-10">
                 <h3 class="font-black text-slate-800 text-xl flex items-center gap-3">
                     <span class="w-1.5 h-8 bg-orange-500 rounded-full"></span>
                     Riwayat Transaksi
                 </h3>
-                <button onclick="refreshDashboard()" class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 flex items-center justify-center transition-all shadow-sm active:scale-90" title="Muat Ulang Data">
-                    <i class="fas fa-sync-alt"></i>
+                <button onclick="refreshDashboard()" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50 transition-all shadow-sm active:scale-95 text-xs font-bold uppercase tracking-wider" title="Muat Ulang Data">
+                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Refresh
                 </button>
             </div>
             
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50/80 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                        <tr class="bg-slate-50/50 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-100">
                             <th class="p-6 min-w-[140px]">Tanggal</th>
                             <th class="p-6 min-w-[180px]">Jenis Donasi</th>
                             <th class="p-6 min-w-[150px]">Nominal</th>
@@ -3461,10 +3477,10 @@
                     </thead>
                     <tbody id="dash-history-body" class="text-sm text-slate-600 font-medium divide-y divide-slate-50">
                         <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td colspan="6" class="p-12 text-center text-slate-400">
-                                <div class="inline-flex flex-col items-center gap-3 animate-pulse">
-                                    <i class="fas fa-circle-notch fa-spin text-2xl text-orange-500"></i>
-                                    <span class="text-xs font-bold tracking-wide">Sedang memuat data Anda...</span>
+                            <td colspan="6" class="p-16 text-center text-slate-400">
+                                <div class="inline-flex flex-col items-center gap-4 animate-pulse">
+                                    <div class="w-12 h-12 rounded-full border-4 border-slate-100 border-t-orange-500 animate-spin"></div>
+                                    <span class="text-xs font-bold tracking-wide text-slate-400 uppercase">Sedang memuat data Anda...</span>
                                 </div>
                             </td>
                         </tr>
@@ -3472,12 +3488,15 @@
                 </table>
             </div>
             
-            <div id="dash-empty-state" class="hidden p-16 text-center">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-50 mb-6 shadow-inner border border-slate-100">
-                    <i class="far fa-folder-open text-4xl text-slate-300"></i>
+            <div id="dash-empty-state" class="hidden p-20 text-center">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-50 mb-6 shadow-inner border border-slate-100">
+                    <i class="far fa-folder-open text-5xl text-slate-300"></i>
                 </div>
-                <h4 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Data</h4>
-                <p class="text-slate-400 text-sm max-w-xs mx-auto">Riwayat donasi yang Anda lakukan akan tercatat rapi di sini.</p>
+                <h4 class="text-xl font-bold text-slate-700 mb-2">Belum Ada Data</h4>
+                <p class="text-slate-400 text-sm max-w-xs mx-auto leading-relaxed">Riwayat donasi yang Anda lakukan akan tercatat rapi dan aman di sini.</p>
+                <button onclick="showPage('donasi')" class="mt-6 px-6 py-2 rounded-full border-2 border-dashed border-slate-300 text-slate-500 font-bold text-xs hover:border-orange-400 hover:text-orange-500 transition-colors">
+                    Mulai Donasi Sekarang
+                </button>
             </div>
         </div>
 
@@ -3821,5 +3840,6 @@
 </body>
 
 </html>
+
 
 
