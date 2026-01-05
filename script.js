@@ -1830,6 +1830,27 @@ function setupWizardLogic() {
     }
 
     // --- LANGKAH 4: Metode Pembayaran ---
+    
+    // A. Logika Tampilkan Checkbox "Sudah Transfer" saat pilih Metode
+    document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const divSudah = document.getElementById('div-sudah-transfer');
+            const checkSudah = document.getElementById('check-sudah-transfer');
+            
+            if (divSudah) {
+                // Tampilkan hanya jika Transfer atau QRIS
+                if (e.target.value === 'Transfer' || e.target.value === 'QRIS') {
+                    divSudah.classList.remove('hidden');
+                    divSudah.classList.add('animate-fade-in-up');
+                } else {
+                    divSudah.classList.add('hidden');
+                    if (checkSudah) checkSudah.checked = false; // Reset jika ganti ke Tunai
+                }
+            }
+        });
+    });
+
+    // B. Logika Tombol Lanjut (Kalkulasi Final)
     const btnNextStep5 = document.querySelector('[data-next-step="5"]');
     if (btnNextStep5) {
         btnNextStep5.onclick = () => {
@@ -1838,46 +1859,44 @@ function setupWizardLogic() {
 
             donasiData.metode = method.value;
 
-            // [LOGIKA BARU: RESET & KODE UNIK]
-            
-            // 1. Pastikan kita punya data nominal asli yang bersih
+            // 1. Pastikan nominal asli aman
             if (!donasiData.nominalAsli) {
                 donasiData.nominalAsli = donasiData.nominal;
             }
 
-            // 2. Default: Reset Kode Unik ke 0 dan Total ke Nominal Asli
+            // 2. Reset Default
             donasiData.kodeUnik = 0;
             donasiData.nominalTotal = donasiData.nominalAsli;
 
-            // 3. Cek apakah perlu Generate Kode Unik?
-            // Syarat: 
-            // a. Metode adalah Transfer atau QRIS (Digital)
-            // b. Jenis donasi BUKAN Zakat Fitrah (karena nominal sudah fix per jiwa)
-            // c. Jenis donasi BUKAN Zakat Maal (karena nominal sudah unik hasil hitungan nisab)
+            // 3. Ambil Status Checkbox "Sudah Transfer"
+            const checkSudahTransfer = document.getElementById('check-sudah-transfer');
+            const isAlreadyTransferred = checkSudahTransfer ? checkSudahTransfer.checked : false;
+
+            // 4. Logika Kode Unik
+            // Syarat Generate: 
+            // a. Digital (Transfer/QRIS)
+            // b. BUKAN Zakat (Fitrah/Maal)
+            // c. BELUM Transfer (Kalau sudah transfer, jangan ubah nominalnya)
             
             const isDigital = (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS');
             const isZakat = (donasiData.type === 'Zakat Fitrah' || donasiData.type === 'Zakat Maal');
 
-            // HANYA generate jika Digital DAN BUKAN Zakat
-            if (isDigital && !isZakat) {
+            if (isDigital && !isZakat && !isAlreadyTransferred) {
                 const kodeUnik = generateUniqueCode(); 
                 donasiData.kodeUnik = kodeUnik;
-                
-                // Total = Nominal Murni + Kode Unik
                 donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
             }
 
-            // 4. Update Data Tampilan Ringkasan (Summary)
+            // 5. Update UI Ringkasan
             document.getElementById('summary-type').innerText = donasiData.subType || donasiData.type;
             
             const elNominalSummary = document.getElementById('summary-nominal');
             elNominalSummary.innerText = formatRupiah(donasiData.nominalTotal);
 
-            // Tampilkan Info Kode Unik HANYA JIKA ADA (kodeUnik > 0)
+            // Tampilkan Info Kode Unik HANYA JIKA ADA
             const oldMsg = document.getElementById('msg-kode-unik-summary');
             if (oldMsg) oldMsg.remove();
 
-            // Pesan peringatan hanya muncul jika ada kode unik
             if (donasiData.kodeUnik > 0) {
                 const htmlPesan = `
                     <div id="msg-kode-unik-summary" class="mt-2 text-right animate-fade-in-up">
