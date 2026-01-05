@@ -260,54 +260,75 @@ function updateUIForLogin(user) {
     }
 
     // KHUSUS SANTRI: Auto-Select Dropdown Data Santri di Step 3
+    // KHUSUS SANTRI: Auto-Select Dropdown Data Santri di Step 3 (VERSI FIX)
     if (user.isSantri) {
-        // Kita set variabel global donasiData agar tersinkron
+        // 1. Set Variabel Global Donasi
         donasiData.donaturTipe = 'santri';
         donasiData.namaSantri = user.displayName;
         donasiData.nisSantri = user.nis;
         donasiData.rombelSantri = user.rombel;
 
-        // Trigger UI Radio Button "Wali Santri"
+        // 2. Klik Radio Button "Via Santri"
         const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
         if (radioSantri) {
             radioSantri.checked = true;
-            radioSantri.dispatchEvent(new Event('change')); // Trigger logic UI (munculin dropdown)
+            // Kita panggil onchange manual untuk memunculkan div detail, TAPI tanpa reset data
+            const santriDetails = document.getElementById('santri-details');
+            if (santriDetails) santriDetails.classList.remove('hidden');
         }
 
-        // Isi Dropdown (Perlu delay sedikit agar dropdown dirender dulu oleh event change)
-        setTimeout(() => {
-            const levelSelect = document.getElementById('santri-level-select');
-            const rombelSelect = document.getElementById('santri-rombel-select');
-            const namaSelect = document.getElementById('santri-nama-select');
-            const radioName = document.querySelector('input[name="nama-choice"][value="santri"]');
+        // 3. ISI DROPDOWN SECARA PAKSA (Bypass Event Listener biar instan)
+        const levelSelect = document.getElementById('santri-level-select');
+        const rombelSelect = document.getElementById('santri-rombel-select');
+        const namaSelect = document.getElementById('santri-nama-select');
+        
+        // Ambil Level dari Kelas (Misal "1A" -> Level "1")
+        const currentLevel = user.rombel.charAt(0); 
 
-            // Set Level (misal '1' dari '1A')
-            if (levelSelect) {
-                const lvl = user.rombel.charAt(0);
-                levelSelect.value = lvl;
-                levelSelect.dispatchEvent(new Event('change')); // Render rombel
-            }
+        // A. Isi Level
+        if (levelSelect) {
+            levelSelect.value = currentLevel;
+        }
 
-            // Set Rombel
-            setTimeout(() => {
-                if (rombelSelect) {
-                    rombelSelect.value = user.rombel;
-                    rombelSelect.dispatchEvent(new Event('change')); // Render nama
-                }
-                
-                // Set Nama
-                setTimeout(() => {
-                    if (namaSelect) {
-                        // Value dropdown formatnya: Nama::NIS::Rombel
-                        const val = `${user.displayName}::${user.nis}::${user.rombel}`;
-                        namaSelect.value = val;
-                        namaSelect.dispatchEvent(new Event('change'));
-                    }
-                    // Pilih Radio "Atas Nama Santri"
-                    if(radioName) radioName.click();
-                }, 100);
-            }, 100);
-        }, 100);
+        // B. Isi Rombel (Kita bangun option-nya manual di sini agar tidak nunggu delay)
+        if (rombelSelect && santriDB[currentLevel]) {
+            rombelSelect.innerHTML = '<option value="">Rombel</option>';
+            Object.keys(santriDB[currentLevel]).forEach(r => {
+                rombelSelect.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+            rombelSelect.disabled = false;
+            rombelSelect.value = user.rombel; // Pilih Rombel Santri
+        }
+
+        // C. Isi Nama Santri
+        if (namaSelect && santriDB[currentLevel] && santriDB[currentLevel][user.rombel]) {
+            namaSelect.innerHTML = '<option value="">Pilih Nama Santri</option>';
+            santriDB[currentLevel][user.rombel].forEach(s => {
+                // Value dropdown formatnya: Nama::NIS::Rombel
+                const val = `${s.nama}::${s.nis}::${s.rombel}`;
+                namaSelect.innerHTML += `<option value="${val}">${s.nama}</option>`;
+            });
+            namaSelect.disabled = false;
+            
+            // Pilih Nama Santri
+            const userValue = `${user.displayName}::${user.nis}::${user.rombel}`;
+            namaSelect.value = userValue;
+        }
+
+        // 4. Otomatis Klik "A/n Santri" dan Isi Nama
+        const radioName = document.querySelector('input[name="nama-choice"][value="santri"]');
+        const inputNama = document.getElementById('nama-muzakki-input');
+
+        if (radioName) {
+            radioName.disabled = false; // Aktifkan radio button
+            radioName.checked = true;   // Pilih radio button
+        }
+
+        if (inputNama) {
+            inputNama.value = `A/n Santri: ${user.displayName}`;
+            inputNama.readOnly = true;
+            inputNama.classList.add('bg-slate-100', 'text-slate-500'); // Efek visual terkunci
+        }
     }
 
     // Load Dashboard
