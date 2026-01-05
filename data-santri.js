@@ -1,5 +1,5 @@
 // URL Web App dari Google Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbzW3fqMmvcHXSO15NM2kfNbd458JjB7NRuJE8Mirfv4R7eyRBDHeuEYmwLPYRJWyTA3/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
 
 // Variabel global santriData
 let santriData = [];
