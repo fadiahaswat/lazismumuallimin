@@ -18,6 +18,53 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 let currentUser = null; // Menyimpan data user yang sedang login
 
+// --- MANAJEMEN DATA LOKAL SANTRI (Password, Avatar, Google Link) ---
+const SantriManager = {
+    getKey: (nis) => `santri_pref_${nis}`,
+    
+    getPrefs: (nis) => {
+        const data = localStorage.getItem(`santri_pref_${nis}`);
+        return data ? JSON.parse(data) : { password: null, avatar: null, linkedEmail: null };
+    },
+
+    savePrefs: (nis, newPrefs) => {
+        const current = SantriManager.getPrefs(nis);
+        const updated = { ...current, ...newPrefs };
+        localStorage.setItem(`santri_pref_${nis}`, JSON.stringify(updated));
+        return updated;
+    },
+
+    // Mencari NIS berdasarkan Email Google yang terhubung
+    findNisByEmail: (email) => {
+        // Ini agak "berat" kalau datanya jutaan, tapi untuk local storage ok
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('santri_pref_')) {
+                const data = JSON.parse(localStorage.getItem(key));
+                if (data.linkedEmail === email) {
+                    return key.replace('santri_pref_', ''); // Return NIS
+                }
+            }
+        }
+        return null;
+    }
+};
+
+// Toggle Menu Profil
+window.toggleUserDropdown = function() {
+    const menu = document.getElementById('user-dropdown-content');
+    if (menu) menu.classList.toggle('hidden');
+}
+
+// Tutup dropdown kalau klik di luar
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('user-profile-menu');
+    const content = document.getElementById('user-dropdown-content');
+    if (menu && !menu.contains(e.target) && content && !content.classList.contains('hidden')) {
+        content.classList.add('hidden');
+    }
+});
+
 // GANTI FUNGSI doLogin DENGAN INI:
 
 // Buka Modal Pilihan Login
@@ -34,63 +81,97 @@ window.closeLoginModal = function() {
 
 // --- 1. LOGIN GOOGLE (FIREBASE) ---
 window.loginWithGoogle = async function() {
-    closeLoginModal(); // Tutup modal dulu
+    closeLoginModal();
     const label = document.getElementById('label-login');
     if(label) label.innerText = "Memproses...";
 
     try {
         const result = await signInWithPopup(auth, provider);
-        console.log("Login Google Sukses:", result.user.displayName);
-        // UI akan diupdate otomatis oleh onAuthStateChanged
+        const googleUser = result.user;
+        
+        // 1. CEK APAKAH EMAIL INI TERHUBUNG DENGAN NIS?
+        const linkedNIS = SantriManager.findNisByEmail(googleUser.email);
+
+        if (linkedNIS) {
+            // JIKA YA: Login sebagai Santri (Bukan User Google Biasa)
+            const santri = santriData.find(s => String(s.nis) === String(linkedNIS));
+            if (santri) {
+                const prefs = SantriManager.getPrefs(linkedNIS);
+                const mockUser = {
+                    uid: "nis_" + santri.nis,
+                    displayName: santri.nama,
+                    email: googleUser.email, // Pakai email google
+                    photoURL: prefs.avatar || googleUser.photoURL, // Prioritas Avatar Santri
+                    isSantri: true,
+                    rombel: santri.kelas || santri.rombel,
+                    nis: santri.nis,
+                    linkedEmail: googleUser.email
+                };
+                
+                // Simpan sesi santri, abaikan sesi firebase murni
+                localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
+                updateUIForLogin(mockUser);
+                showToast(`Login via Google berhasil (Terhubung ke NIS ${linkedNIS})`, 'success');
+                return; 
+            }
+        }
+
+        // JIKA TIDAK: Login sebagai User Google Biasa (Default Firebase)
+        console.log("Login Google Biasa:", googleUser.displayName);
+        // onAuthStateChanged akan menangani sisanya
+
     } catch (error) {
         console.error(error);
         showToast("Gagal login Google", 'error');
+    } finally {
         if(label) label.innerText = "Masuk Akun";
     }
 }
 
-// --- 2. LOGIN NIS (LOCAL DATA) ---
 window.loginWithNIS = function() {
     const nisInput = document.getElementById('login-nis').value.trim();
     const passInput = document.getElementById('login-pass').value.trim();
 
     if (!nisInput || !passInput) return showToast("Mohon isi NIS dan Password", "warning");
 
-    // Pastikan data santri sudah dimuat dari data-santri.js
     if (typeof santriData === 'undefined' || santriData.length === 0) {
-        return showToast("Data Santri sedang dimuat, coba sesaat lagi...", "warning");
+        return showToast("Data Santri sedang dimuat...", "warning");
     }
 
-    // CARI SANTRI DI DATABASE LOKAL
-    // Kita cari yang NIS-nya cocok (pastikan tipe data sama, jadi pakai String())
+    // 1. Cari Data Santri Asli
     const santri = santriData.find(s => String(s.nis) === String(nisInput));
 
     if (santri) {
-        // CEK PASSWORD (SEMENTARA PASSWORD = NIS)
-        if (passInput === String(santri.nis)) {
+        // 2. Ambil Preferensi Lokal (Password Custom dll)
+        const prefs = SantriManager.getPrefs(santri.nis);
+        
+        // 3. Logika Password: Cek Custom dulu, kalau tidak ada baru cek Default (NIS)
+        const validPassword = prefs.password ? (prefs.password === passInput) : (String(santri.nis) === passInput);
+
+        if (validPassword) {
+            // LOGIN SUKSES
             
-            // SUKSES! Buat Mock User Object (Meniru struktur Firebase User)
+            // Generate Avatar (Prioritas: Custom > UI Avatars)
+            const avatarUrl = prefs.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(santri.nama)}&background=10b981&color=fff`;
+
             const mockUser = {
                 uid: "nis_" + santri.nis,
                 displayName: santri.nama,
-                email: santri.nis + "@santri.muallimin", // Email dummy
-                photoURL: `https://ui-avatars.com/api/?name=${encodeURIComponent(santri.nama)}&background=10b981&color=fff`,
-                isSantri: true, // Flag khusus
+                email: santri.nis + "@santri.muallimin", 
+                photoURL: avatarUrl,
+                isSantri: true, 
                 rombel: santri.kelas || santri.rombel,
-                nis: santri.nis
+                nis: santri.nis,
+                linkedEmail: prefs.linkedEmail // Info email google yg terhubung
             };
 
-            // Simpan ke LocalStorage (Agar tahan refresh)
             localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
-
-            // Update UI secara manual
             updateUIForLogin(mockUser);
-            
             closeLoginModal();
-            showToast(`Ahlan, ${santri.nama.split(' ')[0]}!`, 'success');
+            showToast(`Ahlan Wa Sahlan, ${santri.nama.split(' ')[0]}!`, 'success');
 
         } else {
-            showToast("Password salah (Gunakan NIS)", "error");
+            showToast("Password salah.", "error");
         }
     } else {
         showToast("NIS tidak ditemukan", "error");
