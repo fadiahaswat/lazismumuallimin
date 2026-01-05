@@ -200,12 +200,12 @@ window.doLogout = function() {
 }
 
 // ===============================================================
-// [PERBAIKAN UTAMA] LOGIKA UPDATE UI SAAT LOGIN
+// [PERBAIKAN] LOGIKA AUTO-FILL HIERARKI (LEVEL -> ROMBEL -> NAMA)
 // ===============================================================
 function updateUIForLogin(user) {
     currentUser = user; 
 
-    // 1. UI Header & Menu
+    // 1. UI Header & Menu (Logika Tampilan)
     const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
     const santriMenu = document.getElementById('santri-menu-options');
@@ -216,39 +216,27 @@ function updateUIForLogin(user) {
         profileMenu.classList.remove('hidden');
         profileMenu.classList.add('flex');
     }
-
     if (santriMenu) {
-        if (user.isSantri) santriMenu.classList.remove('hidden');
-        else santriMenu.classList.add('hidden');
+        user.isSantri ? santriMenu.classList.remove('hidden') : santriMenu.classList.add('hidden');
     }
-
     if (googleIndicator) {
-        if (user.linkedEmail || (user.providerData && user.providerData.length > 0)) {
-            googleIndicator.classList.remove('hidden');
-        } else {
-            googleIndicator.classList.add('hidden');
-        }
+        (user.linkedEmail || (user.providerData && user.providerData.length > 0)) ? googleIndicator.classList.remove('hidden') : googleIndicator.classList.add('hidden');
     }
 
-    // Update Foto & Nama di Header
+    // Update Header Text & Avatar
     if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL;
     if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
     if(document.getElementById('user-role')) document.getElementById('user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
-
-    // Update Header Mobile
     if(document.getElementById('mobile-user-name')) document.getElementById('mobile-user-name').textContent = user.displayName;
     if(document.getElementById('mobile-user-role')) document.getElementById('mobile-user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
-
-    // Update Foto & Nama di Dashboard
     if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL;
     if(document.getElementById('dash-name')) document.getElementById('dash-name').innerText = user.displayName.split(' ')[0];
 
-
-    // 2. LOGIKA FORM DONASI (STEP 3) - BAGIAN INI YANG DIPERBAIKI
+    // 2. LOGIKA AUTO-FILL FORM DONASI (STEP 3)
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
     
-    // Auto Isi Nama & Email
+    // Auto Isi Nama & Email (Default)
     if(inputNama) inputNama.value = user.displayName;
     if(inputEmail) {
         if (!user.isSantri) { 
@@ -262,64 +250,81 @@ function updateUIForLogin(user) {
         }
     }
 
-    // KHUSUS SANTRI: ISI DROPDOWN SECARA PAKSA (TANPA DELAY)
+    // --- LOGIKA HIERARKI SANTRI (LEVEL -> ROMBEL -> NAMA) ---
     if (user.isSantri) {
-        // A. Set Variabel Global agar data tersimpan
+        // A. Pastikan Variabel Global Terisi
         donasiData.donaturTipe = 'santri';
-        donasiData.namaSantri = user.displayName;
         donasiData.nisSantri = user.nis;
         donasiData.rombelSantri = user.rombel;
+        // Nama santri nanti diisi setelah pencocokan database di bawah
 
-        // B. Klik Radio Button "Via Santri" (Visual saja)
+        // B. Set Radio Button & Tampilkan Detail
         const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
         if (radioSantri) {
             radioSantri.checked = true;
-            // Tampilkan div detail santri
             const santriDetails = document.getElementById('santri-details');
             if (santriDetails) santriDetails.classList.remove('hidden');
         }
 
-        // C. ISI DROPDOWN DENGAN MEMBANGUN HTML LANGSUNG
+        // C. Populate Dropdowns (Hierarki)
         const levelSelect = document.getElementById('santri-level-select');
         const rombelSelect = document.getElementById('santri-rombel-select');
         const namaSelect = document.getElementById('santri-nama-select');
         
-        // Ambil Level dari Kelas User (Misal "1A" -> Level "1")
+        // 1. TENTUKAN LEVEL (Ambil angka pertama dari Rombel, misal "1A" -> "1")
         const currentLevel = user.rombel.charAt(0); 
 
-        // 1. Isi Level
+        // Isi Dropdown Level
         if (levelSelect) {
             levelSelect.value = currentLevel;
         }
 
-        // 2. Isi Rombel (Looping manual dari database santriDB)
+        // 2. ISI ROMBEL (Berdasarkan Level)
         if (rombelSelect && typeof santriDB !== 'undefined' && santriDB[currentLevel]) {
-            let options = '<option value="">Rombel</option>';
+            let rombelHtml = '<option value="">Pilih Rombel</option>';
+            // Loop keys dari santriDB (nama-nama kelas)
             Object.keys(santriDB[currentLevel]).forEach(r => {
-                options += `<option value="${r}">${r}</option>`;
+                rombelHtml += `<option value="${r}">${r}</option>`;
             });
-            rombelSelect.innerHTML = options; // Masukkan HTML options
-            rombelSelect.disabled = false;    // Aktifkan dropdown
-            rombelSelect.value = user.rombel; // Pilih kelas user
+            rombelSelect.innerHTML = rombelHtml;
+            rombelSelect.disabled = false;
+            
+            // Pilih Rombel User
+            rombelSelect.value = user.rombel;
         }
 
-        // 3. Isi Nama Santri (Looping manual)
+        // 3. ISI NAMA (Berdasarkan Rombel -> Cari NIS yang cocok)
         if (namaSelect && typeof santriDB !== 'undefined' && santriDB[currentLevel] && santriDB[currentLevel][user.rombel]) {
-            let options = '<option value="">Pilih Nama Santri</option>';
+            let namaHtml = '<option value="">Pilih Nama Santri</option>';
+            let exactValueToSelect = "";
+            let exactName = user.displayName; // Default fallback
+
+            // Loop semua siswa di kelas tersebut
             santriDB[currentLevel][user.rombel].forEach(s => {
-                // Format value harus sama persis dengan yang diharapkan script lain
+                // Format Value Dropdown: Nama::NIS::Rombel
                 const val = `${s.nama}::${s.nis}::${s.rombel}`;
-                options += `<option value="${val}">${s.nama}</option>`;
+                namaHtml += `<option value="${val}">${s.nama}</option>`;
+
+                // CEK APAKAH INI SISWA YANG LOGIN? (Cek pakai NIS biar akurat 100%)
+                if (String(s.nis) === String(user.nis)) {
+                    exactValueToSelect = val;
+                    exactName = s.nama; // Ambil nama persis dari database
+                }
             });
-            namaSelect.innerHTML = options;
+
+            namaSelect.innerHTML = namaHtml;
             namaSelect.disabled = false;
             
-            // Pilih nama user yang sedang login
-            const userValue = `${user.displayName}::${user.nis}::${user.rombel}`;
-            namaSelect.value = userValue;
+            // PILIH NAMA YANG SESUAI
+            if (exactValueToSelect) {
+                namaSelect.value = exactValueToSelect;
+                
+                // Update Global Variable dengan Nama yang Benar dari Database
+                donasiData.namaSantri = exactName;
+            }
         }
 
-        // D. Kunci Form Nama dengan "A/n Santri"
+        // D. Kunci Form Nama Muzakki
         const radioName = document.querySelector('input[name="nama-choice"][value="santri"]');
         if (radioName) {
             radioName.disabled = false; 
@@ -327,26 +332,26 @@ function updateUIForLogin(user) {
         }
 
         if (inputNama) {
-            inputNama.value = `A/n Santri: ${user.displayName}`;
+            // Gunakan nama dari donasiData agar konsisten
+            inputNama.value = `A/n Santri: ${donasiData.namaSantri || user.displayName}`;
             inputNama.readOnly = true;
             inputNama.classList.add('bg-slate-100', 'text-slate-500'); 
         }
     }
 
-    // 3. Load Data Lainnya
+    // 3. Load Data Dashboard & Lainnya
     const suggestionCard = document.getElementById('login-suggestion-card');
     if (suggestionCard) suggestionCard.classList.add('hidden');
     
     const dashboardId = user.linkedEmail || user.email || user.uid;
     if (typeof loadPersonalDashboard === 'function') {
         loadPersonalDashboard(dashboardId);
-        
         if (window.location.hash === '#dashboard') {
             loadPersonalDashboard(dashboardId);
         }
     }
 
-    // 4. Render Profil Lengkap (Jika ada fungsi renderDashboardProfil)
+    // 4. Render Profil (Jika fungsi tersedia)
     if (user.isSantri && user.nis && typeof renderDashboardProfil === 'function') {
         renderDashboardProfil(user.nis);
     }
