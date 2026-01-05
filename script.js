@@ -320,20 +320,12 @@ function updateUIForLogin(user) {
 
     // Load Data Dashboard
     if (typeof loadPersonalDashboard === 'function') {
-    // REVISI: Kirim seluruh object user, bukan cuma string ID
-    loadPersonalDashboard(user); 
-    
-    if (window.location.hash === '#dashboard') {
-        loadPersonalDashboard(user);
-    }
-}
-  if (typeof loadPersonalDashboard === 'function') {
         const dashboardId = user.linkedEmail || user.email || user.uid;
-        loadPersonalDashboard(dashboardId);
+        loadPersonalDashboard(dashboardId); 
         
-        // [TAMBAHAN BARU] Load Profil Santri ke Dashboard
-        if (user.isSantri) {
-            loadStudentProfileToDashboard(user);
+        // [TAMBAHAN] Jika user login saat berada di halaman Dashboard, refresh datanya
+        if (window.location.hash === '#dashboard') {
+            loadPersonalDashboard(dashboardId);
         }
     }
 }
@@ -537,13 +529,6 @@ async function init() {
         if (typeof santriData !== 'undefined' && santriData.length > 0) {
             console.log("Data Santri OK:", santriData.length);
             parseSantriData();
-
-            // [FIX] Cek apakah User Santri sudah login duluan saat data masih loading?
-            // Jika ya, panggil ulang fungsi dashboardnya sekarang.
-            if (currentUser && currentUser.isSantri) {
-                console.log("Data Santri barusan sampai, update Dashboard sekarang...");
-                loadStudentProfileToDashboard(currentUser);
-            }
         } else {
             console.warn("Data santri kosong/gagal dimuat.");
         }
@@ -736,74 +721,32 @@ function parseSantriData() {
 // 7. SISTEM NAVIGASI HALAMAN
 // ============================================================================
 
-// ============================================================================
-// 7. SISTEM NAVIGASI HALAMAN (UPDATED FIX DASHBOARD)
-// ============================================================================
-
-window.showPage = function(pageId) {
-    // 1. Sembunyikan semua halaman
+function showPage(pageId) {
     document.querySelectorAll('.page-section').forEach(p => {
-        p.style.display = 'none'; // Fallback
-        p.classList.add('hidden');
+        p.style.display = 'none';
+        p.style.opacity = 0;
         p.classList.remove('active');
     });
-
-    // 2. Matikan status aktif di semua link navigasi
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
-    // 3. Tampilkan halaman target
     const target = document.getElementById(`page-${pageId}`);
     if (target) {
-        target.style.display = 'block'; // Fallback
-        target.classList.remove('hidden');
-        
-        // Efek Fade In
-        target.style.opacity = 0;
-        void target.offsetWidth; // Trigger reflow
+        target.style.display = 'block';
+        void target.offsetWidth;
         target.style.opacity = 1;
         target.classList.add('active');
-
-        // Scroll ke atas
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
-    // 4. Update status link navigasi
     const navLink = document.querySelector(`a[href="#${pageId}"]`);
     if (navLink) navLink.classList.add('active');
 
-    // -----------------------------------------------------------
-    // [FIX UTAMA] LOGIC PENGISIAN DATA BERDASARKAN HALAMAN
-    // -----------------------------------------------------------
-
-    // A. Jika membuka Halaman Riwayat / Home -> Load Data Donasi Global
-    if (pageId === 'riwayat' || pageId === 'home') {
-        loadRiwayat();
-    }
-
-    // B. Jika membuka Halaman Berita
+    if (pageId === 'riwayat' || pageId === 'home') loadRiwayat();
     if (pageId === 'berita') {
         if (!newsState.isLoaded) fetchNews();
-    }
-
-    // C. [PENTING] Jika membuka Halaman Dashboard -> ISI DATA PROFIL & STATISTIK
-    if (pageId === 'dashboard') {
-        console.log("Membuka Dashboard...");
-        
-        if (currentUser) {
-            // 1. Update Statistik Donasi Pribadi
-            if (typeof loadPersonalDashboard === 'function') {
-                console.log("- Memuat statistik donasi...");
-                loadPersonalDashboard(currentUser.email);
-            }
-
-            // 2. Update Profil Santri (Layer 1 & 2)
-            if (currentUser.isSantri && typeof loadStudentProfileToDashboard === 'function') {
-                console.log("- Memuat profil santri...");
-                loadStudentProfileToDashboard(currentUser);
-            }
-        } else {
-            console.warn("User belum login, dashboard mungkin kosong.");
-        }
     }
 }
 
@@ -3175,102 +3118,30 @@ window.addEventListener('scroll', () => {
 
 let myDonations = []; // Menyimpan data donasi khusus user yang login
 
-// DASHBOARD LOGIC (PERBAIKAN SAFETY ELEMENT)
-window.loadPersonalDashboard = async function(user) {
-    // 1. Validasi Data
-    if (!riwayatData.isLoaded) await loadRiwayat();
-    
-    // Pastikan user ada
-    if (!user) return;
+window.loadPersonalDashboard = async function(userEmail) {
+    // 1. Pastikan Data Riwayat Sudah Ada
+    if (!riwayatData.isLoaded) {
+        // Jika belum ada, panggil loadRiwayat dulu dan tunggu
+        await loadRiwayat();
+    }
 
-    // 2. Filter Data Cerdas (Email ATAU NIS)
-    const myDonations = riwayatData.allData.filter(item => {
-        let isMatch = false;
-
-        // A. Cek Email (Logika Asli - untuk Donatur Umum/Google)
-        // Kita cek email asli login DAN linkedEmail (jika santri menautkan akun google)
-        const emailDiData = item.Email ? String(item.Email).toLowerCase() : "";
-        const userEmail = user.email ? String(user.email).toLowerCase() : "";
-        const userLinked = user.linkedEmail ? String(user.linkedEmail).toLowerCase() : "";
-
-        if (emailDiData && (emailDiData === userEmail || emailDiData === userLinked)) {
-            isMatch = true;
-        }
-
-        // B. Cek NIS (LOGIKA TAMBAHAN - Khusus Santri)
-        // Jika user adalah santri, cek apakah NIS di data donasi cocok dengan NIS user
-        if (user.isSantri && !isMatch) {
-            // Asumsi kolom di JSON Riwayat bernama 'NisSantri' atau 'NIS'
-            // Sesuaikan 'item.NisSantri' dengan key output JSON Google Sheet Anda
-            const nisDiData = item.NisSantri || item.nisSantri || item.NIS || ""; 
-            if (String(nisDiData) === String(user.nis)) {
-                isMatch = true;
-            }
+    // 2. Filter Data Berdasarkan Email (DIPERBAIKI)
+    if (riwayatData.allData && userEmail) {
+        myDonations = riwayatData.allData.filter(item => {
+            // Cek apakah item.Email ada isinya (tidak kosong/null)
+            if (!item.Email) return false;
             
-            // Opsi Cadangan: Cek Nama & Kelas jika NIS kosong (Kurang akurat tapi membantu)
-            if (!isMatch && item.NamaSantri && item.KelasSantri) {
-                 if (item.NamaSantri.trim() === user.displayName.trim() && 
-                     item.KelasSantri === user.rombel) {
-                     isMatch = true;
-                 }
-            }
-        }
-
-        return isMatch;
-    });
-
-    // 3. Hitung Statistik (Sama seperti sebelumnya)
-    let total = 0;
-    myDonations.forEach(d => total += (parseInt(d.Nominal) || 0));
-
-    const elTotal = document.getElementById('dash-stat-total');
-    const elFreq = document.getElementById('dash-stat-freq');
-    
-    if (elTotal) animateValue(elTotal, 0, total, 1000, true);
-    if (elFreq) animateValue(elFreq, 0, myDonations.length, 1000);
-
-    // 4. Update Data Terakhir
-    if (myDonations.length > 0) {
-        const last = myDonations[0];
-        setTextIfElementExists('dash-stat-last', formatRupiah(last.Nominal));
-        setTextIfElementExists('dash-stat-last-date', timeAgo(last.Timestamp));
-    } else {
-        setTextIfElementExists('dash-stat-last', '-');
-        setTextIfElementExists('dash-stat-last-date', 'Belum ada donasi');
+            // Konversi paksa ke String dulu baru di-lowercase
+            // Ini mencegah error jika data di Excel berupa Angka/No HP
+            const emailData = String(item.Email).toLowerCase();
+            const emailUser = String(userEmail).toLowerCase();
+            
+            return emailData === emailUser;
+        });
     }
 
-    // 5. Render Tabel
-    const tbody = document.getElementById('dash-history-body');
-    const emptyState = document.getElementById('dash-empty-state');
-
-    if (tbody && tbody.parentElement && emptyState) {
-        if (myDonations.length === 0) {
-            tbody.parentElement.classList.add('hidden');
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-            tbody.parentElement.classList.remove('hidden');
-            tbody.innerHTML = myDonations.map(item => `
-                <tr class="hover:bg-slate-50 transition border-b border-slate-50">
-                    <td class="p-5">
-                        <div class="font-bold text-slate-700">${new Date(item.Timestamp).toLocaleDateString('id-ID')}</div>
-                        <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
-                    </td>
-                    <td class="p-5 text-slate-700 font-medium">${item.JenisDonasi}</td>
-                    <td class="p-5 font-bold text-slate-700">${formatRupiah(item.Nominal)}</td>
-                    <td class="p-5 text-center"><span class="px-2 py-1 bg-slate-100 rounded text-xs">${item.MetodePembayaran}</span></td>
-                    <td class="p-5 text-center">
-                        <span class="px-2 py-1 rounded text-xs font-bold ${item.Status === 'Terverifikasi' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                            ${item.Status || 'Proses'}
-                        </span>
-                    </td>
-                    <td class="p-5 text-center">
-                        <button onclick='openReceiptWindow(${JSON.stringify(item)})' class="text-slate-400 hover:text-orange-600"><i class="fas fa-print"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-    }
+    // 3. Update Tampilan Dashboard
+    updateDashboardUI();
 }
 
 function updateDashboardUI() {
@@ -3391,124 +3262,6 @@ window.refreshDashboard = async function() {
     }
     
     if(btn) btn.classList.remove('fa-spin');
-}
-
-// ============================================================
-// LOGIKA DASHBOARD SANTRI (PROFIL & BIODATA)
-// ============================================================
-
-// Fungsi untuk memuat data profil ke Dashboard
-// LOGIKA PENGISI DASHBOARD SANTRI (PERBAIKAN SAFETY CHECK)
-// ============================================================
-// LOGIKA PENGISI DASHBOARD SANTRI (VERSI AUTO-RETRY)
-// ============================================================
-
-function loadStudentProfileToDashboard(user, retryCount = 0) {
-    // 1. Cek User
-    if (!user || !user.isSantri) return;
-
-    // 2. [FIX ANTI-GAGAL] Cek Data & Retry Otomatis
-    // Jika data belum ada, tunggu 0.5 detik, lalu coba panggil diri sendiri lagi.
-    if (!window.santriData || !Array.isArray(window.santriData) || window.santriData.length === 0) {
-        
-        if (retryCount < 20) { // Batas maksimal mencoba 20x (10 detik)
-            console.warn(`Data Santri belum siap. Mencoba lagi dalam 0.5 detik... (Percobaan ke-${retryCount + 1})`);
-            
-            // Tampilkan status loading di Nama agar user tahu
-            setTextIfElementExists('dash-fullname', 'Sedang memuat data...');
-            
-            // Coba lagi setelah 500ms
-            setTimeout(() => {
-                loadStudentProfileToDashboard(user, retryCount + 1);
-            }, 500);
-            
-            return; // Berhenti sementara, tunggu timer berjalan
-        } else {
-            console.error("Gagal memuat data santri setelah menunggu 10 detik. Periksa koneksi internet.");
-            setTextIfElementExists('dash-fullname', 'Gagal memuat data');
-            return;
-        }
-    }
-
-    // --- JIKA DATA SUDAH SIAP, KODE LANJUT DI SINI ---
-
-    console.log("Data Santri Siap. Merender Dashboard...");
-
-    // 3. Cari Data Dasar
-    const santriStatic = window.santriData.find(s => String(s.nis).trim() === String(user.nis).trim());
-    
-    if (!santriStatic) {
-        console.warn("NIS tidak ditemukan di database:", user.nis);
-        setTextIfElementExists('dash-fullname', 'Data tidak ditemukan');
-        return;
-    }
-
-    // 4. Cari Data Kelas
-    const kelasKey = santriStatic.kelas;
-    const metaKelas = (window.classMetaData && window.classMetaData[kelasKey]) 
-                      ? window.classMetaData[kelasKey] 
-                      : { wali: '-', musyrif: '-' };
-
-    // 5. Logika Prioritas (Musyrif/Wali)
-    const finalMusyrif = (santriStatic.musyrif_khusus && santriStatic.musyrif_khusus !== "-") 
-                         ? santriStatic.musyrif_khusus : metaKelas.musyrif;
-    const finalWali = (santriStatic.wali_khusus && santriStatic.wali_khusus !== "-") 
-                      ? santriStatic.wali_khusus : metaKelas.wali;
-
-    // 6. Ambil Data Lokal (Biodata editan user)
-    // Pastikan SantriManager ada sebelum dipanggil
-    const prefs = (typeof SantriManager !== 'undefined') ? SantriManager.getPrefs(user.nis) : {};
-
-    // 7. Render ke UI (Gunakan Helper agar aman)
-    setTextIfElementExists('dash-fullname', santriStatic.nama);
-    setTextIfElementExists('dash-nis', `NIS: ${user.nis}`);
-    setTextIfElementExists('dash-kelas', santriStatic.kelas);
-    setTextIfElementExists('dash-asrama', santriStatic.asrama || "Belum ditentukan");
-    
-    setTextIfElementExists('dash-wali', finalWali);
-    setTextIfElementExists('dash-musyrif', finalMusyrif);
-    setTextIfElementExists('dash-email-link', user.linkedEmail || "Belum tersambung");
-
-    // Form Profil
-    setValueIfElementExists('profile-alamat', prefs.alamat || '');
-    setValueIfElementExists('profile-hp', prefs.hp || '');
-    setValueIfElementExists('profile-ayah-nama', prefs.ayah_nama || '');
-    setValueIfElementExists('profile-ayah-hp', prefs.ayah_hp || '');
-    setValueIfElementExists('profile-ibu-nama', prefs.ibu_nama || '');
-    setValueIfElementExists('profile-ibu-hp', prefs.ibu_hp || '');
-}
-
-// Fungsi Simpan Data Profil (Ke LocalStorage)
-window.saveStudentProfile = function() {
-    if (!currentUser || !currentUser.isSantri) return;
-
-    // Ambil nilai dari form input
-    const newData = {
-        alamat: document.getElementById('profile-alamat').value,
-        hp: document.getElementById('profile-hp').value,
-        ayah_nama: document.getElementById('profile-ayah-nama').value,
-        ayah_hp: document.getElementById('profile-ayah-hp').value,
-        ibu_nama: document.getElementById('profile-ibu-nama').value,
-        ibu_hp: document.getElementById('profile-ibu-hp').value
-    };
-
-    // Simpan menggunakan SantriManager
-    SantriManager.savePrefs(currentUser.nis, newData);
-
-    showToast("Biodata berhasil disimpan!", "success");
-    
-    // Efek visual tombol (biar keren dikit)
-    const btn = document.querySelector('button[onclick="saveStudentProfile()"]');
-    if (btn) {
-        const oriHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
-        btn.classList.add('bg-green-600');
-        // Balikin tombol setelah 2 detik
-        setTimeout(() => {
-            btn.innerHTML = oriHTML;
-            btn.classList.remove('bg-green-600');
-        }, 2000);
-    }
 }
 
 /* ============================================================================
@@ -3765,17 +3518,6 @@ window.linkGoogleAccount = async function() {
         console.error(error);
         showToast("Gagal menghubungkan akun.", "error");
     }
-}
-
-// PASTIKAN KODE INI ADA DI BAGIAN BAWAH SCRIPT.JS
-function setTextIfElementExists(id, text) { 
-    const el = document.getElementById(id); 
-    if(el) el.innerText = text; 
-}
-
-function setValueIfElementExists(id, val) { 
-    const el = document.getElementById(id); 
-    if(el) el.value = val; 
 }
 
 // ============================================================
