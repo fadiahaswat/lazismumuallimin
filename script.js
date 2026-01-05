@@ -194,50 +194,120 @@ window.doLogout = function() {
     });
 }
 
-// --- FUNGSI UPDATE TAMPILAN (Bisa dipanggil Firebase atau NIS) ---
 function updateUIForLogin(user) {
-    currentUser = user; // Set variabel global
+    currentUser = user; 
 
-    // 1. UI Header
+    // UI Header & Profil
     const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
-    
+    const santriMenu = document.getElementById('santri-menu-options');
+    const googleIndicator = document.getElementById('google-linked-indicator');
+
     if (btnWrapper) btnWrapper.style.display = 'none';
     if (profileMenu) {
         profileMenu.classList.remove('hidden');
         profileMenu.classList.add('flex');
     }
 
-    // 2. Isi Data Profil
+    // Tampilkan Menu Khusus Santri jika login pakai NIS
+    if (santriMenu) {
+        if (user.isSantri) santriMenu.classList.remove('hidden');
+        else santriMenu.classList.add('hidden');
+    }
+
+    // Tampilkan Indikator Google jika terhubung
+    if (googleIndicator) {
+        if (user.linkedEmail || (user.providerData && user.providerData.length > 0)) {
+            googleIndicator.classList.remove('hidden');
+        } else {
+            googleIndicator.classList.add('hidden');
+        }
+    }
+
     if(document.getElementById('user-avatar')) document.getElementById('user-avatar').src = user.photoURL;
     if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
+    if(document.getElementById('user-role')) document.getElementById('user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
 
-    // 3. Auto-Fill Form Donasi
+    // --- FITUR AUTO-FILL FORM DONASI (STEP 3) ---
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
     
+    // Auto Isi Nama
     if(inputNama) inputNama.value = user.displayName;
     
-    // Jika Login Santri, email dummy jangan ditampilkan/diisi agar user bisa isi email ortu asli
     if(inputEmail) {
         if (!user.isSantri) { 
+            // User Google: Email otomatis & dikunci
             inputEmail.value = user.email;
             inputEmail.readOnly = true;
             inputEmail.classList.add('bg-slate-100', 'text-slate-500');
         } else {
-            // Kalau santri, biarkan kosong/editable untuk email notifikasi
+            // User Santri: 
+            // Jika sudah link google, isi emailnya tapi boleh diedit (untuk notifikasi ortu)
+            if (user.linkedEmail) inputEmail.value = user.linkedEmail;
             inputEmail.readOnly = false;
             inputEmail.classList.remove('bg-slate-100', 'text-slate-500');
         }
     }
 
-    // 4. Load Dashboard (Jika ada fitur ini)
-    if (typeof loadPersonalDashboard === 'function') {
-        // Untuk santri, dashboardnya mungkin berbeda, tapi sementara pakai email dummy
-        loadPersonalDashboard(user.email); 
+    // KHUSUS SANTRI: Auto-Select Dropdown Data Santri di Step 3
+    if (user.isSantri) {
+        // Kita set variabel global donasiData agar tersinkron
+        donasiData.donaturTipe = 'santri';
+        donasiData.namaSantri = user.displayName;
+        donasiData.nisSantri = user.nis;
+        donasiData.rombelSantri = user.rombel;
+
+        // Trigger UI Radio Button "Wali Santri"
+        const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
+        if (radioSantri) {
+            radioSantri.checked = true;
+            radioSantri.dispatchEvent(new Event('change')); // Trigger logic UI (munculin dropdown)
+        }
+
+        // Isi Dropdown (Perlu delay sedikit agar dropdown dirender dulu oleh event change)
+        setTimeout(() => {
+            const levelSelect = document.getElementById('santri-level-select');
+            const rombelSelect = document.getElementById('santri-rombel-select');
+            const namaSelect = document.getElementById('santri-nama-select');
+            const radioName = document.querySelector('input[name="nama-choice"][value="santri"]');
+
+            // Set Level (misal '1' dari '1A')
+            if (levelSelect) {
+                const lvl = user.rombel.charAt(0);
+                levelSelect.value = lvl;
+                levelSelect.dispatchEvent(new Event('change')); // Render rombel
+            }
+
+            // Set Rombel
+            setTimeout(() => {
+                if (rombelSelect) {
+                    rombelSelect.value = user.rombel;
+                    rombelSelect.dispatchEvent(new Event('change')); // Render nama
+                }
+                
+                // Set Nama
+                setTimeout(() => {
+                    if (namaSelect) {
+                        // Value dropdown formatnya: Nama::NIS::Rombel
+                        const val = `${user.displayName}::${user.nis}::${user.rombel}`;
+                        namaSelect.value = val;
+                        namaSelect.dispatchEvent(new Event('change'));
+                    }
+                    // Pilih Radio "Atas Nama Santri"
+                    if(radioName) radioName.click();
+                }, 100);
+            }, 100);
+        }, 100);
     }
 
-    // 5. Sembunyikan kartu saran login
+    // Load Dashboard
+    if (typeof loadPersonalDashboard === 'function') {
+        // Gunakan email (jika ada) atau identifier unik untuk dashboard
+        const dashboardId = user.linkedEmail || user.email || user.uid;
+        loadPersonalDashboard(dashboardId); 
+    }
+
     const suggestionCard = document.getElementById('login-suggestion-card');
     if (suggestionCard) suggestionCard.classList.add('hidden');
 }
@@ -3306,6 +3376,116 @@ window.hideLoginSuggestion = function() {
         // Opsional: Fokus ke input nama agar user langsung ngetik
         const inputNama = document.getElementById('nama-muzakki-input');
         if(inputNama) inputNama.focus();
+    }
+}
+
+// --- 1. FITUR GANTI PASSWORD ---
+window.openChangePassModal = function() {
+    toggleUserDropdown(); // Tutup menu
+    document.getElementById('pass-modal').classList.remove('hidden');
+    document.getElementById('new-pass-1').value = '';
+    document.getElementById('new-pass-2').value = '';
+}
+
+window.saveNewPassword = function() {
+    if (!currentUser || !currentUser.isSantri) return;
+
+    const p1 = document.getElementById('new-pass-1').value;
+    const p2 = document.getElementById('new-pass-2').value;
+
+    if (!p1 || !p2) return showToast("Password tidak boleh kosong", "warning");
+    if (p1 !== p2) return showToast("Konfirmasi password tidak cocok", "error");
+    if (p1.length < 4) return showToast("Password minimal 4 karakter", "warning");
+
+    // Simpan ke Local Storage
+    SantriManager.savePrefs(currentUser.nis, { password: p1 });
+    
+    showToast("Password berhasil diganti!", "success");
+    document.getElementById('pass-modal').classList.add('hidden');
+}
+
+// --- 2. FITUR GANTI AVATAR EMOJI ---
+window.openAvatarModal = function() {
+    toggleUserDropdown();
+    const modal = document.getElementById('avatar-modal');
+    modal.classList.remove('hidden');
+
+    const emojis = ["😎", "🤓", "🤠", "😊", "😇", "🤖", "👻", "🐯", "🐱", "🐶", "🦁", "🐼", "🐸", "🎓", "🕌"];
+    const grid = document.getElementById('emoji-grid');
+    grid.innerHTML = '';
+
+    emojis.forEach(emoji => {
+        // Buat URL Avatar dari Emoji (pake UI Avatars SVG trick atau Canvas, tapi biar simpel kita simpan emojinya sbg string dataURI dummy atau langsung render emoji)
+        // Agar konsisten dengan src image, kita pake API UI-Avatars dgn background custom
+        
+        const btn = document.createElement('button');
+        btn.className = "text-3xl hover:scale-125 transition p-2 bg-slate-50 rounded-xl";
+        btn.innerHTML = emoji;
+        btn.onclick = () => saveAvatar(emoji);
+        grid.appendChild(btn);
+    });
+}
+
+window.saveAvatar = function(emoji) {
+    if (!currentUser || !currentUser.isSantri) return;
+
+    // Trik: Gunakan API ui-avatars dengan format nama = emoji (kadang support, kadang engga).
+    // Lebih aman: Simpan emoji sbg identifier, lalu di render render sbg gambar.
+    // TAPI biar simpel dan masuk ke <img src>, kita pakai layanan 'dummyimage' text atau SVG.
+    
+    // Solusi Elegan: Bikin SVG Data URI sendiri
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
+    const avatarUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+
+    // Simpan
+    SantriManager.savePrefs(currentUser.nis, { avatar: avatarUrl });
+    
+    // Update Tampilan Langsung
+    document.getElementById('user-avatar').src = avatarUrl;
+    currentUser.photoURL = avatarUrl;
+    
+    // Update Sesi Storage Login
+    localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+
+    showToast("Avatar diperbarui!", "success");
+    document.getElementById('avatar-modal').classList.add('hidden');
+}
+
+// --- 3. FITUR LINK AKUN GOOGLE ---
+window.linkGoogleAccount = async function() {
+    if (!currentUser || !currentUser.isSantri) return;
+    
+    // Cek apakah sudah terhubung?
+    if (currentUser.linkedEmail) {
+        return showToast(`Sudah terhubung dengan: ${currentUser.linkedEmail}`, "info");
+    }
+
+    toggleUserDropdown();
+    
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // Cek apakah email ini sudah dipakai santri lain?
+        const existingLink = SantriManager.findNisByEmail(user.email);
+        if (existingLink && existingLink !== currentUser.nis) {
+            return showToast("Email Google ini sudah dipakai santri lain.", "error");
+        }
+
+        // Simpan Link
+        SantriManager.savePrefs(currentUser.nis, { linkedEmail: user.email });
+        
+        // Update Current User State
+        currentUser.linkedEmail = user.email;
+        localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+        
+        // Update UI
+        updateUIForLogin(currentUser);
+        showToast("Akun Google berhasil dihubungkan!", "success");
+
+    } catch (error) {
+        console.error(error);
+        showToast("Gagal menghubungkan akun.", "error");
     }
 }
 
