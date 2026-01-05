@@ -3264,6 +3264,111 @@ window.refreshDashboard = async function() {
     if(btn) btn.classList.remove('fa-spin');
 }
 
+// ============================================================
+// LOGIKA DASHBOARD SANTRI (PROFIL & BIODATA)
+// ============================================================
+
+// Fungsi untuk memuat data profil ke Dashboard
+function loadStudentProfileToDashboard(user) {
+    // Validasi awal: pastikan user ada dan login sebagai santri
+    if (!user || !user.isSantri) return;
+
+    // 1. CARI DATA SANTRI DI VARIABEL GLOBAL (Yg diambil dari Google Sheets/Server)
+    // Gunakan String() untuk keamanan tipe data (kadang NIS terbaca angka/string)
+    // window.santriData diisi saat fungsi init() -> loadReferenceData() berjalan
+    const santriStatic = window.santriData.find(s => String(s.nis) === String(user.nis));
+    
+    if (!santriStatic) {
+        console.warn("Data santri tidak ditemukan di database lokal untuk NIS:", user.nis);
+        // Bisa tambahkan fallback UI di sini jika mau
+        return;
+    }
+
+    // 2. CARI DATA KELAS (Wali & Musyrif)
+    // Default strip "-" jika data kelas belum ada di window.classMetaData
+    const kelasKey = santriStatic.kelas;
+    const metaKelas = (window.classMetaData && window.classMetaData[kelasKey]) 
+                      ? window.classMetaData[kelasKey] 
+                      : { wali: '-', musyrif: '-' };
+
+    // --- PRIORITAS MUSYRIF (LOGIKA CERDAS) ---
+    // Cek apakah santri punya Musyrif Khusus (Override di data santri)? 
+    // Jika ada dan tidak strip "-", pakai itu. Jika tidak, pakai Musyrif Kelas (Umum).
+    const finalMusyrif = (santriStatic.musyrif_khusus && santriStatic.musyrif_khusus !== "-" && santriStatic.musyrif_khusus.trim() !== "") 
+                         ? santriStatic.musyrif_khusus 
+                         : metaKelas.musyrif;
+
+    // --- PRIORITAS WALI KELAS ---
+    // Sama, cek apakah ada Wali Khusus?
+    const finalWali = (santriStatic.wali_khusus && santriStatic.wali_khusus !== "-" && santriStatic.wali_khusus.trim() !== "")
+                      ? santriStatic.wali_khusus
+                      : metaKelas.wali;
+
+
+    // 3. AMBIL DATA PRIBADI DARI LOCAL STORAGE (Editable User)
+    // Data ini disimpan di browser user masing-masing
+    const prefs = SantriManager.getPrefs(user.nis); 
+
+
+    // --- RENDER KE TAMPILAN HTML (Menggunakan Helper) ---
+
+    // A. Header Dashboard
+    setTextIfElementExists('dash-fullname', santriStatic.nama);
+    setTextIfElementExists('dash-nis', `NIS: ${user.nis}`);
+    setTextIfElementExists('dash-kelas', santriStatic.kelas);
+    
+    // Data Asrama (diambil dari kolom baru di Google Sheet)
+    setTextIfElementExists('dash-asrama', santriStatic.asrama || "Belum ditentukan");
+    
+    // B. Kolom Kiri (Info Akademik)
+    setTextIfElementExists('dash-wali', finalWali);
+    setTextIfElementExists('dash-musyrif', finalMusyrif);
+    setTextIfElementExists('dash-email-link', user.linkedEmail || "Belum tersambung");
+
+    // C. Kolom Kanan (Form Editable - Isi value input)
+    setValueIfElementExists('profile-alamat', prefs.alamat || '');
+    setValueIfElementExists('profile-hp', prefs.hp || '');
+    
+    setValueIfElementExists('profile-ayah-nama', prefs.ayah_nama || '');
+    setValueIfElementExists('profile-ayah-hp', prefs.ayah_hp || '');
+    
+    setValueIfElementExists('profile-ibu-nama', prefs.ibu_nama || '');
+    setValueIfElementExists('profile-ibu-hp', prefs.ibu_hp || '');
+}
+
+// Fungsi Simpan Data Profil (Ke LocalStorage)
+window.saveStudentProfile = function() {
+    if (!currentUser || !currentUser.isSantri) return;
+
+    // Ambil nilai dari form input
+    const newData = {
+        alamat: document.getElementById('profile-alamat').value,
+        hp: document.getElementById('profile-hp').value,
+        ayah_nama: document.getElementById('profile-ayah-nama').value,
+        ayah_hp: document.getElementById('profile-ayah-hp').value,
+        ibu_nama: document.getElementById('profile-ibu-nama').value,
+        ibu_hp: document.getElementById('profile-ibu-hp').value
+    };
+
+    // Simpan menggunakan SantriManager
+    SantriManager.savePrefs(currentUser.nis, newData);
+
+    showToast("Biodata berhasil disimpan!", "success");
+    
+    // Efek visual tombol (biar keren dikit)
+    const btn = document.querySelector('button[onclick="saveStudentProfile()"]');
+    if (btn) {
+        const oriHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
+        btn.classList.add('bg-green-600');
+        // Balikin tombol setelah 2 detik
+        setTimeout(() => {
+            btn.innerHTML = oriHTML;
+            btn.classList.remove('bg-green-600');
+        }, 2000);
+    }
+}
+
 /* ============================================================================
    14. FITUR KWITANSI ULTIMATE (MODAL PREVIEW + PDF PRESISI)
    ============================================================================ */
