@@ -310,6 +310,20 @@ function updateUIForLogin(user) {
 
     const suggestionCard = document.getElementById('login-suggestion-card');
     if (suggestionCard) suggestionCard.classList.add('hidden');
+  // UPDATE FOTO & NAMA DI BAGIAN DASHBOARD JUGA (Bukan cuma header)
+    if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL;
+    if(document.getElementById('dash-name')) document.getElementById('dash-name').innerText = user.displayName.split(' ')[0];
+
+    // Load Data Dashboard
+    if (typeof loadPersonalDashboard === 'function') {
+        const dashboardId = user.linkedEmail || user.email || user.uid;
+        loadPersonalDashboard(dashboardId); 
+        
+        // [TAMBAHAN] Jika user login saat berada di halaman Dashboard, refresh datanya
+        if (window.location.hash === '#dashboard') {
+            loadPersonalDashboard(dashboardId);
+        }
+    }
 }
 
 function updateUIForLogout() {
