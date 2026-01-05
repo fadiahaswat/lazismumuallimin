@@ -1,7 +1,7 @@
 // File: data-kelas.js
 
 // URL SAMA dengan santri, tapi nanti kita tambah parameter
-const API_BASE_URL = "https://script.google.com/macros/s/AKfycbzW3fqMmvcHXSO15NM2kfNbd458JjB7NRuJE8Mirfv4R7eyRBDHeuEYmwLPYRJWyTA3/exec";
+const API_BASE_URL = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
 
 // Variabel global classMetaData (Awalnya kosong)
 let classMetaData = {};
