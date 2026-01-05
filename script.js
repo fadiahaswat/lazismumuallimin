@@ -538,6 +538,13 @@ async function init() {
         if (typeof santriData !== 'undefined' && santriData.length > 0) {
             console.log("Data Santri OK:", santriData.length);
             parseSantriData();
+
+            // [FIX] Cek apakah User Santri sudah login duluan saat data masih loading?
+            // Jika ya, panggil ulang fungsi dashboardnya sekarang.
+            if (currentUser && currentUser.isSantri) {
+                console.log("Data Santri barusan sampai, update Dashboard sekarang...");
+                loadStudentProfileToDashboard(currentUser);
+            }
         } else {
             console.warn("Data santri kosong/gagal dimuat.");
         }
