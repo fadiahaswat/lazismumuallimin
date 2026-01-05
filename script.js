@@ -3521,6 +3521,59 @@ window.linkGoogleAccount = async function() {
 }
 
 // ============================================================
+// [BARU] LOGIKA RENDER PROFIL LENGKAP DASHBOARD
+// ============================================================
+async function renderDashboardProfil(nisUser) {
+    console.log("Merender profil untuk NIS:", nisUser);
+
+    // 1. Pastikan Data Santri & Kelas sudah ter-load
+    // (Jaga-jaga jika user refresh halaman langsung di dashboard)
+    if (typeof santriData === 'undefined' || santriData.length === 0) {
+        await loadSantriData(); 
+    }
+    if (typeof classMetaData === 'undefined' || Object.keys(classMetaData).length === 0) {
+        await loadClassData();
+    }
+
+    // 2. Cari Data Santri
+    const santri = santriData.find(s => String(s.nis) === String(nisUser));
+
+    if (!santri) {
+        console.warn("Data santri tidak ditemukan untuk profil.");
+        return;
+    }
+
+    // 3. Ambil Data Wali & Musyrif dari Data Kelas
+    // (Jika santri kelas '1A', ambil data wali kelas '1A')
+    const dataKelas = classMetaData[santri.kelas] || {}; 
+
+    // 4. Logika Prioritas (Override)
+    // Jika di excel santri ada 'wali_khusus', pakai itu. Jika tidak, pakai wali kelas umum.
+    const namaWali = santri.wali_khusus || dataKelas.wali || "-";
+    const namaMusyrif = santri.musyrif_khusus || dataKelas.musyrif || "-";
+
+    // 5. Masukkan ke HTML (Update teks di kartu profil)
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+    };
+
+    setText('dash-nama', santri.nama);
+    setText('dash-nis', santri.nis);
+    setText('dash-kelas', santri.kelas);
+    setText('dash-asrama', santri.asrama || "-"); // Kolom asrama baru
+    setText('dash-wali', namaWali);
+    setText('dash-musyrif', namaMusyrif);
+
+    // 6. Munculkan Kartu Profil (Hapus class hidden)
+    const card = document.getElementById('santri-profile-card');
+    if (card) {
+        card.classList.remove('hidden');
+        card.classList.add('animate-fade-in-up');
+    }
+}
+
+// ============================================================
 // JEMBATAN PENGHUBUNG (EXPOSE KE GLOBAL WINDOW)
 // ============================================================
 
