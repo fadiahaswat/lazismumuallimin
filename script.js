@@ -228,6 +228,10 @@ function updateUIForLogin(user) {
     if(document.getElementById('user-name')) document.getElementById('user-name').textContent = user.displayName;
     if(document.getElementById('user-role')) document.getElementById('user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
 
+    // [TAMBAHAN BARU] Update Tampilan Header di dalam Dropdown (untuk Mobile)
+    if(document.getElementById('mobile-user-name')) document.getElementById('mobile-user-name').textContent = user.displayName;
+    if(document.getElementById('mobile-user-role')) document.getElementById('mobile-user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
+
     // --- FITUR AUTO-FILL FORM DONASI (STEP 3) ---
     const inputNama = document.getElementById('nama-muzakki-input');
     const inputEmail = document.getElementById('email');
