@@ -3284,203 +3284,76 @@
 
     </div>
 </section>
-        <div id="page-dashboard" class="page-section hidden pt-24 pb-12 px-4 md:px-8">
-    <div class="max-w-6xl mx-auto space-y-8">
+        <section id="page-dashboard" class="page-section hidden bg-slate-50 min-h-screen pt-28 pb-20 relative">
+    <div class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-orange-50/50 to-transparent pointer-events-none"></div>
+
+    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-10">
         
-        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 pointer-events-none"></div>
+        <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-white/50 ring-1 ring-slate-100 mb-10 relative overflow-hidden group">
             
-            <div class="relative group shrink-0">
-                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-white border-4 border-slate-50 shadow-lg">
-                    <img id="dash-avatar" src="" class="w-full h-full rounded-full object-cover bg-slate-100" onerror="this.src='https://ui-avatars.com/api/?name=User&background=random'">
-                </div>
-                <button onclick="openAvatarModal()" class="absolute bottom-2 right-2 bg-white text-orange-600 p-2.5 rounded-full shadow-md border border-slate-100 hover:scale-110 transition z-10" title="Ganti Avatar">
-                    <i class="fas fa-camera"></i>
-                </button>
-            </div>
-
-            <div class="text-center md:text-left flex-1 relative z-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider mb-3 shadow-md shadow-slate-900/20">
-                    <i class="fas fa-user-graduate text-orange-400"></i>
-                    <span>Santri Aktif</span>
+            <div class="absolute top-[-20%] right-[-10%] w-96 h-96 bg-orange-100/50 rounded-full blur-[80px] group-hover:bg-orange-200/40 transition-all duration-1000"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                <div class="relative shrink-0">
+                    <div class="absolute inset-0 bg-orange-500 blur-md rounded-full opacity-20"></div>
+                    <img id="dash-avatar" src="" class="relative w-28 h-28 rounded-full border-4 border-white shadow-xl object-cover ring-1 ring-slate-100">
+                    <div class="absolute bottom-2 right-2 w-7 h-7 bg-green-500 border-4 border-white rounded-full shadow-sm" title="Online"></div>
                 </div>
                 
-                <h2 id="dash-fullname" class="text-3xl md:text-4xl font-black text-slate-800 mb-1 tracking-tight">Nama Santri</h2>
-                <p id="dash-nis" class="text-lg font-mono text-slate-500 font-bold tracking-widest bg-slate-100 inline-block px-2 rounded-md">NIS: 000000</p>
-                
-                <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
-                    <div class="px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-chalkboard-teacher"></i></div>
-                        <div class="text-left">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Kelas</p>
-                            <p id="dash-kelas" class="text-sm font-bold text-slate-800">-</p>
-                        </div>
-                    </div>
+                <div class="text-center md:text-left flex-1">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-2 tracking-tight">
+                        Ahlan Wa Sahlan, <span id="dash-name" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">User</span>!
+                    </h2>
+                    <p class="text-slate-500 mb-5 text-lg font-medium">Terima kasih telah menjadi bagian dari kebaikan.</p>
                     
-                    <div class="px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-building"></i></div>
-                        <div class="text-left">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Asrama</p>
-                            <p id="dash-asrama" class="text-sm font-bold text-slate-800">-</p>
-                        </div>
+                    <div class="inline-flex items-center gap-2 bg-slate-50 px-5 py-2.5 rounded-full border border-slate-200/60 shadow-sm">
+                        <div class="p-1 bg-yellow-100 rounded-full text-yellow-600"><i class="fas fa-medal text-sm"></i></div>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wide">Status: <span id="dash-level" class="text-slate-800">Donatur Pemula</span></span>
                     </div>
+                </div>
+                
+                <div class="flex flex-col gap-3 w-full md:w-auto shrink-0">
+                    <button onclick="showPage('donasi')" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-2xl font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
+                        <i class="fas fa-plus-circle text-lg"></i> Donasi Baru
+                    </button>
+                    <button onclick="doLogout()" class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-600 hover:text-red-600 hover:border-red-100 hover:bg-red-50 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 group/btn">
+                        <i class="fas fa-sign-out-alt group-hover/btn:-translate-x-1 transition-transform"></i> Keluar
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 group hover:-translate-y-1">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Donasi</p>
+                </div>
+                <h3 id="dash-stat-total" class="text-3xl font-black text-slate-800 tracking-tight group-hover:text-emerald-600 transition-colors">Rp 0</h3>
+            </div>
             
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 h-full">
-                    <h4 class="font-bold text-slate-800 mb-5 flex items-center gap-2 pb-3 border-b border-slate-50">
-                        <i class="fas fa-school text-orange-500"></i> Info Akademik
-                    </h4>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Wali Kelas</p>
-                                <p id="dash-wali" class="font-bold text-slate-700 text-sm leading-tight">-</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                <i class="fas fa-user-shield"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Musyrif / Pembimbing</p>
-                                <p id="dash-musyrif" class="font-bold text-slate-700 text-sm leading-tight">-</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-4 pt-4 border-t border-slate-50">
-                            <div class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Email Terhubung</p>
-                                <p id="dash-email-link" class="font-bold text-slate-700 text-sm truncate">-</p>
-                                <button onclick="linkGoogleAccount()" class="text-[10px] text-blue-600 font-bold mt-1 hover:underline flex items-center gap-1">
-                                    <i class="fas fa-link"></i> Ubah / Sambungkan
-                                </button>
-                            </div>
-                        </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 group hover:-translate-y-1">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-receipt"></i>
                     </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaksi Sukses</p>
                 </div>
+                <h3 id="dash-stat-freq" class="text-3xl font-black text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors">0 <span class="text-base font-bold text-slate-400">kali</span></h3>
             </div>
 
-            <div class="lg:col-span-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
-                    
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group h-full flex flex-col justify-between">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Donasi</p>
-                        </div>
-                        <h3 id="dash-stat-total" class="text-3xl font-black text-slate-800 tracking-tight group-hover:text-emerald-600 transition-colors">Rp 0</h3>
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 group hover:-translate-y-1">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-50 to-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-history"></i>
                     </div>
-
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group h-full flex flex-col justify-between">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shadow-inner">
-                                <i class="fas fa-receipt"></i>
-                            </div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaksi Sukses</p>
-                        </div>
-                        <h3 id="dash-stat-freq" class="text-3xl font-black text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors">0 <span class="text-base font-bold text-slate-400">kali</span></h3>
-                    </div>
-
-                    <div class="sm:col-span-2 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg shadow-inner">
-                                    <i class="fas fa-history"></i>
-                                </div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terakhir Donasi</p>
-                            </div>
-                            <span id="dash-stat-last-date" class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500">Belum ada</span>
-                        </div>
-                        <div class="flex items-end justify-between mt-4">
-                            <h3 id="dash-stat-last" class="text-xl font-black text-slate-800 tracking-tight group-hover:text-purple-600 transition-colors">-</h3>
-                            <button onclick="showPage('donasi')" class="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1">
-                                Donasi Lagi <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terakhir</p>
                 </div>
+                <h3 id="dash-stat-last" class="text-lg font-bold text-slate-800 line-clamp-1 group-hover:text-fuchsia-600 transition-colors">-</h3>
+                <p id="dash-stat-last-date" class="text-xs font-medium text-slate-400 mt-1 bg-slate-50 inline-block px-2 py-1 rounded-md">Belum ada donasi</p>
             </div>
-        </div>
-
-        <div class="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-sm border border-slate-200">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-4 border-b border-slate-50">
-                <div>
-                    <h4 class="font-bold text-slate-800 flex items-center gap-2 text-xl">
-                        <i class="fas fa-user-edit text-blue-500"></i> Biodata Pribadi
-                    </h4>
-                    <p class="text-sm text-slate-400 mt-1">Data ini disimpan di perangkat Anda untuk kemudahan donasi.</p>
-                </div>
-                <button onclick="saveStudentProfile()" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-orange-600 transition shadow-lg flex items-center gap-2 shrink-0">
-                    <i class="fas fa-save"></i> Simpan Perubahan
-                </button>
-            </div>
-
-            <form id="form-profile-santri" class="grid grid-cols-1 md:grid-cols-2 gap-8" onsubmit="event.preventDefault(); saveStudentProfile();">
-                
-                <div class="md:col-span-2 bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2 ml-1">Alamat Lengkap Domisili</label>
-                    <textarea id="profile-alamat" rows="2" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-medium transition resize-none shadow-sm" placeholder="Masukkan alamat lengkap (Jalan, RT/RW, Kota)..."></textarea>
-                    
-                    <div class="mt-5">
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2 ml-1">No. HP / WhatsApp Santri</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"><i class="fab fa-whatsapp"></i></span>
-                            <input type="tel" id="profile-hp" class="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-blue-500 outline-none text-sm font-bold shadow-sm" placeholder="08xxxxxxxxxx">
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg"><i class="fas fa-male"></i></div>
-                        <p class="text-sm font-bold text-slate-700">Identitas Ayah</p>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Nama Lengkap</label>
-                            <input type="text" id="profile-ayah-nama" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 outline-none text-sm font-bold transition">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">No. HP / WA</label>
-                            <input type="tel" id="profile-ayah-hp" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 outline-none text-sm font-bold transition">
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-lg"><i class="fas fa-female"></i></div>
-                        <p class="text-sm font-bold text-slate-700">Identitas Ibu</p>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Nama Lengkap</label>
-                            <input type="text" id="profile-ibu-nama" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 outline-none text-sm font-bold transition">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">No. HP / WA</label>
-                            <input type="tel" id="profile-ibu-hp" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 outline-none text-sm font-bold transition">
-                        </div>
-                    </div>
-                </div>
-
-            </form>
         </div>
 
         <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden relative">
@@ -3529,7 +3402,7 @@
         </div>
 
     </div>
-</div>
+</section>
     </main>
 
     <footer class="bg-slate-950 text-white pt-20 pb-8 relative overflow-hidden font-sans border-t border-slate-800">
@@ -3868,11 +3741,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
