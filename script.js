@@ -167,6 +167,11 @@ window.loginWithNIS = function() {
 
             localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
             updateUIForLogin(mockUser);
+            
+            // [TAMBAHAN BARU] Render Kartu Profil
+            renderDashboardProfil(santri.nis); 
+            // -----------------------------------
+
             closeLoginModal();
             showToast(`Ahlan Wa Sahlan, ${santri.nama.split(' ')[0]}!`, 'success');
 
