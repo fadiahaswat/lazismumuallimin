@@ -3176,28 +3176,60 @@ window.addEventListener('scroll', () => {
 let myDonations = []; // Menyimpan data donasi khusus user yang login
 
 // DASHBOARD LOGIC (PERBAIKAN SAFETY ELEMENT)
-window.loadPersonalDashboard = async function(userId) {
-    // Pastikan data riwayat ada
+window.loadPersonalDashboard = async function(user) {
+    // 1. Validasi Data
     if (!riwayatData.isLoaded) await loadRiwayat();
+    
+    // Pastikan user ada
+    if (!user) return;
 
-    // Filter data user
+    // 2. Filter Data Cerdas (Email ATAU NIS)
     const myDonations = riwayatData.allData.filter(item => {
-        if (!item.Email) return false;
-        return String(item.Email).toLowerCase() === String(userId).toLowerCase();
+        let isMatch = false;
+
+        // A. Cek Email (Logika Asli - untuk Donatur Umum/Google)
+        // Kita cek email asli login DAN linkedEmail (jika santri menautkan akun google)
+        const emailDiData = item.Email ? String(item.Email).toLowerCase() : "";
+        const userEmail = user.email ? String(user.email).toLowerCase() : "";
+        const userLinked = user.linkedEmail ? String(user.linkedEmail).toLowerCase() : "";
+
+        if (emailDiData && (emailDiData === userEmail || emailDiData === userLinked)) {
+            isMatch = true;
+        }
+
+        // B. Cek NIS (LOGIKA TAMBAHAN - Khusus Santri)
+        // Jika user adalah santri, cek apakah NIS di data donasi cocok dengan NIS user
+        if (user.isSantri && !isMatch) {
+            // Asumsi kolom di JSON Riwayat bernama 'NisSantri' atau 'NIS'
+            // Sesuaikan 'item.NisSantri' dengan key output JSON Google Sheet Anda
+            const nisDiData = item.NisSantri || item.nisSantri || item.NIS || ""; 
+            if (String(nisDiData) === String(user.nis)) {
+                isMatch = true;
+            }
+            
+            // Opsi Cadangan: Cek Nama & Kelas jika NIS kosong (Kurang akurat tapi membantu)
+            if (!isMatch && item.NamaSantri && item.KelasSantri) {
+                 if (item.NamaSantri.trim() === user.displayName.trim() && 
+                     item.KelasSantri === user.rombel) {
+                     isMatch = true;
+                 }
+            }
+        }
+
+        return isMatch;
     });
 
-    // Hitung Total
+    // 3. Hitung Statistik (Sama seperti sebelumnya)
     let total = 0;
     myDonations.forEach(d => total += (parseInt(d.Nominal) || 0));
-    
-    // [PERBAIKAN] Cek elemen sebelum animasi
+
     const elTotal = document.getElementById('dash-stat-total');
     const elFreq = document.getElementById('dash-stat-freq');
     
     if (elTotal) animateValue(elTotal, 0, total, 1000, true);
     if (elFreq) animateValue(elFreq, 0, myDonations.length, 1000);
-    
-    // [PERBAIKAN] Gunakan Helper setTextIfElementExists agar tidak error jika elemen hilang
+
+    // 4. Update Data Terakhir
     if (myDonations.length > 0) {
         const last = myDonations[0];
         setTextIfElementExists('dash-stat-last', formatRupiah(last.Nominal));
@@ -3207,11 +3239,10 @@ window.loadPersonalDashboard = async function(userId) {
         setTextIfElementExists('dash-stat-last-date', 'Belum ada donasi');
     }
 
-    // Render Tabel
+    // 5. Render Tabel
     const tbody = document.getElementById('dash-history-body');
     const emptyState = document.getElementById('dash-empty-state');
-    
-    // Pastikan container tabel ada sebelum diisi
+
     if (tbody && tbody.parentElement && emptyState) {
         if (myDonations.length === 0) {
             tbody.parentElement.classList.add('hidden');
@@ -3219,7 +3250,6 @@ window.loadPersonalDashboard = async function(userId) {
         } else {
             emptyState.classList.add('hidden');
             tbody.parentElement.classList.remove('hidden');
-            
             tbody.innerHTML = myDonations.map(item => `
                 <tr class="hover:bg-slate-50 transition border-b border-slate-50">
                     <td class="p-5">
