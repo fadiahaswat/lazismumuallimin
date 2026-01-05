@@ -737,32 +737,74 @@ function parseSantriData() {
 // 7. SISTEM NAVIGASI HALAMAN
 // ============================================================================
 
-function showPage(pageId) {
+// ============================================================================
+// 7. SISTEM NAVIGASI HALAMAN (UPDATED FIX DASHBOARD)
+// ============================================================================
+
+window.showPage = function(pageId) {
+    // 1. Sembunyikan semua halaman
     document.querySelectorAll('.page-section').forEach(p => {
-        p.style.display = 'none';
-        p.style.opacity = 0;
+        p.style.display = 'none'; // Fallback
+        p.classList.add('hidden');
         p.classList.remove('active');
     });
+
+    // 2. Matikan status aktif di semua link navigasi
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
+    // 3. Tampilkan halaman target
     const target = document.getElementById(`page-${pageId}`);
     if (target) {
-        target.style.display = 'block';
-        void target.offsetWidth;
+        target.style.display = 'block'; // Fallback
+        target.classList.remove('hidden');
+        
+        // Efek Fade In
+        target.style.opacity = 0;
+        void target.offsetWidth; // Trigger reflow
         target.style.opacity = 1;
         target.classList.add('active');
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+
+        // Scroll ke atas
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // 4. Update status link navigasi
     const navLink = document.querySelector(`a[href="#${pageId}"]`);
     if (navLink) navLink.classList.add('active');
 
-    if (pageId === 'riwayat' || pageId === 'home') loadRiwayat();
+    // -----------------------------------------------------------
+    // [FIX UTAMA] LOGIC PENGISIAN DATA BERDASARKAN HALAMAN
+    // -----------------------------------------------------------
+
+    // A. Jika membuka Halaman Riwayat / Home -> Load Data Donasi Global
+    if (pageId === 'riwayat' || pageId === 'home') {
+        loadRiwayat();
+    }
+
+    // B. Jika membuka Halaman Berita
     if (pageId === 'berita') {
         if (!newsState.isLoaded) fetchNews();
+    }
+
+    // C. [PENTING] Jika membuka Halaman Dashboard -> ISI DATA PROFIL & STATISTIK
+    if (pageId === 'dashboard') {
+        console.log("Membuka Dashboard...");
+        
+        if (currentUser) {
+            // 1. Update Statistik Donasi Pribadi
+            if (typeof loadPersonalDashboard === 'function') {
+                console.log("- Memuat statistik donasi...");
+                loadPersonalDashboard(currentUser.email);
+            }
+
+            // 2. Update Profil Santri (Layer 1 & 2)
+            if (currentUser.isSantri && typeof loadStudentProfileToDashboard === 'function') {
+                console.log("- Memuat profil santri...");
+                loadStudentProfileToDashboard(currentUser);
+            }
+        } else {
+            console.warn("User belum login, dashboard mungkin kosong.");
+        }
     }
 }
 
