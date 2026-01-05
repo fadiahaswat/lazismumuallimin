@@ -333,6 +333,10 @@ function updateUIForLogin(user) {
             loadPersonalDashboard(dashboardId);
         }
     }
+  // [TAMBAHAN BARU] Jika user adalah santri, tampilkan profil lengkapnya
+    if (user.isSantri && user.nis) {
+        renderDashboardProfil(user.nis);
+    }
 }
 
 function updateUIForLogout() {
