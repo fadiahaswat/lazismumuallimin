@@ -3370,21 +3370,47 @@ window.refreshDashboard = async function() {
 
 // Fungsi untuk memuat data profil ke Dashboard
 // LOGIKA PENGISI DASHBOARD SANTRI (PERBAIKAN SAFETY CHECK)
-function loadStudentProfileToDashboard(user) {
+// ============================================================
+// LOGIKA PENGISI DASHBOARD SANTRI (VERSI AUTO-RETRY)
+// ============================================================
+
+function loadStudentProfileToDashboard(user, retryCount = 0) {
     // 1. Cek User
     if (!user || !user.isSantri) return;
 
-    // 2. [PERBAIKAN] Cek apakah Data Santri sudah siap?
+    // 2. [FIX ANTI-GAGAL] Cek Data & Retry Otomatis
+    // Jika data belum ada, tunggu 0.5 detik, lalu coba panggil diri sendiri lagi.
     if (!window.santriData || !Array.isArray(window.santriData) || window.santriData.length === 0) {
-        console.warn("Data Santri belum siap, dashboard profile ditunda.");
-        return; // BERHENTI DI SINI AGAR TIDAK ERROR
+        
+        if (retryCount < 20) { // Batas maksimal mencoba 20x (10 detik)
+            console.warn(`Data Santri belum siap. Mencoba lagi dalam 0.5 detik... (Percobaan ke-${retryCount + 1})`);
+            
+            // Tampilkan status loading di Nama agar user tahu
+            setTextIfElementExists('dash-fullname', 'Sedang memuat data...');
+            
+            // Coba lagi setelah 500ms
+            setTimeout(() => {
+                loadStudentProfileToDashboard(user, retryCount + 1);
+            }, 500);
+            
+            return; // Berhenti sementara, tunggu timer berjalan
+        } else {
+            console.error("Gagal memuat data santri setelah menunggu 10 detik. Periksa koneksi internet.");
+            setTextIfElementExists('dash-fullname', 'Gagal memuat data');
+            return;
+        }
     }
 
+    // --- JIKA DATA SUDAH SIAP, KODE LANJUT DI SINI ---
+
+    console.log("Data Santri Siap. Merender Dashboard...");
+
     // 3. Cari Data Dasar
-    const santriStatic = window.santriData.find(s => String(s.nis) === String(user.nis));
+    const santriStatic = window.santriData.find(s => String(s.nis).trim() === String(user.nis).trim());
     
     if (!santriStatic) {
         console.warn("NIS tidak ditemukan di database:", user.nis);
+        setTextIfElementExists('dash-fullname', 'Data tidak ditemukan');
         return;
     }
 
@@ -3400,8 +3426,9 @@ function loadStudentProfileToDashboard(user) {
     const finalWali = (santriStatic.wali_khusus && santriStatic.wali_khusus !== "-") 
                       ? santriStatic.wali_khusus : metaKelas.wali;
 
-    // 6. Ambil Data Lokal
-    const prefs = SantriManager.getPrefs(user.nis);
+    // 6. Ambil Data Lokal (Biodata editan user)
+    // Pastikan SantriManager ada sebelum dipanggil
+    const prefs = (typeof SantriManager !== 'undefined') ? SantriManager.getPrefs(user.nis) : {};
 
     // 7. Render ke UI (Gunakan Helper agar aman)
     setTextIfElementExists('dash-fullname', santriStatic.nama);
@@ -3413,6 +3440,7 @@ function loadStudentProfileToDashboard(user) {
     setTextIfElementExists('dash-musyrif', finalMusyrif);
     setTextIfElementExists('dash-email-link', user.linkedEmail || "Belum tersambung");
 
+    // Form Profil
     setValueIfElementExists('profile-alamat', prefs.alamat || '');
     setValueIfElementExists('profile-hp', prefs.hp || '');
     setValueIfElementExists('profile-ayah-nama', prefs.ayah_nama || '');
