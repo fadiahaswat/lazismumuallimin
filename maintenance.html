@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sedang Dalam Pemeliharaan | Lazismu Mu'allimin</title>
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#F15A22',
+                            dark: '#1e293b',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS Tambahan untuk Background Texture */
+        .bg-pattern {
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.05;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-600 font-sans antialiased min-h-screen flex flex-col relative overflow-hidden">
+
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute inset-0 bg-pattern"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-orange-200/40 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200/40 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
+    </div>
+
+    <main class="flex-grow flex items-center justify-center p-6 relative z-10">
+        <div class="max-w-2xl w-full text-center">
+            
+            <div class="mb-10 animate-float">
+                <div class="relative inline-block">
+                    <div class="absolute inset-0 bg-orange-500/20 rounded-full blur-xl animate-pulse"></div>
+                    <img src="logo.png" alt="Lazismu Mu'allimin" class="h-16 md:h-20 w-auto relative z-10 mx-auto drop-shadow-lg">
+                </div>
+            </div>
+
+            <div class="mb-8 flex justify-center">
+                <div class="w-24 h-24 bg-white rounded-3xl shadow-xl shadow-orange-500/10 flex items-center justify-center border border-slate-100 rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <i class="fas fa-tools text-4xl text-brand-orange animate-spin-slow" style="animation-duration: 10s;"></i>
+                </div>
+            </div>
+
+            <h1 class="text-3xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">
+                Sedang Dalam <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-red-500">Pemeliharaan</span>
+            </h1>
+            
+            <p class="text-slate-500 text-lg md:text-xl mb-8 leading-relaxed max-w-lg mx-auto">
+                Kami sedang melakukan peningkatan sistem untuk melayani umat lebih baik. Mohon maaf atas ketidaknyamanan ini.
+            </p>
+            
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-white rounded-full border border-slate-200 shadow-sm mb-10">
+                <div class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+                </div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Estimasi Kembali: Segera</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button onclick="location.reload()" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-brand-orange transition-all shadow-sm flex items-center justify-center gap-2 group">
+                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500 text-slate-400 group-hover:text-brand-orange"></i>
+                    Cek Kembali
+                </button>
+                
+                <a href="https://wa.me/6281196961918" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-brand-orange transition-all shadow-lg shadow-slate-900/20 hover:shadow-orange-500/30 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    Hubungi Kami
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="relative z-10 py-6 text-center border-t border-slate-200/60 glass-effect">
+        <p class="text-xs text-slate-400 font-medium">
+            &copy; <script>document.write(new Date().getFullYear())</script> Lazismu Mu'allimin. All rights reserved.
+        </p>
+    </footer>
+
+</body>
+</html>
