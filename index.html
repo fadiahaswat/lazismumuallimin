@@ -28,12 +28,23 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'blob': 'blob 7s infinite',
+                        'progress': 'progress 2s linear infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        progress: {
+                            '0%': { backgroundPosition: '0 0' },
+                            '100%': { backgroundPosition: '40px 40px' },
                         }
                     }
                 }
@@ -42,78 +53,110 @@
     </script>
 
     <style>
-        /* CSS Tambahan untuk Background Texture */
         .bg-pattern {
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
             opacity: 0.05;
         }
         
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-striped {
+            background-image: linear-gradient(
+                45deg, 
+                rgba(255, 255, 255, 0.15) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.15) 50%, 
+                rgba(255, 255, 255, 0.15) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            background-size: 1rem 1rem;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-600 font-sans antialiased min-h-screen flex flex-col relative overflow-hidden">
+<body class="bg-slate-50 text-slate-600 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
 
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div class="absolute inset-0 bg-pattern"></div>
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-orange-200/40 rounded-full blur-[120px] animate-pulse-slow"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200/40 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
+        <div class="absolute top-0 left-0 w-96 h-96 bg-orange-300/30 rounded-full blur-[100px] animate-blob mix-blend-multiply filter"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-yellow-300/30 rounded-full blur-[100px] animate-blob animation-delay-2000 mix-blend-multiply filter"></div>
+        <div class="absolute -bottom-32 left-20 w-96 h-96 bg-pink-300/30 rounded-full blur-[100px] animate-blob animation-delay-4000 mix-blend-multiply filter"></div>
     </div>
 
-    <main class="flex-grow flex items-center justify-center p-6 relative z-10">
-        <div class="max-w-2xl w-full text-center">
-            
-            <div class="mb-10 animate-float">
-                <div class="relative inline-block">
-                    <div class="absolute inset-0 bg-orange-500/20 rounded-full blur-xl animate-pulse"></div>
-                    <img src="logo.png" alt="Lazismu Mu'allimin" class="h-16 md:h-20 w-auto relative z-10 mx-auto drop-shadow-lg">
-                </div>
+    <main class="w-full max-w-4xl px-4 relative z-10 py-10">
+        
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-12 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-brand-orange via-yellow-500 to-brand-orange"></div>
+
+            <div class="mb-8 animate-float relative inline-block">
+                <div class="absolute inset-0 bg-white/50 rounded-full blur-xl"></div>
+                <img src="logo.png" alt="Lazismu Logo" class="h-16 md:h-20 w-auto relative z-10 drop-shadow-sm mx-auto">
             </div>
 
-            <div class="mb-8 flex justify-center">
-                <div class="w-24 h-24 bg-white rounded-3xl shadow-xl shadow-orange-500/10 flex items-center justify-center border border-slate-100 rotate-3 hover:rotate-0 transition-transform duration-500">
-                    <i class="fas fa-tools text-4xl text-brand-orange animate-spin-slow" style="animation-duration: 10s;"></i>
-                </div>
-            </div>
+            <h3 class="font-arabic text-2xl md:text-3xl text-slate-400 mb-2">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</h3>
 
-            <h1 class="text-3xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">
-                Sedang Dalam <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-red-500">Pemeliharaan</span>
+            <h1 class="text-3xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight leading-tight">
+                Sistem Sedang <br class="md:hidden">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-red-600">Ditingkatkan</span> 🚀
             </h1>
             
-            <p class="text-slate-500 text-lg md:text-xl mb-8 leading-relaxed max-w-lg mx-auto">
-                Kami sedang melakukan peningkatan sistem untuk melayani umat lebih baik. Mohon maaf atas ketidaknyamanan ini.
+            <p class="text-slate-500 text-base md:text-lg mb-8 leading-relaxed max-w-xl mx-auto">
+                Mohon maaf, kami sedang melakukan pemeliharaan server untuk meningkatkan layanan ZISKA. Website akan segera kembali dengan performa yang lebih baik.
             </p>
-            
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-white rounded-full border border-slate-200 shadow-sm mb-10">
-                <div class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+
+            <div class="max-w-md mx-auto mb-10">
+                <div class="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                    <span>Status Perbaikan</span>
+                    <span class="text-brand-orange animate-pulse">Memproses data...</span>
                 </div>
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Estimasi Kembali: Segera</span>
+                <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner border border-slate-200">
+                    <div class="bg-gradient-to-r from-brand-orange to-red-500 h-4 rounded-full w-[75%] shadow-lg progress-striped animate-[progress_1s_linear_infinite]"></div>
+                </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button onclick="location.reload()" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-brand-orange transition-all shadow-sm flex items-center justify-center gap-2 group">
-                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500 text-slate-400 group-hover:text-brand-orange"></i>
-                    Cek Kembali
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+                <button onclick="location.reload()" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-2 group">
+                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                    Coba Refresh
                 </button>
                 
-                <a href="https://wa.me/6281196961918" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-brand-orange transition-all shadow-lg shadow-slate-900/20 hover:shadow-orange-500/30 flex items-center justify-center gap-2">
-                    <i class="fab fa-whatsapp text-lg"></i>
-                    Hubungi Kami
+                <a href="https://wa.me/6281196961918" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:border-brand-orange hover:text-brand-orange hover:bg-orange-50 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                    Konfirmasi Donasi
                 </a>
+            </div>
+
+            <div class="border-t border-slate-200 pt-8">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Pantau Update Kami di:</p>
+                <div class="flex justify-center gap-4">
+                    <a href="https://instagram.com/lazismu_muallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all transform hover:-translate-y-1">
+                        <i class="fab fa-instagram text-lg"></i>
+                    </a>
+                    <a href="https://youtube.com/@lazismumuallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all transform hover:-translate-y-1">
+                        <i class="fab fa-youtube text-lg"></i>
+                    </a>
+                    <a href="https://tiktok.com/@lazismu_muallimin" target="_blank" class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-black hover:text-white hover:border-slate-800 transition-all transform hover:-translate-y-1">
+                        <i class="fab fa-tiktok text-lg"></i>
+                    </a>
+                    <a href="mailto:lazismumuallimin@gmail.com" class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all transform hover:-translate-y-1">
+                        <i class="far fa-envelope text-lg"></i>
+                    </a>
+                </div>
             </div>
 
         </div>
     </main>
 
-    <footer class="relative z-10 py-6 text-center border-t border-slate-200/60 glass-effect">
-        <p class="text-xs text-slate-400 font-medium">
-            &copy; <script>document.write(new Date().getFullYear())</script> Lazismu Mu'allimin. All rights reserved.
+    <footer class="relative z-10 py-6 text-center">
+        <p class="text-[10px] md:text-xs text-slate-400 font-bold tracking-wide uppercase opacity-70">
+            &copy; <script>document.write(new Date().getFullYear())</script> Lazismu Kantor Layanan Mu'allimin
         </p>
     </footer>
 
