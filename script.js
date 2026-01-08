@@ -2996,20 +2996,27 @@ function renderRiwayatList() {
         const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
+        // === [LOGIKA BARU: LABEL SEBUTAN (Muzaki vs Munfiq)] ===
+        let labelSebutan = "Donatur"; // Default
+
+        if (displayType.toLowerCase().includes('zakat')) {
+            labelSebutan = "Muzaki";
+        } else if (displayType.toLowerCase().includes('infaq') || displayType.toLowerCase().includes('wakaf')) {
+            labelSebutan = "Munfiq";
+        }
+        // ========================================================
+
         // === [1. LOGIKA STATUS MAKER-CHECKER] ===
-        // Ambil status dari spreadsheet, default "Belum Verifikasi" jika kosong
         const status = item.Status || "Belum Verifikasi";
         let statusBadgeHTML = '';
 
         if (status === 'Terverifikasi') {
-            // Tampilan Hijau (Sudah di-acc Admin)
             statusBadgeHTML = `
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 shadow-sm ml-auto sm:ml-0" title="Donasi Diterima">
                     <i class="fas fa-check-circle text-[10px]"></i> 
                     <span class="text-[10px] font-bold uppercase tracking-wider">Diterima</span>
                 </div>`;
         } else {
-            // Tampilan Kuning (Menunggu Admin)
             statusBadgeHTML = `
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm ml-auto sm:ml-0" title="Menunggu Verifikasi Admin">
                     <i class="fas fa-hourglass-half text-[10px] animate-pulse"></i> 
@@ -3018,28 +3025,33 @@ function renderRiwayatList() {
         }
 
         // === [2. LOGIKA HIGHLIGHT KODE UNIK] ===
-        // Format angka ke Rupiah
         let nominalHTML = nominal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
         
-        // Jika bukan Tunai dan ada digit unik (tidak habis dibagi 1000)
-        // Warnai 3 digit terakhir dengan warna oranye
         if (nominal % 1000 !== 0 && paymentMethod !== 'Tunai') {
              nominalHTML = nominalHTML.replace(/(\d{3})(?=\D*$)/, '<span class="text-orange-500 border-b-2 border-orange-200 font-black">$1</span>');
         }
 
         // === [3. LOGIKA STYLE CARD] ===
+        let bgBadge = 'bg-slate-50 text-slate-600'; // Default badge style helper
+        
         if (displayType.includes('Fitrah')) {
             iconClass = 'fa-bowl-rice'; bgIcon = 'bg-emerald-100 text-emerald-600'; borderClass = 'hover:border-emerald-200';
+            bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
         } else if (displayType.includes('Maal')) {
             iconClass = 'fa-sack-dollar'; bgIcon = 'bg-amber-100 text-amber-600'; borderClass = 'hover:border-amber-200';
+            bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
         } else if (displayType.includes('Kampus')) {
             iconClass = 'fa-school'; bgIcon = 'bg-rose-100 text-rose-600'; borderClass = 'hover:border-rose-200';
+            bgBadge = 'bg-rose-50 text-rose-700 border-rose-100';
         } else if (displayType.includes('Beasiswa')) {
             iconClass = 'fa-user-graduate'; bgIcon = 'bg-sky-100 text-sky-600'; borderClass = 'hover:border-sky-200';
+            bgBadge = 'bg-sky-50 text-sky-700 border-sky-100';
         } else if (displayType.includes('Umum')) {
             iconClass = 'fa-parachute-box'; bgIcon = 'bg-violet-100 text-violet-600'; borderClass = 'hover:border-violet-200';
+            bgBadge = 'bg-violet-50 text-violet-700 border-violet-100';
         } else {
             iconClass = 'fa-hand-holding-heart'; bgIcon = 'bg-orange-100 text-orange-600'; borderClass = 'hover:border-orange-200';
+            bgBadge = 'bg-orange-50 text-orange-700 border-orange-100';
         }
 
         const dateObj = new Date(item.Timestamp);
@@ -3064,6 +3076,8 @@ function renderRiwayatList() {
                         <i class="fas ${iconClass}"></i>
                     </div>
                     <div class="flex-1 min-w-0">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
+
                         <div class="flex items-center flex-wrap gap-y-1 mb-1">
                             <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
                                 ${donaturName}
