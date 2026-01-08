@@ -3618,6 +3618,66 @@ async function renderDashboardProfil(nisUser) {
     }
 }
 
+// Fungsi untuk memuat statistik Dashboard Pribadi
+window.loadPersonalDashboard = function(dashboardId) {
+    console.log("Memuat dashboard untuk:", dashboardId);
+    
+    if (!riwayatData.isLoaded) {
+        // Jika data belum siap, tunggu sebentar lalu coba lagi
+        setTimeout(() => loadPersonalDashboard(dashboardId), 1000);
+        return;
+    }
+
+    // --- LOGIKA FILTER UTAMA (Sama dengan logic riwayat di atas) ---
+    const myDonations = riwayatData.allData.filter(item => {
+        const matchEmail = item.Email && currentUser && String(item.Email).toLowerCase() === String(currentUser.email).toLowerCase();
+        
+        // Cek NIS dari berbagai kemungkinan penulisan di Database
+        const itemNIS = item.nisSantri || item.NISSantri || item.NIS || ""; 
+        const matchNIS = currentUser && currentUser.isSantri && String(itemNIS) === String(currentUser.nis);
+        
+        return matchEmail || matchNIS;
+    });
+
+    // --- HITUNG STATISTIK ---
+    let totalDonasi = 0;
+    let totalTransaksi = myDonations.length;
+    let historyHtml = "";
+
+    myDonations.forEach(d => {
+        totalDonasi += parseInt(d.Nominal) || 0;
+    });
+
+    // --- UPDATE UI DASHBOARD (Pastikan ID elemen sesuai dengan HTML Anda) ---
+    
+    // 1. Update Total Donasi Saya
+    const elTotal = document.getElementById('user-total-donations'); // Pastikan ID ini ada di index.html
+    if (elTotal) elTotal.innerText = formatRupiah(totalDonasi);
+    
+    // 2. Update Frekuensi
+    const elFreq = document.getElementById('user-total-freq'); // Pastikan ID ini ada di index.html
+    if (elFreq) elFreq.innerText = totalTransaksi + "x";
+
+    // 3. Update Tabel/List Ringkas di Dashboard (Opsional)
+    const elList = document.getElementById('user-history-list');
+    if (elList) {
+        if (myDonations.length === 0) {
+            elList.innerHTML = '<p class="text-center text-slate-400 text-sm py-4">Belum ada data donasi.</p>';
+        } else {
+            // Tampilkan 3 transaksi terakhir
+            elList.innerHTML = myDonations.slice(0, 3).map(d => `
+                <div class="flex justify-between items-center py-2 border-b border-slate-50 last:border-0">
+                    <div>
+                        <p class="text-xs font-bold text-slate-700">${d.JenisDonasi}</p>
+                        <p class="text-[10px] text-slate-400">${new Date(d.Timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <span class="text-xs font-bold text-orange-600">${formatRupiah(d.Nominal)}</span>
+                </div>
+            `).join('');
+        }
+    }
+};
+
 // ============================================================
 // JEMBATAN PENGHUBUNG (EXPOSE KE GLOBAL WINDOW)
 // ============================================================
