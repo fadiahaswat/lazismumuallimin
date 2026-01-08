@@ -2680,7 +2680,7 @@ function renderHomeLatestDonations() {
         </div>
 
         <div>
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Muzaki</p>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
             
             <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}">
                 ${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}
