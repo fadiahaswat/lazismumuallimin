@@ -2626,6 +2626,16 @@ function renderHomeLatestDonations() {
         const subType = item.SubJenis || item.subType || "";
         const displayType = subType || type;
 
+        // === [PERBAIKAN DIMULAI DISINI] ===
+        // Tentukan Label Sebutan (Muzaki vs Munfiq)
+        let labelSebutan = "Donatur"; // Default umum
+
+        if (displayType.toLowerCase().includes('zakat')) {
+            labelSebutan = "Muzaki"; // Untuk Zakat Maal & Fitrah
+        } else if (displayType.toLowerCase().includes('infaq') || displayType.toLowerCase().includes('wakaf')) {
+            labelSebutan = "Munfiq"; // Untuk Infaq & Wakaf
+        }
+
         if (displayType.includes('Fitrah')) {
             iconClass = 'fa-bowl-rice';
             bgIcon = 'bg-emerald-100 text-emerald-600';
