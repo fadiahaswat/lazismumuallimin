@@ -3155,11 +3155,8 @@ window.addEventListener('scroll', () => {
 });
 
 /* ============================================================================
-   13. LOGIKA DASHBOARD PERSONAL & KWITANSI (NEW FEATURE)
+   13. LOGIKA DASHBOARD PERSONAL & KWITANSI (FIXED)
    ============================================================================ */
-
-// Panggil fungsi ini di dalam onAuthStateChanged saat user login (di bagian Tahap 1 tadi)
-// Contoh: if (typeof loadPersonalDashboard === 'function') loadPersonalDashboard(user.email);
 
 let myDonations = []; // Menyimpan data donasi khusus user yang login
 
@@ -3170,18 +3167,24 @@ window.loadPersonalDashboard = async function(userEmail) {
         await loadRiwayat();
     }
 
-    // 2. Filter Data Berdasarkan Email (DIPERBAIKI)
-    if (riwayatData.allData && userEmail) {
+    // 2. Filter Data (LOGIKA YANG SUDAH DIPERBAIKI: CEK EMAIL & NIS)
+    // Menggunakan logika OR: Data diambil jika Email cocok ATAU NIS cocok
+    if (riwayatData.allData) {
         myDonations = riwayatData.allData.filter(item => {
-            // Cek apakah item.Email ada isinya (tidak kosong/null)
-            if (!item.Email) return false;
+            // A. Cek Kecocokan Email (jika ada data email)
+            const emailData = item.Email ? String(item.Email).toLowerCase() : "";
+            const emailUser = userEmail ? String(userEmail).toLowerCase() : "";
+            const matchEmail = emailData && emailUser && emailData === emailUser;
             
-            // Konversi paksa ke String dulu baru di-lowercase
-            // Ini mencegah error jika data di Excel berupa Angka/No HP
-            const emailData = String(item.Email).toLowerCase();
-            const emailUser = String(userEmail).toLowerCase();
-            
-            return emailData === emailUser;
+            // B. Cek Kecocokan NIS (Khusus Santri)
+            // Pastikan properti NIS sesuai dengan header JSON Google Sheet Anda
+            const itemNIS = item.nisSantri || item.NISSantri || item.NIS || ""; 
+            // Ambil NIS dari user yang sedang login (global variable currentUser)
+            const userNIS = (currentUser && currentUser.isSantri) ? String(currentUser.nis) : "";
+            const matchNIS = userNIS && String(itemNIS) === userNIS;
+
+            // Ambil jika SALAH SATU cocok
+            return matchEmail || matchNIS;
         });
     }
 
@@ -3193,8 +3196,8 @@ function updateDashboardUI() {
     // A. Update Profil Header
     const user = currentUser; // Variabel global dari auth firebase
     if (user) {
-        document.getElementById('dash-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
-        document.getElementById('dash-name').innerText = user.displayName.split(' ')[0]; // Nama depan saja
+        if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
+        if(document.getElementById('dash-name')) document.getElementById('dash-name').innerText = user.displayName.split(' ')[0]; 
     }
 
     // B. Hitung Statistik
@@ -3202,34 +3205,44 @@ function updateDashboardUI() {
     let frekuensi = myDonations.length;
     let lastDonasi = null;
 
+    // Urutkan myDonations dari yang terbaru (berjaga-jaga)
+    // Asumsi riwayatData.allData sudah sorted, tapi kita pastikan lagi jika perlu
+    // myDonations.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+
     myDonations.forEach((d, index) => {
         totalDonasi += parseInt(d.Nominal) || 0;
-        // Karena data diurutkan dari baru ke lama (di loadRiwayat), yang pertama adalah yang terbaru
-        if (index === 0) lastDonasi = d; 
+        if (index === 0) lastDonasi = d; // Ambil yang pertama sebagai 'Terakhir'
     });
 
-    // C. Render Angka Statistik
-    animateValue(document.getElementById('dash-stat-total'), 0, totalDonasi, 1500, true);
-    animateValue(document.getElementById('dash-stat-freq'), 0, frekuensi, 1000);
+    // C. Render Angka Statistik (Pastikan ID ini ada di HTML Anda)
+    const elStatTotal = document.getElementById('dash-stat-total');
+    const elStatFreq = document.getElementById('dash-stat-freq');
+    const elStatLast = document.getElementById('dash-stat-last');
+    const elStatDate = document.getElementById('dash-stat-last-date');
+
+    if (elStatTotal) animateValue(elStatTotal, 0, totalDonasi, 1500, true);
+    if (elStatFreq) animateValue(elStatFreq, 0, frekuensi, 1000);
     
     if (lastDonasi) {
-        document.getElementById('dash-stat-last').innerText = formatRupiah(lastDonasi.Nominal);
-        document.getElementById('dash-stat-last-date').innerText = timeAgo(lastDonasi.Timestamp);
+        if(elStatLast) elStatLast.innerText = formatRupiah(lastDonasi.Nominal);
+        if(elStatDate) elStatDate.innerText = timeAgo(lastDonasi.Timestamp);
     } else {
-        document.getElementById('dash-stat-last').innerText = "-";
-        document.getElementById('dash-stat-last-date').innerText = "Belum ada donasi";
+        if(elStatLast) elStatLast.innerText = "-";
+        if(elStatDate) elStatDate.innerText = "Belum ada donasi";
     }
 
     // D. Gamifikasi Level Donatur
     const levelBadge = document.getElementById('dash-level');
-    if (totalDonasi > 10000000) {
-        levelBadge.innerHTML = `<span class="text-purple-600"><i class="fas fa-crown"></i> Muhsinin Utama</span>`;
-    } else if (totalDonasi > 1000000) {
-        levelBadge.innerHTML = `<span class="text-blue-600"><i class="fas fa-medal"></i> Donatur Setia</span>`;
-    } else if (frekuensi > 0) {
-        levelBadge.innerHTML = `<span class="text-green-600"><i class="fas fa-user-check"></i> Sahabat Lazismu</span>`;
-    } else {
-        levelBadge.innerText = "Donatur Baru";
+    if (levelBadge) {
+        if (totalDonasi > 10000000) {
+            levelBadge.innerHTML = `<span class="text-purple-600"><i class="fas fa-crown"></i> Muhsinin Utama</span>`;
+        } else if (totalDonasi > 1000000) {
+            levelBadge.innerHTML = `<span class="text-blue-600"><i class="fas fa-medal"></i> Donatur Setia</span>`;
+        } else if (frekuensi > 0) {
+            levelBadge.innerHTML = `<span class="text-green-600"><i class="fas fa-user-check"></i> Sahabat Lazismu</span>`;
+        } else {
+            levelBadge.innerText = "Donatur Baru";
+        }
     }
 
     // E. Render Tabel Riwayat
@@ -3240,15 +3253,17 @@ function renderPersonalHistoryTable() {
     const tbody = document.getElementById('dash-history-body');
     const emptyState = document.getElementById('dash-empty-state');
     
+    if (!tbody) return; // Safety check
+
     if (myDonations.length === 0) {
         tbody.innerHTML = '';
-        tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
-        emptyState.classList.remove('hidden'); // Munculkan pesan kosong
+        if(tbody.parentElement) tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
+        if(emptyState) emptyState.classList.remove('hidden'); // Munculkan pesan kosong
         return;
     }
 
-    tbody.parentElement.classList.remove('hidden');
-    emptyState.classList.add('hidden');
+    if(tbody.parentElement) tbody.parentElement.classList.remove('hidden');
+    if(emptyState) emptyState.classList.add('hidden');
     tbody.innerHTML = '';
 
     myDonations.forEach(item => {
@@ -3292,21 +3307,6 @@ function renderPersonalHistoryTable() {
         `;
         tbody.appendChild(row);
     });
-}
-
-// Fitur Refresh Manual
-window.refreshDashboard = async function() {
-    const btn = document.querySelector('button[onclick="refreshDashboard()"] i');
-    if(btn) btn.classList.add('fa-spin');
-    
-    // Paksa ambil data baru dari server (abaikan cache riwayatData.isLoaded)
-    riwayatData.isLoaded = false; 
-    if (currentUser) {
-        await loadPersonalDashboard(currentUser.email);
-        showToast("Data berhasil diperbarui", "success");
-    }
-    
-    if(btn) btn.classList.remove('fa-spin');
 }
 
 /* ============================================================================
@@ -3617,66 +3617,6 @@ async function renderDashboardProfil(nisUser) {
         card.classList.add('animate-fade-in-up');
     }
 }
-
-// Fungsi untuk memuat statistik Dashboard Pribadi
-window.loadPersonalDashboard = function(dashboardId) {
-    console.log("Memuat dashboard untuk:", dashboardId);
-    
-    if (!riwayatData.isLoaded) {
-        // Jika data belum siap, tunggu sebentar lalu coba lagi
-        setTimeout(() => loadPersonalDashboard(dashboardId), 1000);
-        return;
-    }
-
-    // --- LOGIKA FILTER UTAMA (Sama dengan logic riwayat di atas) ---
-    const myDonations = riwayatData.allData.filter(item => {
-        const matchEmail = item.Email && currentUser && String(item.Email).toLowerCase() === String(currentUser.email).toLowerCase();
-        
-        // Cek NIS dari berbagai kemungkinan penulisan di Database
-        const itemNIS = item.nisSantri || item.NISSantri || item.NIS || ""; 
-        const matchNIS = currentUser && currentUser.isSantri && String(itemNIS) === String(currentUser.nis);
-        
-        return matchEmail || matchNIS;
-    });
-
-    // --- HITUNG STATISTIK ---
-    let totalDonasi = 0;
-    let totalTransaksi = myDonations.length;
-    let historyHtml = "";
-
-    myDonations.forEach(d => {
-        totalDonasi += parseInt(d.Nominal) || 0;
-    });
-
-    // --- UPDATE UI DASHBOARD (Pastikan ID elemen sesuai dengan HTML Anda) ---
-    
-    // 1. Update Total Donasi Saya
-    const elTotal = document.getElementById('user-total-donations'); // Pastikan ID ini ada di index.html
-    if (elTotal) elTotal.innerText = formatRupiah(totalDonasi);
-    
-    // 2. Update Frekuensi
-    const elFreq = document.getElementById('user-total-freq'); // Pastikan ID ini ada di index.html
-    if (elFreq) elFreq.innerText = totalTransaksi + "x";
-
-    // 3. Update Tabel/List Ringkas di Dashboard (Opsional)
-    const elList = document.getElementById('user-history-list');
-    if (elList) {
-        if (myDonations.length === 0) {
-            elList.innerHTML = '<p class="text-center text-slate-400 text-sm py-4">Belum ada data donasi.</p>';
-        } else {
-            // Tampilkan 3 transaksi terakhir
-            elList.innerHTML = myDonations.slice(0, 3).map(d => `
-                <div class="flex justify-between items-center py-2 border-b border-slate-50 last:border-0">
-                    <div>
-                        <p class="text-xs font-bold text-slate-700">${d.JenisDonasi}</p>
-                        <p class="text-[10px] text-slate-400">${new Date(d.Timestamp).toLocaleDateString()}</p>
-                    </div>
-                    <span class="text-xs font-bold text-orange-600">${formatRupiah(d.Nominal)}</span>
-                </div>
-            `).join('');
-        }
-    }
-};
 
 // ============================================================
 // JEMBATAN PENGHUBUNG (EXPOSE KE GLOBAL WINDOW)
