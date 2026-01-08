@@ -429,12 +429,21 @@ window.showMyHistory = function() {
     const container = document.getElementById('my-history-content');
     modal.classList.remove('hidden');
     
-    // Ambil data riwayat yang sudah ada di memori
-    // PERBAIKAN: Gunakan String() agar aman dari data angka
     const myData = riwayatData.allData.filter(item => {
-        if (!item.Email) return false;
-        return String(item.Email).toLowerCase() === currentUser.email.toLowerCase();
-    });
+    // 1. Cek kecocokan Email (Logic dasar)
+    const matchEmail = item.Email && currentUser.email && 
+                       String(item.Email).toLowerCase() === String(currentUser.email).toLowerCase();
+    
+    // 2. Cek kecocokan NIS (Khusus Santri)
+    // Pastikan nama properti 'nisSantri' sesuai dengan header di Google Sheet/JSON Anda 
+    // (bisa 'nisSantri', 'NISSantri', atau 'NIS')
+    const itemNIS = item.nisSantri || item.NISSantri || item.NIS || "";
+    const matchNIS = currentUser.isSantri && currentUser.nis && 
+                     String(itemNIS) === String(currentUser.nis);
+
+    // Ambil data jika Email COCOK atau NIS COCOK
+    return matchEmail || matchNIS;
+});
   
     if (myData.length === 0) {
         container.innerHTML = `
