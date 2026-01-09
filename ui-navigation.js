@@ -1,0 +1,152 @@
+// ui-navigation.js
+import { showToast } from './utils.js';
+import { loadRiwayat } from './feature-history.js';
+import { fetchNews, newsState } from './feature-news.js';
+import { currentUser } from './state.js';
+import { SantriManager } from './santri-manager.js';
+
+export function showPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(p => {
+        p.style.display = 'none';
+        p.style.opacity = 0;
+        p.classList.remove('active');
+    });
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+    const target = document.getElementById(`page-${pageId}`);
+    if (target) {
+        target.style.display = 'block';
+        void target.offsetWidth;
+        target.style.opacity = 1;
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const navLink = document.querySelector(`a[href="#${pageId}"]`);
+    if (navLink) navLink.classList.add('active');
+
+    if (pageId === 'riwayat' || pageId === 'home') loadRiwayat();
+    if (pageId === 'berita' && !newsState.isLoaded) fetchNews();
+}
+
+export function scrollToSection(sectionId) {
+    showPage('home');
+    setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 500);
+}
+
+export function setupNavigation() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuLinks = document.getElementById('menu-links');
+    if (menuToggle && menuLinks) {
+        menuToggle.onclick = () => {
+            menuLinks.classList.toggle('hidden');
+        };
+    }
+}
+
+export function setupModalLogic() {
+    const modal = document.getElementById('hubungi-modal');
+    const btn = document.getElementById('btn-hubungi-hero');
+    const close = document.getElementById('hubungi-modal-close');
+
+    if (btn) btn.onclick = () => modal.classList.remove('hidden');
+    if (close) close.onclick = () => modal.classList.add('hidden');
+
+    if (modal) {
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        }
+    }
+}
+
+// Auth Modals
+export function toggleUserDropdown() {
+    const menu = document.getElementById('user-dropdown-content');
+    if (menu) menu.classList.toggle('hidden');
+}
+
+export function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown-content');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
+
+// Change Password UI
+export function openChangePassModal() {
+    toggleUserDropdown();
+    document.getElementById('pass-modal').classList.remove('hidden');
+    document.getElementById('new-pass-1').value = '';
+    document.getElementById('new-pass-2').value = '';
+}
+
+export function saveNewPassword() {
+    if (!currentUser || !currentUser.isSantri) return;
+
+    const p1 = document.getElementById('new-pass-1').value;
+    const p2 = document.getElementById('new-pass-2').value;
+
+    if (!p1 || !p2) return showToast("Password tidak boleh kosong", "warning");
+    if (p1 !== p2) return showToast("Konfirmasi password tidak cocok", "error");
+    if (p1.length < 4) return showToast("Password minimal 4 karakter", "warning");
+
+    SantriManager.savePrefs(currentUser.nis, { password: p1 });
+    
+    showToast("Password berhasil diganti!", "success");
+    document.getElementById('pass-modal').classList.add('hidden');
+}
+
+// Avatar UI
+export function openAvatarModal() {
+    toggleUserDropdown();
+    const modal = document.getElementById('avatar-modal');
+    if(modal) modal.classList.remove('hidden');
+
+    const emojis = ["😎", "🤓", "🤠", "😊", "😇", "🤖", "👻", "🐯", "🐱", "🐶", "🦁", "🐼", "🐸", "🎓", "🕌", "🚀", "⭐", "🔥", "⚽", "🎨"];
+    const grid = document.getElementById('emoji-grid');
+    if(!grid) return;
+    
+    grid.innerHTML = '';
+
+    emojis.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.className = "text-3xl hover:scale-110 hover:bg-orange-100 transition p-3 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm cursor-pointer";
+        btn.innerHTML = emoji;
+        btn.onclick = function() { saveAvatar(emoji); };
+        grid.appendChild(btn);
+    });
+}
+
+export function saveAvatar(emoji) {
+    if (!currentUser || !currentUser.isSantri) return;
+
+    const svgString = `
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <style>text{font-family:sans-serif}</style>
+        <rect width='100%' height='100%' fill='#f1f5f9'/>
+        <text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='70'>${emoji}</text>
+    </svg>`;
+    
+    const avatarUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString.trim())}`;
+
+    SantriManager.savePrefs(currentUser.nis, { avatar: avatarUrl });
+    
+    const imgEl = document.getElementById('user-avatar');
+    if(imgEl) imgEl.src = avatarUrl;
+    const dashEl = document.getElementById('dash-avatar');
+    if(dashEl) dashEl.src = avatarUrl;
+    
+    currentUser.photoURL = avatarUrl;
+    localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+
+    showToast("Avatar berhasil diganti!", "success");
+    document.getElementById('avatar-modal').classList.add('hidden');
+}
+
+export function hideLoginSuggestion() {
+    const card = document.getElementById('login-suggestion-card');
+    if (card) card.classList.add('hidden');
+    const inputNama = document.getElementById('nama-muzakki-input');
+    if(inputNama) inputNama.focus();
+}
