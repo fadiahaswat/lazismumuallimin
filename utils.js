@@ -115,3 +115,10 @@ export function terbilang(angka) {
     if (angka < 1000000000) return terbilang(Math.floor(angka / 1000000)) + " Juta " + terbilang(angka % 1000000);
     return "";
 }
+
+// FUNGSI INI YANG SEBELUMNYA HILANG
+export function stripHtml(html) {
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
