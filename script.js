@@ -1,94 +1,24 @@
-// ============================================================================
-// LAZISMU MU'ALLIMIN - DONATION MANAGEMENT SYSTEM
-// Refactored for Better Performance & Maintainability
-// ============================================================================
-
+// --- IMPORT FIREBASE ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// ============================================================================
-// 1. CONFIGURATION
-// ============================================================================
-const CONFIG = {
-    GAS_API_URL: "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec",
-    WORDPRESS_SITE: 'lazismumuallimin.wordpress.com',
-    NEWS_PER_PAGE: 6,
-    FIREBASE_CONFIG: {
-        apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
-        authDomain: "lazismu-auth.firebaseapp.com",
-        projectId: "lazismu-auth",
-        storageBucket: "lazismu-auth.firebasestorage.app",
-        messagingSenderId: "398570239500",
-        appId: "1:398570239500:web:0b3e96109a4bf304ebe029"
-    }
+// --- CONFIG FIREBASE (PASTE DARI CONSOLE SEPERTI DI ADMIN KEMARIN) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
+  authDomain: "lazismu-auth.firebaseapp.com",
+  projectId: "lazismu-auth",
+  storageBucket: "lazismu-auth.firebasestorage.app",
+  messagingSenderId: "398570239500",
+  appId: "1:398570239500:web:0b3e96109a4bf304ebe029"
 };
 
-// ============================================================================
-// 2. STATE MANAGEMENT
-// ============================================================================
-const STATE = {
-    currentUser: null,
-    donasi: {
-        type: null,
-        subType: null,
-        nominal: 0,
-        nominalAsli: 0,
-        nominalTotal: 0,
-        kodeUnik: 0,
-        donaturTipe: 'santri',
-        isAlumni: false,
-        alumniTahun: '',
-        namaSantri: '',
-        nisSantri: '',
-        rombelSantri: '',
-        nama: '',
-        hp: '',
-        email: '',
-        alamat: '',
-        doa: '',
-        metode: null,
-        nik: ''
-    },
-    riwayat: {
-        allData: [],
-        isLoaded: false,
-        currentPage: 1,
-        itemsPerPage: 10,
-        isLoading: false
-    },
-    news: {
-        page: 1,
-        category: '',
-        search: '',
-        posts: [],
-        isLoading: false,
-        hasMore: true,
-        isLoaded: false
-    },
-    timeFilterState: 'all',
-    santriDB: {},
-    myDonations: []
-};
-
-// Create aliases for backward compatibility
-let currentUser = null;
-const donasiData = STATE.donasi;
-const riwayatData = STATE.riwayat;
-const newsState = STATE.news;
-let timeFilterState = STATE.timeFilterState;
-let santriDB = STATE.santriDB;
-let myDonations = STATE.myDonations;
-
-// ============================================================================
-// 3. FIREBASE INITIALIZATION
-// ============================================================================
-const app = initializeApp(CONFIG.FIREBASE_CONFIG);
+// --- INIT ---
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider();
+let currentUser = null; // Menyimpan data user yang sedang login
 
-// ============================================================================
-// 4. SANTRI MANAGER (Local Storage)
-// ============================================================================
+// --- MANAJEMEN DATA LOKAL SANTRI (Password, Avatar, Google Link) ---
 const SantriManager = {
     getKey: (nis) => `santri_pref_${nis}`,
     
@@ -104,13 +34,15 @@ const SantriManager = {
         return updated;
     },
 
+    // Mencari NIS berdasarkan Email Google yang terhubung
     findNisByEmail: (email) => {
+        // Ini agak "berat" kalau datanya jutaan, tapi untuk local storage ok
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('santri_pref_')) {
                 const data = JSON.parse(localStorage.getItem(key));
                 if (data.linkedEmail === email) {
-                    return key.replace('santri_pref_', '');
+                    return key.replace('santri_pref_', ''); // Return NIS
                 }
             }
         }
@@ -118,126 +50,43 @@ const SantriManager = {
     }
 };
 
-// ============================================================================
-// 5. UTILITY FUNCTIONS
-// ============================================================================
-const Utils = {
-    formatRupiah: (num) => "Rp " + parseInt(num).toLocaleString('id-ID'),
-    
-    timeAgo: (date) => {
-        const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-        let interval = seconds / 31536000;
-        if (interval > 1) return Math.floor(interval) + " thn lalu";
-        interval = seconds / 2592000;
-        if (interval > 1) return Math.floor(interval) + " bln lalu";
-        interval = seconds / 86400;
-        if (interval > 1) return Math.floor(interval) + " hr lalu";
-        interval = seconds / 3600;
-        if (interval > 1) return Math.floor(interval) + " jam lalu";
-        interval = seconds / 60;
-        return interval > 1 ? Math.floor(interval) + " mnt lalu" : "Baru saja";
-    },
-    
-    escapeHtml: (text) => {
-        if (!text) return text;
-        const map = { '&': "&amp;", '<': "&lt;", '>': "&gt;", '"': "&quot;", "'": "&#039;" };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    },
-    
-    animateValue: (obj, start, end, duration, isCurrency = false) => {
-        if (!obj) return;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const val = Math.floor(progress * (end - start) + start);
-            obj.innerHTML = isCurrency ? Utils.formatRupiah(val) : val;
-            if (progress < 1) window.requestAnimationFrame(step);
-        };
-        window.requestAnimationFrame(step);
-    },
-    
-    generateUniqueCode: () => Math.floor(Math.random() * 999) + 1,
-    
-    showToast: (message, type = 'warning') => {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
+// Toggle Menu Profil
+window.toggleUserDropdown = function() {
+    const menu = document.getElementById('user-dropdown-content');
+    if (menu) menu.classList.toggle('hidden');
+}
 
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-
-        const iconMap = {
-            success: 'fa-check-circle text-green-500',
-            error: 'fa-times-circle text-red-500',
-            warning: 'fa-exclamation-triangle text-orange-500'
-        };
-
-        const icon = iconMap[type] || iconMap.warning;
-        toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${message}</span>`;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = 'fadeOut 0.3s ease-out forwards';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    },
-    
-    copyText: (text) => {
-        if (navigator.clipboard?.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                Utils.showToast(`Berhasil disalin: ${text}`, 'success');
-            }).catch(() => Utils.fallbackCopy(text));
-        } else {
-            Utils.fallbackCopy(text);
-        }
-    },
-    
-    fallbackCopy: (text) => {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            Utils.showToast(`Berhasil disalin: ${text}`, 'success');
-        } catch {
-            Utils.showToast('Gagal menyalin', 'error');
-        }
-        document.body.removeChild(textarea);
+// Tutup dropdown kalau klik di luar
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('user-profile-menu');
+    const content = document.getElementById('user-dropdown-content');
+    if (menu && !menu.contains(e.target) && content && !content.classList.contains('hidden')) {
+        content.classList.add('hidden');
     }
-};
+});
 
-// Create backward compatible aliases
-const formatRupiah = Utils.formatRupiah;
-const timeAgo = Utils.timeAgo;
-const escapeHtml = Utils.escapeHtml;
-const animateValue = Utils.animateValue;
-const generateUniqueCode = Utils.generateUniqueCode;
-const showToast = Utils.showToast;
-const copyText = Utils.copyText;
+// GANTI FUNGSI doLogin DENGAN INI:
 
-// ============================================================================
-// 6. AUTH HANDLERS
-// ============================================================================
-window.doLogin = async function() {
+// Buka Modal Pilihan Login
+window.doLogin = function() {
     const modal = document.getElementById('login-modal');
     if(modal) modal.classList.remove('hidden');
 }
 
+// Tutup Modal
 window.closeLoginModal = function() {
     const modal = document.getElementById('login-modal');
     if(modal) modal.classList.add('hidden');
 }
 
+// --- 1. LOGIN GOOGLE (FIREBASE) ---
 window.loginWithGoogle = async function() {
     closeLoginModal();
     const label = document.getElementById('label-login');
     if(label) label.innerText = "Memproses...";
 
     try {
-        const result = await signInWithPopup(auth, googleProvider);
+        const result = await signInWithPopup(auth, provider);
         const googleUser = result.user;
         
         // 1. CEK APAKAH EMAIL INI TERHUBUNG DENGAN NIS?
@@ -350,11 +199,11 @@ window.doLogout = function() {
     });
 }
 
-// ============================================================================
-// 7. UI & NAVIGATION
-// ============================================================================
+// ===============================================================
+// [PERBAIKAN] LOGIKA AUTO-FILL HIERARKI (LEVEL -> ROMBEL -> NAMA)
+// ===============================================================
 function updateUIForLogin(user) {
-    STATE.currentUser = user; 
+    currentUser = user; 
 
     // 1. UI Header & Menu (Logika Tampilan)
     const btnWrapper = document.getElementById('login-btn-wrapper');
@@ -509,7 +358,7 @@ function updateUIForLogin(user) {
 }
 
 function updateUIForLogout() {
-    STATE.currentUser = null;
+    currentUser = null;
 
     const btnWrapper = document.getElementById('login-btn-wrapper');
     const profileMenu = document.getElementById('user-profile-menu');
@@ -535,13 +384,155 @@ function updateUIForLogout() {
     }
 }
 
+// --- LISTENER AUTH UTAMA ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Login via Google (Firebase)
+        // Hapus sesi santri jika ada (biar gak bentrok)
+        localStorage.removeItem('lazismu_user_santri');
+        updateUIForLogin(user);
+    } else {
+        // Firebase Logout. TAPI, Cek dulu apakah ada sesi Santri di LocalStorage?
+        const santriSession = localStorage.getItem('lazismu_user_santri');
+        if (santriSession) {
+            // Ada sesi santri, restore login
+            const santriUser = JSON.parse(santriSession);
+            updateUIForLogin(santriUser);
+        } else {
+            // Benar-benar logout
+            updateUIForLogout();
+        }
+    }
+});
+
+// Helper untuk dropdown profil di mobile/touch
+window.toggleProfileDropdown = function() {
+    const dropdown = document.getElementById('profile-dropdown-content');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
+
+/**
+ * ============================================================================
+ * SCRIPT UTAMA WEBSITE DONASI LAZISMU (UPDATED)
+ * ============================================================================
+ * Update Log:
+ * - Support format data santri JSON (Array) dan TSV (String)
+ * - Integrasi Global Leaderboard di halaman Rekap
+ * - Perbaikan logika deteksi data eksternal
+ */
+
+// Tampilkan Riwayat Donasi Pribadi
+window.showMyHistory = function() {
+    if (!currentUser) return showToast("Silakan login terlebih dahulu");
+
+    const modal = document.getElementById('my-history-modal');
+    const container = document.getElementById('my-history-content');
+    modal.classList.remove('hidden');
+    
+    const myData = riwayatData.allData.filter(item => {
+    // 1. Cek kecocokan Email (Logic dasar)
+    const matchEmail = item.Email && currentUser.email && 
+                       String(item.Email).toLowerCase() === String(currentUser.email).toLowerCase();
+    
+    // 2. Cek kecocokan NIS (Khusus Santri)
+    // Pastikan nama properti 'nisSantri' sesuai dengan header di Google Sheet/JSON Anda 
+    // (bisa 'nisSantri', 'NISSantri', atau 'NIS')
+    const itemNIS = item.nisSantri || item.NISSantri || item.NIS || "";
+    const matchNIS = currentUser.isSantri && currentUser.nis && 
+                     String(itemNIS) === String(currentUser.nis);
+
+    // Ambil data jika Email COCOK atau NIS COCOK
+    return matchEmail || matchNIS;
+});
+  
+    if (myData.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10">
+                <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-500 text-2xl"><i class="fas fa-hand-holding-heart"></i></div>
+                <h4 class="font-bold text-slate-700">Belum Ada Riwayat</h4>
+                <p class="text-sm text-slate-400 mt-2">Donasi yang Anda lakukan dengan email ini akan muncul di sini.</p>
+            </div>`;
+    } else {
+        let html = '';
+        myData.forEach(d => {
+            const statusColor = d.Status === 'Terverifikasi' ? 'text-green-600 bg-green-50 border-green-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200';
+            const statusIcon = d.Status === 'Terverifikasi' ? 'fa-check-circle' : 'fa-clock';
+            
+            html += `
+            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${d.JenisDonasi}</p>
+                    <h4 class="font-black text-slate-800 text-lg">${formatRupiah(d.Nominal)}</h4>
+                    <p class="text-xs text-slate-500 mt-1"><i class="far fa-calendar-alt mr-1"></i> ${new Date(d.Timestamp).toLocaleDateString()}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold border ${statusColor} flex items-center gap-1">
+                        <i class="fas ${statusIcon}"></i> ${d.Status || 'Proses'}
+                    </span>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+}
 // ============================================================================
-// 8. DATA LOADING & PARSING
+// 1. KONFIGURASI (PENGATURAN DASAR)
+// ============================================================================
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec";
+const WORDPRESS_SITE = 'lazismumuallimin.wordpress.com';
+const NEWS_PER_PAGE = 6;
+
+// ============================================================================
+// 2. PENYIMPANAN DATA SEMENTARA (STATE MANAGEMENT)
+// ============================================================================
+
+let donasiData = {
+    type: null,
+    subType: null,
+    nominal: 0,
+    donaturTipe: 'santri', 
+    isAlumni: false,      
+    alumniTahun: '',      
+    namaSantri: '',        
+    nisSantri: '',        
+    rombelSantri: '',     
+    nama: '',             
+    hp: '',               
+    email: '',            
+    alamat: '',           
+    doa: '',              
+    metode: null,
+    nik: ''
+};
+
+let riwayatData = {
+    allData: [],          
+    isLoaded: false,      
+    currentPage: 1,       
+    itemsPerPage: 10,
+    isLoading: false // Tambahkan ini
+};
+
+let timeFilterState = 'all';
+
+let newsState = {
+    page: 1,
+    category: '',
+    search: '',
+    posts: [],
+    isLoading: false,
+    hasMore: true,
+    isLoaded: false
+};
+
+// ============================================================================
+// 3. INISIALISASI (SAAT WEBSITE PERTAMA KALI DIBUKA)
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
 
+// Tambahkan kata 'async' di depan function
 async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
@@ -627,13 +618,118 @@ async function init() {
 }
 
 // ============================================================================
-// 9. SANTRI DATA PARSING
+// 4. SISTEM NOTIFIKASI (TOAST)
 // ============================================================================
+function showToast(message, type = 'warning') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    let icon = 'fa-exclamation-triangle text-orange-500';
+    if (type === 'success') icon = 'fa-check-circle text-green-500';
+    if (type === 'error') icon = 'fa-times-circle text-red-500';
+
+    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ============================================================================
+// 5. FUNGSI BANTUAN (UTILITIES)
+// ============================================================================
+
+function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(`Berhasil disalin: ${text}`, 'success');
+        }).catch(() => {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToast(`Berhasil disalin: ${text}`, 'success');
+    } catch (err) {
+        showToast('Gagal menyalin text', 'error');
+    }
+    document.body.removeChild(textArea);
+}
+
+function formatRupiah(num) {
+    return "Rp " + parseInt(num).toLocaleString('id-ID');
+}
+
+function timeAgo(date) {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + " thn lalu";
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + " bln lalu";
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + " hr lalu";
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + " jam lalu";
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + " mnt lalu";
+    return "Baru saja";
+}
+
+function animateValue(obj, start, end, duration, isCurrency = false) {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const val = Math.floor(progress * (end - start) + start);
+        obj.innerHTML = isCurrency ? formatRupiah(val) : val;
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function generateUniqueCode() {
+    // Menghasilkan angka acak antara 1 - 999
+    return Math.floor(Math.random() * 999) + 1;
+}
+
+function escapeHtml(text) {
+    if (!text) return text;
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// ============================================================================
+// 6. PENGOLAHAN DATA SANTRI (DIPERBAIKI)
+// ============================================================================
+let santriDB = {};
+
 function parseSantriData() {
     if (typeof santriData === 'undefined' || !Array.isArray(santriData)) return;
 
-    STATE.santriDB = {}; // Reset database lokal using STATE reference
-    santriDB = STATE.santriDB; // Update alias
+    santriDB = {}; // Reset database lokal
 
     santriData.forEach(item => {
         // Ambil data dasar
@@ -667,8 +763,9 @@ function parseSantriData() {
 }
 
 // ============================================================================
-// 10. NAVIGATION & PAGE HANDLING
+// 7. SISTEM NAVIGASI HALAMAN
 // ============================================================================
+
 function showPage(pageId) {
     document.querySelectorAll('.page-section').forEach(p => {
         p.style.display = 'none';
@@ -747,7 +844,776 @@ function setupModalLogic() {
 }
 
 // ============================================================================
-// 11. DONATION WIZARD LOGIC
+// 8. LOGIKA BERITA (WORDPRESS API)
+// ============================================================================
+
+async function fetchNewsCategories() {
+    const container = document.getElementById('news-filter-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch(`https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/categories`);
+        const data = await res.json();
+
+        let html = `<button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-brand-orange text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition">Semua</button>`;
+
+        if (data.categories) {
+            data.categories.forEach(cat => {
+                if (cat.post_count > 0) {
+                    html += `<button data-slug="${cat.slug}" onclick="filterNews('${cat.slug}')" class="news-filter-btn bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition">${cat.name}</button>`;
+                }
+            });
+        }
+        container.innerHTML = html;
+    } catch (e) {
+        console.error("Gagal ambil kategori", e);
+        container.innerHTML = `<button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-brand-orange text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition">Semua</button>`;
+    }
+}
+
+async function fetchNews(isLoadMore = false) {
+    if (newsState.isLoading) return;
+    newsState.isLoading = true;
+
+    if (isLoadMore) {
+        const btnMore = document.getElementById('btn-news-load-more');
+        if (btnMore) btnMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
+    } else {
+        const grid = document.getElementById('news-grid');
+        if(grid) grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-400">Memuat berita terbaru...</p></div>';
+    }
+
+    let apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/posts/?number=${NEWS_PER_PAGE}&page=${newsState.page}`;
+
+    if (newsState.search) {
+        apiURL += `&search=${encodeURIComponent(newsState.search)}`;
+    }
+    if (newsState.category) {
+        apiURL += `&category=${encodeURIComponent(newsState.category)}`;
+    }
+
+    try {
+        const res = await fetch(apiURL);
+        const data = await res.json();
+
+        newsState.isLoading = false;
+        newsState.isLoaded = true;
+
+        if (data.posts.length < NEWS_PER_PAGE) newsState.hasMore = false;
+        else newsState.hasMore = true;
+
+        if (isLoadMore) {
+            newsState.posts = [...newsState.posts, ...data.posts];
+        } else {
+            newsState.posts = data.posts;
+            const grid = document.getElementById('news-grid');
+            if(grid) grid.innerHTML = '';
+        }
+
+        if (newsState.posts.length === 0) {
+            let pesanKosong = "Tidak ada berita ditemukan.";
+            if (newsState.category) pesanKosong = `Belum ada berita di kategori ini.`;
+
+            const grid = document.getElementById('news-grid');
+            if(grid) {
+                grid.innerHTML = `
+                <div class="col-span-full text-center py-24">
+                    <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
+                        <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
+                        <i class="far fa-folder-open text-5xl text-slate-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
+                    <p class="text-slate-400 max-w-xs mx-auto mb-8">${pesanKosong}</p>
+                    <button onclick="resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
+                        <i class="fas fa-undo mr-2"></i> Reset Filter
+                    </button>
+                </div>`;
+            }
+        } else {
+            renderNewsGrid(isLoadMore ? data.posts : newsState.posts, isLoadMore);
+        }
+
+        const btnMore = document.getElementById('btn-news-load-more');
+        if (btnMore) {
+            btnMore.innerHTML = 'Muat Lebih Banyak <i class="fas fa-sync-alt ml-2"></i>';
+            if (newsState.hasMore) btnMore.classList.remove('hidden');
+            else btnMore.classList.add('hidden');
+        }
+
+    } catch (err) {
+        console.error(err);
+        newsState.isLoading = false;
+        const grid = document.getElementById('news-grid');
+        if(grid) grid.innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita. Periksa koneksi.</p>';
+    }
+}
+
+function renderNewsGrid(postsToRender, appendMode) {
+    const container = document.getElementById('news-grid');
+    if(!container) return;
+
+    let html = '';
+    let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
+
+    const getBadgeColor = (catName) => {
+        const colors = [
+            'bg-blue-50 text-blue-600 border-blue-100',
+            'bg-orange-50 text-orange-600 border-orange-100',
+            'bg-green-50 text-green-600 border-green-100',
+            'bg-purple-50 text-purple-600 border-purple-100'
+        ];
+        let hash = 0;
+        for (let i = 0; i < catName.length; i++) hash = catName.charCodeAt(i) + ((hash << 5) - hash);
+        return colors[Math.abs(hash) % colors.length];
+    };
+
+    postsToRender.forEach((post, i) => {
+        const globalIndex = startIndex + i;
+        const img = post.featured_image || 'https://via.placeholder.com/600x400?text=Lazismu+Update';
+
+        const dateObj = new Date(post.date);
+        const day = dateObj.toLocaleDateString('id-ID', {
+            day: '2-digit'
+        });
+        const month = dateObj.toLocaleDateString('id-ID', {
+            month: 'short'
+        });
+        
+        const categoryName = post.categories ? Object.values(post.categories)[0].name : 'Umum';
+        const badgeClass = getBadgeColor(categoryName);
+
+        html += `
+        <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="openNewsModal(${globalIndex})">
+            <div class="relative h-60 overflow-hidden">
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
+                <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
+                    <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
+                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
+                </div>
+                <div class="absolute bottom-4 left-4 z-30">
+                    <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
+                        ${categoryName}
+                    </span>
+                </div>
+            </div>
+            <div class="p-6 md:p-8 flex flex-col flex-grow relative">
+                <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                    ${post.title}
+                </h3>
+                <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
+                    ${stripHtml(post.excerpt)}
+                </p>
+                <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <i class="far fa-user-circle"></i> Admin Lazismu
+                    </div>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                        <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
+                    </span>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    if (appendMode) container.innerHTML += html;
+    else container.innerHTML = html;
+}
+
+function handleNewsSearch(e) {
+    if (e.key === 'Enter') {
+        newsState.search = e.target.value;
+        newsState.page = 1;
+        newsState.hasMore = true;
+        fetchNews();
+    }
+}
+
+function filterNews(cat) {
+    newsState.category = cat;
+    newsState.search = '';
+    document.getElementById('news-search-input').value = '';
+    newsState.page = 1;
+    newsState.hasMore = true;
+
+    document.querySelectorAll('.news-filter-btn').forEach(btn => {
+        const btnSlug = btn.getAttribute('data-slug');
+        if (btnSlug === cat) {
+            btn.classList.remove('bg-gray-100', 'text-gray-600');
+            btn.classList.add('bg-brand-orange', 'text-white');
+        } else {
+            btn.classList.add('bg-gray-100', 'text-gray-600');
+            btn.classList.remove('bg-brand-orange', 'text-white');
+        }
+    });
+
+    fetchNews();
+}
+
+function loadMoreNews() {
+    newsState.page++;
+    fetchNews(true);
+}
+
+function resetNewsFilter() {
+    filterNews('');
+}
+
+function openNewsModal(index) {
+    const post = newsState.posts[index];
+    if (!post) return;
+
+    const modal = document.getElementById('news-modal');
+    const panel = document.getElementById('news-modal-panel');
+    const container = document.getElementById('news-modal-content');
+
+    const dateObj = new Date(post.date);
+    const date = dateObj.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    const img = post.featured_image || 'https://via.placeholder.com/1200x600?text=Lazismu+Update';
+    const category = post.categories ? Object.values(post.categories)[0].name : 'Berita';
+    const author = post.author.name || 'Admin Lazismu';
+    const avatar = post.author.avatar_URL || 'https://ui-avatars.com/api/?name=Admin+Lazismu&background=random';
+
+    container.innerHTML = `
+        <div class="relative h-[40vh] md:h-[50vh] w-full group overflow-hidden">
+            <img src="${img}" class="w-full h-full object-cover" alt="Hero Image">
+            <div class="absolute inset-0 bg-slate-900/70"></div>
+            <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 z-10">
+                <span class="inline-block px-3 py-1 rounded bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-3">
+                    ${category}
+                </span>
+                <h2 class="text-2xl md:text-4xl font-black text-white leading-tight mb-4 drop-shadow-md">
+                    ${post.title}
+                </h2>
+                <div class="flex items-center gap-3 text-white/90">
+                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}">
+                    <div class="text-xs md:text-sm font-medium">
+                        <span>${author}</span> • <span class="opacity-80">${date}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto px-5 py-10 md:py-12">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-6 mb-8">
+                <div class="flex items-center gap-2 text-slate-500 text-sm font-bold">
+                    <i class="fas fa-share-alt"></i> Bagikan
+                </div>
+                <div class="flex gap-2">
+                    <a href="https://wa.me/?text=${encodeURIComponent(post.title + ' ' + post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-black transition group">
+                          <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
+                    </a>
+                    <button onclick="copyText('${post.URL}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
+                </div>
+            </div>
+
+            <div class="wp-content text-base md:text-lg text-slate-700 font-sans leading-loose text-justify">
+                ${post.content}
+            </div>
+
+            <div class="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                <h4 class="font-bold text-slate-800 mb-3">Mari wujudkan lebih banyak kebaikan</h4>
+                <button onclick="closeNewsModal(); showPage('donasi');" class="bg-slate-900 text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-600 transition shadow-lg flex items-center justify-center gap-2 mx-auto">
+                    <i class="fas fa-heart text-red-500"></i> Donasi Sekarang
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+    const progress = document.getElementById('reading-progress');
+    if (progress) progress.style.width = '0%';
+
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        panel.classList.remove('translate-y-full', 'scale-95');
+        panel.classList.add('translate-y-0', 'scale-100');
+    }, 10);
+
+    document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+    const modal = document.getElementById('news-modal');
+    const panel = document.getElementById('news-modal-panel');
+
+    modal.classList.add('opacity-0');
+    panel.classList.remove('scale-100');
+    panel.classList.add('scale-95');
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+    document.body.style.overflow = 'auto';
+}
+
+function stripHtml(html) {
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
+
+// ============================================================================
+// 9. FITUR REKAPITULASI KELAS (EXPORT PDF) & LEADERBOARD
+// ============================================================================
+function setupRekapLogic() {
+    const lvlSelect = document.getElementById('rekap-level-select');
+    const clsSelect = document.getElementById('rekap-kelas-select');
+    const btnExport = document.getElementById('btn-export-pdf');
+
+    if (!lvlSelect || !clsSelect) return;
+
+    if (!clsSelect.value) toggleRekapDisplay(false);
+
+    lvlSelect.onchange = () => {
+        const lvl = lvlSelect.value;
+        clsSelect.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+
+        if (lvl && santriDB[lvl]) {
+            clsSelect.disabled = false;
+            
+            // 1. TAMPILKAN KELAS FISIK / REGULER
+            const classes = Object.keys(santriDB[lvl]).sort();
+            classes.forEach(cls => {
+                clsSelect.appendChild(createOption(cls, `Kelas ${cls}`));
+            });
+
+            // ============================================================
+            // 2. AUTO-DETECT TAHFIZH (LOGIKA BARU: CEK BEDA MUSYRIF)
+            // ============================================================
+            
+            let adaAnakTahfizhBedaMusyrif = false;
+
+            classes.forEach(namaKelas => {
+                const dataSatuKelas = santriDB[lvl][namaKelas];
+                
+                // Ambil Data Musyrif Kelas (Reguler) dari data-kelas.js
+                // Pastikan handle jika classMetaData belum ada/undefined
+                const metaKelas = (typeof classMetaData !== 'undefined' ? classMetaData[namaKelas] : null) || { musyrif: '' };
+                const musyrifKelas = (metaKelas.musyrif || "").trim().toLowerCase();
+
+                // Cek apakah ada santri yang punya Musyrif Khusus DAN Berbeda dengan Musyrif Kelas
+                if (dataSatuKelas.some(s => {
+                    const musyrifTahfizh = (s.musyrifKhusus || "").trim().toLowerCase();
+                    // Syarat: Punya Musyrif Khusus DAN Namanya Beda dengan Musyrif Kelas
+                    return musyrifTahfizh !== "" && musyrifTahfizh !== musyrifKelas;
+                })) {
+                    adaAnakTahfizhBedaMusyrif = true;
+                }
+            });
+
+            // Jika ditemukan anak tahfizh yang musyrifnya BEDA, munculkan tombol gabungan
+            if (adaAnakTahfizhBedaMusyrif) {
+                // Kecuali untuk kasus spesial (4 & 6), kita pakai nama standar
+                if (lvl !== '4' && lvl !== '6') {
+                    clsSelect.appendChild(createOption(`tahfizh-${lvl}`, `Kelas ${lvl} Tahfizh (Khusus)`));
+                }
+            }
+
+            // ============================================================
+            // 3. LOGIKA SPESIAL GABUNGAN (Tetap Manual untuk Lintas Level)
+            // ============================================================
+            // Karena ini menggabungkan dua level berbeda, harus ditulis manual
+            if (lvl === '4' || lvl === '6') {
+                clsSelect.appendChild(createOption('tahfizh-4,6', 'Kelas 4 & 6 Tahfizh'));
+            }
+
+        } else {
+            clsSelect.disabled = true;
+        }
+        
+        toggleRekapDisplay(false);
+        renderGlobalLeaderboard(); 
+    };
+
+    // Helper sederhana
+    function createOption(val, text) {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.innerText = text;
+        return opt;
+    }
+
+    clsSelect.onchange = () => {
+        const cls = clsSelect.value;
+        if (cls) {
+            toggleRekapDisplay(true);
+            renderRekapTable(cls);
+        } else {
+            toggleRekapDisplay(false);
+            renderGlobalLeaderboard();
+        }
+    };
+
+    if (btnExport) btnExport.onclick = () => exportRekapPDF();
+}
+
+function toggleRekapDisplay(showDetail) {
+    const ph = document.getElementById('rekap-placeholder');
+    const sum = document.getElementById('rekap-summary');
+    const tbl = document.getElementById('rekap-table-container');
+    const btnExport = document.getElementById('btn-export-pdf');
+
+    // showDetail = true  => Tampilkan Tabel Kelas (Mode Detail)
+    // showDetail = false => Tampilkan Leaderboard (Mode Umum)
+
+    if (showDetail) {
+        ph.classList.add('hidden'); // Sembunyikan placeholder/leaderboard
+        sum.classList.remove('hidden');
+        tbl.classList.remove('hidden');
+        if (btnExport) btnExport.disabled = false;
+    } else {
+        ph.classList.remove('hidden'); // Tampilkan placeholder/leaderboard
+        sum.classList.add('hidden');
+        tbl.classList.add('hidden');
+        if (btnExport) btnExport.disabled = true;
+        renderGlobalLeaderboard(); // Pastikan leaderboard dirender
+    }
+}
+
+function renderGlobalLeaderboard() {
+    const container = document.getElementById('rekap-placeholder');
+    if (!container) return;
+
+    // Loading State (Desain Baru)
+    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-24">
+                <div class="w-24 h-24 rounded-full border-4 border-orange-100 border-t-orange-500 animate-spin mb-6"></div>
+                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Sedang Menghitung Donasi...</h3>
+            </div>
+        `;
+        return;
+    }
+
+    // 1. Agregasi Data (LOGIKA TETAP)
+    const classTotals = {};
+    riwayatData.allData.forEach(d => {
+        const rombel = d.KelasSantri || d.rombelSantri;
+        if (rombel) {
+            const val = parseInt(d.Nominal) || 0;
+            classTotals[rombel] = (classTotals[rombel] || 0) + val;
+        }
+    });
+
+    // 2. Sort & Structure (LOGIKA TETAP)
+    const leaderboard = Object.keys(classTotals).map(key => ({
+        kelas: key,
+        total: classTotals[key]
+    })).sort((a, b) => b.total - a.total);
+
+    if (leaderboard.length === 0) {
+        container.innerHTML = `<div class="p-10 text-center border-2 border-dashed border-slate-300 rounded-xl">Data Kosong</div>`;
+        return;
+    }
+
+    const maxVal = leaderboard[0].total;
+
+    // 3. Render HTML (DESAIN REVOLUSIONER)
+    let html = `
+        <div class="max-w-5xl mx-auto px-4 font-sans">
+            <div class="text-center mb-12">
+                <span class="inline-block py-1 px-3 rounded-lg bg-slate-900 text-white text-xs font-bold tracking-widest mb-3 uppercase">Realtime Leaderboard</span>
+                <h3 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase">
+                    Klasemen <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500">Donasi</span>
+                </h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+    `;
+
+    leaderboard.forEach((item, index) => {
+        const rank = index + 1;
+        const percent = (item.total / maxVal) * 100;
+        
+        // Data Meta
+        const meta = (typeof classMetaData !== 'undefined' ? classMetaData[item.kelas] : null) || { 
+            wali: '-', 
+            musyrif: '-' 
+        };
+
+        // --- LOGIKA TAMPILAN BERBEDA UNTUK TOP 3 VS SISANYA ---
+        
+        if (rank <= 3) {
+            // === DESAIN KARTU PODIUM (VERTIKAL) UNTUK JUARA 1-3 ===
+            let theme = {};
+            
+            if (rank === 1) {
+                theme = {
+                    bg: "bg-gradient-to-b from-yellow-50 to-white border-yellow-400 ring-4 ring-yellow-400/20",
+                    badge: "bg-yellow-500 text-white",
+                    icon: "fa-crown animate-bounce",
+                    text: "text-yellow-700",
+                    glow: "shadow-[0_20px_50px_-12px_rgba(234,179,8,0.3)]",
+                    col: "md:col-span-1 md:-mt-8 order-1 md:order-2 z-20" // Juara 1 naik ke atas & di tengah
+                };
+            } else if (rank === 2) {
+                theme = {
+                    bg: "bg-white border-slate-300",
+                    badge: "bg-slate-400 text-white",
+                    icon: "fa-medal",
+                    text: "text-slate-600",
+                    glow: "shadow-xl",
+                    col: "md:col-span-1 order-2 md:order-1 z-10" // Kiri
+                };
+            } else {
+                theme = {
+                    bg: "bg-white border-orange-200",
+                    badge: "bg-orange-700 text-white",
+                    icon: "fa-medal",
+                    text: "text-orange-800",
+                    glow: "shadow-xl",
+                    col: "md:col-span-1 order-3 md:order-3 z-10" // Kanan
+                };
+            }
+
+            html += `
+                <div class="${theme.col} relative flex flex-col items-center text-center p-6 rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
+                    
+                    <div class="w-16 h-16 rounded-2xl ${theme.badge} flex items-center justify-center text-2xl shadow-lg mb-4 rotate-3">
+                        <i class="fas ${theme.icon}"></i>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Terkumpul</span>
+                        <h4 class="text-3xl font-black ${theme.text} tracking-tight">${formatRupiah(item.total)}</h4>
+                    </div>
+
+                    <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${item.kelas}</h5>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${meta.wali}</p>
+                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${meta.musyrif}</p>
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
+                        <div class="h-full ${rank === 1 ? 'bg-yellow-500' : 'bg-slate-800'} w-full" style="width: ${percent}%"></div>
+                    </div>
+                </div>
+            `;
+        } 
+        else {
+            // === DESAIN LIST COMPACT (HORIZONTAL) UNTUK PERINGKAT 4+ ===
+            // Mereka akan mengambil lebar penuh (col-span-3)
+            
+            html += `
+                <div class="md:col-span-3 order-last group bg-white p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow-sm flex flex-col md:flex-row items-center gap-4 transition-all hover:bg-slate-50">
+                    
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-sm border border-slate-200">
+                        #${rank}
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left w-full">
+                        <div class="flex items-center justify-center md:justify-start gap-2">
+                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h5>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${meta.wali}</span>
+                        </div>
+                        
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+                             <div class="h-full bg-slate-400" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 text-right">
+                        <span class="block font-bold text-slate-700 text-lg">${formatRupiah(item.total)}</span>
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    html += `
+            </div> <div class="mt-8 text-center text-slate-400 text-xs font-mono">
+                *Data diurutkan berdasarkan nominal tertinggi
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+    container.classList.remove('hidden');
+}
+
+function renderRekapTable(cls) {
+    const tbody = document.getElementById('rekap-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    let students = [];
+    let namaWali = "";
+    let namaMusyrif = "";
+
+    // === SKENARIO 1: PILIHAN KHUSUS TAHFIZH (VIA ID 'tahfizh-...') ===
+    if (cls.startsWith('tahfizh-')) {
+        const targetLevels = cls.replace('tahfizh-', '').split(',');
+
+        targetLevels.forEach(lvl => {
+            if (santriDB[lvl]) {
+                Object.keys(santriDB[lvl]).forEach(realClass => {
+                    const classData = santriDB[lvl][realClass];
+                    
+                    // --- LOGIKA FILTER BARU ---
+                    // Ambil nama Musyrif Kelas (Asrama) untuk kelas ini
+                    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[realClass] : null) || { musyrif: '' };
+                    const mKelas = (meta.musyrif || "").trim().toLowerCase();
+
+                    // Filter: Ambil santri yg punya Musyrif Khusus DAN Musyrifnya BEDA dengan Musyrif Kelas
+                    const filtered = classData.filter(s => {
+                        const mTahfizh = (s.musyrifKhusus || "").trim().toLowerCase();
+                        
+                        // 1. Harus punya musyrif tahfizh
+                        if (!mTahfizh) return false;
+                        
+                        // 2. Namanya harus BEDA dengan musyrif kelas
+                        // (Ini yang membuat anak 2A & 2B tidak masuk sini, tapi anak 2C masuk)
+                        return mTahfizh !== mKelas;
+                    });
+                    
+                    students = students.concat(filtered);
+                });
+            }
+        });
+
+        namaWali = "Gabungan Lintas Kelas";
+        namaMusyrif = students.length > 0 ? students[0].musyrifKhusus : "-";
+    } 
+    
+    // === SKENARIO 2: PILIHAN KELAS STANDAR (Misal '2A', '2B') ===
+    else {
+        const level = cls.charAt(0);
+        // Tampilkan SEMUA (termasuk Tahfizh yang musyrifnya sama)
+        students = santriDB[level] ? santriDB[level][cls] : [];
+        
+        const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
+            wali: '-',
+            musyrif: '-'
+        };
+        namaWali = meta.wali;
+        namaMusyrif = meta.musyrif; 
+    }
+
+    // === RENDER TABEL (TIDAK ADA PERUBAHAN LOGIKA DI BAWAH INI) ===
+    if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td></tr>';
+        document.getElementById('rekap-wali').innerText = "-";
+        document.getElementById('rekap-musyrif').innerText = "-";
+        document.getElementById('rekap-total-kelas').innerText = "Rp 0";
+        return;
+    }
+
+    students.sort((a, b) => a.nama.localeCompare(b.nama));
+    let totalKelas = 0;
+
+    students.forEach((s, index) => {
+        let qris = 0, transfer = 0, tunai = 0;
+
+        riwayatData.allData.forEach(d => {
+            const matchNama = d.NamaSantri && s.nama && d.NamaSantri.trim() === s.nama.trim();
+            const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
+
+            if (matchNama && matchKelas) {
+                const nom = parseInt(d.Nominal) || 0;
+                if (d.MetodePembayaran === 'QRIS') qris += nom;
+                else if (d.MetodePembayaran === 'Transfer') transfer += nom;
+                else tunai += nom;
+            }
+        });
+        
+        const subtotal = qris + transfer + tunai;
+        totalKelas += subtotal;
+
+        const badgeKelas = cls.startsWith('tahfizh-') ? 
+            `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
+
+        // Label Tahfizh (Tetap muncul di semua mode, asalkan punya data musyrif khusus)
+        let labelTahfizh = '';
+        if (s.musyrifKhusus) {
+             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+        tr.innerHTML = `
+            <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
+            <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">
+                ${s.nama} ${badgeKelas} ${labelTahfizh}
+            </td>
+            <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
+            <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>
+            <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${tunai > 0 ? formatRupiah(tunai) : '-'}</td>
+            <td class="px-6 py-4 text-right font-bold text-orange-600 whitespace-nowrap">${formatRupiah(subtotal)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    const elWali = document.getElementById('rekap-wali');
+    const elMusyrif = document.getElementById('rekap-musyrif');
+    const elTotal = document.getElementById('rekap-total-kelas');
+
+    if (elWali) elWali.innerText = namaWali;
+    if (elMusyrif) elMusyrif.innerText = namaMusyrif;
+    if (elTotal) elTotal.innerText = formatRupiah(totalKelas);
+}
+
+function exportRekapPDF() {
+    if (!window.jspdf) {
+        showToast("Library PDF belum dimuat.", "error");
+        return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const clsSelect = document.getElementById('rekap-kelas-select');
+    const cls = clsSelect ? clsSelect.value : '';
+    const date = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
+    const meta = (typeof classMetaData !== 'undefined' ? classMetaData[cls] : null) || {
+        wali: '-',
+        musyrif: '-'
+    };
+
+    doc.setFontSize(18);
+    doc.setTextColor(241, 90, 34);
+    doc.text("REKAPITULASI PEROLEHAN ZIS", 14, 20);
+
+    doc.setFontSize(12);
+    doc.setTextColor(100);
+    doc.text(`Kelas: ${cls}`, 14, 30);
+    doc.text(`Tanggal: ${date}`, 14, 36);
+    doc.text(`Wali Kelas: ${meta.wali}`, 120, 30);
+    doc.text(`Musyrif: ${meta.musyrif}`, 120, 36);
+
+    doc.autoTable({
+        html: '#rekap-table-container table',
+        startY: 45,
+        theme: 'grid',
+        headStyles: {
+            fillColor: [241, 90, 34]
+        },
+        styles: {
+            fontSize: 8
+        },
+    });
+
+    const totalEl = document.getElementById('rekap-total-kelas');
+    const total = totalEl ? totalEl.innerText : 'Rp 0';
+
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 50;
+    doc.text(`Total Perolehan: ${total}`, 14, finalY + 10);
+
+    doc.save(`Rekap ZIS_Kelas ${cls}_${date}.pdf`);
+}
+
+// ============================================================================
+// 10. FORMULIR DONASI BERTAHAP (WIZARD) - DENGAN LOGIKA DESAIN BARU
 // ============================================================================
 const STEP_TITLES = [{
         title: "Pilih Jenis Kebaikan",
@@ -919,6 +1785,75 @@ function setupWizardLogic() {
             if (step1Nav) step1Nav.classList.remove('hidden');
         };
     });
+
+    // ... (Sisa logika wizard tetap sama seperti sebelumnya) ...
+
+    const fitrahInput = document.getElementById('fitrah-jumlah-orang');
+    if (fitrahInput) {
+        fitrahInput.oninput = (e) => {
+            const total = (parseInt(e.target.value) || 0) * 37500;
+            const totalInput = document.getElementById('fitrah-total');
+            if (totalInput) totalInput.value = formatRupiah(total);
+            donasiData.nominal = total;
+        };
+    }
+
+    const btnFitrahNext = document.getElementById('btn-fitrah-next');
+    if (btnFitrahNext) {
+        btnFitrahNext.onclick = () => {
+            if (donasiData.nominal < 37500) return showToast("Minimal 1 jiwa");
+            goToStep(3);
+        };
+    }
+
+    const btnZakatCheck = document.getElementById('zakat-check-button');
+    if (btnZakatCheck) {
+        btnZakatCheck.onclick = () => {
+            const emasEl = document.getElementById('harga-emas');
+            const hasilEl = document.getElementById('penghasilan-bulanan');
+            const emas = parseInt(emasEl.value.replace(/\D/g, '')) || 0;
+            const hasil = parseInt(hasilEl.value.replace(/\D/g, '')) || 0;
+            const nisab = (emas * 85) / 12;
+
+            const resultDiv = document.getElementById('zakat-result');
+            const msg = document.getElementById('zakat-result-message');
+            const btnMaal = document.getElementById('btn-maal-next');
+            const btnSkip = document.getElementById('zakat-lanjutkan-infaq');
+
+            if (resultDiv) resultDiv.classList.remove('hidden');
+
+            if (hasil >= nisab) {
+                const zakat = hasil * 0.025;
+                if (msg) msg.innerHTML = `<span class="text-green-600 block">WAJIB ZAKAT</span>Kewajiban: ${formatRupiah(zakat)}`;
+                donasiData.nominal = zakat;
+                if (btnMaal) btnMaal.classList.remove('hidden');
+                if (btnSkip) btnSkip.classList.add('hidden');
+            } else {
+                if (msg) msg.innerHTML = `<span class="text-orange-600 block">BELUM WAJIB</span>Belum mencapai nishab (${formatRupiah(nisab)})`;
+                if (btnMaal) btnMaal.classList.add('hidden');
+                if (btnSkip) btnSkip.classList.remove('hidden');
+            }
+        };
+    }
+
+    const btnMaalNext = document.getElementById('btn-maal-next');
+    if (btnMaalNext) btnMaalNext.onclick = () => goToStep(3);
+
+    const btnZakatSkip = document.getElementById('zakat-lanjutkan-infaq');
+    if (btnZakatSkip) {
+        btnZakatSkip.onclick = () => {
+            const infaqBtn = document.querySelector('[data-type="Infaq"]');
+            if (infaqBtn) infaqBtn.click();
+        };
+    }
+
+    const btnNextStep2 = document.querySelector('[data-next-step="2"]');
+    if (btnNextStep2) {
+        btnNextStep2.onclick = () => {
+            if (donasiData.type === 'Infaq' && !donasiData.subType) return showToast("Pilih peruntukan infaq terlebih dahulu");
+            goToStep(2);
+        };
+    }
 
     // --- LANGKAH 2: Tentukan Nominal (LOGIKA TOMBOL PRESET) ---
     document.querySelectorAll('.nominal-btn').forEach(btn => {
@@ -1329,7 +2264,7 @@ function setupWizardLogic() {
                                         <i class="fas fa-exclamation text-sm"></i>
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-yellow-800 uppercase tracking-wider mb-0.5">PENTING</p>
+                                        <p class="text-[10px] font-bold text-yellow-800 uppercase tracking-wide mb-0.5">PENTING</p>
                                         <p class="text-xs text-slate-600 leading-tight">
                                             Mohon transfer tepat hingga <span class="font-black text-orange-600 border-b-2 border-orange-200">${donasiData.kodeUnik}</span> digit terakhir agar terverifikasi otomatis.
                                         </p>
@@ -1411,7 +2346,7 @@ function setupWizardLogic() {
                                         <img src="bank-bni.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank BNI</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">3440 000 348</p>
                                     </div>
                                 </div>
@@ -1426,7 +2361,7 @@ function setupWizardLogic() {
                                         <img src="bank-bsi.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">BSI (Syariah)</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">7930 030 303</p>
                                     </div>
                                 </div>
@@ -1441,7 +2376,7 @@ function setupWizardLogic() {
                                         <img src="bank-bpd.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">BPD DIY Syariah</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">801 241 004 624</p>
                                     </div>
                                 </div>
@@ -1467,7 +2402,7 @@ function setupWizardLogic() {
                 if (prayerContainer) prayerContainer.innerHTML = prayerHTML;
 
                 // 2. Masukkan Payment ke Container Bawah
-                const paymentContainer = document.getElementById('donasi-payment-instructions');
+                const paymentContainer = document.getElementById('payment-methods-content');
                 if (paymentContainer) paymentContainer.innerHTML = paymentDetails;
 
                 // Tampilkan Wrapper Utama
@@ -1542,15 +2477,16 @@ function setupWizardLogic() {
 }
 
 // ============================================================================
-// 12. LOGIKA RIWAYAT DONASI & STATISTIK
+// 11. LOGIKA RIWAYAT DONASI & STATISTIK
 // ============================================================================
 function setupHistoryLogic() {
+    // Mengatur tombol Next/Prev halaman riwayat
     const prevBtn = document.getElementById('riwayat-prev');
     const nextBtn = document.getElementById('riwayat-next');
 
     if (prevBtn) {
         prevBtn.onclick = () => {
-            if (riwayatData.currentPage >  1) {
+            if (riwayatData.currentPage > 1) {
                 riwayatData.currentPage--;
                 renderRiwayatList();
                 renderPagination();
@@ -1571,13 +2507,11 @@ function setupHistoryLogic() {
     // Filter jenis donasi, metode, dan tanggal
     ['filter-jenis', 'filter-metode', 'filter-start-date', 'filter-end-date'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            el.onchange = () => {
-                riwayatData.currentPage = 1;
-                renderRiwayatList();
-                renderPagination();
-            };
-        }
+        if (el) el.onchange = () => {
+            riwayatData.currentPage = 1;
+            renderRiwayatList();
+            renderPagination();
+        };
     });
 
     // Filter cepat waktu (Hari ini, Minggu ini, dll)
@@ -1740,7 +2674,7 @@ function renderHomeLatestDonations() {
                 <i class="fas ${iconClass}"></i>
             </div>
             
-            <span class="text-[10px] font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm ml-auto sm:ml-0" title="${displayType}">
+            <span class="text-[10px] font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
                 ${displayType}
             </span>
         </div>
@@ -1829,8 +2763,358 @@ function renderHomeLatestDonations() {
     container.innerHTML = html;
 }
 
+// Menghitung statistik donasi (Total, Rata-rata, dll)
+function calculateStats() {
+    const data = riwayatData.allData;
+    let total = 0;
+    let todayTotal = 0;
+    let maxDonation = 0;
+    let maxDonationName = "-";
+    const todayStr = new Date().toDateString();
+
+    const classMapMTs = {}, classMapMA = {};
+    const santriDonasiMTs = {}, santriDonasiMA = {};
+    const santriFreqMTs = {}, santriFreqMA = {};
+    const donationTypes = {};
+
+    let totalFitrah = 0;
+    let totalMaal = 0;
+    let totalInfaq = 0;
+
+    data.forEach(d => {
+        const val = parseInt(d.Nominal) || 0;
+        total += val;
+        if (val > maxDonation) {
+            maxDonation = val;
+            maxDonationName = d.NamaDonatur || "Hamba Allah";
+        }
+
+        const dateObj = new Date(d.Timestamp);
+        if (dateObj.toDateString() === todayStr) todayTotal += val;
+
+        const typeName = d.JenisDonasi || "Lainnya";
+        donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
+
+        if (typeName.includes('Fitrah')) totalFitrah += val;
+        else if (typeName.includes('Maal')) totalMaal += val;
+        else if (typeName.includes('Infaq')) totalInfaq += val;
+
+        const rombel = d.KelasSantri || d.rombelSantri;
+        const nama = d.NamaSantri || d.namaSantri;
+
+        if (rombel && nama) {
+            const lvl = parseInt(rombel.charAt(0));
+            const isMTs = lvl <= 3;
+            const mapClass = isMTs ? classMapMTs : classMapMA;
+            const mapSantri = isMTs ? santriDonasiMTs : santriDonasiMA;
+            const mapFreq = isMTs ? santriFreqMTs : santriFreqMA;
+
+            mapClass[rombel] = (mapClass[rombel] || 0) + val;
+            const key = `${nama} (${rombel})`;
+            mapSantri[key] = (mapSantri[key] || 0) + val;
+            mapFreq[key] = (mapFreq[key] || 0) + 1;
+        }
+    });
+
+    const getPopular = (obj) => {
+        let popular = "-";
+        let max = 0;
+        for (const [key, count] of Object.entries(obj)) {
+            if (count > max) {
+                max = count;
+                popular = key;
+            }
+        }
+        return popular;
+    };
+
+    const popularType = getPopular(donationTypes);
+
+    const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = txt;
+    };
+    const getMax = (map, type = 'val') => {
+        let maxK = 'N/A',
+            maxV = 0;
+        for (const [k, v] of Object.entries(map)) {
+            if (v > maxV) {
+                maxV = v;
+                maxK = k;
+            }
+        }
+        return {
+            key: maxK,
+            val: type === 'val' ? formatRupiah(maxV) : maxV + 'x'
+        };
+    };
+
+    const elTotal = document.getElementById('stat-total-donasi');
+    if (elTotal) animateValue(elTotal, 0, total, 2000, true);
+
+    const elTrans = document.getElementById('stat-total-transaksi');
+    if (elTrans) animateValue(elTrans, 0, data.length, 1500);
+
+    const elRata = document.getElementById('stat-donasi-rata');
+    if (elRata) animateValue(elRata, 0, data.length ? total / data.length : 0, 1500, true);
+
+    const elMax = document.getElementById('stat-donasi-tertinggi');
+    if (elMax) animateValue(elMax, 0, maxDonation, 1500, true);
+    setText('stat-donasi-tertinggi-nama', maxDonationName);
+
+    const elRTotal = document.getElementById('stat-r-total');
+    if (elRTotal) animateValue(elRTotal, 0, total, 2000, true);
+
+    const elRTrans = document.getElementById('stat-r-transaksi');
+    if (elRTrans) animateValue(elRTrans, 0, data.length, 1500);
+
+    const elRHari = document.getElementById('stat-r-hari-ini');
+    if (elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
+
+    const elRTipe = document.getElementById('stat-r-tipe-top');
+    if (elRTipe) elRTipe.innerText = popularType;
+
+    const elDetFitrah = document.getElementById('stat-detail-fitrah');
+    if (elDetFitrah) animateValue(elDetFitrah, 0, totalFitrah, 1500, true);
+
+    const elDetMaal = document.getElementById('stat-detail-maal');
+    if (elDetMaal) animateValue(elDetMaal, 0, totalMaal, 1500, true);
+
+    const elDetInfaq = document.getElementById('stat-detail-infaq');
+    if (elDetInfaq) animateValue(elDetInfaq, 0, totalInfaq, 1500, true);
+
+    const mtsClass = getMax(classMapMTs);
+    setText('stat-mts-kelas-max', mtsClass.key);
+    setText('stat-mts-kelas-total', mtsClass.val);
+
+    const mtsSantri = getMax(santriDonasiMTs);
+    setText('stat-mts-santri-max-donasi', mtsSantri.key.split('(')[0]);
+    setText('stat-mts-santri-total-donasi', mtsSantri.val);
+
+    const mtsFreq = getMax(santriFreqMTs, 'freq');
+    setText('stat-mts-santri-freq-nama', mtsFreq.key.split('(')[0]);
+    setText('stat-mts-santri-freq-val', mtsFreq.val);
+
+    const maClass = getMax(classMapMA);
+    setText('stat-ma-kelas-max', maClass.key);
+    setText('stat-ma-kelas-total', maClass.val);
+
+    const maSantri = getMax(santriDonasiMA);
+    setText('stat-ma-santri-max-donasi', maSantri.key.split('(')[0]);
+    setText('stat-ma-santri-total-donasi', maSantri.val);
+
+    const maFreq = getMax(santriFreqMA, 'freq');
+    setText('stat-ma-santri-freq-nama', maFreq.key.split('(')[0]);
+    setText('stat-ma-santri-freq-val', maFreq.val);
+}
+
+function renderPagination() {
+    const items = getFilteredData();
+    const totalPages = Math.ceil(items.length / riwayatData.itemsPerPage);
+
+    const pageInfo = document.getElementById('riwayat-page-info');
+    if (pageInfo) pageInfo.innerText = `Page ${riwayatData.currentPage} of ${totalPages || 1}`;
+
+    const prevBtn = document.getElementById('riwayat-prev');
+    if (prevBtn) prevBtn.disabled = riwayatData.currentPage === 1;
+
+    const nextBtn = document.getElementById('riwayat-next');
+    if (nextBtn) nextBtn.disabled = riwayatData.currentPage >= totalPages || totalPages === 0;
+}
+
+function getFilteredData() {
+    let filtered = riwayatData.allData;
+    const typeFilter = document.getElementById('filter-jenis') ? document.getElementById('filter-jenis').value : 'all';
+    const methodFilter = document.getElementById('filter-metode') ? document.getElementById('filter-metode').value : 'all';
+    const startDate = document.getElementById('filter-start-date').value;
+    const endDate = document.getElementById('filter-end-date').value;
+
+    if (typeFilter !== 'all') {
+        filtered = filtered.filter(d => d.JenisDonasi === typeFilter || d.type === typeFilter);
+    }
+    if (methodFilter !== 'all') {
+        filtered = filtered.filter(d => d.MetodePembayaran === methodFilter);
+    }
+
+    if (startDate || endDate) {
+        const start = startDate ? new Date(startDate) : new Date('1970-01-01');
+        const end = endDate ? new Date(endDate) : new Date();
+        end.setHours(23, 59, 59, 999);
+
+        filtered = filtered.filter(d => {
+            const itemDate = new Date(d.Timestamp);
+            return itemDate >= start && itemDate <= end;
+        });
+    }
+
+    if (timeFilterState !== 'all') {
+        const now = new Date();
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        filtered = filtered.filter(d => {
+            const date = new Date(d.Timestamp);
+            if (timeFilterState === 'today') return date.toDateString() === now.toDateString();
+            if (timeFilterState === 'week') return date >= startOfWeek;
+            if (timeFilterState === 'month') return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            if (timeFilterState === 'year') return date.getFullYear() === now.getFullYear();
+            return true;
+        });
+    }
+
+    return filtered;
+}
+
+function renderRiwayatList() {
+    const container = document.getElementById('riwayat-list-container');
+    if (!container) return;
+
+    const items = getFilteredData();
+    const start = (riwayatData.currentPage - 1) * riwayatData.itemsPerPage;
+    const end = start + riwayatData.itemsPerPage;
+    const visibleItems = items.slice(start, end);
+
+    const noDataEl = document.getElementById('riwayat-no-data');
+    if (visibleItems.length === 0) {
+        container.innerHTML = '';
+        if (noDataEl) noDataEl.classList.remove('hidden');
+        return;
+    } else {
+        if (noDataEl) noDataEl.classList.add('hidden');
+    }
+
+    container.innerHTML = visibleItems.map((item, index) => {
+        let iconClass = 'fa-donate';
+        let bgIcon = 'bg-slate-100 text-slate-400';
+        let borderClass = 'border-slate-100';
+
+        const type = item.JenisDonasi || item.type || "";
+        const subType = item.SubJenis || item.subType || "";
+        const displayType = subType || type;
+        const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
+        const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
+        const nominal = parseInt(item.Nominal || item.nominal) || 0;
+
+        // === [LOGIKA BARU: LABEL SEBUTAN (Muzaki vs Munfiq)] ===
+        let labelSebutan = "Donatur"; // Default
+
+        if (displayType.toLowerCase().includes('zakat')) {
+            labelSebutan = "Muzaki";
+        } else if (displayType.toLowerCase().includes('infaq') || displayType.toLowerCase().includes('wakaf')) {
+            labelSebutan = "Munfiq";
+        }
+        // ========================================================
+
+        // === [1. LOGIKA STATUS MAKER-CHECKER] ===
+        const status = item.Status || "Belum Verifikasi";
+        let statusBadgeHTML = '';
+
+        if (status === 'Terverifikasi') {
+            statusBadgeHTML = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 shadow-sm ml-auto sm:ml-0" title="Donasi Diterima">
+                    <i class="fas fa-check-circle text-[10px]"></i> 
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Diterima</span>
+                </div>`;
+        } else {
+            statusBadgeHTML = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm ml-auto sm:ml-0" title="Menunggu Verifikasi Admin">
+                    <i class="fas fa-hourglass-half text-[10px] animate-pulse"></i> 
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Proses</span>
+                </div>`;
+        }
+
+        // === [2. LOGIKA HIGHLIGHT KODE UNIK] ===
+        let nominalHTML = nominal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+        
+        if (nominal % 1000 !== 0 && paymentMethod !== 'Tunai') {
+             nominalHTML = nominalHTML.replace(/(\d{3})(?=\D*$)/, '<span class="text-orange-500 border-b-2 border-orange-200 font-black">$1</span>');
+        }
+
+        // === [3. LOGIKA STYLE CARD] ===
+        let bgBadge = 'bg-slate-50 text-slate-600'; // Default badge style helper
+        
+        if (displayType.includes('Fitrah')) {
+            iconClass = 'fa-bowl-rice'; bgIcon = 'bg-emerald-100 text-emerald-600'; borderClass = 'hover:border-emerald-200';
+            bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
+        } else if (displayType.includes('Maal')) {
+            iconClass = 'fa-sack-dollar'; bgIcon = 'bg-amber-100 text-amber-600'; borderClass = 'hover:border-amber-200';
+            bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+        } else if (displayType.includes('Kampus')) {
+            iconClass = 'fa-school'; bgIcon = 'bg-rose-100 text-rose-600'; borderClass = 'hover:border-rose-200';
+            bgBadge = 'bg-rose-50 text-rose-700 border-rose-100';
+        } else if (displayType.includes('Beasiswa')) {
+            iconClass = 'fa-user-graduate'; bgIcon = 'bg-sky-100 text-sky-600'; borderClass = 'hover:border-sky-200';
+            bgBadge = 'bg-sky-50 text-sky-700 border-sky-100';
+        } else if (displayType.includes('Umum')) {
+            iconClass = 'fa-parachute-box'; bgIcon = 'bg-violet-100 text-violet-600'; borderClass = 'hover:border-violet-200';
+            bgBadge = 'bg-violet-50 text-violet-700 border-violet-100';
+        } else {
+            iconClass = 'fa-hand-holding-heart'; bgIcon = 'bg-orange-100 text-orange-600'; borderClass = 'hover:border-orange-200';
+            bgBadge = 'bg-orange-50 text-orange-700 border-orange-100';
+        }
+
+        const dateObj = new Date(item.Timestamp);
+        const date = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const time = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+        const alumniYear = item.DetailAlumni || item.detailAlumni;
+        const alumniBadge = alumniYear ?
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
+
+        let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
+        if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
+        else if (paymentMethod === 'Transfer') metodeBadge = 'bg-purple-50 text-purple-600 border-purple-200';
+        else if (paymentMethod === 'Tunai') metodeBadge = 'bg-green-50 text-green-600 border-green-200';
+
+        return `
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 ${borderClass} group relative overflow-hidden transform hover:-translate-y-1">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                
+                <div class="flex items-start sm:items-center gap-5 w-full">
+                    <div class="w-14 h-14 rounded-2xl ${bgIcon} flex items-center justify-center text-2xl shadow-inner shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
+
+                        <div class="flex items-center flex-wrap gap-y-1 mb-1">
+                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
+                                ${donaturName}
+                            </h4>
+                            ${alumniBadge}
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
+                            <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-left sm:text-right w-full sm:w-auto pl-[4.5rem] sm:pl-0 mt-[-10px] sm:mt-0">
+                    <span class="block font-black text-xl text-slate-800 mb-1 tracking-tight group-hover:text-brand-orange transition-colors">
+                        ${nominalHTML}
+                    </span>
+                    <div class="flex flex-col sm:items-end gap-2">
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                            <i class="far fa-clock"></i> ${date} • ${time}
+                        </div>
+                        ${statusBadgeHTML}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="absolute right-[-20px] bottom-[-20px] text-9xl opacity-[0.03] pointer-events-none group-hover:opacity-[0.06] transition-opacity duration-500 rotate-12">
+                <i class="fas ${iconClass}"></i>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
 // ============================================================================
-// 13. LOGIKA MODAL QRIS (POP-UP GAMBAR BESAR)
+// 12. LOGIKA MODAL QRIS (POP-UP GAMBAR BESAR)
 // ============================================================================
 const qrisDatabase = {
     'bni': {
@@ -1895,7 +3179,7 @@ window.addEventListener('scroll', () => {
 });
 
 /* ============================================================================
-   14. LOGIKA DASHBOARD PERSONAL & KWITANSI (FIXED)
+   13. LOGIKA DASHBOARD PERSONAL & KWITANSI (FIXED)
    ============================================================================ */
 
 let myDonations = []; // Menyimpan data donasi khusus user yang login
@@ -1989,24 +3273,21 @@ function updateDashboardUI() {
     renderPersonalHistoryTable();
 }
 
-// ============================================================================
-// Fix: renderPersonalHistoryTable
-// ============================================================================
 function renderPersonalHistoryTable() {
     const tbody = document.getElementById('dash-history-body');
     const emptyState = document.getElementById('dash-empty-state');
     
-    if (!tbody) return;
+    if (!tbody) return; // Safety check
 
     if (myDonations.length === 0) {
         tbody.innerHTML = '';
-        if(tbody.parentElement) tbody.parentElement.classList.add('hidden');
-        if(emptyState) emptyState.classList.remove('hidden');
+        if(tbody.parentElement) tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
+        if(emptyState) emptyState.classList.remove('hidden'); // Munculkan pesan kosong
         return;
-    } else {
-        if (noDataEl) noDataEl.classList.add('hidden');
     }
 
+    if(tbody.parentElement) tbody.parentElement.classList.remove('hidden');
+    if(emptyState) emptyState.classList.add('hidden');
     tbody.innerHTML = '';
 
     myDonations.forEach(item => {
@@ -2282,7 +3563,7 @@ window.linkGoogleAccount = async function() {
     toggleUserDropdown();
     
     try {
-        const result = await signInWithPopup(auth, googleProvider);
+        const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
         // Cek apakah email ini sudah dipakai santri lain?
@@ -2309,6 +3590,59 @@ window.linkGoogleAccount = async function() {
 }
 
 // ============================================================
+// [BARU] LOGIKA RENDER PROFIL LENGKAP DASHBOARD
+// ============================================================
+async function renderDashboardProfil(nisUser) {
+    console.log("Merender profil untuk NIS:", nisUser);
+
+    // 1. Pastikan Data Santri & Kelas sudah ter-load
+    // (Jaga-jaga jika user refresh halaman langsung di dashboard)
+    if (typeof santriData === 'undefined' || santriData.length === 0) {
+        await loadSantriData(); 
+    }
+    if (typeof classMetaData === 'undefined' || Object.keys(classMetaData).length === 0) {
+        await loadClassData();
+    }
+
+    // 2. Cari Data Santri
+    const santri = santriData.find(s => String(s.nis) === String(nisUser));
+
+    if (!santri) {
+        console.warn("Data santri tidak ditemukan untuk profil.");
+        return;
+    }
+
+    // 3. Ambil Data Wali & Musyrif dari Data Kelas
+    // (Jika santri kelas '1A', ambil data wali kelas '1A')
+    const dataKelas = classMetaData[santri.kelas] || {}; 
+
+    // 4. Logika Prioritas (Override)
+    // Jika di excel santri ada 'wali_khusus', pakai itu. Jika tidak, pakai wali kelas umum.
+    const namaWali = santri.wali_khusus || dataKelas.wali || "-";
+    const namaMusyrif = santri.musyrif_khusus || dataKelas.musyrif || "-";
+
+    // 5. Masukkan ke HTML (Update teks di kartu profil)
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+    };
+
+    setText('dash-nama', santri.nama);
+    setText('dash-nis', santri.nis);
+    setText('dash-kelas', santri.kelas);
+    setText('dash-asrama', santri.asrama || "-"); // Kolom asrama baru
+    setText('dash-wali', namaWali);
+    setText('dash-musyrif', namaMusyrif);
+
+    // 6. Munculkan Kartu Profil (Hapus class hidden)
+    const card = document.getElementById('santri-profile-card');
+    if (card) {
+        card.classList.remove('hidden');
+        card.classList.add('animate-fade-in-up');
+    }
+}
+
+// ============================================================
 // JEMBATAN PENGHUBUNG (EXPOSE KE GLOBAL WINDOW)
 // ============================================================
 
@@ -2330,20 +3664,8 @@ window.closeNewsModal = closeNewsModal;
 // 4. Fitur QRIS & Donasi
 window.openQrisModal = openQrisModal;
 window.closeQrisModal = closeQrisModal;
-window.openReceiptWindow = openReceiptWindow;
+window.openReceiptWindow = openReceiptWindow; // <-- Untuk Cetak Bukti
 window.startBeautificationDonation = startBeautificationDonation; // <-- Untuk Paket
 
 // 5. Init
 window.init = init;
-window.scrollToSection = scrollToSection;
-window.loginWithGoogle = loginWithGoogle;
-window.loginWithNIS = loginWithNIS;
-window.closeLoginModal = closeLoginModal;
-window.toggleUserDropdown = toggleUserDropdown;
-window.showMyHistory = showMyHistory;
-window.loadPersonalDashboard = loadPersonalDashboard;
-window.openChangePassModal = openChangePassModal;
-window.saveNewPassword = saveNewPassword;
-window.openAvatarModal = openAvatarModal;
-window.saveAvatar = saveAvatar;
-window.linkGoogleAccount = linkGoogleAccount;
