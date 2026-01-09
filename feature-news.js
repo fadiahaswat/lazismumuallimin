@@ -1,4 +1,5 @@
-import { newsState, WORDPRESS_SITE, NEWS_PER_PAGE } from './config.js';
+import { newsState } from './state.js';
+import { WORDPRESS_SITE, NEWS_PER_PAGE } from './config.js';
 import { copyText, stripHtml } from './utils.js';
 import { showPage } from './ui-navigation.js';
 
@@ -154,7 +155,9 @@ export function renderNewsGrid(postsToRender, appendMode) {
 export function filterNews(cat) {
     newsState.category = cat;
     newsState.search = '';
-    document.getElementById('news-search-input').value = '';
+    const searchInput = document.getElementById('news-search-input');
+    if(searchInput) searchInput.value = '';
+    
     newsState.page = 1;
     newsState.hasMore = true;
 
