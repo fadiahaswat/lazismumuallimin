@@ -1,5 +1,4 @@
 // santri-manager.js
-import { donasiData } from './state.js';
 
 export let santriDB = {};
 
