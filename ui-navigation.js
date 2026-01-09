@@ -1,8 +1,7 @@
-// ui-navigation.js
 import { showToast } from './utils.js';
 import { loadRiwayat } from './feature-history.js';
-import { fetchNews, newsState } from './feature-news.js';
-import { currentUser } from './state.js';
+import { fetchNews } from './feature-news.js'; // Hapus newsState dari sini
+import { currentUser, newsState } from './state.js'; // Tambahkan newsState di sini
 import { SantriManager } from './santri-manager.js';
 
 export function showPage(pageId) {
@@ -26,6 +25,8 @@ export function showPage(pageId) {
     if (navLink) navLink.classList.add('active');
 
     if (pageId === 'riwayat' || pageId === 'home') loadRiwayat();
+    
+    // newsState sekarang sudah diimpor dengan benar dari state.js
     if (pageId === 'berita' && !newsState.isLoaded) fetchNews();
 }
 
