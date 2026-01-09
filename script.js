@@ -629,12 +629,11 @@ async function init() {
 // ============================================================================
 // 9. SANTRI DATA PARSING
 // ============================================================================
-let santriDB = {};
-
 function parseSantriData() {
     if (typeof santriData === 'undefined' || !Array.isArray(santriData)) return;
 
-    santriDB = {}; // Reset database lokal
+    STATE.santriDB = {}; // Reset database lokal using STATE reference
+    santriDB = STATE.santriDB; // Update alias
 
     santriData.forEach(item => {
         // Ambil data dasar
@@ -1468,7 +1467,7 @@ function setupWizardLogic() {
                 if (prayerContainer) prayerContainer.innerHTML = prayerHTML;
 
                 // 2. Masukkan Payment ke Container Bawah
-                const paymentContainer = document.getElementById('payment-methods-content');
+                const paymentContainer = document.getElementById('donasi-payment-instructions');
                 if (paymentContainer) paymentContainer.innerHTML = paymentDetails;
 
                 // Tampilkan Wrapper Utama
@@ -1546,13 +1545,12 @@ function setupWizardLogic() {
 // 12. LOGIKA RIWAYAT DONASI & STATISTIK
 // ============================================================================
 function setupHistoryLogic() {
-    // Mengatur tombol Next/Prev halaman riwayat
     const prevBtn = document.getElementById('riwayat-prev');
     const nextBtn = document.getElementById('riwayat-next');
 
     if (prevBtn) {
         prevBtn.onclick = () => {
-            if (riwayatData.currentPage > 1) {
+            if (riwayatData.currentPage >  1) {
                 riwayatData.currentPage--;
                 renderRiwayatList();
                 renderPagination();
@@ -1991,16 +1989,19 @@ function updateDashboardUI() {
     renderPersonalHistoryTable();
 }
 
+// ============================================================================
+// Fix: renderPersonalHistoryTable
+// ============================================================================
 function renderPersonalHistoryTable() {
     const tbody = document.getElementById('dash-history-body');
     const emptyState = document.getElementById('dash-empty-state');
     
-    if (!tbody) return; // Safety check
+    if (!tbody) return;
 
     if (myDonations.length === 0) {
         tbody.innerHTML = '';
-        if(tbody.parentElement) tbody.parentElement.classList.add('hidden'); // Sembunyikan tabel
-        if(emptyState) emptyState.classList.remove('hidden'); // Munculkan pesan kosong
+        if(tbody.parentElement) tbody.parentElement.classList.add('hidden');
+        if(emptyState) emptyState.classList.remove('hidden');
         return;
     } else {
         if (noDataEl) noDataEl.classList.add('hidden');
