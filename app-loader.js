@@ -11,23 +11,18 @@ async function loadComponent(targetId, url, append = false) {
             else target.innerHTML = html;
         }
     } catch (error) {
-        console.error("Component Loader Error:", error);
+        console.error("Loader Error:", error);
     }
 }
 
 async function initApp() {
-    console.log("🚀 Starting Hybrid App Initialization...");
+    console.log("🚀 Initializing App Shell...");
 
-    // 1. Load Komponen Layout (Header, Footer, Modals)
-    // Dilakukan paralel agar cepat
-    await Promise.all([
-        loadComponent('app-header', 'components/header.html'),
-        loadComponent('app-modals', 'components/modals.html'),
-        loadComponent('app-footer', 'components/footer.html'),
-    ]);
+    // 1. Load Modals (Popup Login, Berita, dll)
+    // Kita load ini secara async agar halaman utama muncul duluan
+    await loadComponent('app-modals', 'components/modals.html');
 
-    // 2. Load Halaman SISA (Kecuali Home yang sudah ada di index.html)
-    // Halaman ini akan di-append di bawah #page-home di dalam <main>
+    // 2. Load Halaman SISA (Kecuali Home yang sudah statis)
     const extraPages = [
         'pages/tentang.html',
         'pages/beautifikasi.html',
@@ -40,20 +35,20 @@ async function initApp() {
 
     const contentContainer = document.getElementById('app-content');
     
-    // Fetch semua halaman sisa secara background
+    // Fetch halaman sisa secara paralel
     const rawPages = await Promise.all(extraPages.map(file => fetch(file).then(res => res.text())));
     
-    // Masukkan ke DOM
+    // Inject ke bawah konten Home
     rawPages.forEach(html => {
         contentContainer.insertAdjacentHTML('beforeend', html);
     });
 
-    console.log("✅ All Pages Loaded");
+    console.log("✅ Dynamic Content Loaded");
 
-    // 3. Load Main Script Logic
+    // 3. Load Main Script Logic (Setelah HTML lengkap tertanam)
     const scriptMain = document.createElement('script');
     scriptMain.type = 'module';
-    scriptMain.src = 'main.js'; // Logic show/hide halaman ada di sini
+    scriptMain.src = 'main.js';
     document.body.appendChild(scriptMain);
 
     // Load Data Helpers
@@ -69,7 +64,7 @@ async function initApp() {
     setTimeout(() => {
         const preloader = document.getElementById('app-preloader');
         if(preloader) preloader.classList.add('fade-out');
-    }, 800);
+    }, 500);
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
