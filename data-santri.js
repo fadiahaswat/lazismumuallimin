@@ -1,8 +1,8 @@
 // URL Web App dari Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
 
-// Variabel global santriData
-let santriData = [];
+// [PERBAIKAN] Gunakan window.santriData agar bisa dibaca oleh modul lain (main.js)
+window.santriData = [];
 
 /**
  * Fungsi Mengambil Data Santri dengan Sistem Caching (Local Storage)
@@ -17,18 +17,19 @@ async function loadSantriData() {
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
     const now = new Date().getTime();
 
-    // Jika cache ada DAN belum kadaluwarsa (kurang dari 24 jam)
+    // Jika cache ada DAN belum kadaluwarsa
     if (cachedData && cachedTime && (now - cachedTime < EXPIRY_HOURS * 3600 * 1000)) {
         console.log("Mengambil data santri dari Cache (Hemat Kuota)...");
         try {
-            santriData = JSON.parse(cachedData);
-            return santriData;
+            // [PERBAIKAN] Update variabel global window
+            window.santriData = JSON.parse(cachedData);
+            return window.santriData;
         } catch (e) {
             console.warn("Cache rusak, akan download ulang.");
         }
     }
 
-    // 2. Jika tidak ada cache atau sudah kadaluwarsa, ambil dari Server (GAS)
+    // 2. Jika tidak ada cache, ambil dari Server (GAS)
     try {
         console.log("Mengunduh data santri baru dari Server...");
         const response = await fetch(API_URL);
@@ -39,8 +40,8 @@ async function loadSantriData() {
 
         const data = await response.json();
         
-        // Update variabel global
-        santriData = data;
+        // [PERBAIKAN] Update variabel global window
+        window.santriData = data;
 
         // 3. Simpan data baru ke Cache Browser
         try {
@@ -51,19 +52,22 @@ async function loadSantriData() {
             console.warn("Penyimpanan penuh, gagal caching data.");
         }
         
-        return santriData;
+        return window.santriData;
 
     } catch (error) {
         console.error("Gagal mengambil data:", error);
         
-        // Fallback: Jika internet mati tapi ada cache lama (kadaluwarsa), pakai saja
+        // Fallback: Gunakan cache lama jika ada
         if (cachedData) {
             console.warn("Menggunakan data cache lama karena koneksi error.");
-            santriData = JSON.parse(cachedData);
-            return santriData;
+            window.santriData = JSON.parse(cachedData);
+            return window.santriData;
         }
         
         alert("Gagal memuat data santri. Pastikan internet lancar.");
         return [];
     }
 }
+
+// [PERBAIKAN] Pastikan fungsi ini menempel di window agar bisa dipanggil main.js
+window.loadSantriData = loadSantriData;
