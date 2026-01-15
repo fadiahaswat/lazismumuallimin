@@ -101,48 +101,11 @@
 </div>
 
 <style>
-    /* Animasi Bar Loading yang lebih halus */
-    @keyframes loadingBarSmooth {
-        0% { transform: translateX(-150%); }
-        100% { transform: translateX(250%); }
-    }
-    .animate-loading-bar {
-        animation: loadingBarSmooth 1.5s ease-in-out infinite;
-    }
-
-    /* Animasi 'Bernapas' untuk Logo */
-    @keyframes breathe {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.9; }
-    }
-    .animate-breathe {
-        animation: breathe 3s ease-in-out infinite;
-    }
-
-    /* Ping yang lebih lambat */
-    .animate-ping-slow {
-        animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    /* Pulse untuk background blobs */
-    .animate-pulse-slow {
-        animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    
-    /* Efek Shimmer cepat */
-    @keyframes shimmerFast {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-    .animate-shimmer-fast {
-        animation: shimmerFast 1s infinite linear;
-    }
-
     /* Class untuk menghilangkan preloader (dipakai di JS) */
     .fade-out {
         opacity: 0;
         pointer-events: none;
-        transform: scale(1.05); /* Sedikit membesar saat menghilang */
+        transform: scale(1.05);
     }
 </style>
     
