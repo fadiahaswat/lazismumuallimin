@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./**/*.{html,js}"], // Ini memerintahkan tailwind membaca semua file html & js Anda
+  content: [
+    "./*.html",
+    "./*.js"
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -19,10 +22,10 @@ module.exports = {
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'loading-bar': 'loadingBarSmooth 1.5s ease-in-out infinite',
         'breathe': 'breathe 3s ease-in-out infinite',
         'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
-        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'shimmer-fast': 'shimmerFast 1s infinite linear',
       },
       keyframes: {

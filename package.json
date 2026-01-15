@@ -1,1 +1,12 @@
-
+{
+  "name": "lazismu-muallimin",
+  "version": "1.0.0",
+  "description": "Website Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

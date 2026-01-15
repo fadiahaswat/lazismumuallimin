@@ -55,7 +55,7 @@
     }
     </script>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./dist/tailwind.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -63,38 +63,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        arabic: ['Amiri', 'serif'],
-                    },
-                    colors: {
-                        brand: {
-                            orange: '#F15A22',
-                            dark: '#1e293b',
-                        }
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(0,0,0,0.05)',
-                        'glow': '0 0 20px rgba(241, 90, 34, 0.15)',
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="text-slate-600 flex flex-col min-h-screen font-sans antialiased">
     <div id="app-preloader" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-hidden font-sans">
@@ -133,48 +101,11 @@
 </div>
 
 <style>
-    /* Animasi Bar Loading yang lebih halus */
-    @keyframes loadingBarSmooth {
-        0% { transform: translateX(-150%); }
-        100% { transform: translateX(250%); }
-    }
-    .animate-loading-bar {
-        animation: loadingBarSmooth 1.5s ease-in-out infinite;
-    }
-
-    /* Animasi 'Bernapas' untuk Logo */
-    @keyframes breathe {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.9; }
-    }
-    .animate-breathe {
-        animation: breathe 3s ease-in-out infinite;
-    }
-
-    /* Ping yang lebih lambat */
-    .animate-ping-slow {
-        animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    /* Pulse untuk background blobs */
-    .animate-pulse-slow {
-        animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    
-    /* Efek Shimmer cepat */
-    @keyframes shimmerFast {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-    .animate-shimmer-fast {
-        animation: shimmerFast 1s infinite linear;
-    }
-
     /* Class untuk menghilangkan preloader (dipakai di JS) */
     .fade-out {
         opacity: 0;
         pointer-events: none;
-        transform: scale(1.05); /* Sedikit membesar saat menghilang */
+        transform: scale(1.05);
     }
 </style>
     
