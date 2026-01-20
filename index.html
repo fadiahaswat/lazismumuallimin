@@ -1592,6 +1592,17 @@
 
         <section id="page-beautifikasi" class="page-section hidden bg-slate-50 min-h-screen relative overflow-hidden" style="padding-top: 0 !important;">
     
+    <style>
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .slide { transition: opacity 1s ease-in-out, transform 1s ease-in-out; }
+        /* Animasi teks muncul pelan */
+        .text-reveal { opacity: 0; transform: translateY(20px); animation: textUp 0.8s ease-out forwards; }
+        @keyframes textUp { to { opacity: 1; transform: translateY(0); } }
+        /* Progress bar slider */
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 6px; background: rgba(0,0,0,0.05); z-index: 30; }
+        .progress-bar-slider { height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.1s linear; }
+    </style>
+
     <div class="relative bg-slate-900 pt-32 pb-72 rounded-b-[4rem] overflow-visible shadow-2xl z-10">
         <div class="absolute inset-0 overflow-hidden rounded-b-[4rem]">
             <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-600/10 rounded-full blur-[120px] animate-pulse"></div>
@@ -1731,194 +1742,193 @@
         </div>
     </div>
 
-    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 pb-24">
-        
-        <div id="progres-fisik" class="mb-28 scroll-mt-32">
-            <div class="text-center mb-16">
-                <span class="text-emerald-600 font-bold tracking-widest text-sm uppercase block mb-2">Transparansi Muhsinin</span>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Laporan Progres Pembangunan</h2>
-                <div class="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
+    <div id="progres-fisik" class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 pb-24 mb-28 scroll-mt-32">
+        <div class="text-center mb-16">
+            <span class="text-emerald-600 font-bold tracking-widest text-sm uppercase block mb-2">Transparansi Muhsinin</span>
+            <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Laporan Progres Pembangunan</h2>
+            <div class="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="soft-card p-0 group overflow-hidden border-t-4 border-emerald-500 h-full flex flex-col">
+                <div class="h-60 overflow-hidden relative">
+                    <img src="muallimin_terpadu.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Fasilitas Existing">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Existing</span>
+                        <h4 class="text-white font-bold text-lg">Telah Terbangun</h4>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 text-emerald-700 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="p-8 flex-1 bg-white">
+                    <p class="text-slate-500 text-sm mb-4">Alhamdulillah, tulang punggung aktivitas pendidikan telah beroperasi penuh:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm text-slate-700">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Gedung Madrasah A</strong>: Pusat KBM Modern.</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-slate-700">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Masjid Hj. Yuliana</strong> (Klinik & Perpustakaan).</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-slate-700">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Asrama MTs</strong> (3 Tower A,B,C).</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-slate-700">
+                            <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Embung & Sport Center</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="soft-card p-0 group overflow-hidden border-t-4 border-emerald-500 h-full flex flex-col">
-                    <div class="h-60 overflow-hidden relative">
-                        <img src="muallimin_terpadu.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Fasilitas Existing">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <span class="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Existing</span>
-                            <h4 class="text-white font-bold text-lg">Telah Terbangun</h4>
-                        </div>
-                        <div class="absolute top-4 right-4 bg-white/90 text-emerald-700 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"><i class="fas fa-check"></i></div>
+            <div class="soft-card p-0 group overflow-hidden border-t-4 border-orange-500 h-full flex flex-col relative transform md:-translate-y-4 shadow-2xl ring-4 ring-orange-500/10 z-10">
+                <div class="h-60 overflow-hidden relative">
+                    <img src="Exterior 1.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="On Progress">
+                    <div class="absolute inset-0 bg-orange-900/20"></div>
+                    <div class="absolute top-4 right-4 bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg animate-pulse flex items-center gap-2">
+                        <i class="fas fa-hard-hat"></i> ON PROGRESS
                     </div>
-                    <div class="p-8 flex-1 bg-white">
-                        <p class="text-slate-500 text-sm mb-4">Alhamdulillah, tulang punggung aktivitas pendidikan telah beroperasi penuh:</p>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3 text-sm text-slate-700">
-                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Gedung Madrasah A</strong>: Pusat KBM Modern.</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-sm text-slate-700">
-                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Masjid Hj. Yuliana</strong> (Klinik & Perpustakaan).</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-sm text-slate-700">
-                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Asrama MTs</strong> (3 Tower A,B,C).</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-sm text-slate-700">
-                                <i class="fas fa-check-circle text-emerald-500 mt-1 shrink-0"></i> <span><strong>Embung & Sport Center</strong>.</span>
-                            </li>
-                        </ul>
+                    <div class="absolute bottom-4 left-4">
+                        <h4 class="text-white font-bold text-lg drop-shadow-md">Sedang Dikebut</h4>
                     </div>
                 </div>
+                <div class="p-8 flex-1 bg-orange-50/40">
+                    <p class="text-slate-600 text-sm mb-4 font-medium">Mohon doa restu untuk penyelesaian fasilitas vital:</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-utensils"></i></div>
+                            <div>
+                                <strong class="block text-orange-700">Gedung Math'am</strong>
+                                <span class="text-xs text-slate-500">Ruang makan higienis & beradab.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-home"></i></div>
+                            <div>
+                                <strong class="block text-orange-700">Rumah Pamong</strong>
+                                <span class="text-xs text-slate-500">Hunian pengasuh 24 jam.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-building"></i></div>
+                            <div>
+                                <strong class="block text-orange-700">Asrama D</strong>
+                                <span class="text-xs text-slate-500">Ekspansi hunian santri.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-                <div class="soft-card p-0 group overflow-hidden border-t-4 border-orange-500 h-full flex flex-col relative transform md:-translate-y-4 shadow-2xl ring-4 ring-orange-500/10 z-10">
-                    <div class="h-60 overflow-hidden relative">
-                        <img src="Exterior 1.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="On Progress">
-                        <div class="absolute inset-0 bg-orange-900/20"></div>
-                        <div class="absolute top-4 right-4 bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg animate-pulse flex items-center gap-2">
-                            <i class="fas fa-hard-hat"></i> ON PROGRESS
-                        </div>
-                        <div class="absolute bottom-4 left-4">
-                            <h4 class="text-white font-bold text-lg drop-shadow-md">Sedang Dikebut</h4>
-                        </div>
-                    </div>
-                    <div class="p-8 flex-1 bg-orange-50/40">
-                        <p class="text-slate-600 text-sm mb-4 font-medium">Mohon doa restu untuk penyelesaian fasilitas vital:</p>
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
-                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-utensils"></i></div>
-                                <div>
-                                    <strong class="block text-orange-700">Gedung Math'am</strong>
-                                    <span class="text-xs text-slate-500">Ruang makan higienis & beradab.</span>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
-                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-home"></i></div>
-                                <div>
-                                    <strong class="block text-orange-700">Rumah Pamong</strong>
-                                    <span class="text-xs text-slate-500">Hunian pengasuh 24 jam.</span>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3 text-sm text-slate-800 bg-white p-3 rounded-xl shadow-sm border border-orange-100">
-                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-building"></i></div>
-                                <div>
-                                    <strong class="block text-orange-700">Asrama D</strong>
-                                    <span class="text-xs text-slate-500">Ekspansi hunian santri.</span>
-                                </div>
-                            </li>
-                        </ul>
+            <div class="soft-card p-0 group overflow-hidden border-t-4 border-blue-500 h-full flex flex-col opacity-90 hover:opacity-100 transition-opacity">
+                <div class="h-60 overflow-hidden relative">
+                    <img src="auditorium.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0" alt="Future Plan">
+                    <div class="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Vision</span>
+                        <h4 class="text-white font-bold text-lg">Rencana Masa Depan</h4>
                     </div>
                 </div>
-
-                <div class="soft-card p-0 group overflow-hidden border-t-4 border-blue-500 h-full flex flex-col opacity-90 hover:opacity-100 transition-opacity">
-                    <div class="h-60 overflow-hidden relative">
-                        <img src="auditorium.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0" alt="Future Plan">
-                        <div class="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <span class="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Vision</span>
-                            <h4 class="text-white font-bold text-lg">Rencana Masa Depan</h4>
-                        </div>
-                    </div>
-                    <div class="p-8 flex-1 bg-white">
-                        <p class="text-slate-500 text-sm mb-4">Amanah besar sesuai Masterplan yang akan diwujudkan:</p>
-                        <ul class="space-y-3">
-                            <li class="flex items-center gap-3 text-sm text-slate-700">
-                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Cyber Center</strong> (Layanan Terpadu).</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-sm text-slate-700">
-                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Auditorium</strong> (Pertemuan Akbar).</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-sm text-slate-700">
-                                <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Madrasah B</strong>.</span>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="p-8 flex-1 bg-white">
+                    <p class="text-slate-500 text-sm mb-4">Amanah besar sesuai Masterplan yang akan diwujudkan:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-slate-700">
+                            <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Cyber Center</strong> (Layanan Terpadu).</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-700">
+                            <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Auditorium</strong> (Pertemuan Akbar).</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-700">
+                            <i class="far fa-circle text-blue-400 mt-1"></i> <span><strong>Gedung Madrasah B</strong>.</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="mb-28">
-            <div class="rounded-[3rem] overflow-hidden shadow-2xl relative group h-[500px] md:h-[700px] border-8 border-white bg-slate-900">
-                <img src="kampusterpaduback.png" 
-                     class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-[4000ms] ease-in-out opacity-90" 
-                     alt="Kampus Terpadu Tampak Belakang">
-                
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-transparent to-transparent"></div>
-                
-                <div class="absolute bottom-0 left-0 w-full p-8 md:p-16">
-                    <div class="max-w-3xl animate-fade-in-up">
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-6">
-                            <i class="fas fa-map"></i> Bird's Eye View Masterplan
-                        </div>
-                        <h2 class="text-3xl md:text-5xl font-black text-white mb-6 drop-shadow-xl leading-tight">
-                            Wujud Utuh <br><span class="text-emerald-400">Kota Peradaban</span>
-                        </h2>
-                        <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border-l-4 border-emerald-500">
-                            <p class="text-slate-100 text-lg font-light leading-relaxed">
-                                "Inilah gambaran masa depan ketika seluruh ikhtiar kita telah tunai. Sebuah ekosistem pendidikan yang hijau, megah, dan mendunia, tempat ribuan kader umat ditempa."
-                            </p>
-                        </div>
+    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 mb-28">
+        <div class="rounded-[3rem] overflow-hidden shadow-2xl relative group h-[500px] md:h-[700px] border-8 border-white bg-slate-900">
+            <img src="kampusterpaduback.png" 
+                 class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-[4000ms] ease-in-out opacity-90" 
+                 alt="Kampus Terpadu Tampak Belakang">
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-transparent to-transparent"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full p-8 md:p-16">
+                <div class="max-w-3xl animate-fade-in-up">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider mb-6">
+                        <i class="fas fa-map"></i> Bird's Eye View Masterplan
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-28">
-            <div class="text-center mb-16">
-                <span class="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-2 block">Program Ramadhan 1447 H</span>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Fokus: Beautifikasi & Tata Ruang</h2>
-                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
-                    "Gedung megah akan terasa gersang tanpa tata ruang yang baik. Kenyamanan santri adalah prioritas utama."
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
-                    <div class="h-56 relative overflow-hidden">
-                        <img src="embung.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Embung">
-                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
-                            <i class="fas fa-water mr-1"></i> AREA DANAU
-                        </div>
-                    </div>
-                    <div class="p-8 text-center flex-1">
-                        <h4 class="font-bold text-xl text-slate-800 mb-3">Revitalisasi Embung</h4>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            Menyulap embung menjadi <strong>taman edukasi</strong> dengan pembuatan <em>jogging track</em>, pagar pengaman, dan lampu taman estetik.
-                        </p>
-                    </div>
-                </div>
-                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
-                    <div class="h-56 relative overflow-hidden">
-                        <img src="pedestrian.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Pedestrian">
-                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
-                            <i class="fas fa-shoe-prints mr-1"></i> KONEKTIVITAS
-                        </div>
-                    </div>
-                    <div class="p-8 text-center flex-1">
-                        <h4 class="font-bold text-xl text-slate-800 mb-3">Jalur Pedestrian</h4>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            Menghubungkan Asrama, Masjid, & Sekolah dengan jalur yang <strong>teduh, ramah disabilitas, dan estetik</strong>.
-                        </p>
-                    </div>
-                </div>
-                <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
-                    <div class="h-56 relative overflow-hidden">
-                        <img src="garden.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Taman">
-                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
-                            <i class="fas fa-leaf mr-1"></i> PENGHIJAUAN
-                        </div>
-                    </div>
-                    <div class="p-8 text-center flex-1">
-                        <h4 class="font-bold text-xl text-slate-800 mb-3">Taman Asrama</h4>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            Penataan taman di sekitar Gedung Math'am dan Asrama D untuk <strong>mengurangi debu</strong> dan menyejukkan udara.
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-6 drop-shadow-xl leading-tight">
+                        Wujud Utuh <br><span class="text-emerald-400">Kota Peradaban</span>
+                    </h2>
+                    <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border-l-4 border-emerald-500">
+                        <p class="text-slate-100 text-lg font-light leading-relaxed">
+                            "Inilah gambaran masa depan ketika seluruh ikhtiar kita telah tunai. Sebuah ekosistem pendidikan yang hijau, megah, dan mendunia, tempat ribuan kader umat ditempa."
                         </p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-20 mb-20 shadow-2xl bg-slate-900 border-[6px] border-white">
+    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 mb-28">
+        <div class="text-center mb-16">
+            <span class="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-2 block">Program Ramadhan 1447 H</span>
+            <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6">Fokus: Beautifikasi & Tata Ruang</h2>
+            <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                "Gedung megah akan terasa gersang tanpa tata ruang yang baik. Kenyamanan santri adalah prioritas utama."
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                <div class="h-56 relative overflow-hidden">
+                    <img src="embung.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Embung">
+                    <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                        <i class="fas fa-water mr-1"></i> AREA DANAU
+                    </div>
+                </div>
+                <div class="p-8 text-center flex-1">
+                    <h4 class="font-bold text-xl text-slate-800 mb-3">Revitalisasi Embung</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Menyulap embung menjadi <strong>taman edukasi</strong> dengan pembuatan <em>jogging track</em>, pagar pengaman, dan lampu taman estetik.
+                    </p>
+                </div>
+            </div>
+            <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                <div class="h-56 relative overflow-hidden">
+                    <img src="pedestrian.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Pedestrian">
+                    <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                        <i class="fas fa-shoe-prints mr-1"></i> KONEKTIVITAS
+                    </div>
+                </div>
+                <div class="p-8 text-center flex-1">
+                    <h4 class="font-bold text-xl text-slate-800 mb-3">Jalur Pedestrian</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Menghubungkan Asrama, Masjid, & Sekolah dengan jalur yang <strong>teduh, ramah disabilitas, dan estetik</strong>.
+                    </p>
+                </div>
+            </div>
+            <div class="soft-card p-0 flex flex-col group hover:-translate-y-2 transition-transform overflow-hidden">
+                <div class="h-56 relative overflow-hidden">
+                    <img src="garden.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Taman">
+                    <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-xs font-bold text-emerald-800 shadow-md">
+                        <i class="fas fa-leaf mr-1"></i> PENGHIJAUAN
+                    </div>
+                </div>
+                <div class="p-8 text-center flex-1">
+                    <h4 class="font-bold text-xl text-slate-800 mb-3">Taman Asrama</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Penataan taman di sekitar Gedung Math'am dan Asrama D untuk <strong>mengurangi debu</strong> dan menyejukkan udara.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 mb-20">
+        <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-20 shadow-2xl bg-slate-900 border-[6px] border-white">
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
             <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/20 rounded-full blur-[150px] animate-pulse"></div>
             <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-600/20 rounded-full blur-[150px]"></div>
@@ -1972,139 +1982,210 @@
                 </button>
             </div>
         </div>
-
-        <div class="text-center mb-16 max-w-3xl mx-auto">
-            <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-xs font-black tracking-widest uppercase mb-4 border border-orange-200">Donasi Mudah</span>
-            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
-            <p class="text-slate-500 text-lg">Pilih metode transfer bank, scan QRIS, atau kunjungi kantor layanan kami.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
-                <div class="h-3 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                <div class="p-8 flex flex-col h-full">
-                    <div class="text-center mb-6">
-                        <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
-                        <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">3440 000 348</h3>
-                        <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
-                            <i class="far fa-copy"></i> Salin No. Rek
-                        </button>
-                    </div>
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                    </div>
-                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-orange-200 transition-colors">
-                        <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BNI">
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
-                <div class="h-3 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
-                <div class="p-8 flex flex-col h-full">
-                    <div class="text-center mb-6">
-                        <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
-                        <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">7930 030 303</h3>
-                        <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
-                            <i class="far fa-copy"></i> Salin No. Rek
-                        </button>
-                    </div>
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                    </div>
-                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-teal-200 transition-colors">
-                        <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BSI">
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
-                <div class="h-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-                <div class="p-8 flex flex-col h-full">
-                    <div class="text-center mb-6">
-                        <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
-                        <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">801 241 004 624</h3>
-                        <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
-                            <i class="far fa-copy"></i> Salin No. Rek
-                        </button>
-                    </div>
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                        <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
-                    </div>
-                    <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-blue-200 transition-colors">
-                        <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BPD">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="max-w-4xl mx-auto mt-16">
-            <div class="group relative flex flex-col md:flex-row bg-white rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                
-                <div class="relative h-64 md:h-auto md:w-5/12 shrink-0">
-                    <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10"></div>
-                    <img src="kantor.jpg" alt="Depan Kantor Lazismu Mu'allimin" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
-                </div>
-       
-                <div class="flex-1 p-6 md:p-8 md:pl-6 flex flex-col justify-center text-center md:text-left relative z-20 bg-white">
-                    <div class="mb-4 flex justify-center md:justify-start">
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
-                            <span class="relative flex h-2.5 w-2.5">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                            </span>
-                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider leading-none mt-[1px]">Layanan Kantor Fisik</span>
-                        </div>
-                    </div>
-                    
-                    <h3 class="text-2xl font-bold text-slate-800 leading-tight mb-3">Kantor Layanan Lazismu Madrasah Mu'allimin Muhammadiyah Yogyakarta</h3>
-                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3">
-                        <i class="fas fa-map-marker-alt text-emerald-500 text-lg mt-0.5 shrink-0"></i>
-                        <span>Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta, Daerah Istimewa Yogyakarta</span>
-                    </p>
-       
-                    <div class="mb-8">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Jam Operasional</h4>
-                        <div class="flex flex-wrap justify-center md:justify-start gap-2">
-                            <div class="group/badge bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
-                                <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-500 flex items-center justify-center group-hover/badge:bg-orange-500 group-hover/badge:text-white transition-colors">
-                                    <i class="far fa-clock text-sm"></i>
-                                </div>
-                                <div class="text-left">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p>
-                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p>
-                                </div>
-                            </div>
-                            <div class="group/badge bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
-                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center group-hover/badge:bg-blue-500 group-hover/badge:text-white transition-colors">
-                                    <i class="far fa-calendar-alt text-sm"></i>
-                                </div>
-                                <div class="text-left">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Sabtu</p>
-                                    <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-       
-                    <div class="mt-auto">
-                        <a href="https://maps.app.goo.gl/YourRealMapLink" target="_blank" class="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold tracking-wide transition-all shadow-xl shadow-slate-900/20 hover:shadow-emerald-600/30 group/btn">
-                            <span>Buka Google Maps</span>
-                            <i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
-                        </a>
-                    </div>
-       
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <div id="qris-section" class="py-20 relative overflow-hidden bg-slate-50">
+        <div class="absolute inset-0 opacity-30 pointer-events-none">
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px]" style="animation-delay: 2s"></div>
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        </div>
+
+        <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
+                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 text-xs font-black tracking-widest uppercase mb-4 border border-orange-200">Donasi Mudah</span>
+                <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Salurkan Kebaikan</h2>
+                <p class="text-slate-500 text-lg">Pilih metode transfer bank, scan QRIS, atau kunjungi kantor layanan kami.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                    <div class="h-3 w-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
+                    <div class="p-8 flex flex-col h-full">
+                        <div class="text-center mb-6">
+                            <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">3440 000 348</h3>
+                            <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
+                                <i class="far fa-copy"></i> Salin No. Rek
+                            </button>
+                        </div>
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                            <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                        </div>
+                        <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-orange-200 transition-colors">
+                            <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BNI">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                    <div class="h-3 w-full bg-gradient-to-r from-teal-500 to-emerald-500"></div>
+                    <div class="p-8 flex flex-col h-full">
+                        <div class="text-center mb-6">
+                            <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">7930 030 303</h3>
+                            <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
+                                <i class="far fa-copy"></i> Salin No. Rek
+                            </button>
+                        </div>
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                            <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                        </div>
+                        <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-teal-200 transition-colors">
+                            <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BSI">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                    <div class="h-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                    <div class="p-8 flex flex-col h-full">
+                        <div class="text-center mb-6">
+                            <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
+                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">801 241 004 624</h3>
+                            <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
+                                <i class="far fa-copy"></i> Salin No. Rek
+                            </button>
+                        </div>
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                            <div class="relative flex justify-center"><span class="bg-white px-2 text-xs text-slate-400 font-medium">Atau Scan QRIS</span></div>
+                        </div>
+                        <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-blue-200 transition-colors">
+                            <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BPD">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto mt-16">
+                <div class="group relative flex flex-col md:flex-row bg-white rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                    <div class="relative h-64 md:h-auto md:w-5/12 shrink-0">
+                        <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                        <img src="kantor.jpg" alt="Depan Kantor Lazismu Mu'allimin" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+                    </div>
+                    <div class="flex-1 p-6 md:p-8 md:pl-6 flex flex-col justify-center text-center md:text-left relative z-20 bg-white">
+                        <div class="mb-4 flex justify-center md:justify-start">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                                <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
+                                <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider leading-none mt-[1px]">Layanan Kantor Fisik</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 leading-tight mb-3">Kantor Layanan Lazismu Madrasah Mu'allimin Muhammadiyah Yogyakarta</h3>
+                        <p class="text-sm text-slate-500 mb-6 leading-relaxed flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3">
+                            <i class="fas fa-map-marker-alt text-emerald-500 text-lg mt-0.5 shrink-0"></i>
+                            <span>Jl. Letjen S. Parman No.68, Patangpuluhan, Wirobrajan, Kota Yogyakarta, Daerah Istimewa Yogyakarta</span>
+                        </p>
+                        <div class="mb-8">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Jam Operasional</h4>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                                <div class="group/badge bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-500 flex items-center justify-center"><i class="far fa-clock text-sm"></i></div>
+                                    <div class="text-left"><p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p></div>
+                                </div>
+                                <div class="group/badge bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center"><i class="far fa-calendar-alt text-sm"></i></div>
+                                    <div class="text-left"><p class="text-[10px] text-slate-400 font-bold uppercase leading-none mb-0.5">Sabtu</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://maps.app.goo.gl/YourRealMapLink" target="_blank" class="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold tracking-wide transition-all shadow-xl shadow-slate-900/20 hover:shadow-emerald-600/30 group/btn">
+                                <span>Buka Google Maps</span><i class="fas fa-location-arrow group-hover/btn:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.nav-dot');
+            const progressBarSlider = document.getElementById('progress-slider');
+            
+            if(slides.length === 0) return;
+
+            let currentSlide = 0;
+            let slideInterval, progressInterval;
+            const slideTime = 15000; // 15 detik
+
+            function initSlider() {
+                showSlide(0);
+                startTimer();
+            }
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('opacity-100', 'z-10', 'pointer-events-auto');
+                    slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                    
+                    const content = slide.querySelector('.content-wrapper');
+                    if(content) content.classList.remove('text-reveal');
+                    
+                    if(dots[i]) {
+                        dots[i].classList.remove('bg-emerald-600', 'w-8');
+                        dots[i].classList.add('bg-slate-300', 'w-3');
+                    }
+                });
+
+                if(slides[index]) {
+                    slides[index].classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                    slides[index].classList.add('opacity-100', 'z-10', 'pointer-events-auto');
+                    setTimeout(() => {
+                        const content = slides[index].querySelector('.content-wrapper');
+                        if(content) content.classList.add('text-reveal');
+                    }, 100);
+                }
+
+                if(dots[index]) {
+                    dots[index].classList.remove('bg-slate-300', 'w-3');
+                    dots[index].classList.add('bg-emerald-600', 'w-8');
+                }
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                let next = (currentSlide + 1) % slides.length;
+                showSlide(next);
+            }
+
+            function startTimer() {
+                clearInterval(slideInterval);
+                clearInterval(progressInterval);
+                
+                let width = 0;
+                if(progressBarSlider) progressBarSlider.style.width = '0%';
+                const step = 100 / (slideTime / 50);
+
+                progressInterval = setInterval(() => {
+                    width += step;
+                    if(progressBarSlider) progressBarSlider.style.width = width + '%';
+                    if (width >= 100) width = 0;
+                }, 50);
+
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                    width = 0;
+                    if(progressBarSlider) progressBarSlider.style.width = '0%';
+                }, slideTime);
+            }
+
+            window.goToSlide = function(index) {
+                showSlide(index);
+                startTimer(); 
+            }
+
+            initSlider();
+        });
+    </script>
 </section>
 
         <section id="page-berita" class="page-section hidden bg-slate-50 min-h-screen py-24 relative overflow-hidden">
@@ -3593,98 +3674,10 @@
 
     <script type="module" src="main.js"></script>
 
-    <script>
-    // Logic Slider Testimoni
-    document.addEventListener('DOMContentLoaded', () => {
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.nav-dot');
-        const progressBarSlider = document.getElementById('progress-slider');
-        
-        if(slides.length === 0) return; // Mencegah error jika slider tidak ada
-
-        let currentSlide = 0;
-        let slideInterval, progressInterval;
-        const slideTime = 15000; // 15 detik
-
-        function initSlider() {
-            showSlide(0);
-            startTimer();
-        }
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.remove('opacity-100', 'z-10', 'pointer-events-auto');
-                slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
-                
-                // Reset text animation
-                const content = slide.querySelector('.content-wrapper');
-                if(content) content.classList.remove('text-reveal');
-                
-                // Reset dots
-                if(dots[i]) {
-                    dots[i].classList.remove('bg-emerald-600', 'w-8');
-                    dots[i].classList.add('bg-slate-300', 'w-3');
-                }
-            });
-
-            // Show active slide
-            if(slides[index]) {
-                slides[index].classList.remove('opacity-0', 'pointer-events-none', 'z-0');
-                slides[index].classList.add('opacity-100', 'z-10', 'pointer-events-auto');
-                // Trigger animation
-                setTimeout(() => {
-                    const content = slides[index].querySelector('.content-wrapper');
-                    if(content) content.classList.add('text-reveal');
-                }, 100);
-            }
-
-            // Active dot
-            if(dots[index]) {
-                dots[index].classList.remove('bg-slate-300', 'w-3');
-                dots[index].classList.add('bg-emerald-600', 'w-8');
-            }
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            let next = (currentSlide + 1) % slides.length;
-            showSlide(next);
-        }
-
-        function startTimer() {
-            clearInterval(slideInterval);
-            clearInterval(progressInterval);
-            
-            let width = 0;
-            if(progressBarSlider) progressBarSlider.style.width = '0%';
-            const step = 100 / (slideTime / 50);
-
-            progressInterval = setInterval(() => {
-                width += step;
-                if(progressBarSlider) progressBarSlider.style.width = width + '%';
-                if (width >= 100) width = 0;
-            }, 50);
-
-            slideInterval = setInterval(() => {
-                nextSlide();
-                width = 0;
-                if(progressBarSlider) progressBarSlider.style.width = '0%';
-            }, slideTime);
-        }
-
-        // Expose function global untuk onclick di HTML
-        window.goToSlide = function(index) {
-            showSlide(index);
-            startTimer(); 
-        }
-
-        initSlider();
-    });
-</script>
-
 </body>
 
 </html>
+
 
 
 
