@@ -3594,87 +3594,98 @@
     <script type="module" src="main.js"></script>
 
     <script>
-    // Slider Logic
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.nav-dot');
-    const progressBarSlider = document.getElementById('progress-slider');
-    let currentSlide = 0;
-    let slideInterval, progressInterval;
-    const slideTime = 15000; // 15 detik
+    // Logic Slider Testimoni
+    document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        const progressBarSlider = document.getElementById('progress-slider');
+        
+        if(slides.length === 0) return; // Mencegah error jika slider tidak ada
 
-    function initSlider() {
-        showSlide(0);
-        startTimer();
-    }
+        let currentSlide = 0;
+        let slideInterval, progressInterval;
+        const slideTime = 15000; // 15 detik
 
-    function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.classList.remove('opacity-100', 'z-10', 'pointer-events-auto');
-            slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
-            const content = slide.querySelector('.content-wrapper');
-            if(content) content.classList.remove('text-reveal');
-            
-            if(dots[i]) {
-                dots[i].classList.remove('bg-emerald-600', 'w-8');
-                dots[i].classList.add('bg-slate-300', 'w-3');
+        function initSlider() {
+            showSlide(0);
+            startTimer();
+        }
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('opacity-100', 'z-10', 'pointer-events-auto');
+                slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                
+                // Reset text animation
+                const content = slide.querySelector('.content-wrapper');
+                if(content) content.classList.remove('text-reveal');
+                
+                // Reset dots
+                if(dots[i]) {
+                    dots[i].classList.remove('bg-emerald-600', 'w-8');
+                    dots[i].classList.add('bg-slate-300', 'w-3');
+                }
+            });
+
+            // Show active slide
+            if(slides[index]) {
+                slides[index].classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                slides[index].classList.add('opacity-100', 'z-10', 'pointer-events-auto');
+                // Trigger animation
+                setTimeout(() => {
+                    const content = slides[index].querySelector('.content-wrapper');
+                    if(content) content.classList.add('text-reveal');
+                }, 100);
             }
-        });
 
-        if(slides[index]) {
-            slides[index].classList.remove('opacity-0', 'pointer-events-none', 'z-0');
-            slides[index].classList.add('opacity-100', 'z-10', 'pointer-events-auto');
-            setTimeout(() => {
-                const content = slides[index].querySelector('.content-wrapper');
-                if(content) content.classList.add('text-reveal');
-            }, 100);
+            // Active dot
+            if(dots[index]) {
+                dots[index].classList.remove('bg-slate-300', 'w-3');
+                dots[index].classList.add('bg-emerald-600', 'w-8');
+            }
+            currentSlide = index;
         }
 
-        if(dots[index]) {
-            dots[index].classList.remove('bg-slate-300', 'w-3');
-            dots[index].classList.add('bg-emerald-600', 'w-8');
+        function nextSlide() {
+            let next = (currentSlide + 1) % slides.length;
+            showSlide(next);
         }
-        currentSlide = index;
-    }
 
-    function nextSlide() {
-        let next = (currentSlide + 1) % slides.length;
-        showSlide(next);
-    }
-
-    function startTimer() {
-        clearInterval(slideInterval);
-        clearInterval(progressInterval);
-        let width = 0;
-        if(progressBarSlider) progressBarSlider.style.width = '0%';
-        const step = 100 / (slideTime / 50);
-
-        progressInterval = setInterval(() => {
-            width += step;
-            if(progressBarSlider) progressBarSlider.style.width = width + '%';
-            if (width >= 100) width = 0;
-        }, 50);
-
-        slideInterval = setInterval(() => {
-            nextSlide();
-            width = 0;
+        function startTimer() {
+            clearInterval(slideInterval);
+            clearInterval(progressInterval);
+            
+            let width = 0;
             if(progressBarSlider) progressBarSlider.style.width = '0%';
-        }, slideTime);
-    }
+            const step = 100 / (slideTime / 50);
 
-    function goToSlide(index) {
-        showSlide(index);
-        startTimer();
-    }
+            progressInterval = setInterval(() => {
+                width += step;
+                if(progressBarSlider) progressBarSlider.style.width = width + '%';
+                if (width >= 100) width = 0;
+            }, 50);
 
-    // Jalankan slider jika elemen ada
-    if(document.getElementById('slider-container')) {
-        document.addEventListener('DOMContentLoaded', initSlider);
-    }
+            slideInterval = setInterval(() => {
+                nextSlide();
+                width = 0;
+                if(progressBarSlider) progressBarSlider.style.width = '0%';
+            }, slideTime);
+        }
+
+        // Expose function global untuk onclick di HTML
+        window.goToSlide = function(index) {
+            showSlide(index);
+            startTimer(); 
+        }
+
+        initSlider();
+    });
 </script>
 
 </body>
 
 </html>
+
 
 
 
