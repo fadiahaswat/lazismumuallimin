@@ -958,3 +958,30 @@ function updateDonationFormUI(type) {
         generalInput.classList.remove('hidden');
     }
 }
+
+function handleManualZakatNext() {
+    const input = document.getElementById('manual-zakat-input');
+    const cleanVal = parseInt(input.value.replace(/[^0-9]/g, '')) || 0;
+
+    if (cleanVal < 10000) {
+        showToast('Minimal nominal Rp 10.000', 'warning');
+        return;
+    }
+
+    // Set nominal ke state global (sesuaikan dengan logic app Anda)
+    // Contoh: donationState.amount = cleanVal; 
+    
+    // Pindah ke Step berikutnya (Step 3: Login/Data Diri)
+    // Sembunyikan Step 1 & 2, Tampilkan Step 3
+    document.getElementById('donasi-step-1').classList.add('hidden');
+    document.getElementById('donasi-step-2').classList.add('hidden'); 
+    document.getElementById('donasi-step-3').classList.remove('hidden');
+    
+    // Update progress bar UI jika ada
+    updateWizardProgress(3); 
+    
+    // Update ringkasan nominal di step 5 (jika ada elemen summary)
+    if(document.getElementById('summary-nominal')) {
+        document.getElementById('summary-nominal').innerText = formatRupiahDisplay(cleanVal);
+    }
+}
