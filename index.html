@@ -2869,7 +2869,7 @@
             <label class="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 ml-1">Nominal Zakat</label>
             <div class="relative">
                 <span class="absolute left-5 top-1/2 -translate-y-1/2 text-amber-600 font-bold text-xl">Rp</span>
-                <input type="text" id="manual-zakat-input" class="w-full pl-14 pr-4 py-4 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-0 font-bold text-2xl text-slate-800 bg-white placeholder:text-slate-300 transition-all" placeholder="0" oninput="formatRupiah(this)">
+                <input type="text" id="manual-zakat-input" class="w-full pl-14 pr-4 py-4 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-0 font-bold text-2xl text-slate-800 bg-white placeholder:text-slate-300 transition-all" placeholder="0" oninput="formatInputRupiah(this)">
             </div>
             <p class="text-[11px] text-amber-700/70 mt-3 flex items-center gap-1.5">
                 <i class="fas fa-info-circle"></i> Masukkan nominal zakat yang sudah Anda hitung sebelumnya.
@@ -2896,28 +2896,28 @@
                 <label class="text-xs font-bold text-slate-500 mb-1 block">Emas, Perak & Logam Mulia</label>
                 <div class="relative">
                     <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
-                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatInputRupiah(this)">
                 </div>
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-500 mb-1 block">Uang Tunai, Tabungan & Deposito</label>
                 <div class="relative">
                     <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
-                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatInputRupiah(this)">
                 </div>
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-500 mb-1 block">Aset (Saham, Surat Berharga)</label>
                 <div class="relative">
                     <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
-                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatInputRupiah(this)">
                 </div>
             </div>
             <div>
                 <label class="text-xs font-bold text-red-400 mb-1 block">Hutang Jatuh Tempo (Pengurang)</label>
                 <div class="relative">
                     <span class="absolute left-4 top-3 text-red-300 font-bold text-xs">Rp</span>
-                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-red-100 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm font-bold text-red-600" placeholder="0" oninput="formatRupiah(this)">
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-red-100 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm font-bold text-red-600" placeholder="0" oninput="formatInputRupiah(this)">
                 </div>
             </div>
         </div>
@@ -3870,6 +3870,7 @@
 </body>
 
 </html>
+
 
 
 
