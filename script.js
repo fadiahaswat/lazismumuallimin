@@ -3805,3 +3805,139 @@ window.handleManualZakatNext = function() {
     if(title) title.innerText = "Isi Data Diri";
     if(sub) sub.innerText = "Agar tercatat dengan rapi.";
 }
+
+/* ============================================================================
+   LOGIKA ZAKAT MAAL (INPUT & KALKULATOR)
+   ============================================================================ */
+
+// 1. Format Input Rupiah saat mengetik (Untuk elemen input)
+window.formatInputRupiah = function(input) {
+    let val = input.value.replace(/\D/g, ''); // Hanya angka
+    if (val === '') {
+        input.value = '';
+    } else {
+        // Format angka dengan titik ribuan (tanpa simbol Rp karena sudah ada di HTML)
+        input.value = parseInt(val).toLocaleString('id-ID');
+    }
+}
+
+// 2. Switch Tab Mode (Manual / Kalkulator)
+window.switchZakatMode = function(mode) {
+    const btnManual = document.getElementById('btn-mode-manual');
+    const btnCalc = document.getElementById('btn-mode-calculator');
+    const divManual = document.getElementById('mode-manual');
+    const divCalc = document.getElementById('mode-calculator');
+
+    if (mode === 'manual') {
+        // Aktifkan Tab Manual
+        btnManual.className = "flex-1 py-3 text-sm font-bold rounded-lg bg-white text-amber-600 shadow-sm transition-all border border-slate-100";
+        btnCalc.className = "flex-1 py-3 text-sm font-bold rounded-lg text-slate-500 hover:text-amber-600 transition-all";
+        divManual.classList.remove('hidden');
+        divCalc.classList.add('hidden');
+    } else {
+        // Aktifkan Tab Kalkulator
+        btnCalc.className = "flex-1 py-3 text-sm font-bold rounded-lg bg-white text-amber-600 shadow-sm transition-all border border-slate-100";
+        btnManual.className = "flex-1 py-3 text-sm font-bold rounded-lg text-slate-500 hover:text-amber-600 transition-all";
+        divCalc.classList.remove('hidden');
+        divManual.classList.add('hidden');
+    }
+}
+
+// 3. Logika Hitung Zakat
+window.calculateZakat = function() {
+    const inputs = document.querySelectorAll('.calc-input');
+    let totalHarta = 0;
+    let hutang = 0;
+
+    // Ambil 3 input pertama (Aset)
+    for(let i=0; i<3; i++) {
+        let val = inputs[i].value.replace(/\D/g, '');
+        totalHarta += parseInt(val || 0);
+    }
+
+    // Input ke-4 (Hutang)
+    let valHutang = inputs[3].value.replace(/\D/g, '');
+    hutang = parseInt(valHutang || 0);
+
+    const hartaBersih = totalHarta - hutang;
+    const NISAB_TAHUN = 85685972; // SK BAZNAS 2025
+
+    // Tampilkan Container Hasil
+    const resultDiv = document.getElementById('calc-result');
+    resultDiv.classList.remove('hidden');
+    
+    // Tampilkan Total Harta
+    document.getElementById('total-harta').innerText = "Rp " + hartaBersih.toLocaleString('id-ID');
+
+    const divWajib = document.getElementById('status-wajib');
+    const divTidak = document.getElementById('status-tidak-wajib');
+
+    if (hartaBersih >= NISAB_TAHUN) {
+        // WAJIB ZAKAT
+        divWajib.classList.remove('hidden');
+        divTidak.classList.add('hidden');
+
+        // Hitung 2.5%
+        const zakat = Math.ceil(hartaBersih * 0.025);
+        const elAmount = document.getElementById('final-zakat-amount');
+        elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
+        elAmount.dataset.value = zakat; // Simpan angka asli di atribut data
+    } else {
+        // TIDAK WAJIB
+        divWajib.classList.add('hidden');
+        divTidak.classList.remove('hidden');
+    }
+}
+
+// 4. Terapkan Hasil Hitungan ke Input Manual
+window.applyZakatResult = function() {
+    // Ambil nilai dari hasil hitungan (atau 0 jika tidak wajib tapi mau infaq)
+    const elAmount = document.getElementById('final-zakat-amount');
+    let nominal = parseInt(elAmount.dataset.value) || 0;
+    
+    // Pindah ke tab manual
+    switchZakatMode('manual');
+    
+    // Masukkan ke input manual
+    const inputManual = document.getElementById('manual-zakat-input');
+    // Jika nominal 0 (tidak wajib), biarkan kosong agar user isi sendiri, atau isi 0
+    if (nominal > 0) {
+        inputManual.value = nominal.toLocaleString('id-ID');
+    } else {
+        inputManual.value = ""; 
+        inputManual.focus();
+    }
+}
+
+// 5. Tombol Lanjut (Dari Zakat Maal ke Data Diri)
+window.handleManualZakatNext = function() {
+    const input = document.getElementById('manual-zakat-input');
+    const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
+
+    if (cleanVal < 10000) {
+        showToast('Minimal nominal Rp 10.000', 'warning');
+        return;
+    }
+
+    // Simpan ke state global donasi
+    donasiData.nominal = cleanVal;
+    donasiData.nominalAsli = cleanVal;
+
+    // Sembunyikan Step 1 (Pilih Jenis) & Step 2 (Nominal tombol)
+    // Langsung loncat ke Step 3 (Data Diri)
+    document.getElementById('donasi-step-1').classList.add('hidden');
+    document.getElementById('donasi-step-2').classList.add('hidden'); 
+    document.getElementById('donasi-step-3').classList.remove('hidden');
+    
+    // Update Progress Bar Wizard
+    const indicator = document.getElementById('wizard-step-indicator');
+    const bar = document.getElementById('wizard-progress-bar');
+    if (indicator) indicator.innerText = `Step 3/5`;
+    if (bar) bar.style.width = `60%`; // Step 3
+    
+    // Update judul wizard
+    const title = document.getElementById('wizard-title');
+    const sub = document.getElementById('wizard-subtitle');
+    if(title) title.innerText = "Isi Data Diri";
+    if(sub) sub.innerText = "Agar tercatat dengan rapi.";
+}
