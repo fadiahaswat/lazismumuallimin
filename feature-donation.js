@@ -944,3 +944,17 @@ document.getElementById('manual-zakat-input').addEventListener('input', function
     // Logika untuk menyimpan nilai ke state donasi global aplikasi Anda
     // Contoh: donationState.amount = cleanNumber(e.target.value);
 });
+
+function updateDonationFormUI(type) {
+    const zakatContainer = document.getElementById('zakat-container');
+    const generalInput = document.getElementById('general-donation-input'); // Input biasa
+
+    if (type === 'zakat') {
+        zakatContainer.classList.remove('hidden');
+        generalInput.classList.add('hidden');
+        switchZakatMode('manual'); // Default ke manual setiap kali buka
+    } else {
+        zakatContainer.classList.add('hidden');
+        generalInput.classList.remove('hidden');
+    }
+}
