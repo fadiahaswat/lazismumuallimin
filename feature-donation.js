@@ -838,3 +838,109 @@ export function setupWizardLogic() {
         btn.onclick = () => goToStep(parseInt(btn.dataset.prevStep));
     });
 }
+
+/* =========================================
+   ZAKAT MAAL LOGIC (UPDATED 2025)
+   ========================================= */
+
+// KONSTANTA NISAB (SK BAZNAS No. 13 Tahun 2025)
+const NISAB_TAHUN = 85685972; 
+const NISAB_BULAN = 7140498; 
+
+let currentZakatMode = 'manual';
+
+// 1. FUNGSI SWITCH MODE (MANUAL <-> KALKULATOR)
+function switchZakatMode(mode) {
+    currentZakatMode = mode;
+    
+    const btnManual = document.getElementById('btn-mode-manual');
+    const btnCalc = document.getElementById('btn-mode-calculator');
+    const divManual = document.getElementById('mode-manual');
+    const divCalc = document.getElementById('mode-calculator');
+
+    if (mode === 'manual') {
+        // Tampilan
+        btnManual.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-white text-emerald-600 shadow-sm transition-all";
+        btnCalc.className = "flex-1 py-2 text-sm font-bold rounded-lg text-slate-500 hover:text-emerald-600 transition-all";
+        
+        divManual.classList.remove('hidden');
+        divCalc.classList.add('hidden');
+        
+        // Reset Input Hidden Form Utama jika ada
+        // document.getElementById('amount').value = document.getElementById('manual-zakat-input').value; 
+    } else {
+        // Tampilan
+        btnCalc.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-white text-emerald-600 shadow-sm transition-all";
+        btnManual.className = "flex-1 py-2 text-sm font-bold rounded-lg text-slate-500 hover:text-emerald-600 transition-all";
+        
+        divCalc.classList.remove('hidden');
+        divManual.classList.add('hidden');
+    }
+}
+
+// 2. FUNGSI HITUNG ZAKAT (KALKULATOR)
+function calculateZakat() {
+    // Ambil semua input kalkulator
+    const inputs = document.querySelectorAll('.calc-input');
+    let totalHarta = 0;
+    let hutang = 0;
+
+    // Loop 3 input pertama (Aset)
+    for(let i=0; i<3; i++) {
+        let val = inputs[i].value.replace(/[^0-9]/g, '');
+        totalHarta += parseInt(val || 0);
+    }
+
+    // Input ke-4 adalah Hutang
+    let valHutang = inputs[3].value.replace(/[^0-9]/g, '');
+    hutang = parseInt(valHutang || 0);
+
+    const hartaBersih = totalHarta - hutang;
+
+    // Tampilkan Hasil
+    document.getElementById('calc-result').classList.remove('hidden');
+    document.getElementById('total-harta').innerText = formatRupiahDisplay(hartaBersih);
+
+    const divWajib = document.getElementById('status-wajib');
+    const divTidak = document.getElementById('status-tidak-wajib');
+
+    // Cek Nisab
+    if (hartaBersih >= NISAB_TAHUN) {
+        divWajib.classList.remove('hidden');
+        divTidak.classList.add('hidden');
+
+        // Hitung 2.5%
+        const zakat = Math.ceil(hartaBersih * 0.025);
+        document.getElementById('final-zakat-amount').innerText = formatRupiahDisplay(zakat);
+        document.getElementById('final-zakat-amount').dataset.value = zakat; // Simpan nilai asli
+    } else {
+        divWajib.classList.add('hidden');
+        divTidak.classList.remove('hidden');
+    }
+}
+
+// 3. FUNGSI TERAPKAN HASIL KALKULATOR KE INPUT MANUAL
+function applyZakatResult() {
+    const nominal = document.getElementById('final-zakat-amount').dataset.value;
+    
+    // Pindah ke mode manual
+    switchZakatMode('manual');
+    
+    // Isi input manual dengan hasil hitungan
+    const inputManual = document.getElementById('manual-zakat-input');
+    inputManual.value = formatRupiahDisplay(nominal);
+    
+    // Trigger event input agar format Rupiah berjalan (jika ada listener lain)
+    inputManual.dispatchEvent(new Event('input'));
+}
+
+// Helper Format Rupiah (Jika belum ada di script.js)
+function formatRupiahDisplay(angka) {
+    return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// Listener untuk Input Manual (Sync ke variabel global donasi)
+document.getElementById('manual-zakat-input').addEventListener('input', function(e) {
+    // Logika untuk menyimpan nilai ke state donasi global aplikasi Anda
+    // Contoh: donationState.amount = cleanNumber(e.target.value);
+});
