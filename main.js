@@ -206,3 +206,165 @@ window.closeQrisModal = closeQrisModal;
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
+
+/* ============================================================================
+   LOGIKA ZAKAT MAAL (WAJIB TARUH DI MAIN.JS PALING BAWAH)
+   ============================================================================ */
+
+// 1. Format Input Rupiah saat mengetik
+window.formatInputRupiah = function(input) {
+    let val = input.value.replace(/\D/g, ''); // Hanya angka
+    if (val === '') {
+        input.value = '';
+    } else {
+        // Format angka dengan titik ribuan
+        input.value = parseInt(val).toLocaleString('id-ID');
+    }
+};
+
+// 2. Switch Tab Mode (Manual / Kalkulator)
+window.switchZakatMode = function(mode) {
+    const btnManual = document.getElementById('btn-mode-manual');
+    const btnCalc = document.getElementById('btn-mode-calculator');
+    const divManual = document.getElementById('mode-manual');
+    const divCalc = document.getElementById('mode-calculator');
+
+    if (!btnManual || !btnCalc || !divManual || !divCalc) return;
+
+    if (mode === 'manual') {
+        // Aktifkan Tab Manual
+        btnManual.className = "flex-1 py-3 text-sm font-bold rounded-lg bg-white text-amber-600 shadow-sm transition-all border border-slate-100";
+        btnCalc.className = "flex-1 py-3 text-sm font-bold rounded-lg text-slate-500 hover:text-amber-600 transition-all";
+        divManual.classList.remove('hidden');
+        divCalc.classList.add('hidden');
+    } else {
+        // Aktifkan Tab Kalkulator
+        btnCalc.className = "flex-1 py-3 text-sm font-bold rounded-lg bg-white text-amber-600 shadow-sm transition-all border border-slate-100";
+        btnManual.className = "flex-1 py-3 text-sm font-bold rounded-lg text-slate-500 hover:text-amber-600 transition-all";
+        divCalc.classList.remove('hidden');
+        divManual.classList.add('hidden');
+    }
+};
+
+// 3. Logika Hitung Zakat
+window.calculateZakat = function() {
+    const inputs = document.querySelectorAll('.calc-input');
+    let totalHarta = 0;
+    let hutang = 0;
+
+    // Ambil 3 input pertama (Aset)
+    for(let i=0; i<3; i++) {
+        let val = inputs[i].value.replace(/\D/g, '');
+        totalHarta += parseInt(val || 0);
+    }
+
+    // Input ke-4 (Hutang)
+    let valHutang = inputs[3].value.replace(/\D/g, '');
+    hutang = parseInt(valHutang || 0);
+
+    const hartaBersih = totalHarta - hutang;
+    const NISAB_TAHUN = 85685972; // SK BAZNAS 2025
+
+    // Tampilkan Container Hasil
+    const resultDiv = document.getElementById('calc-result');
+    if(resultDiv) resultDiv.classList.remove('hidden');
+    
+    // Tampilkan Total Harta
+    const elTotalHarta = document.getElementById('total-harta');
+    if(elTotalHarta) elTotalHarta.innerText = "Rp " + hartaBersih.toLocaleString('id-ID');
+
+    const divWajib = document.getElementById('status-wajib');
+    const divTidak = document.getElementById('status-tidak-wajib');
+
+    if (hartaBersih >= NISAB_TAHUN) {
+        // WAJIB ZAKAT
+        if(divWajib) divWajib.classList.remove('hidden');
+        if(divTidak) divTidak.classList.add('hidden');
+
+        // Hitung 2.5%
+        const zakat = Math.ceil(hartaBersih * 0.025);
+        const elAmount = document.getElementById('final-zakat-amount');
+        if(elAmount) {
+            elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
+            elAmount.dataset.value = zakat;
+        }
+    } else {
+        // TIDAK WAJIB
+        if(divWajib) divWajib.classList.add('hidden');
+        if(divTidak) divTidak.classList.remove('hidden');
+    }
+};
+
+// 4. Terapkan Hasil Hitungan ke Input Manual
+window.applyZakatResult = function() {
+    const elAmount = document.getElementById('final-zakat-amount');
+    if (!elAmount) return;
+
+    let nominal = parseInt(elAmount.dataset.value) || 0;
+    
+    // Pindah ke tab manual
+    switchZakatMode('manual');
+    
+    // Masukkan ke input manual
+    const inputManual = document.getElementById('manual-zakat-input');
+    if (inputManual) {
+        if (nominal > 0) {
+            inputManual.value = nominal.toLocaleString('id-ID');
+        } else {
+            inputManual.value = ""; 
+            inputManual.focus();
+        }
+    }
+};
+
+// 5. Tombol Lanjut (Dari Zakat Maal ke Data Diri)
+window.handleManualZakatNext = function() {
+    const input = document.getElementById('manual-zakat-input');
+    if (!input) return;
+
+    const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
+
+    if (cleanVal < 10000) {
+        // Menggunakan showToast dari main.js (pastikan utils.js ter-import)
+        if(typeof showToast === 'function') {
+            showToast('Minimal nominal Rp 10.000', 'warning');
+        } else {
+            alert('Minimal nominal Rp 10.000');
+        }
+        return;
+    }
+
+    // Simpan ke state global donasi (Variable donasiData ada di main.js)
+    if (typeof donasiData !== 'undefined') {
+        donasiData.nominal = cleanVal;
+        donasiData.nominalAsli = cleanVal;
+    }
+
+    // Pindah Langkah (Sembunyikan Step 1 & 2, Munculkan Step 3)
+    const step1 = document.getElementById('donasi-step-1');
+    const step2 = document.getElementById('donasi-step-2');
+    const step3 = document.getElementById('donasi-step-3');
+
+    if(step1) step1.classList.add('hidden');
+    if(step2) step2.classList.add('hidden'); 
+    if(step3) {
+        step3.classList.remove('hidden');
+        step3.classList.add('animate-fade-in-up');
+    }
+    
+    // Update Progress Bar Wizard
+    const indicator = document.getElementById('wizard-step-indicator');
+    const bar = document.getElementById('wizard-progress-bar');
+    if (indicator) indicator.innerText = `Step 3/5`;
+    if (bar) bar.style.width = `60%`;
+    
+    // Update judul wizard
+    const title = document.getElementById('wizard-title');
+    const sub = document.getElementById('wizard-subtitle');
+    if(title) title.innerText = "Isi Data Diri";
+    if(sub) sub.innerText = "Agar tercatat dengan rapi.";
+    
+    // Scroll ke wizard
+    const wizard = document.getElementById('donasi-wizard');
+    if (wizard) wizard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
