@@ -2853,30 +2853,106 @@
                         </button>
                     </div>
 
-                    <div id="zakat-maal-checker" class="hidden bg-yellow-50 p-6 rounded-2xl border border-yellow-100 animate-fade-in-up mb-8">
-                        <div class="space-y-4">
-                            <div class="relative">
-                                <label class="text-[10px] font-bold text-yellow-700 uppercase mb-1 ml-1 block">Harga Emas (per gram)</label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-3.5 text-yellow-600 font-bold">Rp</span>
-                                    <input type="text" id="harga-emas" class="w-full pl-10 pr-4 py-3 rounded-xl bg-white shadow-sm border-0 focus:ring-2 focus:ring-yellow-500 font-bold text-slate-700" value="1.300.000">
-                                </div>
-                            </div>
-                            <div class="relative">
-                                <label class="text-[10px] font-bold text-yellow-700 uppercase mb-1 ml-1 block">Penghasilan Bulanan</label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-3.5 text-yellow-600 font-bold">Rp</span>
-                                    <input type="text" id="penghasilan-bulanan" class="w-full pl-10 pr-4 py-3 rounded-xl bg-white shadow-sm border-0 focus:ring-2 focus:ring-yellow-500 font-bold text-slate-700" placeholder="0">
-                                </div>
-                            </div>
-                            <button id="zakat-check-button" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg shadow-yellow-500/20">Hitung Zakat</button>
-                        </div>
-                        <div id="zakat-result" class="hidden mt-6 pt-4 border-t border-yellow-200/50 text-center">
-                            <p id="zakat-result-message" class="font-black text-xl text-slate-800 mb-4"></p>
-                            <button id="btn-maal-next" class="hidden w-full bg-yellow-600 text-white py-3 rounded-xl font-bold hover:bg-yellow-700 transition shadow-md">Bayar Zakat Sekarang <i class="fas fa-arrow-right ml-2"></i></button>
-                            <button id="zakat-lanjutkan-infaq" class="hidden w-full mt-2 text-yellow-700 font-bold hover:bg-yellow-100 py-2 rounded-lg transition text-sm">Tidak Wajib, Lanjut Infaq Saja</button>
-                        </div>
-                    </div>
+                    <div id="zakat-maal-checker" class="hidden animate-fade-in-up mb-8">
+    
+    <div class="flex p-1 bg-slate-100 rounded-xl mb-6 border border-slate-200">
+        <button type="button" onclick="switchZakatMode('manual')" id="btn-mode-manual" class="flex-1 py-3 text-sm font-bold rounded-lg bg-white text-amber-600 shadow-sm transition-all border border-slate-100">
+            Input Manual
+        </button>
+        <button type="button" onclick="switchZakatMode('calculator')" id="btn-mode-calculator" class="flex-1 py-3 text-sm font-bold rounded-lg text-slate-500 hover:text-amber-600 transition-all">
+            <i class="fas fa-calculator mr-2"></i>Kalkulator Zakat
+        </button>
+    </div>
+
+    <div id="mode-manual" class="space-y-4">
+        <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+            <label class="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 ml-1">Nominal Zakat</label>
+            <div class="relative">
+                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-amber-600 font-bold text-xl">Rp</span>
+                <input type="text" id="manual-zakat-input" class="w-full pl-14 pr-4 py-4 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-0 font-bold text-2xl text-slate-800 bg-white placeholder:text-slate-300 transition-all" placeholder="0" oninput="formatRupiah(this)">
+            </div>
+            <p class="text-[11px] text-amber-700/70 mt-3 flex items-center gap-1.5">
+                <i class="fas fa-info-circle"></i> Masukkan nominal zakat yang sudah Anda hitung sebelumnya.
+            </p>
+        </div>
+        
+        <button onclick="handleManualZakatNext()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-amber-600 transition shadow-lg transform active:scale-95 flex items-center justify-center gap-2">
+            Lanjut Isi Data Diri <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <div id="mode-calculator" class="hidden bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+            <h4 class="font-bold text-slate-800 flex items-center gap-2">
+                <i class="fas fa-calculator text-amber-500"></i> Hitung Zakat Maal
+            </h4>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold border border-emerald-200">
+                Nisab 2025: Rp 85.6 Jt
+            </span>
+        </div>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs font-bold text-slate-500 mb-1 block">Emas, Perak & Logam Mulia</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-slate-500 mb-1 block">Uang Tunai, Tabungan & Deposito</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-slate-500 mb-1 block">Aset (Saham, Surat Berharga)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-3 text-slate-400 font-bold text-xs">Rp</span>
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-bold" placeholder="0" oninput="formatRupiah(this)">
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-red-400 mb-1 block">Hutang Jatuh Tempo (Pengurang)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-3 text-red-300 font-bold text-xs">Rp</span>
+                    <input type="text" class="calc-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-red-100 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm font-bold text-red-600" placeholder="0" oninput="formatRupiah(this)">
+                </div>
+            </div>
+        </div>
+
+        <button type="button" onclick="calculateZakat()" class="mt-6 w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition shadow-lg shadow-amber-500/20 active:scale-95">
+            Hitung Sekarang
+        </button>
+
+        <div id="calc-result" class="hidden mt-6 pt-6 border-t-2 border-dashed border-slate-100">
+            <div class="flex justify-between text-xs mb-2">
+                <span class="text-slate-500">Total Harta Bersih:</span>
+                <span id="total-harta" class="font-bold text-slate-800">Rp 0</span>
+            </div>
+            
+            <div id="status-wajib" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+                <div class="flex items-center justify-center gap-2 mb-2 text-emerald-700 font-bold text-xs uppercase tracking-wide">
+                    <i class="fas fa-check-circle"></i> Wajib Zakat
+                </div>
+                <h3 id="final-zakat-amount" class="text-2xl font-black text-emerald-600 mb-3" data-value="0">Rp 0</h3>
+                <button onclick="applyZakatResult()" class="w-full py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs hover:bg-emerald-700 transition">
+                    Pilih Nominal Ini
+                </button>
+            </div>
+
+            <div id="status-tidak-wajib" class="hidden bg-slate-100 border border-slate-200 p-4 rounded-xl text-center">
+                <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+                    Total harta belum mencapai Nisab (Rp 85.685.972). Anda tidak wajib zakat, namun sangat dianjurkan berinfaq.
+                </p>
+                <button onclick="applyZakatResult()" class="text-xs font-bold text-slate-600 hover:text-amber-600 underline">
+                    Tetap Zakat (Infaq) Seikhlasnya
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
                     <div id="step-1-nav-default" class="hidden mt-8 flex justify-end">
                         <button data-next-step="2" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg transform active:scale-95 flex items-center gap-2">
@@ -3795,6 +3871,7 @@
 </body>
 
 </html>
+
 
 
 
