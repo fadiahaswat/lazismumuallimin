@@ -210,10 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ============================================================================
-   LOGIKA ZAKAT MAAL (SINKRONISASI WIZARD)
+   LOGIKA ZAKAT MAAL (FINAL FIX SINKRONISASI)
    ============================================================================ */
 
-// 1. Format Input Rupiah
+// 1. Format Input Rupiah & Auto-Save
 window.formatInputRupiah = function(input) {
     let val = input.value.replace(/\D/g, ''); 
     if (val === '') {
@@ -222,10 +222,14 @@ window.formatInputRupiah = function(input) {
         input.value = parseInt(val).toLocaleString('id-ID');
     }
     
-    // SINKRONISASI LANGSUNG SAAT MENGETIK (OPSIONAL TAPI BAGUS)
-    if(input.id === 'manual-zakat-input' && donasiData) {
-        donasiData.nominal = parseInt(val) || 0;
-        donasiData.nominalAsli = donasiData.nominal;
+    // UPDATE LANGSUNG KE STATE SAAT MENGETIK
+    if(input.id === 'manual-zakat-input') {
+        const numVal = parseInt(val) || 0;
+        if(typeof donasiData !== 'undefined') {
+            donasiData.nominal = numVal;
+            donasiData.nominalAsli = numVal;
+            // console.log("Input Update:", donasiData.nominal); // Debugging
+        }
     }
 };
 
@@ -238,20 +242,19 @@ window.switchZakatMode = function(mode) {
 
     if (!btnManual || !btnCalc || !divManual || !divCalc) return;
 
-    // Reset Style
-    const baseBtn = "flex-1 py-3 px-4 rounded-lg text-xs font-bold transition-all border flex items-center justify-center gap-2";
-    const activeStyle = "bg-white text-slate-800 shadow-sm border-slate-200 ring-1 ring-slate-100";
-    const inactiveStyle = "text-slate-500 hover:text-slate-800 hover:bg-white/60 border-transparent";
+    // Style Definitions
+    const activeClass = "bg-white text-slate-800 shadow-sm border-slate-200 ring-1 ring-slate-100";
+    const inactiveClass = "text-slate-500 hover:text-slate-800 hover:bg-white/60 border-transparent";
+
+    // Reset Classes First
+    btnManual.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'manual' ? activeClass : inactiveClass}`;
+    btnCalc.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'calculator' ? activeClass : inactiveClass}`;
 
     if (mode === 'manual') {
-        btnManual.className = `${baseBtn} ${activeStyle}`;
-        btnCalc.className = `${baseBtn} ${inactiveStyle}`;
         divManual.classList.remove('hidden');
         divManual.classList.add('animate-fade-in-up');
         divCalc.classList.add('hidden');
     } else {
-        btnCalc.className = `${baseBtn} ${activeStyle}`;
-        btnManual.className = `${baseBtn} ${inactiveStyle}`;
         divCalc.classList.remove('hidden');
         divCalc.classList.add('animate-fade-in-up');
         divManual.classList.add('hidden');
@@ -264,7 +267,7 @@ window.calculateZakat = function() {
     let totalHarta = 0;
     let hutang = 0;
 
-    // 3 Input Pertama = Aset
+    // Ambil 3 input pertama (Aset)
     for(let i=0; i<3; i++) {
         if(inputs[i]) {
             let val = inputs[i].value.replace(/\D/g, '');
@@ -278,7 +281,7 @@ window.calculateZakat = function() {
     }
 
     const hartaBersih = totalHarta - hutang;
-    const NISAB_TAHUN = 85685972; // SK BAZNAS 2025
+    const NISAB_TAHUN = 85685972; 
 
     const resultDiv = document.getElementById('calc-result');
     if(resultDiv) resultDiv.classList.remove('hidden');
@@ -293,7 +296,6 @@ window.calculateZakat = function() {
         if(divWajib) divWajib.classList.remove('hidden');
         if(divTidak) divTidak.classList.add('hidden');
 
-        // Hitung 2.5%
         const zakat = Math.ceil(hartaBersih * 0.025);
         const elAmount = document.getElementById('final-zakat-amount');
         if(elAmount) {
@@ -303,9 +305,12 @@ window.calculateZakat = function() {
     } else {
         if(divWajib) divWajib.classList.add('hidden');
         if(divTidak) divTidak.classList.remove('hidden');
+        
+        // Reset value di tombol jika tidak wajib
+        const elAmount = document.getElementById('final-zakat-amount');
+        if(elAmount) elAmount.dataset.value = 0;
     }
     
-    // Scroll ke hasil
     if(resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 };
 
@@ -324,8 +329,9 @@ window.applyZakatResult = function() {
     if (inputManual) {
         if (nominal > 0) {
             inputManual.value = nominal.toLocaleString('id-ID');
-            // Update State Donasi
-            if(donasiData) {
+            
+            // PAKSA UPDATE STATE
+            if(typeof donasiData !== 'undefined') {
                 donasiData.nominal = nominal;
                 donasiData.nominalAsli = nominal;
             }
@@ -333,10 +339,6 @@ window.applyZakatResult = function() {
             inputManual.value = "";
             inputManual.focus();
         }
-        
-        // Efek visual focus
-        inputManual.classList.add('ring-4', 'ring-amber-500/20', 'border-amber-500');
-        setTimeout(() => inputManual.classList.remove('ring-4', 'ring-amber-500/20', 'border-amber-500'), 1000);
     }
 };
 
@@ -345,32 +347,54 @@ window.handleManualZakatNext = function() {
     const input = document.getElementById('manual-zakat-input');
     if (!input) return;
 
+    // Ambil nilai bersih dari input
     const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
 
     if (cleanVal < 10000) {
-        showToast('Minimal nominal zakat Rp 10.000', 'warning');
+        if(typeof showToast === 'function') showToast('Minimal nominal zakat Rp 10.000', 'warning');
+        else alert('Minimal nominal zakat Rp 10.000');
         return;
     }
 
-    // A. SIMPAN KE STATE GLOBAL (Fix Masalah Tidak Sinkron)
-    if (donasiData) {
-        donasiData.nominal = cleanVal;
-        donasiData.nominalAsli = cleanVal;
-        donasiData.type = 'Zakat Maal'; // Pastikan tipe terkunci
-    } else {
-        console.error("donasiData tidak ditemukan! Pastikan sudah diimport.");
-        alert("Terjadi kesalahan sistem. Silakan refresh.");
+    // A. SIMPAN KE STATE GLOBAL
+    // Cek apakah donasiData tersedia
+    if (typeof donasiData === 'undefined') {
+        console.error("CRITICAL: donasiData undefined di main.js");
+        alert("Terjadi kesalahan sistem (State Error). Silakan refresh halaman.");
         return;
     }
 
-    // B. PINDAH KE STEP 3 (DATA DIRI)
-    // Menggunakan fungsi goToStep dari feature-donation.js agar wizard logic (progress bar, judul step) ikut berubah
+    // Set Data
+    donasiData.nominal = cleanVal;
+    donasiData.nominalAsli = cleanVal;
+    donasiData.type = 'Zakat Maal'; 
+    donasiData.subType = null; // Pastikan subType kosong agar tidak dianggap infaq
+
+    console.log("Zakat Maal Saved:", donasiData); // Debugging di Console
+
+    // B. PINDAH KE STEP 3 (Lewati Step 2 Nominal Buttons)
+    // Pastikan fungsi goToStep tersedia
     if(typeof goToStep === 'function') {
         goToStep(3);
     } else {
-        // Fallback jika goToStep gagal
+        // Fallback Manual jika goToStep error
+        console.warn("goToStep function missing, using fallback");
         document.getElementById('donasi-step-1').classList.add('hidden');
         document.getElementById('donasi-step-2').classList.add('hidden');
-        document.getElementById('donasi-step-3').classList.remove('hidden');
+        
+        const step3 = document.getElementById('donasi-step-3');
+        if(step3) {
+            step3.classList.remove('hidden');
+            step3.classList.add('animate-fade-in-up');
+        }
+        
+        // Update UI Wizard Manual
+        const indicator = document.getElementById('wizard-step-indicator');
+        const bar = document.getElementById('wizard-progress-bar');
+        const title = document.getElementById('wizard-title');
+        
+        if(indicator) indicator.innerText = "Step 3/5";
+        if(bar) bar.style.width = "60%";
+        if(title) title.innerText = "Isi Data Diri";
     }
 };
