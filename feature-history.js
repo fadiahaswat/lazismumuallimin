@@ -831,3 +831,34 @@ export function openReceiptWindow(itemData) {
     localStorage.setItem('tiket_cetak_kwitansi', JSON.stringify(paketData));
     window.open('cetak.html', '_blank', 'width=900,height=700,menubar=no,toolbar=no');
 }
+
+export async function refreshDashboard() {
+    const btnRefresh = document.getElementById('btn-refresh-dash'); // Asumsi ID tombol refresh
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    // 2. Reset Status Data agar fetch ulang
+    riwayatData.isLoaded = false; 
+    
+    try {
+        // 3. Ambil ulang data
+        await loadRiwayat();
+        
+        // 4. Update tampilan Dashboard Pribadi jika user sedang login
+        if (currentUser) {
+            // Gunakan email atau NIS yang tersedia
+            const identifier = currentUser.email || currentUser.nis;
+            await loadPersonalDashboard(identifier);
+        }
+        
+        showToast('Data dashboard berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Gagal memperbarui data', 'error');
+    } finally {
+        // 5. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
+}
