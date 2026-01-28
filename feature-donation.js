@@ -26,68 +26,79 @@ export function goToStep(step) {
         target.classList.add('animate-fade-in-up');
     }
     
-    // --- PERBAIKAN LOGIKA STEP 3 (AUTO-FILL SANTRI) ---
+    // --- PERBAIKAN TOTAL LOGIKA STEP 3 (AUTO-FILL CHAIN REACTION) ---
     if (step === 3) {
         const suggestionCard = document.getElementById('login-suggestion-card');
         
         // Cek apakah ada User Login & Tipe-nya Santri (Punya NIS)
         if (currentUser && currentUser.nis) {
-            // 1. Sembunyikan saran login karena sudah login
+            // 1. Sembunyikan saran login
             if (suggestionCard) suggestionCard.classList.add('hidden');
 
-            // 2. Pilih Radio "Via Santri" & Tampilkan Form Detail
+            // 2. Pilih Radio "Via Santri" & Trigger agar form muncul
             const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
             if (radioSantri) {
                 radioSantri.checked = true;
-                // PENTING: Trigger event change agar form detail muncul (dihandle di setupWizardLogic)
                 radioSantri.dispatchEvent(new Event('change'));
             }
 
-            // 3. Eksekusi Auto-Fill Berantai (Chain Reaction)
+            // 3. EKSEKUSI BERANTAI (CHAIN REACTION) DENGAN JEDA (NESTED TIMEOUT)
             setTimeout(() => {
                 const levelSelect = document.getElementById('santri-level-select');
                 const rombelSelect = document.getElementById('santri-rombel-select');
                 const namaSelect = document.getElementById('santri-nama-select');
 
                 if (levelSelect && currentUser.rombel) {
-                    // A. Ambil Digit Pertama dari Rombel sebagai Level (misal "1 A" -> "1")
+                    // A. STEP 1: ISI LEVEL
                     const userLevel = currentUser.rombel.charAt(0);
                     levelSelect.value = userLevel;
-                    
-                    // PENTING: Trigger event 'change' agar opsi Rombel digenerate oleh sistem
                     levelSelect.dispatchEvent(new Event('change'));
 
-                    // B. Isi Rombel
-                    if (rombelSelect) {
-                        rombelSelect.value = currentUser.rombel;
-                        
-                        // PENTING: Trigger event 'change' agar opsi Nama Santri digenerate
-                        rombelSelect.dispatchEvent(new Event('change'));
+                    // B. STEP 2: TUNGGU OPSI ROMBEL MUNCUL (Jeda 150ms)
+                    setTimeout(() => {
+                        if (rombelSelect) {
+                            rombelSelect.value = currentUser.rombel;
+                            rombelSelect.dispatchEvent(new Event('change'));
 
-                        // C. Isi Nama Santri
-                        if (namaSelect) {
-                            // Format Value harus sesuai dengan yang ada di setupWizardLogic: "Nama::NIS::Rombel"
-                            const targetValue = `${currentUser.nama}::${currentUser.nis}::${currentUser.rombel}`;
-                            namaSelect.value = targetValue;
+                            // C. STEP 3: TUNGGU OPSI NAMA MUNCUL (Jeda 150ms)
+                            // Ini bagian krusial yang sebelumnya macet
+                            setTimeout(() => {
+                                if (namaSelect) {
+                                    // Format Value: "Nama::NIS::Rombel"
+                                    const exactValue = `${currentUser.nama}::${currentUser.nis}::${currentUser.rombel}`;
+                                    
+                                    // Cek apakah opsi tersebut benar-benar ada di dropdown?
+                                    // (Mencegah error jika teks nama di user berbeda spasi dengan di DB)
+                                    let targetValueToSet = exactValue;
+                                    
+                                    // Fallback: Jika match persis gagal, cari berdasarkan NIS saja
+                                    const options = Array.from(namaSelect.options);
+                                    const exactMatch = options.find(opt => opt.value === exactValue);
+                                    
+                                    if (!exactMatch) {
+                                        // Cari opsi yang mengandung NIS user
+                                        const nisMatch = options.find(opt => opt.value.includes(`::${currentUser.nis}::`));
+                                        if (nisMatch) {
+                                            targetValueToSet = nisMatch.value;
+                                        }
+                                    }
 
-                            // PENTING: Trigger event 'change' agar data tersimpan ke variable donasiData
-                            namaSelect.dispatchEvent(new Event('change'));
+                                    // Set Nilai Akhir
+                                    namaSelect.value = targetValueToSet;
+                                    namaSelect.dispatchEvent(new Event('change'));
 
-                            // Opsional: Kunci dropdown agar tidak bisa diubah (karena dia login sebagai dirinya sendiri)
-                            // levelSelect.disabled = true;
-                            // rombelSelect.disabled = true;
-                            // namaSelect.disabled = true; 
-                            
-                            // Kunci Input Nama Muzakki menjadi "A/n Santri"
-                            const radioAnSantri = document.getElementById('radio-an-santri');
-                            if(radioAnSantri) {
-                                radioAnSantri.disabled = false;
-                                radioAnSantri.click();
-                            }
+                                    // Otomatis Klik Radio "A/n Santri" agar nama input terisi
+                                    const radioAnSantri = document.getElementById('radio-an-santri');
+                                    if(radioAnSantri) {
+                                        radioAnSantri.disabled = false;
+                                        radioAnSantri.click();
+                                    }
+                                }
+                            }, 200); // Jeda tunggu nama
                         }
-                    }
+                    }, 200); // Jeda tunggu rombel
                 }
-            }, 100); // Beri jeda sedikit agar DOM siap
+            }, 100); // Jeda awal DOM Ready
 
         } else {
             // Jika Belum Login
