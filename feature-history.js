@@ -697,7 +697,7 @@ function updateDashboardUI() {
     renderPersonalHistoryTable();
 }
 
-function renderPersonalHistoryTable() {
+export function renderPersonalHistoryTable() {
     const tbody = document.getElementById('dash-history-body');
     const emptyState = document.getElementById('dash-empty-state');
     
@@ -722,6 +722,27 @@ function renderPersonalHistoryTable() {
             ? 'bg-green-100 text-green-700 border-green-200' 
             : 'bg-yellow-100 text-yellow-700 border-yellow-200';
         
+        // --- PERBAIKAN DI SINI: LOGIKA TOMBOL KWITANSI ---
+        let btnKwitansiHTML = '';
+        
+        // Cek Status (Sesuaikan string 'Terverifikasi' dengan data Anda)
+        if (item.Status === 'Terverifikasi') {
+            // Jika SUDAH VERIFIKASI: Tampilkan tombol bisa diklik
+            btnKwitansiHTML = `
+                <button onclick='window.openReceiptWindow(${JSON.stringify(item)})' class="text-emerald-600 hover:text-emerald-800 transition p-2 bg-emerald-50 rounded-lg border border-emerald-100" title="Cetak Kwitansi">
+                    <i class="fas fa-file-invoice"></i> Cetak
+                </button>
+            `;
+        } else {
+            // Jika BELUM: Tampilkan icon jam / gembok (Tidak bisa diklik)
+            btnKwitansiHTML = `
+                <span class="text-slate-300 cursor-not-allowed p-2" title="Menunggu Verifikasi Admin">
+                    <i class="fas fa-clock"></i>
+                </span>
+            `;
+        }
+        // -----------------------------------------------
+
         const row = document.createElement('tr');
         row.className = 'hover:bg-slate-50 transition border-b border-slate-50 last:border-0';
         row.innerHTML = `
@@ -748,10 +769,7 @@ function renderPersonalHistoryTable() {
                 </span>
             </td>
             <td class="p-5 text-center">
-                <button onclick='window.openReceiptWindow(${JSON.stringify(item)})' class="text-slate-400 hover:text-orange-600 transition p-2" title="Cetak Kwitansi">
-                    <i class="fas fa-file-invoice"></i>
-                </button>
-            </td>
+                ${btnKwitansiHTML} </td>
         `;
         tbody.appendChild(row);
     });
