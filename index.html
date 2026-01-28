@@ -3882,81 +3882,106 @@
     </div>
 </div>
 
-    <div id="package-choice-modal" class="hidden fixed inset-0 z-[120] flex items-end sm:items-center justify-center sm:p-4 bg-slate-900/90 backdrop-blur-md transition-all duration-300">
-    
-    <div class="bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl animate-fade-in-up relative overflow-hidden border border-white/20">
+    <div id="package-choice-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
+
+    <div class="bg-white rounded-[2rem] w-full max-w-md p-6 shadow-2xl animate-fade-in-up relative overflow-hidden">
+
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[4rem] -mr-6 -mt-6"></div>
+
         
-        <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-orange-500/5 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
-        
+
         <div class="relative z-10">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 mb-4 shadow-sm ring-4 ring-emerald-50/50">
-                    <i class="fas fa-hand-holding-heart text-xl"></i>
-                </div>
-                
-                <h3 class="text-slate-500 font-medium text-sm uppercase tracking-widest mb-1">Konfirmasi Penyaluran</h3>
-                
-                <div class="relative inline-block">
-                    <h2 class="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight" id="pkg-modal-nominal">
-                        Rp 0
-                    </h2>
-                    <div class="absolute -right-6 -top-2 text-yellow-400 animate-pulse">
-                        <i class="fas fa-star text-sm"></i>
-                    </div>
-                </div>
-                
-                <p class="text-slate-400 text-sm mt-3 px-4 leading-relaxed">
-                    Alhamdulillah. Mohon tentukan akad untuk donasi terbaik Anda ini:
+
+            <div class="text-center mb-6">
+
+                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-black tracking-widest uppercase mb-3 border border-emerald-200">
+
+                    Konfirmasi Niat
+
+                </span>
+
+                <h3 class="text-xl font-black text-slate-800 leading-tight">
+
+                    Salurkan Paket <span id="pkg-modal-nominal" class="text-emerald-600">Rp 0</span><br>Sebagai?
+
+                </h3>
+
+                <p class="text-xs text-slate-500 mt-2">
+
+                    Silakan pilih akad donasi untuk paket kebaikan ini.
+
                 </p>
+
             </div>
 
-            <div class="grid grid-cols-1 gap-4">
-                
-                <button onclick="confirmPackageChoice('infaq')" class="group relative bg-white border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50/50 rounded-3xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-rose-100/50 hover:-translate-y-1 text-left flex items-center gap-5 overflow-hidden">
-                    <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-300">
+
+
+            <div class="space-y-3">
+
+                <button onclick="confirmPackageChoice('infaq')" class="w-full group relative p-4 rounded-xl border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50 transition-all text-left flex items-center gap-4">
+
+                    <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl shrink-0">
+
                         <i class="fas fa-school"></i>
+
                     </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-1">
-                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-rose-700 transition-colors">Infaq Pembangunan</h4>
-                            <i class="fas fa-arrow-right text-rose-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
-                        </div>
-                        <p class="text-xs text-slate-500 leading-snug group-hover:text-slate-600">
-                            Pahala jariyah mengalir dari setiap bata bangunan pendidikan.
-                        </p>
+
+                    <div>
+
+                        <h4 class="font-bold text-slate-800 group-hover:text-rose-700 text-sm">Infaq Pembangunan</h4>
+
+                        <p class="text-[10px] text-slate-500">Pengembangan Kampus Terpadu</p>
+
                     </div>
-                    
-                    <i class="fas fa-school absolute -right-4 -bottom-4 text-8xl text-rose-900/5 group-hover:text-rose-900/10 transition-colors rotate-12"></i>
+
+                    <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-rose-500">
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </div>
+
                 </button>
 
-                <button onclick="confirmPackageChoice('zakat')" class="group relative bg-white border-2 border-slate-100 hover:border-amber-500 hover:bg-amber-50/50 rounded-3xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-amber-100/50 hover:-translate-y-1 text-left flex items-center gap-5 overflow-hidden">
-                    <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-300">
+
+
+                <button onclick="confirmPackageChoice('zakat')" class="w-full group relative p-4 rounded-xl border-2 border-slate-100 hover:border-amber-500 hover:bg-amber-50 transition-all text-left flex items-center gap-4">
+
+                    <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0">
+
                         <i class="fas fa-sack-dollar"></i>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-1">
-                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-amber-700 transition-colors">Zakat Maal</h4>
-                            <i class="fas fa-arrow-right text-amber-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
-                        </div>
-                        <p class="text-xs text-slate-500 leading-snug group-hover:text-slate-600">
-                            Penyuci harta & jiwa. <span class="italic text-amber-600 font-medium">(Wajib jika mencapai Nishab)</span>
-                        </p>
+
                     </div>
 
-                    <i class="fas fa-coins absolute -right-4 -bottom-4 text-8xl text-amber-900/5 group-hover:text-amber-900/10 transition-colors rotate-12"></i>
+                    <div>
+
+                        <h4 class="font-bold text-slate-800 group-hover:text-amber-700 text-sm">Zakat Maal</h4>
+
+                        <p class="text-[10px] text-slate-500">Pembersih Harta (Jika Nishab Tercapai)</p>
+
+                    </div>
+
+                    <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-amber-500">
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </div>
+
                 </button>
+
             </div>
 
-            <div class="mt-8 text-center">
-                <button onclick="document.getElementById('package-choice-modal').classList.add('hidden')" class="text-slate-400 font-bold text-sm hover:text-slate-600 hover:bg-slate-100 px-6 py-2 rounded-full transition-all">
-                    Batal / Kembali
-                </button>
-            </div>
+
+
+            <button onclick="document.getElementById('package-choice-modal').classList.add('hidden')" class="mt-6 w-full py-3 rounded-xl text-slate-400 font-bold text-xs hover:text-slate-600 transition">
+
+                Batal
+
+            </button>
+
         </div>
+
     </div>
+
 </div>
 
     <div id="receipt-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 transition-opacity duration-300" role="dialog" aria-modal="true">
@@ -4071,4 +4096,5 @@
 </body>
 
 </html>
+
 
