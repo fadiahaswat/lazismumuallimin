@@ -2,7 +2,7 @@
 import { loginWithGoogle, loginWithNIS, doLogout, linkGoogleAccount, updateUIForLogout } from './firebase-init.js';
 import { showPage, scrollToSection, setupNavigation, setupModalLogic, toggleUserDropdown, toggleProfileDropdown, openChangePassModal, saveNewPassword, openAvatarModal, saveAvatar, hideLoginSuggestion } from './ui-navigation.js';
 // PENTING: Tambahkan 'donasiData' di sini
-import { setupWizardLogic, goToStep, startBeautificationDonation } from './feature-donation.js'; 
+import { setupWizardLogic, goToStep, startBeautificationDonation, confirmPackageChoice } from './feature-donation.js';
 import { setupHistoryLogic, loadRiwayat, loadPersonalDashboard, openReceiptWindow } from './feature-history.js';
 import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal } from './feature-news.js';
 import { setupRekapLogic, exportRekapPDF } from './feature-recap.js';
@@ -168,6 +168,7 @@ window.saveAvatar = saveAvatar;
 // Donation
 window.goToStep = goToStep;
 window.startBeautificationDonation = startBeautificationDonation;
+window.confirmPackageChoice = confirmPackageChoice; // <--- TAMBAHKAN INI
 
 // History & Dashboard
 window.loadRiwayat = loadRiwayat;
