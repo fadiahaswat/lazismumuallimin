@@ -3882,6 +3882,58 @@
     </div>
 </div>
 
+    <div id="package-choice-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
+    <div class="bg-white rounded-[2rem] w-full max-w-md p-6 shadow-2xl animate-fade-in-up relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[4rem] -mr-6 -mt-6"></div>
+        
+        <div class="relative z-10">
+            <div class="text-center mb-6">
+                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-black tracking-widest uppercase mb-3 border border-emerald-200">
+                    Konfirmasi Niat
+                </span>
+                <h3 class="text-xl font-black text-slate-800 leading-tight">
+                    Salurkan Paket <span id="pkg-modal-nominal" class="text-emerald-600">Rp 0</span><br>Sebagai?
+                </h3>
+                <p class="text-xs text-slate-500 mt-2">
+                    Silakan pilih akad donasi untuk paket kebaikan ini.
+                </p>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="confirmPackageChoice('infaq')" class="w-full group relative p-4 rounded-xl border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 group-hover:text-rose-700 text-sm">Infaq Pembangunan</h4>
+                        <p class="text-[10px] text-slate-500">Pengembangan Kampus Terpadu</p>
+                    </div>
+                    <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-rose-500">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </button>
+
+                <button onclick="confirmPackageChoice('zakat')" class="w-full group relative p-4 rounded-xl border-2 border-slate-100 hover:border-amber-500 hover:bg-amber-50 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fas fa-sack-dollar"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 group-hover:text-amber-700 text-sm">Zakat Maal</h4>
+                        <p class="text-[10px] text-slate-500">Pembersih Harta (Jika Nishab Tercapai)</p>
+                    </div>
+                    <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-amber-500">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </button>
+            </div>
+
+            <button onclick="document.getElementById('package-choice-modal').classList.add('hidden')" class="mt-6 w-full py-3 rounded-xl text-slate-400 font-bold text-xs hover:text-slate-600 transition">
+                Batal
+            </button>
+        </div>
+    </div>
+</div>
+
     <div id="receipt-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 transition-opacity duration-300" role="dialog" aria-modal="true">
     
     <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm transition-opacity" onclick="closeReceiptModal()"></div>
@@ -3994,6 +4046,7 @@
 </body>
 
 </html>
+
 
 
 
