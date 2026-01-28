@@ -26,15 +26,75 @@ export function goToStep(step) {
         target.classList.add('animate-fade-in-up');
     }
     
-    // Logika Kartu Saran Login di Step 3
+    // --- PERBAIKAN LOGIKA STEP 3 (AUTO-FILL SANTRI) ---
     if (step === 3) {
         const suggestionCard = document.getElementById('login-suggestion-card');
-        if (suggestionCard && !currentUser) {
-            suggestionCard.classList.remove('hidden');
-        } else if (suggestionCard) {
-            suggestionCard.classList.add('hidden');
+        
+        // Cek apakah ada User Login & Tipe-nya Santri (Punya NIS)
+        if (currentUser && currentUser.nis) {
+            // 1. Sembunyikan saran login karena sudah login
+            if (suggestionCard) suggestionCard.classList.add('hidden');
+
+            // 2. Pilih Radio "Via Santri" & Tampilkan Form Detail
+            const radioSantri = document.querySelector('input[name="donatur-tipe"][value="santri"]');
+            if (radioSantri) {
+                radioSantri.checked = true;
+                // PENTING: Trigger event change agar form detail muncul (dihandle di setupWizardLogic)
+                radioSantri.dispatchEvent(new Event('change'));
+            }
+
+            // 3. Eksekusi Auto-Fill Berantai (Chain Reaction)
+            setTimeout(() => {
+                const levelSelect = document.getElementById('santri-level-select');
+                const rombelSelect = document.getElementById('santri-rombel-select');
+                const namaSelect = document.getElementById('santri-nama-select');
+
+                if (levelSelect && currentUser.rombel) {
+                    // A. Ambil Digit Pertama dari Rombel sebagai Level (misal "1 A" -> "1")
+                    const userLevel = currentUser.rombel.charAt(0);
+                    levelSelect.value = userLevel;
+                    
+                    // PENTING: Trigger event 'change' agar opsi Rombel digenerate oleh sistem
+                    levelSelect.dispatchEvent(new Event('change'));
+
+                    // B. Isi Rombel
+                    if (rombelSelect) {
+                        rombelSelect.value = currentUser.rombel;
+                        
+                        // PENTING: Trigger event 'change' agar opsi Nama Santri digenerate
+                        rombelSelect.dispatchEvent(new Event('change'));
+
+                        // C. Isi Nama Santri
+                        if (namaSelect) {
+                            // Format Value harus sesuai dengan yang ada di setupWizardLogic: "Nama::NIS::Rombel"
+                            const targetValue = `${currentUser.nama}::${currentUser.nis}::${currentUser.rombel}`;
+                            namaSelect.value = targetValue;
+
+                            // PENTING: Trigger event 'change' agar data tersimpan ke variable donasiData
+                            namaSelect.dispatchEvent(new Event('change'));
+
+                            // Opsional: Kunci dropdown agar tidak bisa diubah (karena dia login sebagai dirinya sendiri)
+                            // levelSelect.disabled = true;
+                            // rombelSelect.disabled = true;
+                            // namaSelect.disabled = true; 
+                            
+                            // Kunci Input Nama Muzakki menjadi "A/n Santri"
+                            const radioAnSantri = document.getElementById('radio-an-santri');
+                            if(radioAnSantri) {
+                                radioAnSantri.disabled = false;
+                                radioAnSantri.click();
+                            }
+                        }
+                    }
+                }
+            }, 100); // Beri jeda sedikit agar DOM siap
+
+        } else {
+            // Jika Belum Login
+            if (suggestionCard) suggestionCard.classList.remove('hidden');
         }
     }
+    // -----------------------------------------------------
 
     const indicator = document.getElementById('wizard-step-indicator');
     const bar = document.getElementById('wizard-progress-bar');
