@@ -2045,97 +2045,58 @@
         </div>
     </div>
 
-    <div class="container max-w-7xl mx-auto px-4 md:px-8 relative z-20 mb-20">
-    <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-20 shadow-2xl bg-slate-900 border-[6px] border-white/10">
-        
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[150px] animate-pulse pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="container max-w-6xl mx-auto px-4 md:px-8 relative z-20 mb-20">
+    <div class="relative rounded-[3rem] overflow-hidden p-8 md:p-20 shadow-2xl bg-slate-900 border-[6px] border-white">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/20 rounded-full blur-[150px] animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-600/20 rounded-full blur-[150px]"></div>
         
         <div class="relative z-10 text-center">
-            
-            <span class="text-emerald-400 font-bold tracking-[0.3em] text-xs uppercase mb-4 block">Investasi Akhirat</span>
-            <h2 class="text-3xl md:text-5xl font-black text-white mb-12 tracking-tight">
-                Pilih Paket <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Jariyah</span> Anda
-            </h2>
+            <span class="text-emerald-400 font-bold tracking-[0.2em] text-xs uppercase mb-6 block">Investasi Akhirat</span>
+            <h2 class="text-3xl md:text-5xl font-black text-white mb-12">Pilih Paket Jariyah Anda</h2>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 
-                <div onclick="startBeautificationDonation(100000)" class="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-md border border-slate-500/30 p-8 rounded-[2rem] hover:bg-slate-500/10 hover:border-slate-300/50 transition-all cursor-pointer group hover:-translate-y-2 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-slate-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-slate-200/10 rounded-2xl flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition-transform text-slate-300 shadow-[0_0_20px_rgba(203,213,225,0.2)] border border-slate-400/20">
-                            <i class="fas fa-medal"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-300 text-lg mb-1 tracking-wide uppercase">Silver</h4>
-                        <p class="text-white text-3xl font-black mb-4">100rb</p>
-                        <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-500/30 to-transparent mb-4"></div>
-                        <p class="text-slate-400 text-xs">"Langkah awal menuju kebaikan abadi."</p>
-                    </div>
+                <div onclick="startBeautificationDonation(100000)" class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]">🌱</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Sedekah Benih</h4>
+                    <p class="text-emerald-300 text-3xl font-black mb-3">100rb</p>
+                    <p class="text-slate-400 text-xs border-t border-white/10 pt-3">Partisipasi Penghijauan Kawasan</p>
                 </div>
                 
-                <div onclick="startBeautificationDonation(500000)" class="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-md border border-amber-500/30 p-8 rounded-[2rem] hover:bg-amber-500/10 hover:border-amber-400/50 transition-all cursor-pointer group hover:-translate-y-2 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-amber-400/10 rounded-2xl flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition-transform text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.2)] border border-amber-400/20">
-                            <i class="fas fa-crown"></i>
-                        </div>
-                        <h4 class="font-bold text-amber-200 text-lg mb-1 tracking-wide uppercase">Gold</h4>
-                        <p class="text-white text-3xl font-black mb-4">500rb</p>
-                        <div class="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-4"></div>
-                        <p class="text-amber-100/60 text-xs">"Kilau pahala yang terus mengalir."</p>
-                    </div>
+                <div onclick="startBeautificationDonation(500000)" class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-blue-500/20 hover:border-blue-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.3)]">🌳</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Jariyah Oksigen</h4>
+                    <p class="text-blue-300 text-3xl font-black mb-3">500rb</p>
+                    <p class="text-slate-400 text-xs border-t border-white/10 pt-3">1 Bibit Pohon + Perawatan Rutin</p>
                 </div>
                 
-                <div onclick="startBeautificationDonation(1000000)" class="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-md border border-cyan-400/40 p-8 rounded-[2rem] hover:border-cyan-400/80 transition-all cursor-pointer group hover:-translate-y-3 relative overflow-hidden shadow-2xl lg:-mt-4 lg:mb-4 z-10">
-                    
-                    <div class="absolute -inset-[1px] bg-gradient-to-b from-cyan-400 to-blue-600 rounded-[32px] opacity-20 group-hover:opacity-40 blur-sm transition-opacity"></div>
-                    
-                    <div class="relative z-10">
-                         <div class="absolute top-0 right-0 -mt-2 -mr-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl shadow-lg uppercase tracking-wider">
-                            Most Popular
-                        </div>
-
-                        <div class="w-20 h-20 bg-cyan-400/10 rounded-2xl flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-cyan-300 shadow-[0_0_30px_rgba(34,211,238,0.3)] border border-cyan-400/30">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                        <h4 class="font-bold text-cyan-200 text-xl mb-1 tracking-wide uppercase">Platinum</h4>
-                        <p class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-white mb-4">1 Juta</p>
-                        <div class="w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent mb-4"></div>
-                        <p class="text-cyan-100/70 text-xs font-medium">"Investasi mulia dengan balasan surga."</p>
-                    </div>
+                <div onclick="startBeautificationDonation(1000000)" class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-yellow-500/20 hover:border-yellow-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]">🧱</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Meter Surga</h4>
+                    <p class="text-yellow-300 text-3xl font-black mb-3">1 Juta</p>
+                    <p class="text-slate-400 text-xs border-t border-white/10 pt-3">1 m² Pembangunan Fasilitas Kawasan</p>
                 </div>
                 
-                <div onclick="startBeautificationDonation(0)" class="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-md border border-purple-500/30 p-8 rounded-[2rem] hover:bg-purple-500/10 hover:border-purple-400/50 transition-all cursor-pointer group hover:-translate-y-2 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-purple-400/10 rounded-2xl flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition-transform text-purple-400 shadow-[0_0_20px_rgba(192,132,252,0.2)] border border-purple-400/20">
-                            <i class="fas fa-hand-holding-heart"></i>
-                        </div>
-                        <h4 class="font-bold text-purple-200 text-lg mb-1 tracking-wide uppercase">Ikhlas</h4>
-                        <p class="text-white text-3xl font-black mb-4">Bebas</p>
-                        <div class="w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent mb-4"></div>
-                        <p class="text-purple-100/60 text-xs">"Nominal berapapun, Allah mencatatnya."</p>
-                    </div>
+                <div onclick="startBeautificationDonation(0)" class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-[2rem] hover:bg-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer group hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto group-hover:scale-110 transition-transform text-purple-400 shadow-[0_0_20px_rgba(192,132,252,0.3)]">🏗️</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Infaq Tunai</h4>
+                    <p class="text-purple-300 text-3xl font-black mb-3">Bebas</p>
+                    <p class="text-slate-400 text-xs border-t border-white/10 pt-3">Nominal Sesuai Keikhlasan</p>
                 </div>
-
             </div>
 
             <div class="max-w-xl mx-auto mb-10">
-                <p class="text-slate-400 italic text-sm leading-relaxed">
-                    "Siapa yang membangun masjid (fasilitas umat) karena Allah, maka Allah akan membangun baginya semisal itu di surga." <br>
-                    <span class="text-emerald-500 font-bold not-italic text-xs mt-2 block">(HR. Bukhari & Muslim)</span>
+                <p class="text-slate-300 italic text-sm">
+                    "Siapa yang membangun masjid (fasilitas umat) karena Allah, maka Allah akan membangun baginya semisal itu di surga." <br>(HR. Bukhari & Muslim)
                 </p>
             </div>
 
-            <button onclick="startBeautificationDonation()" class="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-12 py-5 rounded-full font-bold text-lg shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-1 active:scale-95 group">
+            <button onclick="startBeautificationDonation()" class="relative overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-12 py-6 rounded-full font-bold text-xl shadow-[0_10px_40px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-2 active:scale-95 group">
                 <span class="relative z-10 flex items-center gap-3">
-                    Tunaikan Infaq Sekarang <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    Tunaikan Infaq Sekarang <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                 </span>
-                <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+                <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
             </button>
         </div>
     </div>
@@ -4033,6 +3994,7 @@
 </body>
 
 </html>
+
 
 
 
