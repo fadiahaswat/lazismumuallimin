@@ -26,6 +26,11 @@ export function showPage(pageId) {
         target.style.opacity = 1;
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Update URL hash to preserve page on refresh (without triggering hashchange)
+        if (window.location.hash !== `#${pageId}`) {
+            history.replaceState(null, '', `#${pageId}`);
+        }
     }
 
     const navLink = document.querySelector(`a[href="#${pageId}"]`);
@@ -53,6 +58,14 @@ export function setupNavigation() {
             menuLinks.classList.toggle('hidden');
         };
     }
+    
+    // Handle browser back/forward button navigation
+    window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '') || 'home';
+        if (document.getElementById(`page-${hash}`)) {
+            showPage(hash);
+        }
+    });
 }
 
 export function setupModalLogic() {
