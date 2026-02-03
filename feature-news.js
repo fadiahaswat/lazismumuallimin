@@ -1,6 +1,6 @@
 import { newsState } from './state.js';
 import { WORDPRESS_SITE, NEWS_PER_PAGE } from './config.js';
-import { copyText, stripHtml } from './utils.js';
+import { copyText, stripHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 
 export async function fetchNews(isLoadMore = false) {
@@ -278,4 +278,30 @@ export function closeNewsModal() {
         modal.classList.add('hidden');
     }, 300);
     document.body.style.overflow = 'auto';
+}
+
+export async function refreshNews() {
+    const btnRefresh = document.getElementById('btn-refresh-news');
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    // 2. Reset state
+    newsState.page = 1;
+    newsState.hasMore = true;
+    newsState.posts = [];
+    
+    try {
+        // 3. Fetch fresh data
+        await fetchNews();
+        
+        showToast('Berita berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Gagal memperbarui berita', 'error');
+    } finally {
+        // 4. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
 }

@@ -2364,14 +2364,19 @@
                     <div class="animate-pulse bg-slate-100 h-10 w-24 rounded-xl"></div>
                 </div>
 
-                <div class="relative w-full md:w-80 group">
-                    <input type="text" id="news-search-input" placeholder="Cari kabar..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-medium text-slate-600 placeholder:text-slate-400 group-hover:bg-white group-hover:shadow-sm" onkeypress="handleNewsSearch(event)">
-                    <div class="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                        <i class="fas fa-search text-lg"></i>
+                <div class="flex gap-2 items-center w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80 group">
+                        <input type="text" id="news-search-input" placeholder="Cari kabar..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-medium text-slate-600 placeholder:text-slate-400 group-hover:bg-white group-hover:shadow-sm" onkeypress="handleNewsSearch(event)">
+                        <div class="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                            <i class="fas fa-search text-lg"></i>
+                        </div>
+                        <div class="absolute right-3 top-3">
+                            <span class="text-[10px] font-bold bg-white border border-slate-200 text-slate-400 px-2 py-1 rounded-md hidden md:inline-block">ENTER</span>
+                        </div>
                     </div>
-                    <div class="absolute right-3 top-3">
-                        <span class="text-[10px] font-bold bg-white border border-slate-200 text-slate-400 px-2 py-1 rounded-md hidden md:inline-block">ENTER</span>
-                    </div>
+                    <button id="btn-refresh-news" onclick="refreshNews()" class="px-4 py-3 rounded-xl bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center group" title="Refresh data berita">
+                        <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -2550,8 +2555,11 @@
                         <input type="hidden" id="filter-end-date">
                     </div>
 
-                    <div class="lg:col-span-2 flex justify-end">
-                        <button id="btn-reset-filter" class="w-full bg-red-50 hover:bg-red-100 text-red-500 px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 group">
+                    <div class="lg:col-span-2 flex gap-2 justify-end">
+                        <button id="btn-refresh-riwayat" onclick="refreshRiwayat()" class="px-4 py-3 rounded-xl bg-purple-50 hover:bg-purple-500 text-purple-600 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center group" title="Refresh data laporan">
+                            <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                        </button>
+                        <button id="btn-reset-filter" class="flex-1 bg-red-50 hover:bg-red-100 text-red-500 px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 group">
                             <i class="fas fa-undo group-hover:-rotate-180 transition duration-500"></i> Reset
                         </button>
                     </div>
@@ -2654,8 +2662,11 @@
                         </div>
                     </div>
 
-                    <div class="w-full md:w-auto md:ml-auto">
-                        <button id="btn-export-pdf" disabled class="w-full md:w-auto bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:bg-red-50 disabled:hover:text-red-500 disabled:cursor-not-allowed group">
+                    <div class="w-full md:w-auto md:ml-auto flex gap-2">
+                        <button id="btn-refresh-rekap" onclick="refreshRekap()" class="px-4 py-3.5 rounded-xl bg-teal-50 hover:bg-teal-500 text-teal-600 hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center group" title="Refresh data rekapitulasi">
+                            <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                        </button>
+                        <button id="btn-export-pdf" disabled class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:bg-red-50 disabled:hover:text-red-500 disabled:cursor-not-allowed group">
                             <i class="fas fa-file-pdf text-lg group-hover:scale-110 transition-transform"></i>
                             <span>Unduh PDF</span>
                         </button>

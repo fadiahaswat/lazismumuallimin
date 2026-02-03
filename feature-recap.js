@@ -1,6 +1,7 @@
 import { santriDB } from './santri-manager.js';
 import { riwayatData } from './state.js';
 import { showToast, formatRupiah } from './utils.js';
+import { loadRiwayat } from './feature-history.js';
 
 export function setupRekapLogic() {
     const lvlSelect = document.getElementById('rekap-level-select');
@@ -412,4 +413,37 @@ export function exportRekapPDF() {
     doc.text(`Total Perolehan: ${total}`, 14, finalY + 10);
 
     doc.save(`Rekap ZIS_Kelas ${cls}_${date}.pdf`);
+}
+
+export async function refreshRekap() {
+    const btnRefresh = document.getElementById('btn-refresh-rekap');
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    // 2. Reset Status Data agar fetch ulang
+    riwayatData.isLoaded = false;
+    
+    try {
+        // 3. Ambil ulang data
+        await loadRiwayat(true);
+        
+        // 4. Update leaderboard
+        renderGlobalLeaderboard();
+        
+        // 5. Re-render tabel jika ada kelas terpilih
+        const clsSelect = document.getElementById('rekap-kelas-select');
+        if (clsSelect && clsSelect.value) {
+            renderRekapTable(clsSelect.value);
+        }
+        
+        showToast('Data rekapitulasi berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Gagal memperbarui data', 'error');
+    } finally {
+        // 6. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
 }
