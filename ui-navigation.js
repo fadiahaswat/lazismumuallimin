@@ -30,9 +30,12 @@ export function showPage(pageId) {
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Update URL hash to preserve page on refresh (without triggering hashchange)
-        // replaceState doesn't trigger hashchange, and is idempotent
-        history.replaceState(null, '', `#${pageId}`);
+        // Update URL hash to preserve page on refresh
+        // Note: replaceState doesn't trigger hashchange events
+        const currentHash = window.location.hash.replace('#', '');
+        if (currentHash !== pageId) {
+            history.replaceState(null, '', `#${pageId}`);
+        }
     }
 
     const navLink = document.querySelector(`a[href="#${pageId}"]`);
