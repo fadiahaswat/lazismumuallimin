@@ -43,11 +43,38 @@ function closeQrisModal() {
     }, 200);
 }
 
+// Helper function to check if valid cache exists
+function hasCachedData() {
+    const CACHE_KEY = 'santri_data_cache';
+    const CACHE_TIME_KEY = 'santri_data_time';
+    const EXPIRY_HOURS = 24;
+    
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    
+    if (!cachedData || !cachedTime) return false;
+    
+    const now = new Date().getTime();
+    const isValid = (now - cachedTime) < (EXPIRY_HOURS * 3600 * 1000);
+    
+    return isValid;
+}
+
 // 2. Initialization Function
 async function init() {
     console.log("Memulai inisialisasi aplikasi...");
 
-    // A. JALANKAN TEKS LOADING BERJALAN
+    // Check if we should show preloader
+    const shouldShowPreloader = !hasCachedData();
+    const preloader = document.getElementById('app-preloader');
+    
+    // If we have cached data, hide preloader immediately
+    if (!shouldShowPreloader && preloader) {
+        preloader.style.display = 'none';
+        console.log("Menggunakan data cache, melewati preloader...");
+    }
+
+    // A. JALANKAN TEKS LOADING BERJALAN (only if showing preloader)
     const loadingTexts = [
         "Menghubungkan ke Server...",
         "Mengambil Data Santri...",
@@ -57,13 +84,15 @@ async function init() {
     let textIdx = 0;
     let textInterval = null;
     
-    textInterval = setInterval(() => {
-        const textEl = document.getElementById('loader-text');
-        if (textEl) {
-            textIdx = (textIdx + 1) % loadingTexts.length;
-            textEl.innerText = loadingTexts[textIdx];
-        }
-    }, 800); 
+    if (shouldShowPreloader) {
+        textInterval = setInterval(() => {
+            const textEl = document.getElementById('loader-text');
+            if (textEl) {
+                textIdx = (textIdx + 1) % loadingTexts.length;
+                textEl.innerText = loadingTexts[textIdx];
+            }
+        }, 800);
+    } 
 
     // B. PROSES AMBIL DATA
     try {
@@ -106,14 +135,13 @@ async function init() {
         console.error("Terjadi kesalahan fatal:", error);
         alert("Gagal memuat data. Silakan refresh halaman.");
     } finally {
-        // C. HILANGKAN LOADING SCREEN & CLEANUP INTERVAL
+        // C. HILANGKAN LOADING SCREEN & CLEANUP INTERVAL (only if showing preloader)
         if (textInterval) {
             clearInterval(textInterval);
             textInterval = null;
         }
         
-        const preloader = document.getElementById('app-preloader');
-        if (preloader) {
+        if (shouldShowPreloader && preloader) {
             const textEl = document.getElementById('loader-text');
             if(textEl) textEl.innerText = "Selesai!";
 
