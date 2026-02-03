@@ -21,6 +21,10 @@ export function showPage(pageId) {
             s.classList.add('hidden');
         });
         
+        // Show step 1 by default
+        const step1 = document.getElementById('donasi-step-1');
+        if (step1) step1.classList.remove('hidden');
+        
         // Tampilkan wizard dan sembunyikan payment instructions
         const wizard = document.getElementById('donasi-wizard');
         if (wizard) wizard.classList.remove('hidden');
