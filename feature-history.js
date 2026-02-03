@@ -265,7 +265,7 @@ function calculateStats() {
         setText(`stat-kelas${grade}-kelas-total`, classMax.val);
 
         const santriMax = getMax(santriDonasiByGrade[grade]);
-        const santriName = santriMax.key && santriMax.key !== 'N/A' ? santriMax.key.split('(')[0] : 'Belum ada';
+        const santriName = santriMax.key !== 'N/A' ? santriMax.key.split('(')[0] : 'Belum ada';
         setText(`stat-kelas${grade}-santri-max-donasi`, santriName);
         setText(`stat-kelas${grade}-santri-total-donasi`, santriMax.val);
 
@@ -278,7 +278,7 @@ function calculateStats() {
         }
         // Get student with highest frequency; minThreshold=0 allows any count since we pre-filtered
         const santriFreq = getMax(freqFiltered, 'freq', 0);
-        const freqName = santriFreq.key && santriFreq.key !== 'N/A' ? santriFreq.key.split('(')[0] : 'Belum ada';
+        const freqName = santriFreq.key !== 'N/A' ? santriFreq.key.split('(')[0] : 'Belum ada';
         setText(`stat-kelas${grade}-santri-freq-nama`, freqName);
         setText(`stat-kelas${grade}-santri-freq-val`, santriFreq.val);
     }
