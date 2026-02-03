@@ -144,9 +144,10 @@ function calculateStats() {
     let maxDonationName = "-";
     const todayStr = new Date().toDateString();
 
-    const classMapMTs = {}, classMapMA = {};
-    const santriDonasiMTs = {}, santriDonasiMA = {};
-    const santriFreqMTs = {}, santriFreqMA = {};
+    // Grade-level maps for classes 1-6
+    const classMapByGrade = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
+    const santriDonasiByGrade = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
+    const santriFreqByGrade = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
     const donationTypes = {};
 
     let totalFitrah = 0;
@@ -176,15 +177,16 @@ function calculateStats() {
 
         if (rombel && nama) {
             const lvl = parseInt(rombel.charAt(0));
-            const isMTs = lvl <= 3;
-            const mapClass = isMTs ? classMapMTs : classMapMA;
-            const mapSantri = isMTs ? santriDonasiMTs : santriDonasiMA;
-            const mapFreq = isMTs ? santriFreqMTs : santriFreqMA;
+            if (lvl >= 1 && lvl <= 6) {
+                const mapClass = classMapByGrade[lvl];
+                const mapSantri = santriDonasiByGrade[lvl];
+                const mapFreq = santriFreqByGrade[lvl];
 
-            mapClass[rombel] = (mapClass[rombel] || 0) + val;
-            const key = `${nama} (${rombel})`;
-            mapSantri[key] = (mapSantri[key] || 0) + val;
-            mapFreq[key] = (mapFreq[key] || 0) + 1;
+                mapClass[rombel] = (mapClass[rombel] || 0) + val;
+                const key = `${nama} (${rombel})`;
+                mapSantri[key] = (mapSantri[key] || 0) + val;
+                mapFreq[key] = (mapFreq[key] || 0) + 1;
+            }
         }
     });
 
@@ -206,18 +208,19 @@ function calculateStats() {
         const el = document.getElementById(id);
         if (el) el.innerText = txt;
     };
-    const getMax = (map, type = 'val') => {
+    const getMax = (map, type = 'val', minThreshold = 500000) => {
         let maxK = 'N/A',
             maxV = 0;
         for (const [k, v] of Object.entries(map)) {
-            if (v > maxV) {
+            if (v >= minThreshold && v > maxV) {
                 maxV = v;
                 maxK = k;
             }
         }
         return {
             key: maxK,
-            val: type === 'val' ? formatRupiah(maxV) : maxV + 'x'
+            val: type === 'val' ? formatRupiah(maxV) : maxV + 'x',
+            rawVal: maxV
         };
     };
 
@@ -255,33 +258,29 @@ function calculateStats() {
     const elDetInfaq = document.getElementById('stat-detail-infaq');
     if (elDetInfaq) animateValue(elDetInfaq, 0, totalInfaq, 1500, true);
 
-    const mtsClass = getMax(classMapMTs);
-    setText('stat-mts-kelas-max', mtsClass.key);
-    setText('stat-mts-kelas-total', mtsClass.val);
+    // Update statistics for each grade level (1-6)
+    for (let grade = 1; grade <= 6; grade++) {
+        const classMax = getMax(classMapByGrade[grade]);
+        setText(`stat-kelas${grade}-kelas-max`, classMax.key);
+        setText(`stat-kelas${grade}-kelas-total`, classMax.val);
 
-    const mtsSantri = getMax(santriDonasiMTs);
-    const mtsSantriName = mtsSantri.key ? mtsSantri.key.split('(')[0] : '';
-    setText('stat-mts-santri-max-donasi', mtsSantriName);
-    setText('stat-mts-santri-total-donasi', mtsSantri.val);
+        const santriMax = getMax(santriDonasiByGrade[grade]);
+        const santriName = santriMax.key && santriMax.key !== 'N/A' ? santriMax.key.split('(')[0] : 'Belum ada';
+        setText(`stat-kelas${grade}-santri-max-donasi`, santriName);
+        setText(`stat-kelas${grade}-santri-total-donasi`, santriMax.val);
 
-    const mtsFreq = getMax(santriFreqMTs, 'freq');
-    const mtsFreqName = mtsFreq.key ? mtsFreq.key.split('(')[0] : '';
-    setText('stat-mts-santri-freq-nama', mtsFreqName);
-    setText('stat-mts-santri-freq-val', mtsFreq.val);
-
-    const maClass = getMax(classMapMA);
-    setText('stat-ma-kelas-max', maClass.key);
-    setText('stat-ma-kelas-total', maClass.val);
-
-    const maSantri = getMax(santriDonasiMA);
-    const maSantriName = maSantri.key ? maSantri.key.split('(')[0] : '';
-    setText('stat-ma-santri-max-donasi', maSantriName);
-    setText('stat-ma-santri-total-donasi', maSantri.val);
-
-    const maFreq = getMax(santriFreqMA, 'freq');
-    const maFreqName = maFreq.key ? maFreq.key.split('(')[0] : '';
-    setText('stat-ma-santri-freq-nama', maFreqName);
-    setText('stat-ma-santri-freq-val', maFreq.val);
+        // For frequency, we need to check that the student also meets the minimum donation threshold
+        const freqFiltered = {};
+        for (const [key, count] of Object.entries(santriFreqByGrade[grade])) {
+            if (santriDonasiByGrade[grade][key] >= 500000) {
+                freqFiltered[key] = count;
+            }
+        }
+        const santriFreq = getMax(freqFiltered, 'freq', 1); // Min 1 transaction for frequency
+        const freqName = santriFreq.key && santriFreq.key !== 'N/A' ? santriFreq.key.split('(')[0] : 'Belum ada';
+        setText(`stat-kelas${grade}-santri-freq-nama`, freqName);
+        setText(`stat-kelas${grade}-santri-freq-val`, santriFreq.val);
+    }
 }
 
 // Menampilkan 6 donasi terbaru di halaman depan (Home)
