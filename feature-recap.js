@@ -1,6 +1,7 @@
 import { santriDB } from './santri-manager.js';
 import { riwayatData } from './state.js';
 import { showToast, formatRupiah } from './utils.js';
+import { loadRiwayat } from './feature-history.js';
 
 export function setupRekapLogic() {
     const lvlSelect = document.getElementById('rekap-level-select');
@@ -420,10 +421,6 @@ export async function refreshRekap() {
 
     // 1. Efek Loading (Putar Icon)
     if (icon) icon.classList.add('fa-spin');
-    
-    const { riwayatData } = await import('./state.js');
-    const { loadRiwayat } = await import('./feature-history.js');
-    const { showToast } = await import('./utils.js');
     
     // 2. Reset Status Data agar fetch ulang
     riwayatData.isLoaded = false;

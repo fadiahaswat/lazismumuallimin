@@ -898,7 +898,7 @@ export async function refreshRiwayat() {
         console.error(error);
         showToast('Gagal memperbarui data', 'error');
     } finally {
-        // 5. Hentikan Efek Loading
+        // 4. Hentikan Efek Loading
         if (icon) icon.classList.remove('fa-spin');
     }
 }

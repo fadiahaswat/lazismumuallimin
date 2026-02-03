@@ -280,12 +280,30 @@ export function closeNewsModal() {
     document.body.style.overflow = 'auto';
 }
 
-export function refreshNews() {
-    // Reset state
+export async function refreshNews() {
+    const btnRefresh = document.getElementById('btn-refresh-news');
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    // 2. Reset state
     newsState.page = 1;
     newsState.hasMore = true;
     newsState.posts = [];
     
-    // Fetch fresh data
-    fetchNews();
+    try {
+        // 3. Fetch fresh data
+        await fetchNews();
+        
+        const { showToast } = await import('./utils.js');
+        showToast('Berita berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        const { showToast } = await import('./utils.js');
+        showToast('Gagal memperbarui berita', 'error');
+    } finally {
+        // 4. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
 }
