@@ -100,6 +100,33 @@
 
 </div>
 
+<script>
+    // Immediately check cache and hide preloader if data exists
+    // This prevents the flash of preloader on page refresh when cache is available
+    (function() {
+        const CACHE_KEY = 'santri_data_cache';
+        const CACHE_TIME_KEY = 'santri_data_time';
+        const CACHE_EXPIRY_HOURS = 24;
+        const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+        
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+        
+        if (cachedData && cachedTime) {
+            const now = new Date().getTime();
+            const cacheTimestamp = parseInt(cachedTime, 10);
+            
+            // If cache is valid, hide preloader immediately
+            if (!isNaN(cacheTimestamp) && (now - cacheTimestamp) < (CACHE_EXPIRY_HOURS * MILLISECONDS_PER_HOUR)) {
+                const preloader = document.getElementById('app-preloader');
+                if (preloader) {
+                    preloader.style.display = 'none';
+                }
+            }
+        }
+    })();
+</script>
+
 <style>
     /* Class untuk menghilangkan preloader (dipakai di JS) */
     .fade-out {
@@ -4088,8 +4115,8 @@
     </div>
 </div>
 
-    <script src="data-santri.js"></script>
-    <script src="data-kelas.js"></script>
+    <script src="data-santri.js" defer></script>
+    <script src="data-kelas.js" defer></script>
 
     <script type="module" src="main.js"></script>
 
