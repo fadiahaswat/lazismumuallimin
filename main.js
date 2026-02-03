@@ -91,13 +91,13 @@ async function init() {
     let textInterval = null;
     
     if (shouldShowPreloader) {
-        textInterval = setInterval(() => {
-            const textEl = document.getElementById('loader-text');
-            if (textEl) {
+        const loaderText = document.getElementById('loader-text');
+        if (loaderText) {
+            textInterval = setInterval(() => {
                 textIdx = (textIdx + 1) % loadingTexts.length;
-                textEl.innerText = loadingTexts[textIdx];
-            }
-        }, 800);
+                loaderText.innerText = loadingTexts[textIdx];
+            }, 800);
+        }
     } 
 
     // B. PROSES AMBIL DATA
@@ -147,17 +147,18 @@ async function init() {
             textInterval = null;
         }
         
+        // Re-query preloader in case DOM was modified during async operations
         if (shouldShowPreloader) {
-            const preloaderElement = document.getElementById('app-preloader');
-            if (preloaderElement) {
-                const textEl = document.getElementById('loader-text');
-                if(textEl) textEl.innerText = "Selesai!";
+            const preloaderFinal = document.getElementById('app-preloader');
+            if (preloaderFinal) {
+                const loaderTextFinal = document.getElementById('loader-text');
+                if(loaderTextFinal) loaderTextFinal.innerText = "Selesai!";
 
                 setTimeout(() => {
-                    preloaderElement.classList.add('fade-out'); 
+                    preloaderFinal.classList.add('fade-out'); 
                     
                     setTimeout(() => {
-                        preloaderElement.style.display = 'none';
+                        preloaderFinal.style.display = 'none';
                     }, 500);
                 }, 500);
             }
