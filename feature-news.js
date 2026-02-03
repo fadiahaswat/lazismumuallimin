@@ -1,6 +1,6 @@
 import { newsState } from './state.js';
 import { WORDPRESS_SITE, NEWS_PER_PAGE } from './config.js';
-import { copyText, stripHtml } from './utils.js';
+import { copyText, stripHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 
 export async function fetchNews(isLoadMore = false) {
@@ -296,11 +296,9 @@ export async function refreshNews() {
         // 3. Fetch fresh data
         await fetchNews();
         
-        const { showToast } = await import('./utils.js');
         showToast('Berita berhasil diperbarui', 'success');
     } catch (error) {
         console.error(error);
-        const { showToast } = await import('./utils.js');
         showToast('Gagal memperbarui berita', 'error');
     } finally {
         // 4. Hentikan Efek Loading
