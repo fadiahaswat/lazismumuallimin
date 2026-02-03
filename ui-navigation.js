@@ -4,6 +4,9 @@ import { fetchNews } from './feature-news.js'; // Hapus newsState dari sini
 import { currentUser, newsState } from './state.js'; // Tambahkan newsState di sini
 import { SantriManager } from './santri-manager.js';
 
+// Flag to prevent duplicate hashchange listeners
+let hashchangeListenerAdded = false;
+
 export function showPage(pageId) {
     document.querySelectorAll('.page-section').forEach(p => {
         p.style.display = 'none';
@@ -28,6 +31,7 @@ export function showPage(pageId) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
         // Update URL hash to preserve page on refresh (without triggering hashchange)
+        // replaceState doesn't trigger hashchange, so this is safe
         if (window.location.hash !== `#${pageId}`) {
             history.replaceState(null, '', `#${pageId}`);
         }
@@ -59,13 +63,16 @@ export function setupNavigation() {
         };
     }
     
-    // Handle browser back/forward button navigation
-    window.addEventListener('hashchange', () => {
-        const hash = window.location.hash.replace('#', '') || 'home';
-        if (document.getElementById(`page-${hash}`)) {
-            showPage(hash);
-        }
-    });
+    // Handle browser back/forward button navigation (only add listener once)
+    if (!hashchangeListenerAdded) {
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            if (document.getElementById(`page-${hash}`)) {
+                showPage(hash);
+            }
+        });
+        hashchangeListenerAdded = true;
+    }
 }
 
 export function setupModalLogic() {
