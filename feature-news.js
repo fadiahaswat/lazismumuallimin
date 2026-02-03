@@ -217,7 +217,7 @@ export function openNewsModal(index) {
                     ${post.title}
                 </h2>
                 <div class="flex items-center gap-3 text-white/90">
-                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}">
+                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}" onerror="this.src='https://ui-avatars.com/api/?name=Admin'">
                     <div class="text-xs md:text-sm font-medium">
                         <span>${author}</span> • <span class="opacity-80">${date}</span>
                     </div>

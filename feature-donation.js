@@ -769,11 +769,15 @@ export function setupWizardLogic() {
 
             try {
                 // 3. Kirim ke Google Apps Script
-                await fetch(GAS_API_URL, {
+                const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ action: "create", payload: payload })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 // 4. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');

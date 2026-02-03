@@ -11,7 +11,9 @@ export function showToast(message, type = 'warning') {
     if (type === 'success') icon = 'fa-check-circle text-green-500';
     if (type === 'error') icon = 'fa-times-circle text-red-500';
 
-    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${message}</span>`;
+    // Escape the message to prevent XSS
+    const escapedMessage = escapeHtml(String(message));
+    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${escapedMessage}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {
