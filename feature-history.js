@@ -154,6 +154,11 @@ function calculateStats() {
     let totalMaal = 0;
     let totalInfaq = 0;
 
+    // Payment method statistics
+    let totalQRIS = 0;
+    let totalTransfer = 0;
+    let totalTunai = 0;
+
     data.forEach(d => {
         const val = parseInt(d.Nominal) || 0;
         total += val;
@@ -167,6 +172,12 @@ function calculateStats() {
 
         const typeName = d.JenisDonasi || "Lainnya";
         donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
+
+        // Track payment methods
+        const metode = d.MetodePembayaran || "";
+        if (metode === 'QRIS') totalQRIS += val;
+        else if (metode === 'Transfer') totalTransfer += val;
+        else if (metode === 'Tunai') totalTunai += val;
 
         if (typeName.includes('Fitrah')) totalFitrah += val;
         else if (typeName.includes('Maal')) totalMaal += val;
@@ -282,6 +293,29 @@ function calculateStats() {
         setText(`stat-kelas${grade}-santri-freq-nama`, freqName);
         setText(`stat-kelas${grade}-santri-freq-val`, santriFreq.val);
     }
+
+    // Update payment method statistics
+    const elQRIS = document.getElementById('stat-payment-qris');
+    if (elQRIS) animateValue(elQRIS, 0, totalQRIS, 1500, true);
+    
+    const elTransfer = document.getElementById('stat-payment-transfer');
+    if (elTransfer) animateValue(elTransfer, 0, totalTransfer, 1500, true);
+    
+    const elTunai = document.getElementById('stat-payment-tunai');
+    if (elTunai) animateValue(elTunai, 0, totalTunai, 1500, true);
+
+    // Update progress bars for payment methods
+    const maxPayment = Math.max(totalQRIS, totalTransfer, totalTunai) || 1;
+    const qrisBar = document.getElementById('stat-payment-qris-bar');
+    const transferBar = document.getElementById('stat-payment-transfer-bar');
+    const tunaiBar = document.getElementById('stat-payment-tunai-bar');
+    
+    if (qrisBar) setTimeout(() => qrisBar.style.width = `${(totalQRIS / maxPayment) * 100}%`, 100);
+    if (transferBar) setTimeout(() => transferBar.style.width = `${(totalTransfer / maxPayment) * 100}%`, 200);
+    if (tunaiBar) setTimeout(() => tunaiBar.style.width = `${(totalTunai / maxPayment) * 100}%`, 300);
+
+    // Render alumni leaderboard
+    renderAlumniLeaderboard();
 }
 
 // Menampilkan 6 donasi terbaru di halaman depan (Home)
@@ -434,6 +468,106 @@ export function renderHomeLatestDonations() {
         </div>
     `;
 
+    container.innerHTML = html;
+}
+
+// Render alumni leaderboard grouped by graduation year (angkatan)
+export function renderAlumniLeaderboard() {
+    const container = document.getElementById('alumni-leaderboard-container');
+    if (!container) return;
+
+    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-24">
+                <div class="w-24 h-24 rounded-full border-4 border-purple-100 border-t-purple-500 animate-spin mb-6"></div>
+                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Memuat Data Alumni...</h3>
+            </div>
+        `;
+        return;
+    }
+
+    // Group donations by graduation year (angkatan)
+    const angkatanTotals = {};
+    
+    riwayatData.allData.forEach(d => {
+        // Check if donatur is alumni by looking for year patterns (e.g., "Alumni 2010", "Angkatan 2015")
+        const nama = d.NamaDonatur || "";
+        const keterangan = d.Keterangan || "";
+        const combined = `${nama} ${keterangan}`.toLowerCase();
+        
+        // Extract year from various patterns
+        const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
+        
+        if (yearMatch) {
+            const year = yearMatch[1] || yearMatch[2];
+            if (year && year >= 1990 && year <= new Date().getFullYear()) {
+                const val = parseInt(d.Nominal) || 0;
+                angkatanTotals[year] = (angkatanTotals[year] || 0) + val;
+            }
+        }
+    });
+
+    const leaderboard = Object.keys(angkatanTotals).map(year => ({
+        year: year,
+        total: angkatanTotals[year]
+    })).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // Sort by year descending
+
+    if (leaderboard.length === 0) {
+        container.innerHTML = `
+            <div class="p-10 text-center border-2 border-dashed border-purple-300 rounded-xl bg-purple-50/50">
+                <i class="fas fa-graduation-cap text-6xl text-purple-300 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-700 mb-2">Belum Ada Data Alumni</h3>
+                <p class="text-slate-500 text-sm">Donasi alumni akan muncul di sini berdasarkan angkatan kelulusan.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `<div class="space-y-4">`;
+    
+    leaderboard.forEach((item, index) => {
+        const rank = index + 1;
+        let badgeColor = 'bg-slate-100 text-slate-600 border-slate-200';
+        let cardStyle = 'bg-white border-slate-200 hover:border-purple-300';
+        
+        if (rank === 1) {
+            badgeColor = 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white border-yellow-300';
+            cardStyle = 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300 ring-4 ring-yellow-400/20';
+        } else if (rank === 2) {
+            badgeColor = 'bg-gradient-to-r from-slate-300 to-slate-400 text-white border-slate-300';
+            cardStyle = 'bg-gradient-to-r from-slate-50 to-slate-100 border-slate-300';
+        } else if (rank === 3) {
+            badgeColor = 'bg-gradient-to-r from-orange-300 to-orange-500 text-white border-orange-300';
+            cardStyle = 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-300';
+        }
+
+        html += `
+            <div class="${cardStyle} rounded-2xl p-5 border-2 shadow-sm hover:shadow-lg transition-all duration-300 group">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 flex-1">
+                        <div class="${badgeColor} w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-md border-2 shrink-0">
+                            ${rank <= 3 ? '<i class="fas fa-medal"></i>' : rank}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-graduation-cap text-purple-500"></i>
+                                <h4 class="text-xl font-black text-slate-800">Angkatan ${item.year}</h4>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium">Alumni Mu'allimin ${item.year}</p>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">Total Donasi</p>
+                        <h3 class="text-2xl md:text-3xl font-black text-purple-600 tracking-tight">
+                            ${formatRupiah(item.total)}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
     container.innerHTML = html;
 }
 
@@ -674,9 +808,22 @@ function updateDashboardUI() {
     let totalDonasi = 0;
     let frekuensi = myDonations.length;
     let lastDonasi = null;
+    
+    // Track payment methods
+    let totalQRIS = 0;
+    let totalTransfer = 0;
+    let totalTunai = 0;
 
     myDonations.forEach((d, index) => {
-        totalDonasi += parseInt(d.Nominal) || 0;
+        const val = parseInt(d.Nominal) || 0;
+        totalDonasi += val;
+        
+        // Track payment methods
+        const metode = d.MetodePembayaran || "";
+        if (metode === 'QRIS') totalQRIS += val;
+        else if (metode === 'Transfer') totalTransfer += val;
+        else if (metode === 'Tunai') totalTunai += val;
+        
         if (index === 0) lastDonasi = d; 
     });
 
@@ -687,6 +834,15 @@ function updateDashboardUI() {
 
     if (elStatTotal) animateValue(elStatTotal, 0, totalDonasi, 1500, true);
     if (elStatFreq) animateValue(elStatFreq, 0, frekuensi, 1000);
+    
+    // Update payment method cards
+    const elDashQRIS = document.getElementById('dash-stat-qris');
+    const elDashTransfer = document.getElementById('dash-stat-transfer');
+    const elDashTunai = document.getElementById('dash-stat-tunai');
+    
+    if (elDashQRIS) animateValue(elDashQRIS, 0, totalQRIS, 1500, true);
+    if (elDashTransfer) animateValue(elDashTransfer, 0, totalTransfer, 1500, true);
+    if (elDashTunai) animateValue(elDashTunai, 0, totalTunai, 1500, true);
     
     if (lastDonasi) {
         if(elStatLast) elStatLast.innerText = formatRupiah(lastDonasi.Nominal);
@@ -826,6 +982,13 @@ export async function renderDashboardProfil(nisUser) {
     if (card) {
         card.classList.remove('hidden');
         card.classList.add('animate-fade-in-up');
+    }
+    
+    // Show appreciation section for students
+    const appreciationSection = document.getElementById('santri-appreciation-section');
+    if (appreciationSection) {
+        appreciationSection.classList.remove('hidden');
+        appreciationSection.classList.add('animate-fade-in-up');
     }
 }
 
