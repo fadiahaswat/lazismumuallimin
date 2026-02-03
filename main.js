@@ -48,6 +48,7 @@ function hasCachedData() {
     const CACHE_KEY = 'santri_data_cache';
     const CACHE_TIME_KEY = 'santri_data_time';
     const EXPIRY_HOURS = 24;
+    const MILLISECONDS_PER_HOUR = 3600 * 1000;
     
     const cachedData = localStorage.getItem(CACHE_KEY);
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
@@ -56,7 +57,11 @@ function hasCachedData() {
     
     const now = new Date().getTime();
     const cacheTimestamp = parseInt(cachedTime, 10);
-    const isValid = (now - cacheTimestamp) < (EXPIRY_HOURS * 3600 * 1000);
+    
+    // Validate parsed timestamp
+    if (isNaN(cacheTimestamp)) return false;
+    
+    const isValid = (now - cacheTimestamp) < (EXPIRY_HOURS * MILLISECONDS_PER_HOUR);
     
     return isValid;
 }
