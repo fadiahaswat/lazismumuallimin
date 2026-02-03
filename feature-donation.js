@@ -369,6 +369,13 @@ export function setupWizardLogic() {
         btnZakatCheck.onclick = () => {
             const emasEl = document.getElementById('harga-emas');
             const hasilEl = document.getElementById('penghasilan-bulanan');
+            
+            if (!emasEl || !hasilEl) {
+                console.error("Required input elements not found");
+                showToast("Terjadi kesalahan sistem", 'error');
+                return;
+            }
+            
             const emas = parseInt(emasEl.value.replace(/\D/g, '')) || 0;
             const hasil = parseInt(hasilEl.value.replace(/\D/g, '')) || 0;
             const nisab = (emas * 85) / 12;
@@ -503,18 +510,23 @@ export function setupWizardLogic() {
     if (santriNama) {
         santriNama.onchange = () => {
             if (santriNama.value) {
-                const [nama, nis, rombel] = santriNama.value.split('::');
-                donasiData.namaSantri = nama;
-                donasiData.nisSantri = nis;
-                donasiData.rombelSantri = rombel;
+                const parts = santriNama.value.split('::');
+                if (parts.length === 3) {
+                    const [nama, nis, rombel] = parts;
+                    donasiData.namaSantri = nama;
+                    donasiData.nisSantri = nis;
+                    donasiData.rombelSantri = rombel;
 
-                const radioAnSantri = document.getElementById('radio-an-santri');
-                if (radioAnSantri) {
-                    radioAnSantri.disabled = false;
-                    if (radioAnSantri.checked) {
-                        const nameInput = document.getElementById('nama-muzakki-input');
-                        if (nameInput) nameInput.value = `A/n Santri: ${nama}`;
+                    const radioAnSantri = document.getElementById('radio-an-santri');
+                    if (radioAnSantri) {
+                        radioAnSantri.disabled = false;
+                        if (radioAnSantri.checked) {
+                            const nameInput = document.getElementById('nama-muzakki-input');
+                            if (nameInput) nameInput.value = `A/n Santri: ${nama}`;
+                        }
                     }
+                } else {
+                    console.warn("Invalid santri name format:", santriNama.value);
                 }
             }
         };

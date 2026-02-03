@@ -6,6 +6,7 @@ import { renderGlobalLeaderboard } from './feature-recap.js';
 
 // Mengambil data riwayat dari Google Sheet
 export async function loadRiwayat() {
+    // Prevent concurrent calls with better locking
     if (riwayatData.isLoaded || riwayatData.isLoading) return; 
     
     riwayatData.isLoading = true; 
@@ -18,6 +19,11 @@ export async function loadRiwayat() {
 
     try {
         const res = await fetch(GAS_API_URL);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
         const json = await res.json();
 
         if (json.status === 'success') {
@@ -254,11 +260,13 @@ function calculateStats() {
     setText('stat-mts-kelas-total', mtsClass.val);
 
     const mtsSantri = getMax(santriDonasiMTs);
-    setText('stat-mts-santri-max-donasi', mtsSantri.key.split('(')[0]);
+    const mtsSantriName = mtsSantri.key ? mtsSantri.key.split('(')[0] : '';
+    setText('stat-mts-santri-max-donasi', mtsSantriName);
     setText('stat-mts-santri-total-donasi', mtsSantri.val);
 
     const mtsFreq = getMax(santriFreqMTs, 'freq');
-    setText('stat-mts-santri-freq-nama', mtsFreq.key.split('(')[0]);
+    const mtsFreqName = mtsFreq.key ? mtsFreq.key.split('(')[0] : '';
+    setText('stat-mts-santri-freq-nama', mtsFreqName);
     setText('stat-mts-santri-freq-val', mtsFreq.val);
 
     const maClass = getMax(classMapMA);
@@ -266,11 +274,13 @@ function calculateStats() {
     setText('stat-ma-kelas-total', maClass.val);
 
     const maSantri = getMax(santriDonasiMA);
-    setText('stat-ma-santri-max-donasi', maSantri.key.split('(')[0]);
+    const maSantriName = maSantri.key ? maSantri.key.split('(')[0] : '';
+    setText('stat-ma-santri-max-donasi', maSantriName);
     setText('stat-ma-santri-total-donasi', maSantri.val);
 
     const maFreq = getMax(santriFreqMA, 'freq');
-    setText('stat-ma-santri-freq-nama', maFreq.key.split('(')[0]);
+    const maFreqName = maFreq.key ? maFreq.key.split('(')[0] : '';
+    setText('stat-ma-santri-freq-nama', maFreqName);
     setText('stat-ma-santri-freq-val', maFreq.val);
 }
 
@@ -357,7 +367,7 @@ export function renderHomeLatestDonations() {
                         <div class="flex items-baseline gap-1">
                             <span class="text-xs text-slate-500 font-medium">Rp</span>
                             <span class="text-xl md:text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">
-                                ${parseInt(item.Nominal).toLocaleString('id-ID')}
+                                ${(parseInt(item.Nominal) || 0).toLocaleString('id-ID')}
                             </span>
                         </div>
                     </div>
@@ -431,8 +441,10 @@ function getFilteredData() {
     let filtered = riwayatData.allData;
     const typeFilter = document.getElementById('filter-jenis') ? document.getElementById('filter-jenis').value : 'all';
     const methodFilter = document.getElementById('filter-metode') ? document.getElementById('filter-metode').value : 'all';
-    const startDate = document.getElementById('filter-start-date').value;
-    const endDate = document.getElementById('filter-end-date').value;
+    const startDateEl = document.getElementById('filter-start-date');
+    const endDateEl = document.getElementById('filter-end-date');
+    const startDate = startDateEl ? startDateEl.value : '';
+    const endDate = endDateEl ? endDateEl.value : '';
 
     if (typeFilter !== 'all') {
         filtered = filtered.filter(d => d.JenisDonasi === typeFilter || d.type === typeFilter);
@@ -653,7 +665,10 @@ function updateDashboardUI() {
     const user = currentUser; 
     if (user) {
         if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
-        if(document.getElementById('dash-name')) document.getElementById('dash-name').innerText = user.displayName.split(' ')[0]; 
+        if(document.getElementById('dash-name')) {
+            const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
+            document.getElementById('dash-name').innerText = firstName;
+        }
     }
 
     let totalDonasi = 0;

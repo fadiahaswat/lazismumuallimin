@@ -20,10 +20,15 @@ export const SantriManager = {
     findNisByEmail: (email) => {
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key.startsWith('santri_pref_')) {
-                const data = JSON.parse(localStorage.getItem(key));
-                if (data.linkedEmail === email) {
-                    return key.replace('santri_pref_', '');
+            if (key && key.startsWith('santri_pref_')) {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data && data.linkedEmail === email) {
+                        return key.replace('santri_pref_', '');
+                    }
+                } catch (error) {
+                    console.error(`Failed to parse santri pref for key ${key}:`, error);
+                    continue;
                 }
             }
         }

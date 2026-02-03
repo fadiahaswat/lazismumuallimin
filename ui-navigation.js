@@ -84,16 +84,33 @@ export function toggleProfileDropdown() {
 // Change Password UI
 export function openChangePassModal() {
     toggleUserDropdown();
-    document.getElementById('pass-modal').classList.remove('hidden');
-    document.getElementById('new-pass-1').value = '';
-    document.getElementById('new-pass-2').value = '';
+    const modal = document.getElementById('pass-modal');
+    const pass1 = document.getElementById('new-pass-1');
+    const pass2 = document.getElementById('new-pass-2');
+    
+    if (!modal) {
+        console.error("Password modal not found");
+        return;
+    }
+    
+    modal.classList.remove('hidden');
+    if (pass1) pass1.value = '';
+    if (pass2) pass2.value = '';
 }
 
 export function saveNewPassword() {
     if (!currentUser || !currentUser.isSantri) return;
 
-    const p1 = document.getElementById('new-pass-1').value;
-    const p2 = document.getElementById('new-pass-2').value;
+    const p1El = document.getElementById('new-pass-1');
+    const p2El = document.getElementById('new-pass-2');
+    
+    if (!p1El || !p2El) {
+        console.error("Password input fields not found");
+        return;
+    }
+    
+    const p1 = p1El.value;
+    const p2 = p2El.value;
 
     if (!p1 || !p2) return showToast("Password tidak boleh kosong", "warning");
     if (p1 !== p2) return showToast("Konfirmasi password tidak cocok", "error");
@@ -102,7 +119,8 @@ export function saveNewPassword() {
     SantriManager.savePrefs(currentUser.nis, { password: p1 });
     
     showToast("Password berhasil diganti!", "success");
-    document.getElementById('pass-modal').classList.add('hidden');
+    const modal = document.getElementById('pass-modal');
+    if (modal) modal.classList.add('hidden');
 }
 
 // Avatar UI
@@ -146,10 +164,17 @@ export function saveAvatar(emoji) {
     if(dashEl) dashEl.src = avatarUrl;
     
     currentUser.photoURL = avatarUrl;
-    localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+    
+    try {
+        localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+    } catch (error) {
+        console.error("Failed to save user to localStorage:", error);
+        showToast("Avatar disimpan, tapi cache penuh", "warning");
+    }
 
     showToast("Avatar berhasil diganti!", "success");
-    document.getElementById('avatar-modal').classList.add('hidden');
+    const modal = document.getElementById('avatar-modal');
+    if (modal) modal.classList.add('hidden');
 }
 
 export function hideLoginSuggestion() {
