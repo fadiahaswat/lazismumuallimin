@@ -31,10 +31,8 @@ export function showPage(pageId) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
         // Update URL hash to preserve page on refresh (without triggering hashchange)
-        // replaceState doesn't trigger hashchange, so this is safe
-        if (window.location.hash !== `#${pageId}`) {
-            history.replaceState(null, '', `#${pageId}`);
-        }
+        // replaceState doesn't trigger hashchange, and is idempotent
+        history.replaceState(null, '', `#${pageId}`);
     }
 
     const navLink = document.querySelector(`a[href="#${pageId}"]`);
