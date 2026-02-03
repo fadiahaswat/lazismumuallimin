@@ -269,14 +269,15 @@ function calculateStats() {
         setText(`stat-kelas${grade}-santri-max-donasi`, santriName);
         setText(`stat-kelas${grade}-santri-total-donasi`, santriMax.val);
 
-        // For frequency, we need to check that the student also meets the minimum donation threshold
+        // For frequency, filter students who meet the minimum 500K donation threshold
         const freqFiltered = {};
         for (const [key, count] of Object.entries(santriFreqByGrade[grade])) {
             if (santriDonasiByGrade[grade][key] >= 500000) {
                 freqFiltered[key] = count;
             }
         }
-        const santriFreq = getMax(freqFiltered, 'freq', 1); // Min 1 transaction for frequency
+        // Get student with highest frequency; minThreshold=0 allows any count since we pre-filtered
+        const santriFreq = getMax(freqFiltered, 'freq', 0);
         const freqName = santriFreq.key && santriFreq.key !== 'N/A' ? santriFreq.key.split('(')[0] : 'Belum ada';
         setText(`stat-kelas${grade}-santri-freq-nama`, freqName);
         setText(`stat-kelas${grade}-santri-freq-val`, santriFreq.val);
