@@ -161,61 +161,63 @@ function processDonationFlow(type, nominal) {
     // 1. Buka Halaman Donasi
     showPage('donasi');
     
-    // 2. Reset ke Langkah 1
-    goToStep(1);
+    // 2. Reset ke Langkah 1 dengan delay kecil untuk memastikan showPage selesai
+    setTimeout(() => {
+        goToStep(1);
 
-    // 3. Logika Percabangan Jenis Donasi
-    if (type === 'infaq') {
-        // --- LOGIKA INFAQ KAMPUS (LAMA) ---
-        const btnInfaq = document.querySelector('button[data-type="Infaq"]');
-        if (btnInfaq) btnInfaq.click();
+        // 3. Logika Percabangan Jenis Donasi
+        if (type === 'infaq') {
+            // --- LOGIKA INFAQ KAMPUS (LAMA) ---
+            const btnInfaq = document.querySelector('button[data-type="Infaq"]');
+            if (btnInfaq) btnInfaq.click();
 
-        setTimeout(() => {
-            const btnKampus = document.querySelector('button[data-type-infaq="Infaq Pengembangan Kampus"]');
-            if (btnKampus) btnKampus.click();
-            proceedToNominal(nominal);
-        }, 300);
+            setTimeout(() => {
+                const btnKampus = document.querySelector('button[data-type-infaq="Infaq Pengembangan Kampus"]');
+                if (btnKampus) btnKampus.click();
+                proceedToNominal(nominal);
+            }, 300);
 
-    } else if (type === 'zakat') {
-        // --- LOGIKA ZAKAT MAAL (BARU) ---
-        const btnMaal = document.querySelector('button[data-type="Zakat Maal"]');
-        if (btnMaal) btnMaal.click();
+        } else if (type === 'zakat') {
+            // --- LOGIKA ZAKAT MAAL (BARU) ---
+            const btnMaal = document.querySelector('button[data-type="Zakat Maal"]');
+            if (btnMaal) btnMaal.click();
 
-        setTimeout(() => {
-            // Pastikan Mode Manual Aktif (Bypass Kalkulator)
-            // Fungsi switchZakatMode ada di global (window) dari main.js
-            if (typeof window.switchZakatMode === 'function') {
-                window.switchZakatMode('manual');
-            }
-            
-            // Isi input manual zakat jika ada nominalnya
-            const inputManualZakat = document.getElementById('manual-zakat-input');
-            if(inputManualZakat && nominal > 0) {
-                inputManualZakat.value = nominal.toLocaleString('id-ID');
-                // Trigger event input manual agar state tersimpan
-                if(window.formatInputRupiah) window.formatInputRupiah(inputManualZakat);
+            setTimeout(() => {
+                // Pastikan Mode Manual Aktif (Bypass Kalkulator)
+                // Fungsi switchZakatMode ada di global (window) dari main.js
+                if (typeof window.switchZakatMode === 'function') {
+                    window.switchZakatMode('manual');
+                }
                 
-                // Pada Zakat Maal, Step 1 adalah mengisi nominal di input manual.
-                // Kita tidak perlu loncat ke Step 2 (Pilihan Nominal Tombol), 
-                // melainkan stay di Step 1 tapi sudah terisi, atau loncat ke step 3 (Data Diri).
-                
-                // OPSI A: Langsung ke Data Diri (Step 3)
-                // Karena user sudah pilih "Paket", diasumsikan nominal sudah fix.
-                 
-                donasiData.nominal = nominal;
-                donasiData.nominalAsli = nominal;
-                donasiData.type = 'Zakat Maal';
-                
-                // Kita panggil goToStep(3) langsung
-                setTimeout(() => {
-                    goToStep(3); 
-                    showToast(`Paket Zakat ${formatRupiah(nominal)} terpilih`, 'success');
-                }, 300);
-            } else {
-                // Jika nominal 0/manual, biarkan user di step 1 form manual
-            }
-        }, 300);
-    }
+                // Isi input manual zakat jika ada nominalnya
+                const inputManualZakat = document.getElementById('manual-zakat-input');
+                if(inputManualZakat && nominal > 0) {
+                    inputManualZakat.value = nominal.toLocaleString('id-ID');
+                    // Trigger event input manual agar state tersimpan
+                    if(window.formatInputRupiah) window.formatInputRupiah(inputManualZakat);
+                    
+                    // Pada Zakat Maal, Step 1 adalah mengisi nominal di input manual.
+                    // Kita tidak perlu loncat ke Step 2 (Pilihan Nominal Tombol), 
+                    // melainkan stay di Step 1 tapi sudah terisi, atau loncat ke step 3 (Data Diri).
+                    
+                    // OPSI A: Langsung ke Data Diri (Step 3)
+                    // Karena user sudah pilih "Paket", diasumsikan nominal sudah fix.
+                     
+                    donasiData.nominal = nominal;
+                    donasiData.nominalAsli = nominal;
+                    donasiData.type = 'Zakat Maal';
+                    
+                    // Kita panggil goToStep(3) langsung
+                    setTimeout(() => {
+                        goToStep(3); 
+                        showToast(`Paket Zakat ${formatRupiah(nominal)} terpilih`, 'success');
+                    }, 300);
+                } else {
+                    // Jika nominal 0/manual, biarkan user di step 1 form manual
+                }
+            }, 300);
+        }
+    }, 50);
 }
 
 // Helper untuk Infaq (lanjut ke Step 2)
