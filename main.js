@@ -147,17 +147,20 @@ async function init() {
             textInterval = null;
         }
         
-        if (shouldShowPreloader && preloader) {
-            const textEl = document.getElementById('loader-text');
-            if(textEl) textEl.innerText = "Selesai!";
+        if (shouldShowPreloader) {
+            const preloaderElement = document.getElementById('app-preloader');
+            if (preloaderElement) {
+                const textEl = document.getElementById('loader-text');
+                if(textEl) textEl.innerText = "Selesai!";
 
-            setTimeout(() => {
-                preloader.classList.add('fade-out'); 
-                
                 setTimeout(() => {
-                    preloader.style.display = 'none';
+                    preloaderElement.classList.add('fade-out'); 
+                    
+                    setTimeout(() => {
+                        preloaderElement.style.display = 'none';
+                    }, 500);
                 }, 500);
-            }, 500);
+            }
         }
     }
 }
