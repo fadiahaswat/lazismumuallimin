@@ -710,45 +710,46 @@
         </div>
 
         <div id="home-latest-donations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-pulse">
+    <!-- Skeleton Loading Cards -->
+    <div class="skeleton-card">
         <div class="flex items-center gap-4 mb-3">
-            <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+            <div class="skeleton skeleton-avatar"></div>
             <div class="flex-1">
-                <div class="h-3 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                <div class="skeleton skeleton-text w-3/4"></div>
+                <div class="skeleton skeleton-text w-1/2"></div>
             </div>
         </div>
-        <div class="h-8 bg-slate-200 rounded w-full mt-2"></div>
+        <div class="skeleton skeleton-text-lg w-full mt-2"></div>
     </div>
-    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-pulse hidden md:block">
+    <div class="skeleton-card hidden md:block">
         <div class="flex items-center gap-4 mb-3">
-            <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+            <div class="skeleton skeleton-avatar"></div>
             <div class="flex-1">
-                <div class="h-3 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                <div class="skeleton skeleton-text w-3/4"></div>
+                <div class="skeleton skeleton-text w-1/2"></div>
             </div>
         </div>
-        <div class="h-8 bg-slate-200 rounded w-full mt-2"></div>
+        <div class="skeleton skeleton-text-lg w-full mt-2"></div>
     </div>
-    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-pulse hidden lg:block">
+    <div class="skeleton-card hidden lg:block">
         <div class="flex items-center gap-4 mb-3">
-            <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+            <div class="skeleton skeleton-avatar"></div>
             <div class="flex-1">
-                <div class="h-3 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                <div class="skeleton skeleton-text w-3/4"></div>
+                <div class="skeleton skeleton-text w-1/2"></div>
             </div>
         </div>
-        <div class="h-8 bg-slate-200 rounded w-full mt-2"></div>
+        <div class="skeleton skeleton-text-lg w-full mt-2"></div>
     </div>
-    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-pulse hidden lg:block">
+    <div class="skeleton-card hidden lg:block">
         <div class="flex items-center gap-4 mb-3">
-            <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+            <div class="skeleton skeleton-avatar"></div>
             <div class="flex-1">
-                <div class="h-3 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                <div class="skeleton skeleton-text w-3/4"></div>
+                <div class="skeleton skeleton-text w-1/2"></div>
             </div>
         </div>
-        <div class="h-8 bg-slate-200 rounded w-full mt-2"></div>
+        <div class="skeleton skeleton-text-lg w-full mt-2"></div>
     </div>
 </div>
 
@@ -2382,14 +2383,39 @@
         </div>
 
         <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
-            <div class="col-span-full text-center py-24">
-                <div class="relative inline-flex">
-                    <div class="w-16 h-16 border-4 border-blue-100 rounded-full animate-spin border-t-blue-600"></div>
-                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                        <i class="fas fa-bolt text-blue-600 animate-pulse"></i>
-                    </div>
+            <!-- Skeleton Loading for News Cards -->
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image h-48 w-full mb-4 rounded-xl"></div>
+                <div class="skeleton skeleton-text-lg w-full mb-2"></div>
+                <div class="skeleton skeleton-text w-3/4 mb-3"></div>
+                <div class="flex gap-2 mb-3">
+                    <div class="skeleton h-6 w-20 rounded-full"></div>
+                    <div class="skeleton h-6 w-24 rounded-full"></div>
                 </div>
-                <p class="text-slate-400 mt-4 font-medium animate-pulse">Sedang mengambil berita...</p>
+                <div class="skeleton skeleton-text w-full"></div>
+                <div class="skeleton skeleton-text w-2/3"></div>
+            </div>
+            <div class="skeleton-card hidden md:block">
+                <div class="skeleton skeleton-image h-48 w-full mb-4 rounded-xl"></div>
+                <div class="skeleton skeleton-text-lg w-full mb-2"></div>
+                <div class="skeleton skeleton-text w-3/4 mb-3"></div>
+                <div class="flex gap-2 mb-3">
+                    <div class="skeleton h-6 w-20 rounded-full"></div>
+                    <div class="skeleton h-6 w-24 rounded-full"></div>
+                </div>
+                <div class="skeleton skeleton-text w-full"></div>
+                <div class="skeleton skeleton-text w-2/3"></div>
+            </div>
+            <div class="skeleton-card hidden lg:block">
+                <div class="skeleton skeleton-image h-48 w-full mb-4 rounded-xl"></div>
+                <div class="skeleton skeleton-text-lg w-full mb-2"></div>
+                <div class="skeleton skeleton-text w-3/4 mb-3"></div>
+                <div class="flex gap-2 mb-3">
+                    <div class="skeleton h-6 w-20 rounded-full"></div>
+                    <div class="skeleton h-6 w-24 rounded-full"></div>
+                </div>
+                <div class="skeleton skeleton-text w-full"></div>
+                <div class="skeleton skeleton-text w-2/3"></div>
             </div>
         </div>
 
@@ -2568,14 +2594,16 @@
         </div>
 
         <div class="max-w-5xl mx-auto">
-            <div id="riwayat-loading" class="py-20 text-center">
-                <div class="relative inline-flex">
-                    <div class="w-16 h-16 border-4 border-slate-100 rounded-full animate-spin border-t-purple-500"></div>
-                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-purple-500 animate-pulse">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-                <p class="text-slate-400 font-medium mt-4">Mengambil data dari server...</p>
+            <div id="riwayat-loading" class="py-8 space-y-4">
+                <!-- Skeleton Loading for History Table -->
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
+                <div class="skeleton skeleton-table-row"></div>
             </div>
 
             <div id="riwayat-content" class="hidden space-y-6">
@@ -3668,11 +3696,15 @@
                         </tr>
                     </thead>
                     <tbody id="dash-history-body" class="text-sm text-slate-600 font-medium divide-y divide-slate-50">
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td colspan="6" class="p-16 text-center text-slate-400">
-                                <div class="inline-flex flex-col items-center gap-4 animate-pulse">
-                                    <div class="w-12 h-12 rounded-full border-4 border-slate-100 border-t-orange-500 animate-spin"></div>
-                                    <span class="text-xs font-bold tracking-wide text-slate-400 uppercase">Sedang memuat data Anda...</span>
+                        <!-- Skeleton Loading for Dashboard History -->
+                        <tr>
+                            <td colspan="6" class="p-4">
+                                <div class="space-y-2">
+                                    <div class="skeleton skeleton-table-row"></div>
+                                    <div class="skeleton skeleton-table-row"></div>
+                                    <div class="skeleton skeleton-table-row"></div>
+                                    <div class="skeleton skeleton-table-row"></div>
+                                    <div class="skeleton skeleton-table-row"></div>
                                 </div>
                             </td>
                         </tr>
