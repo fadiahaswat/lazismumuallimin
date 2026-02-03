@@ -20,6 +20,13 @@ export function showPage(pageId) {
         document.querySelectorAll('.donasi-step-container').forEach(s => {
             s.classList.add('hidden');
         });
+        
+        // Tampilkan wizard dan sembunyikan payment instructions
+        const wizard = document.getElementById('donasi-wizard');
+        if (wizard) wizard.classList.remove('hidden');
+        
+        const paymentInstr = document.getElementById('donasi-payment-instructions');
+        if (paymentInstr) paymentInstr.classList.add('hidden');
     }
 
     const target = document.getElementById(`page-${pageId}`);
