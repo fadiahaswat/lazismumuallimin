@@ -12,6 +12,13 @@ export function showPage(pageId) {
     });
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
+    // Reset wizard steps when opening donation page to prevent state persistence
+    if (pageId === 'donasi') {
+        document.querySelectorAll('.donasi-step-container').forEach(s => {
+            s.classList.add('hidden');
+        });
+    }
+
     const target = document.getElementById(`page-${pageId}`);
     if (target) {
         target.style.display = 'block';
