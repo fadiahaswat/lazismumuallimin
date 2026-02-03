@@ -4,6 +4,10 @@ import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
 
+// Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
+// Mencegah race condition antara page visibility changes dan step navigation
+const DOM_UPDATE_DELAY_MS = 50;
+
 // --- FUNGSI NAVIGASI WIZARD ---
 
 function updateStepTitle(step) {
@@ -161,7 +165,8 @@ function processDonationFlow(type, nominal) {
     // 1. Buka Halaman Donasi
     showPage('donasi');
     
-    // 2. Reset ke Langkah 1 dengan delay kecil untuk memastikan showPage selesai
+    // 2. Reset ke Langkah 1 dengan delay untuk memastikan showPage selesai
+    // Delay diperlukan karena showPage() melakukan DOM manipulation asynchronous
     setTimeout(() => {
         goToStep(1);
 
@@ -217,7 +222,7 @@ function processDonationFlow(type, nominal) {
                 }
             }, 300);
         }
-    }, 50);
+    }, DOM_UPDATE_DELAY_MS);
 }
 
 // Helper untuk Infaq (lanjut ke Step 2)
