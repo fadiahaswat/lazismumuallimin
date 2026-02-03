@@ -171,7 +171,7 @@ function processDonationFlow(type, nominal) {
     // 2. Reset ke Langkah 1 dengan delay untuk memastikan showPage selesai
     // Delay diperlukan karena showPage() melakukan DOM manipulation asynchronous
     setTimeout(() => {
-        // Tampilkan wizard dan sembunyikan payment instructions (jika sebelumnya hidden)
+        // Tampilkan wizard dan sembunyikan payment instructions
         const wizard = document.getElementById('donasi-wizard');
         if (wizard) wizard.classList.remove('hidden');
         
