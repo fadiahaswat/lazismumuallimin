@@ -8,6 +8,9 @@ import { showPage } from './ui-navigation.js';
 // Mencegah race condition antara page visibility changes dan step navigation
 const DOM_UPDATE_DELAY_MS = 50;
 
+// Expected parts when splitting santri value format: "Nama::NIS::Rombel"
+const EXPECTED_SANTRI_PARTS = 3;
+
 // --- FUNGSI NAVIGASI WIZARD ---
 
 function updateStepTitle(step) {
@@ -369,6 +372,13 @@ export function setupWizardLogic() {
         btnZakatCheck.onclick = () => {
             const emasEl = document.getElementById('harga-emas');
             const hasilEl = document.getElementById('penghasilan-bulanan');
+            
+            if (!emasEl || !hasilEl) {
+                console.error("Required input elements not found");
+                showToast("Terjadi kesalahan sistem", 'error');
+                return;
+            }
+            
             const emas = parseInt(emasEl.value.replace(/\D/g, '')) || 0;
             const hasil = parseInt(hasilEl.value.replace(/\D/g, '')) || 0;
             const nisab = (emas * 85) / 12;
@@ -503,18 +513,23 @@ export function setupWizardLogic() {
     if (santriNama) {
         santriNama.onchange = () => {
             if (santriNama.value) {
-                const [nama, nis, rombel] = santriNama.value.split('::');
-                donasiData.namaSantri = nama;
-                donasiData.nisSantri = nis;
-                donasiData.rombelSantri = rombel;
+                const parts = santriNama.value.split('::');
+                if (parts.length === EXPECTED_SANTRI_PARTS) {
+                    const [nama, nis, rombel] = parts;
+                    donasiData.namaSantri = nama;
+                    donasiData.nisSantri = nis;
+                    donasiData.rombelSantri = rombel;
 
-                const radioAnSantri = document.getElementById('radio-an-santri');
-                if (radioAnSantri) {
-                    radioAnSantri.disabled = false;
-                    if (radioAnSantri.checked) {
-                        const nameInput = document.getElementById('nama-muzakki-input');
-                        if (nameInput) nameInput.value = `A/n Santri: ${nama}`;
+                    const radioAnSantri = document.getElementById('radio-an-santri');
+                    if (radioAnSantri) {
+                        radioAnSantri.disabled = false;
+                        if (radioAnSantri.checked) {
+                            const nameInput = document.getElementById('nama-muzakki-input');
+                            if (nameInput) nameInput.value = `A/n Santri: ${nama}`;
+                        }
                     }
+                } else {
+                    console.warn("Invalid santri name format:", santriNama.value);
                 }
             }
         };
@@ -757,11 +772,15 @@ export function setupWizardLogic() {
 
             try {
                 // 3. Kirim ke Google Apps Script
-                await fetch(GAS_API_URL, {
+                const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ action: "create", payload: payload })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 // 4. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');

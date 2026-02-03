@@ -59,9 +59,15 @@ async function loadSantriData() {
         
         // Fallback: Gunakan cache lama jika ada
         if (cachedData) {
-            console.warn("Menggunakan data cache lama karena koneksi error.");
-            window.santriData = JSON.parse(cachedData);
-            return window.santriData;
+            try {
+                console.warn("Menggunakan data cache lama karena koneksi error.");
+                window.santriData = JSON.parse(cachedData);
+                return window.santriData;
+            } catch (parseError) {
+                console.error("Cache data corrupted:", parseError);
+                localStorage.removeItem(CACHE_KEY);
+                localStorage.removeItem(CACHE_TIME_KEY);
+            }
         }
         
         alert("Gagal memuat data santri. Pastikan internet lancar.");

@@ -55,7 +55,9 @@ async function init() {
         "Hampir Selesai..."
     ];
     let textIdx = 0;
-    const textInterval = setInterval(() => {
+    let textInterval = null;
+    
+    textInterval = setInterval(() => {
         const textEl = document.getElementById('loader-text');
         if (textEl) {
             textIdx = (textIdx + 1) % loadingTexts.length;
@@ -104,8 +106,11 @@ async function init() {
         console.error("Terjadi kesalahan fatal:", error);
         alert("Gagal memuat data. Silakan refresh halaman.");
     } finally {
-        // C. HILANGKAN LOADING SCREEN
-        clearInterval(textInterval); 
+        // C. HILANGKAN LOADING SCREEN & CLEANUP INTERVAL
+        if (textInterval) {
+            clearInterval(textInterval);
+            textInterval = null;
+        }
         
         const preloader = document.getElementById('app-preloader');
         if (preloader) {

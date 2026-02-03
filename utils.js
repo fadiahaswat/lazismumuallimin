@@ -1,5 +1,15 @@
 // utils.js
 
+export function escapeHtml(text) {
+    if (!text) return text;
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 export function showToast(message, type = 'warning') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -11,7 +21,9 @@ export function showToast(message, type = 'warning') {
     if (type === 'success') icon = 'fa-check-circle text-green-500';
     if (type === 'error') icon = 'fa-times-circle text-red-500';
 
-    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${message}</span>`;
+    // Escape the message to prevent XSS
+    const escapedMessage = escapeHtml(String(message));
+    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${escapedMessage}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -82,16 +94,6 @@ export function animateValue(obj, start, end, duration, isCurrency = false) {
 
 export function generateUniqueCode() {
     return Math.floor(Math.random() * 999) + 1;
-}
-
-export function escapeHtml(text) {
-    if (!text) return text;
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }
 
 export function formatHP(hp) {

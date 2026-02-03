@@ -20,8 +20,14 @@ onAuthStateChanged(auth, (user) => {
     } else {
         const santriSession = localStorage.getItem('lazismu_user_santri');
         if (santriSession) {
-            const santriUser = JSON.parse(santriSession);
-            updateUIForLogin(santriUser);
+            try {
+                const santriUser = JSON.parse(santriSession);
+                updateUIForLogin(santriUser);
+            } catch (error) {
+                console.error("Failed to parse santri session:", error);
+                localStorage.removeItem('lazismu_user_santri');
+                updateUIForLogout();
+            }
         } else {
             updateUIForLogout();
         }
@@ -41,7 +47,7 @@ export async function loginWithGoogle() {
         
         const linkedNIS = SantriManager.findNisByEmail(googleUser.email);
 
-        if (linkedNIS) {
+        if (linkedNIS && window.santriData) {
             const santri = window.santriData.find(s => String(s.nis) === String(linkedNIS));
             if (santri) {
                 const prefs = SantriManager.getPrefs(linkedNIS);
@@ -104,7 +110,8 @@ export function loginWithNIS() {
             updateUIForLogin(mockUser);
             renderDashboardProfil(santri.nis); 
             window.closeLoginModal();
-            showToast(`Ahlan Wa Sahlan, ${santri.nama.split(' ')[0]}!`, 'success');
+            const firstName = santri.nama ? santri.nama.split(' ')[0] : 'Santri';
+            showToast(`Ahlan Wa Sahlan, ${firstName}!`, 'success');
 
         } else {
             showToast("Password salah.", "error");
@@ -120,8 +127,10 @@ export function doLogout() {
         showToast("Berhasil keluar", 'success');
         updateUIForLogout(); 
         window.location.hash = "#home";
-        window.location.replace(window.location.pathname + "#home");
         window.location.reload();
+    }).catch((error) => {
+        console.error("Logout error:", error);
+        showToast("Gagal keluar, silakan coba lagi", 'error');
     });
 }
 
@@ -155,7 +164,10 @@ export function updateUIForLogin(user) {
     if(document.getElementById('mobile-user-name')) document.getElementById('mobile-user-name').textContent = user.displayName;
     if(document.getElementById('mobile-user-role')) document.getElementById('mobile-user-role').textContent = user.isSantri ? `Santri - ${user.rombel}` : "Donatur Umum";
     if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL;
-    if(document.getElementById('dash-name')) document.getElementById('dash-name').innerText = user.displayName.split(' ')[0];
+    if(document.getElementById('dash-name')) {
+        const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
+        document.getElementById('dash-name').innerText = firstName;
+    }
 
     // Form Autofill
     const inputNama = document.getElementById('nama-muzakki-input');
