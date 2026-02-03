@@ -413,3 +413,40 @@ export function exportRekapPDF() {
 
     doc.save(`Rekap ZIS_Kelas ${cls}_${date}.pdf`);
 }
+
+export async function refreshRekap() {
+    const btnRefresh = document.getElementById('btn-refresh-rekap');
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    const { riwayatData } = await import('./state.js');
+    const { loadRiwayat } = await import('./feature-history.js');
+    const { showToast } = await import('./utils.js');
+    
+    // 2. Reset Status Data agar fetch ulang
+    riwayatData.isLoaded = false;
+    
+    try {
+        // 3. Ambil ulang data
+        await loadRiwayat(true);
+        
+        // 4. Update leaderboard
+        renderGlobalLeaderboard();
+        
+        // 5. Re-render tabel jika ada kelas terpilih
+        const clsSelect = document.getElementById('rekap-kelas-select');
+        if (clsSelect && clsSelect.value) {
+            renderRekapTable(clsSelect.value);
+        }
+        
+        showToast('Data rekapitulasi berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Gagal memperbarui data', 'error');
+    } finally {
+        // 6. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
+}

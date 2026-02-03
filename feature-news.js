@@ -279,3 +279,13 @@ export function closeNewsModal() {
     }, 300);
     document.body.style.overflow = 'auto';
 }
+
+export function refreshNews() {
+    // Reset state
+    newsState.page = 1;
+    newsState.hasMore = true;
+    newsState.posts = [];
+    
+    // Fetch fresh data
+    fetchNews();
+}

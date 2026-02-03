@@ -5,9 +5,9 @@ import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
 
 // Mengambil data riwayat dari Google Sheet
-export async function loadRiwayat() {
+export async function loadRiwayat(forceRefresh = false) {
     // Prevent concurrent calls with better locking
-    if (riwayatData.isLoaded || riwayatData.isLoading) return; 
+    if (!forceRefresh && (riwayatData.isLoaded || riwayatData.isLoading)) return; 
     
     riwayatData.isLoading = true; 
 
@@ -869,6 +869,31 @@ export async function refreshDashboard() {
         }
         
         showToast('Data dashboard berhasil diperbarui', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Gagal memperbarui data', 'error');
+    } finally {
+        // 5. Hentikan Efek Loading
+        if (icon) icon.classList.remove('fa-spin');
+    }
+}
+
+export async function refreshRiwayat() {
+    const btnRefresh = document.getElementById('btn-refresh-riwayat');
+    const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
+
+    // 1. Efek Loading (Putar Icon)
+    if (icon) icon.classList.add('fa-spin');
+    
+    // 2. Reset Status Data agar fetch ulang
+    riwayatData.isLoaded = false;
+    riwayatData.currentPage = 1;
+    
+    try {
+        // 3. Ambil ulang data
+        await loadRiwayat(true);
+        
+        showToast('Data laporan berhasil diperbarui', 'success');
     } catch (error) {
         console.error(error);
         showToast('Gagal memperbarui data', 'error');
