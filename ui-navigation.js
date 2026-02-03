@@ -169,7 +169,7 @@ export function saveAvatar(emoji) {
         localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
     } catch (error) {
         console.error("Failed to save user to localStorage:", error);
-        showToast("Avatar disimpan, tapi cache penuh", "warning");
+        showToast("Avatar berhasil diganti, tetapi gagal menyimpan ke cache", "warning");
     }
 
     showToast("Avatar berhasil diganti!", "success");

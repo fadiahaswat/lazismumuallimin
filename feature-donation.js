@@ -8,6 +8,9 @@ import { showPage } from './ui-navigation.js';
 // Mencegah race condition antara page visibility changes dan step navigation
 const DOM_UPDATE_DELAY_MS = 50;
 
+// Expected parts when splitting santri value format: "Nama::NIS::Rombel"
+const EXPECTED_SANTRI_PARTS = 3;
+
 // --- FUNGSI NAVIGASI WIZARD ---
 
 function updateStepTitle(step) {
@@ -511,7 +514,7 @@ export function setupWizardLogic() {
         santriNama.onchange = () => {
             if (santriNama.value) {
                 const parts = santriNama.value.split('::');
-                if (parts.length === 3) {
+                if (parts.length === EXPECTED_SANTRI_PARTS) {
                     const [nama, nis, rombel] = parts;
                     donasiData.namaSantri = nama;
                     donasiData.nisSantri = nis;

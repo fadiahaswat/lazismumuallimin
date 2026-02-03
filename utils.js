@@ -1,5 +1,15 @@
 // utils.js
 
+export function escapeHtml(text) {
+    if (!text) return text;
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 export function showToast(message, type = 'warning') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -84,16 +94,6 @@ export function animateValue(obj, start, end, duration, isCurrency = false) {
 
 export function generateUniqueCode() {
     return Math.floor(Math.random() * 999) + 1;
-}
-
-export function escapeHtml(text) {
-    if (!text) return text;
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }
 
 export function formatHP(hp) {

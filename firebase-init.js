@@ -47,7 +47,7 @@ export async function loginWithGoogle() {
         
         const linkedNIS = SantriManager.findNisByEmail(googleUser.email);
 
-        if (linkedNIS && typeof window.santriData !== 'undefined' && window.santriData) {
+        if (linkedNIS && window.santriData) {
             const santri = window.santriData.find(s => String(s.nis) === String(linkedNIS));
             if (santri) {
                 const prefs = SantriManager.getPrefs(linkedNIS);
