@@ -55,7 +55,8 @@ function hasCachedData() {
     if (!cachedData || !cachedTime) return false;
     
     const now = new Date().getTime();
-    const isValid = (now - cachedTime) < (EXPIRY_HOURS * 3600 * 1000);
+    const cacheTimestamp = parseInt(cachedTime, 10);
+    const isValid = (now - cacheTimestamp) < (EXPIRY_HOURS * 3600 * 1000);
     
     return isValid;
 }
