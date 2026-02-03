@@ -43,12 +43,15 @@ function closeQrisModal() {
     }, 200);
 }
 
+// Cache configuration constants (must match data-santri.js)
+const CACHE_KEY = 'santri_data_cache';
+const CACHE_TIME_KEY = 'santri_data_time';
+const CACHE_EXPIRY_HOURS = 24;
+
 // Helper function to check if valid cache exists
 function hasCachedData() {
-    const CACHE_KEY = 'santri_data_cache';
-    const CACHE_TIME_KEY = 'santri_data_time';
-    const EXPIRY_HOURS = 24;
-    const MILLISECONDS_PER_HOUR = 3600 * 1000;
+    const SECONDS_PER_HOUR = 60 * 60;
+    const MILLISECONDS_PER_HOUR = SECONDS_PER_HOUR * 1000;
     
     const cachedData = localStorage.getItem(CACHE_KEY);
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
@@ -61,7 +64,7 @@ function hasCachedData() {
     // Validate parsed timestamp
     if (isNaN(cacheTimestamp)) return false;
     
-    const isValid = (now - cacheTimestamp) < (EXPIRY_HOURS * MILLISECONDS_PER_HOUR);
+    const isValid = (now - cacheTimestamp) < (CACHE_EXPIRY_HOURS * MILLISECONDS_PER_HOUR);
     
     return isValid;
 }
