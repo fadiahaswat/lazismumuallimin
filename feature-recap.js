@@ -1,6 +1,6 @@
 import { santriDB } from './santri-manager.js';
 import { riwayatData } from './state.js';
-import { showToast, formatRupiah } from './utils.js';
+import { showToast, formatRupiah, escapeHtml } from './utils.js';
 import { loadRiwayat } from './feature-history.js';
 
 export function setupRekapLogic() {
@@ -206,10 +206,10 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
-                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${item.kelas}</h5>
+                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${escapeHtml(item.kelas)}</h5>
                         <div class="text-xs text-slate-500 space-y-1">
-                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${meta.wali}</p>
-                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${meta.musyrif}</p>
+                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${escapeHtml(meta.wali)}</p>
+                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${escapeHtml(meta.musyrif)}</p>
                         </div>
                     </div>
 
@@ -229,8 +229,8 @@ export function renderGlobalLeaderboard() {
 
                     <div class="flex-1 text-center md:text-left w-full">
                         <div class="flex items-center justify-center md:justify-start gap-2">
-                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h5>
-                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${meta.wali}</span>
+                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${escapeHtml(item.kelas)}</h5>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${escapeHtml(meta.wali)}</span>
                         </div>
                         
                         <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -338,7 +338,7 @@ function renderRekapTable(cls) {
 
         let labelTahfizh = '';
         if (s.musyrifKhusus) {
-             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
+             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${escapeHtml(s.musyrifKhusus)}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -346,7 +346,7 @@ function renderRekapTable(cls) {
         tr.innerHTML = `
             <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
             <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">
-                ${s.nama} ${badgeKelas} ${labelTahfizh}
+                ${escapeHtml(s.nama)} ${badgeKelas} ${labelTahfizh}
             </td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>
@@ -360,9 +360,9 @@ function renderRekapTable(cls) {
     const elMusyrif = document.getElementById('rekap-musyrif');
     const elTotal = document.getElementById('rekap-total-kelas');
 
-    if (elWali) elWali.innerText = namaWali;
-    if (elMusyrif) elMusyrif.innerText = namaMusyrif;
-    if (elTotal) elTotal.innerText = formatRupiah(totalKelas);
+    if (elWali) elWali.textContent = namaWali;
+    if (elMusyrif) elMusyrif.textContent = namaMusyrif;
+    if (elTotal) elTotal.textContent = formatRupiah(totalKelas);
 }
 
 export function exportRekapPDF() {

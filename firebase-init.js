@@ -208,23 +208,28 @@ export function updateUIForLogin(user) {
         if (levelSelect) levelSelect.value = currentLevel;
 
         if (rombelSelect && santriDB[currentLevel]) {
-            let rombelHtml = '<option value="">Pilih Rombel</option>';
+            rombelSelect.innerHTML = '<option value="">Pilih Rombel</option>';
             Object.keys(santriDB[currentLevel]).forEach(r => {
-                rombelHtml += `<option value="${r}">${r}</option>`;
+                const option = document.createElement('option');
+                option.value = r;
+                option.textContent = r;
+                rombelSelect.appendChild(option);
             });
-            rombelSelect.innerHTML = rombelHtml;
             rombelSelect.disabled = false;
             rombelSelect.value = user.rombel;
         }
 
         if (namaSelect && santriDB[currentLevel] && santriDB[currentLevel][user.rombel]) {
-            let namaHtml = '<option value="">Pilih Nama Santri</option>';
+            namaSelect.innerHTML = '<option value="">Pilih Nama Santri</option>';
             let exactValueToSelect = "";
             let exactName = user.displayName;
 
             santriDB[currentLevel][user.rombel].forEach(s => {
                 const val = `${s.nama}::${s.nis}::${s.rombel}`;
-                namaHtml += `<option value="${val}">${s.nama}</option>`;
+                const option = document.createElement('option');
+                option.value = val;
+                option.textContent = s.nama;
+                namaSelect.appendChild(option);
 
                 if (String(s.nis) === String(user.nis)) {
                     exactValueToSelect = val;
@@ -232,7 +237,6 @@ export function updateUIForLogin(user) {
                 }
             });
 
-            namaSelect.innerHTML = namaHtml;
             namaSelect.disabled = false;
             
             if (exactValueToSelect) {
