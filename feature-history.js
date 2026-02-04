@@ -703,8 +703,8 @@ export function renderRiwayatList() {
         const time = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
         const alumniYear = item.DetailAlumni || item.detailAlumni;
-        let alumniBadge = alumniYear ?
-            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${escapeHtml(alumniYear)}"><i class="fas fa-graduation-cap mr-1"></i> ${escapeHtml(alumniYear)}</span>` : '';
+        const alumniBadge = alumniYear ?
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
 
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
@@ -729,9 +729,9 @@ export function renderRiwayatList() {
                             ${alumniBadge}
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${escapeHtml(displayType)}</span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
                             <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${escapeHtml(paymentMethod)}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
                         </div>
                     </div>
                 </div>
@@ -918,25 +918,25 @@ export function renderPersonalHistoryTable() {
         row.className = 'hover:bg-slate-50 transition border-b border-slate-50 last:border-0';
         row.innerHTML = `
             <td class="p-5 whitespace-nowrap">
-                <div class="font-bold text-slate-700">${escapeHtml(dateStr)}</div>
+                <div class="font-bold text-slate-700">${dateStr}</div>
                 <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
             </td>
             <td class="p-5">
-                <div class="font-bold text-slate-700">${escapeHtml(item.JenisDonasi)}</div>
-                <div class="text-xs text-slate-500">${escapeHtml(item.SubJenis || '-')}</div>
+                <div class="font-bold text-slate-700">${item.JenisDonasi}</div>
+                <div class="text-xs text-slate-500">${item.SubJenis || '-'}</div>
             </td>
             <td class="p-5 font-bold text-slate-700">
                 ${formatRupiah(item.Nominal)}
             </td>
             <td class="p-5 text-center">
                 <span class="px-3 py-1 rounded-full text-xs font-bold border bg-white text-slate-500">
-                    ${escapeHtml(item.MetodePembayaran)}
+                    ${item.MetodePembayaran}
                 </span>
             </td>
             <td class="p-5 text-center">
                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border ${statusClass}">
                     ${item.Status === 'Terverifikasi' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-clock"></i>'}
-                    ${escapeHtml(item.Status || 'Proses')}
+                    ${item.Status || 'Proses'}
                 </span>
             </td>
             <td class="p-5 text-center">

@@ -1,6 +1,6 @@
 import { newsState } from './state.js';
 import { WORDPRESS_SITE, NEWS_PER_PAGE } from './config.js';
-import { copyText, stripHtml, showToast, escapeHtml } from './utils.js';
+import { copyText, stripHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 
 export async function fetchNews(isLoadMore = false) {
@@ -122,24 +122,24 @@ export function renderNewsGrid(postsToRender, appendMode) {
         html += `
         <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="window.openNewsModal(${globalIndex})">
             <div class="relative h-60 overflow-hidden">
-                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${escapeHtml(img)}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
-                    <span class="block text-xl font-black text-slate-800 leading-none">${escapeHtml(day)}</span>
-                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${escapeHtml(month)}</span>
+                    <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
+                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
                 </div>
                 <div class="absolute bottom-4 left-4 z-30">
                     <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
-                        ${escapeHtml(categoryName)}
+                        ${categoryName}
                     </span>
                 </div>
             </div>
             <div class="p-6 md:p-8 flex flex-col flex-grow relative">
                 <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
-                    ${escapeHtml(post.title)}
+                    ${post.title}
                 </h3>
                 <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
-                    ${escapeHtml(stripHtml(post.excerpt))}
+                    ${stripHtml(post.excerpt)}
                 </p>
                 <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
@@ -207,19 +207,19 @@ export function openNewsModal(index) {
 
     container.innerHTML = `
         <div class="relative h-[40vh] md:h-[50vh] w-full group overflow-hidden">
-            <img src="${escapeHtml(img)}" class="w-full h-full object-cover" alt="Hero Image">
+            <img src="${img}" class="w-full h-full object-cover" alt="Hero Image">
             <div class="absolute inset-0 bg-slate-900/70"></div>
             <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 z-10">
                 <span class="inline-block px-3 py-1 rounded bg-orange-500 text-white text-xs font-bold uppercase tracking-wider mb-3">
-                    ${escapeHtml(category)}
+                    ${category}
                 </span>
                 <h2 class="text-2xl md:text-4xl font-black text-white leading-tight mb-4 drop-shadow-md">
-                    ${escapeHtml(post.title)}
+                    ${post.title}
                 </h2>
                 <div class="flex items-center gap-3 text-white/90">
-                    <img src="${escapeHtml(avatar)}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${escapeHtml(author)}" onerror="this.src='https://ui-avatars.com/api/?name=Admin'">
+                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}" onerror="this.src='https://ui-avatars.com/api/?name=Admin'">
                     <div class="text-xs md:text-sm font-medium">
-                        <span>${escapeHtml(author)}</span> • <span class="opacity-80">${escapeHtml(date)}</span>
+                        <span>${author}</span> • <span class="opacity-80">${date}</span>
                     </div>
                 </div>
             </div>
@@ -236,7 +236,7 @@ export function openNewsModal(index) {
                     <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(post.URL)}" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-black transition group">
                           <img src="x.png" class="w-4 h-4 object-contain opacity-60 group-hover:invert group-hover:opacity-100 transition" alt="X">
                     </a>
-                    <button onclick="window.copyText('${escapeHtml(post.URL)}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
+                    <button onclick="window.copyText('${post.URL}')" class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition"><i class="fas fa-link"></i></button>
                 </div>
             </div>
 
