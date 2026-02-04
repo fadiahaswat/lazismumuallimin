@@ -208,7 +208,7 @@ export function updateUIForLogin(user) {
         if (levelSelect) levelSelect.value = currentLevel;
 
         if (rombelSelect && santriDB[currentLevel]) {
-            let rombelHtml = '<option value="">Pilih Rombel</option>';
+            rombelSelect.innerHTML = '<option value="">Pilih Rombel</option>';
             Object.keys(santriDB[currentLevel]).forEach(r => {
                 const option = document.createElement('option');
                 option.value = r;
