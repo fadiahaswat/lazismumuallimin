@@ -1202,3 +1202,33 @@ export async function refreshRiwayat() {
         if (icon) icon.classList.remove('fa-spin');
     }
 }
+
+// FILE: feature-history.js (Add this function to global window scope)
+window.switchAppreciationTab = function(tabName) {
+    const btnReward = document.getElementById('tab-btn-reward');
+    const btnRules = document.getElementById('tab-btn-rules');
+    const contentReward = document.getElementById('tab-content-reward');
+    const contentRules = document.getElementById('tab-content-rules');
+
+    if (!btnReward || !btnRules || !contentReward || !contentRules) return;
+
+    if (tabName === 'reward') {
+        // Activate Reward Tab
+        contentReward.classList.remove('hidden');
+        contentReward.classList.add('animate-fade-in-up'); // Re-trigger animation
+        contentRules.classList.add('hidden');
+
+        // Style Buttons
+        btnReward.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold transition-all shadow-sm bg-white text-slate-800 ring-1 ring-slate-200 transform scale-[1.02]";
+        btnRules.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-white/50 transition-all";
+    } else {
+        // Activate Rules Tab
+        contentRules.classList.remove('hidden');
+        contentRules.classList.add('animate-fade-in-up'); // Re-trigger animation
+        contentReward.classList.add('hidden');
+
+        // Style Buttons
+        btnRules.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold transition-all shadow-sm bg-white text-slate-800 ring-1 ring-slate-200 transform scale-[1.02]";
+        btnReward.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-white/50 transition-all";
+    }
+};
