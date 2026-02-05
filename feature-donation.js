@@ -3,6 +3,13 @@ import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
+import { 
+    validateDonationData, 
+    addSecurityHeaders, 
+    performSecurityChecks, 
+    rateLimiter,
+    initSecurityTracking 
+} from './security-utils.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
 // Mencegah race condition antara page visibility changes dan step navigation
@@ -261,6 +268,9 @@ function proceedToNominal(nominal) {
 }
 
 export function setupWizardLogic() {
+    // Initialize security tracking when donation wizard is set up
+    initSecurityTracking();
+    
     // --- LANGKAH 1: Pilih Jenis Donasi ---
     document.querySelectorAll('.choice-button').forEach(btn => {
         btn.onclick = () => {
@@ -753,12 +763,21 @@ export function setupWizardLogic() {
 
             if (!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-            // 1. Ubah tombol jadi Loading
+            // === SECURITY CHECKS ===
+            
+            // 1. Perform security validation
+            const securityCheck = performSecurityChecks();
+            if (!securityCheck.allowed) {
+                showToast(securityCheck.message, 'error');
+                return;
+            }
+
+            // 2. Ubah tombol jadi Loading
             btn.disabled = true;
             btn.querySelector('.default-text').classList.add('hidden');
             btn.querySelector('.loading-text').classList.remove('hidden');
 
-            // 2. Siapkan Data (Payload)
+            // 3. Siapkan Data (Payload)
             const payload = {
                 "type": donasiData.subType || donasiData.type,
                 "nominal": donasiData.nominalTotal, 
@@ -777,19 +796,35 @@ export function setupWizardLogic() {
                 "NoKTP": donasiData.nik || ""
             };
 
+            // 4. Validate payload data
+            const validation = validateDonationData(payload);
+            if (!validation.isValid) {
+                showToast(validation.errors[0], 'error');
+                btn.disabled = false;
+                btn.querySelector('.default-text').classList.remove('hidden');
+                btn.querySelector('.loading-text').classList.add('hidden');
+                return;
+            }
+
+            // 5. Add security headers
+            const securePayload = addSecurityHeaders(validation.sanitizedData);
+
             try {
-                // 3. Kirim ke Google Apps Script
+                // 6. Record this submission attempt for rate limiting
+                rateLimiter.recordRequest();
+
+                // 7. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ action: "create", payload: payload })
+                    body: JSON.stringify({ action: "create", payload: securePayload })
                 });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                // 4. Update Data Tampilan di Halaman Sukses
+                // 8. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');
                 const finalType = document.getElementById('final-type-display');
                 const finalName = document.getElementById('final-name-display');
@@ -832,7 +867,7 @@ export function setupWizardLogic() {
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
-                // --- 5. GENERATE KONTEN INTRUKSI PEMBAYARAN & DOA ---
+                // --- 9. GENERATE KONTEN INTRUKSI PEMBAYARAN & DOA ---
                 
                 // A. Generate Doa
                 const prayerHTML = `
