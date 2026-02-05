@@ -18,7 +18,8 @@ export const ZAKAT = {
 // Animation and UI timing (in milliseconds)
 export const DELAYS = {
     PRELOADER: 50,
-    CHAIN_REACTION: 150,
+    DOM_READY: 100,          // Wait for DOM to be ready
+    CASCADE_SELECT: 200,     // Wait for cascading select options to populate
     MODAL_TRANSITION: 200,
     TOAST: 500,
     LOADING_TEXT: 800

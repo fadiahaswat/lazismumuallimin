@@ -1,6 +1,9 @@
 // URL Web App dari Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
 
+// Import cache constants
+import { CACHE } from './constants.js';
+
 // [PERBAIKAN] Gunakan window.santriData agar bisa dibaca oleh modul lain (main.js)
 window.santriData = [];
 
@@ -8,17 +11,13 @@ window.santriData = [];
  * Fungsi Mengambil Data Santri dengan Sistem Caching (Local Storage)
  */
 async function loadSantriData() {
-    const CACHE_KEY = 'santri_data_cache';
-    const CACHE_TIME_KEY = 'santri_data_time';
-    const EXPIRY_HOURS = 24; // Data berlaku 24 jam
-
     // 1. Cek apakah ada cache yang valid di browser
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    const cachedData = localStorage.getItem(CACHE.KEY);
+    const cachedTime = localStorage.getItem(CACHE.TIME_KEY);
     const now = new Date().getTime();
 
     // Jika cache ada DAN belum kadaluwarsa
-    if (cachedData && cachedTime && (now - cachedTime < EXPIRY_HOURS * 3600 * 1000)) {
+    if (cachedData && cachedTime && (now - cachedTime < CACHE.EXPIRY_HOURS * CACHE.MILLISECONDS_PER_HOUR)) {
         console.log("Mengambil data santri dari Cache (Hemat Kuota)...");
         try {
             // [PERBAIKAN] Update variabel global window
@@ -45,8 +44,8 @@ async function loadSantriData() {
 
         // 3. Simpan data baru ke Cache Browser
         try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-            localStorage.setItem(CACHE_TIME_KEY, now);
+            localStorage.setItem(CACHE.KEY, JSON.stringify(data));
+            localStorage.setItem(CACHE.TIME_KEY, now);
             console.log("Data santri berhasil disimpan ke cache.");
         } catch (e) {
             console.warn("Penyimpanan penuh, gagal caching data.");
@@ -65,8 +64,8 @@ async function loadSantriData() {
                 return window.santriData;
             } catch (parseError) {
                 console.error("Cache data corrupted:", parseError);
-                localStorage.removeItem(CACHE_KEY);
-                localStorage.removeItem(CACHE_TIME_KEY);
+                localStorage.removeItem(CACHE.KEY);
+                localStorage.removeItem(CACHE.TIME_KEY);
             }
         }
         

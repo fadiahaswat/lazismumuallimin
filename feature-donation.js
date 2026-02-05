@@ -1,12 +1,9 @@
 import { donasiData, currentUser } from './state.js';
 import { formatRupiah, formatNumber, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
+import { DELAYS } from './constants.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
-
-// Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
-// Mencegah race condition antara page visibility changes dan step navigation
-const DOM_UPDATE_DELAY_MS = 50;
 
 // Expected parts when splitting santri value format: "Nama::NIS::Rombel"
 const EXPECTED_SANTRI_PARTS = 3;
@@ -101,11 +98,11 @@ export function goToStep(step) {
                                         radioAnSantri.click();
                                     }
                                 }
-                            }, 200); // Jeda tunggu nama
+                            }, DELAYS.CASCADE_SELECT);
                         }
-                    }, 200); // Jeda tunggu rombel
+                    }, DELAYS.CASCADE_SELECT);
                 }
-            }, 100); // Jeda awal DOM Ready
+            }, DELAYS.DOM_READY);
 
         } else {
             // Jika Belum Login
@@ -232,7 +229,7 @@ function processDonationFlow(type, nominal) {
                 }
             }, 300);
         }
-    }, DOM_UPDATE_DELAY_MS);
+    }, DELAYS.PRELOADER);
 }
 
 // Helper untuk Infaq (lanjut ke Step 2)
