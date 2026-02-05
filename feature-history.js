@@ -4,6 +4,12 @@ import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast } from './ut
 import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
 
+// Reward level thresholds (in Rupiah)
+const REWARD_LEVEL_1_THRESHOLD = 500000;    // Rp 500K - Certificate
+const REWARD_LEVEL_2_THRESHOLD = 1000000;   // Rp 1M - Merchandise
+const REWARD_LEVEL_3_THRESHOLD = 5000000;   // Rp 5M - Scholarship
+const MAX_PROGRESS_BEFORE_COMPLETE = 99;    // Progress cap before reaching threshold
+
 // Mengambil data riwayat dari Google Sheet
 export async function loadRiwayat(forceRefresh = false) {
     // Prevent concurrent calls with better locking
@@ -1313,21 +1319,27 @@ window.switchAppreciationTab = function(tabName) {
 };
 
 // Update reward levels in Peta Harta Kebaikan based on student's total donations
-function updateRewardLevels(totalDonasi) {
-    // Get all reward level groups in the dashboard
+// Exported to make it accessible from other modules if needed
+export function updateRewardLevels(totalDonasi) {
+    // Get reward container
     const rewardContainer = document.querySelector('#tab-content-reward');
     if (!rewardContainer) return;
     
+    // Get all reward level groups - using more specific selectors
     const rewardGroups = rewardContainer.querySelectorAll('.relative.flex.items-center.justify-between');
     
-    if (rewardGroups.length < 3) return;
+    if (rewardGroups.length < 3) {
+        console.warn('updateRewardLevels: Expected at least 3 reward levels, found', rewardGroups.length);
+        return;
+    }
     
-    const level1Group = rewardGroups[0]; // Min. Rp 500rb
-    const level2Group = rewardGroups[1]; // Min. Rp 1 Juta
-    const level3Group = rewardGroups[2]; // Min. Rp 5 Juta (kelipatan)
+    // Select levels by index (note: fragile, but matches current HTML structure)
+    const level1Group = rewardGroups[0];
+    const level2Group = rewardGroups[1];
+    const level3Group = rewardGroups[2];
     
-    // Level 1: Rp 500,000 - Certificate of Kindness
-    if (totalDonasi >= 500000) {
+    // Level 1: Certificate of Kindness
+    if (totalDonasi >= REWARD_LEVEL_1_THRESHOLD) {
         level1Group.classList.add('is-active');
         const icon = level1Group.querySelector('.w-10.h-10');
         if (icon) {
@@ -1343,11 +1355,11 @@ function updateRewardLevels(totalDonasi) {
         }
     }
     
-    // Level 2: Rp 1,000,000 - Exclusive Merchandise + Progress Bar
-    const level2Progress = (totalDonasi / 1000000) * 100;
+    // Level 2: Exclusive Merchandise + Progress Bar
+    const level2Progress = (totalDonasi / REWARD_LEVEL_2_THRESHOLD) * 100;
     const progressBar2 = level2Group.querySelector('.bg-blue-500');
     
-    if (totalDonasi >= 1000000) {
+    if (totalDonasi >= REWARD_LEVEL_2_THRESHOLD) {
         level2Group.classList.add('is-active');
         const icon = level2Group.querySelector('.w-10.h-10');
         if (icon) {
@@ -1365,12 +1377,12 @@ function updateRewardLevels(totalDonasi) {
     } else {
         level2Group.classList.remove('is-active');
         if (progressBar2) {
-            progressBar2.style.width = Math.min(level2Progress, 99) + '%';
+            progressBar2.style.width = Math.min(level2Progress, MAX_PROGRESS_BEFORE_COMPLETE) + '%';
         }
     }
     
-    // Level 3: Rp 5,000,000 (kelipatan) - The Scholarship
-    if (totalDonasi >= 5000000) {
+    // Level 3: The Scholarship (kelipatan)
+    if (totalDonasi >= REWARD_LEVEL_3_THRESHOLD) {
         level3Group.classList.add('is-active');
         const icon = level3Group.querySelector('.w-10.h-10');
         if (icon) {
@@ -1384,7 +1396,7 @@ function updateRewardLevels(totalDonasi) {
         }
         
         // Update button text to show how many scholarships earned
-        const scholarshipCount = Math.floor(totalDonasi / 5000000);
+        const scholarshipCount = Math.floor(totalDonasi / REWARD_LEVEL_3_THRESHOLD);
         const button = level3Group.querySelector('button');
         if (button && scholarshipCount > 0) {
             button.innerHTML = `<i class="fas fa-trophy mr-2"></i> ${scholarshipCount}x Voucher SPP Terbuka!`;
@@ -1393,10 +1405,10 @@ function updateRewardLevels(totalDonasi) {
     } else {
         level3Group.classList.remove('is-active');
         // Show progress towards Level 3
-        const level3Progress = (totalDonasi / 5000000) * 100;
+        const level3Progress = (totalDonasi / REWARD_LEVEL_3_THRESHOLD) * 100;
         const button = level3Group.querySelector('button');
         if (button) {
-            const remaining = 5000000 - totalDonasi;
+            const remaining = REWARD_LEVEL_3_THRESHOLD - totalDonasi;
             button.innerHTML = `Kurang ${formatRupiah(remaining)} lagi!`;
             button.classList.remove('animate-pulse');
         }
