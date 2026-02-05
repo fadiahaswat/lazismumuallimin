@@ -227,7 +227,7 @@
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6">
                 <div class="text-left">
                     <span class="block text-sm font-bold text-slate-700 group-hover:text-orange-600 transition-colors">Masuk dengan Google</span>
-                    <span class="block text-[10px] text-slate-600">Untuk Donatur Umum / Orang Tua</span>
+                    <span class="block text-sm text-slate-600">Untuk Donatur Umum / Orang Tua</span>
                 </div>
             </button>
 
@@ -239,11 +239,11 @@
 
             <div class="space-y-3">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1 ml-1">Nomor Induk Santri (NIS)</label>
+                    <label class="block text-sm font-bold text-slate-600 uppercase mb-1 ml-1">Nomor Induk Santri (NIS)</label>
                     <input type="number" id="login-nis" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none text-sm font-bold transition" placeholder="Contoh: 212345">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1 ml-1">Password</label>
+                    <label class="block text-sm font-bold text-slate-600 uppercase mb-1 ml-1">Password</label>
                     <input type="password" id="login-pass" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none text-sm font-bold transition" placeholder="Gunakan NIS (Sementara)">
                 </div>
                 <button onclick="loginWithNIS()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95 flex justify-center items-center gap-2">
@@ -307,27 +307,27 @@
             
             <div class="flex items-center gap-1 mr-1">
                 <a href="#home" onclick="showPage('home'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-home text-[10px] group-hover:text-orange-500 transition-colors"></i> Beranda
+                    <i class="fas fa-home text-sm group-hover:text-orange-500 transition-colors"></i> Beranda
                 </a>
                 <a href="#tentang" onclick="showPage('tentang'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-info-circle text-[10px] group-hover:text-orange-500 transition-colors"></i> Tentang
+                    <i class="fas fa-info-circle text-sm group-hover:text-orange-500 transition-colors"></i> Tentang
                 </a>
                 <a href="#beautifikasi" onclick="showPage('beautifikasi'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-tree text-[10px] group-hover:text-emerald-500 transition-colors"></i> Sedayu
+                    <i class="fas fa-tree text-sm group-hover:text-emerald-500 transition-colors"></i> Sedayu
                 </a>
                 <a href="#berita" onclick="showPage('berita'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-newspaper text-[10px] group-hover:text-orange-500 transition-colors"></i> Berita
+                    <i class="fas fa-newspaper text-sm group-hover:text-orange-500 transition-colors"></i> Berita
                 </a>
                 <a href="#riwayat" onclick="showPage('riwayat'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-chart-line text-[10px] group-hover:text-orange-500 transition-colors"></i> Laporan
+                    <i class="fas fa-chart-line text-sm group-hover:text-orange-500 transition-colors"></i> Laporan
                 </a>
                 <a href="#rekapitulasi" onclick="showPage('rekapitulasi'); return false;" class="nav-link px-4 py-2 rounded-full text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all flex items-center gap-2 group">
-                    <i class="fas fa-table text-[10px] group-hover:text-orange-500 transition-colors"></i> Rekap
+                    <i class="fas fa-table text-sm group-hover:text-orange-500 transition-colors"></i> Rekap
                 </a>
             </div>
 
             <div class="h-6 w-px bg-slate-300 mx-1"></div> <a href="#donasi" onclick="showPage('donasi'); return false;" class="group relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-full font-bold text-xs shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2 ml-1">
-                <i class="fas fa-heart text-[10px] animate-pulse"></i> 
+                <i class="fas fa-heart text-sm animate-pulse"></i> 
                 <span>DONASI</span>
                 <div class="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
             </a>
@@ -364,19 +364,19 @@
 
             <div class="text-left hidden md:flex flex-col justify-center h-9 max-w-[120px]">
                 <p id="user-name" class="text-xs font-bold text-slate-700 leading-tight truncate w-full" title="Nama User">User</p>
-                <p id="user-role" class="text-[9px] font-bold text-slate-600 uppercase tracking-wider truncate w-full flex items-center gap-1">
+                <p id="user-role" class="text-xs font-bold text-slate-600 uppercase tracking-wider truncate w-full flex items-center gap-1">
                     <span>Donatur</span>
                 </p>
             </div>
 
-            <i class="fas fa-chevron-down text-[10px] text-slate-300 group-hover:text-slate-500 transition-colors ml-1"></i>
+            <i class="fas fa-chevron-down text-sm text-slate-300 group-hover:text-slate-500 transition-colors ml-1"></i>
         </button>
 
         <div id="user-dropdown-content" class="hidden absolute top-full right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 py-2 z-50 transform origin-top-right transition-all animate-fade-in-up">
             
             <div class="md:hidden px-4 py-3 border-b border-slate-50 mb-1 bg-slate-50/50">
                 <p class="text-xs font-bold text-slate-800 truncate" id="mobile-user-name">User Name</p>
-                <p class="text-[10px] text-slate-600 uppercase tracking-wider truncate" id="mobile-user-role">Donatur</p>
+                <p class="text-sm text-slate-600 uppercase tracking-wider truncate" id="mobile-user-role">Donatur</p>
             </div>
 
             <div class="px-2 space-y-1">
@@ -384,7 +384,7 @@
                     <div class="w-9 h-9 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-chart-pie"></i></div>
                     <div class="flex-1 min-w-0">
                         <span class="block text-sm font-bold text-slate-700 group-hover:text-orange-700">Dashboard Saya</span>
-                        <span class="block text-[10px] text-slate-600 truncate">Statistik & Riwayat Donasi</span>
+                        <span class="block text-sm text-slate-600 truncate">Statistik & Riwayat Donasi</span>
                     </div>
                 </button>
             </div>
@@ -392,7 +392,7 @@
             <div class="h-px bg-slate-100 my-2 mx-4"></div>
 
             <div id="santri-menu-options" class="px-2 space-y-1 hidden">
-                <p class="px-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1 mt-1">Pengaturan Santri</p>
+                <p class="px-3 text-sm font-bold text-slate-600 uppercase tracking-widest mb-1 mt-1">Pengaturan Santri</p>
                 
                 <button onclick="openAvatarModal()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-3 transition group">
                     <div class="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center group-hover:bg-yellow-100 transition"><i class="fas fa-smile"></i></div>
@@ -609,7 +609,7 @@
                     <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1 group-hover:text-yellow-600 transition">Donasi Tertinggi</p>
                     <h3 id="stat-donasi-tertinggi" class="text-2xl font-black text-slate-800 group-hover:text-yellow-600 transition">Rp 0</h3>
                     <div class="mt-2 inline-block bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 max-w-full">
-                         <p id="stat-donasi-tertinggi-nama" class="text-[10px] text-slate-500 truncate font-bold">-</p>
+                         <p id="stat-donasi-tertinggi-nama" class="text-sm text-slate-500 truncate font-bold">-</p>
                     </div>
                 </div>
             </div>
@@ -663,7 +663,7 @@
 
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                         <span class="text-5xl font-black text-white tracking-tighter">45%</span>
-                        <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-[0.2em] mt-1">Progres</span>
+                        <span class="text-sm uppercase font-bold text-emerald-400 tracking-[0.2em] mt-1">Progres</span>
                     </div>
                 </div>
 
@@ -806,7 +806,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas1-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas1-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -817,7 +817,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-teal-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-teal-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas1-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas1-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -830,7 +830,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-teal-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-teal-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas1-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas1-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -866,7 +866,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas2-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas2-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -877,7 +877,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-blue-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-blue-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas2-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas2-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -890,7 +890,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-blue-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-blue-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas2-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas2-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -926,7 +926,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas3-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas3-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -937,7 +937,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-green-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-green-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas3-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas3-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -950,7 +950,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-green-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-green-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas3-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas3-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -986,7 +986,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas4-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas4-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -997,7 +997,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-indigo-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-indigo-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas4-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas4-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -1010,7 +1010,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-indigo-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-indigo-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas4-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas4-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -1046,7 +1046,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas5-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas5-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -1057,7 +1057,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-purple-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-purple-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas5-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas5-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -1070,7 +1070,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-purple-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-purple-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas5-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas5-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -1106,7 +1106,7 @@
                             <i class="fas fa-trophy"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-0.5">Donasi Tertinggi</p>
                             <h4 id="stat-kelas6-santri-max-donasi" class="text-sm font-black text-slate-800 truncate">Belum ada</h4>
                             <p id="stat-kelas6-santri-total-donasi" class="text-xs font-bold text-slate-500 mt-0.5">Rp 0</p>
                         </div>
@@ -1117,7 +1117,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-rose-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-rose-600 uppercase tracking-wider mb-0.5">Kelas Terkompak</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas6-kelas-max" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas6-kelas-total" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">Rp 0</span>
@@ -1130,7 +1130,7 @@
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[9px] font-bold text-slate-600 group-hover/item:text-rose-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover/item:text-rose-600 uppercase tracking-wider mb-0.5">Paling Rajin</p>
                             <div class="flex justify-between items-baseline gap-2">
                                 <h4 id="stat-kelas6-santri-freq-nama" class="text-sm font-bold text-slate-800 truncate">Belum ada</h4>
                                 <span id="stat-kelas6-santri-freq-val" class="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">0x</span>
@@ -1397,7 +1397,7 @@
                 <div class="p-8 flex flex-col h-full">
                     <div class="text-center mb-6">
                         <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
-                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
+                        <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
                         </div>
@@ -1413,7 +1413,7 @@
 
                     <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-orange-200 transition-colors">
                         <img src="https://drive.google.com/thumbnail?id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BNI">
-                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BNI</div>
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-slate-500 shadow-sm">BNI</div>
                     </div>
 
                     <a href="https://drive.google.com/uc?export=download&id=1sVzvP6AUz_bYJ31CzQG2io9oJvdMDywt" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-orange-500/30 flex items-center justify-center gap-2">
@@ -1429,7 +1429,7 @@
                 <div class="p-8 flex flex-col h-full">
                     <div class="text-center mb-6">
                         <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
-                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
+                        <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
                         </div>
@@ -1445,7 +1445,7 @@
 
                     <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-teal-200 transition-colors">
                         <img src="https://drive.google.com/thumbnail?id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BSI">
-                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BSI</div>
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-slate-500 shadow-sm">BSI</div>
                     </div>
 
                     <a href="https://drive.google.com/uc?export=download&id=1xNHeckecd8Pn_7dSOQ0KfGcl0I_FCY9V" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-teal-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-teal-500/30 flex items-center justify-center gap-2">
@@ -1461,7 +1461,7 @@
                 <div class="p-8 flex flex-col h-full">
                     <div class="text-center mb-6">
                         <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
-                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
+                        <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
                         </div>
@@ -1477,7 +1477,7 @@
 
                     <div class="relative bg-slate-50 p-4 rounded-2xl border border-slate-200 group-hover:border-blue-200 transition-colors">
                         <img src="https://drive.google.com/thumbnail?id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm&sz=w1000" class="w-full h-auto rounded-xl mix-blend-multiply" alt="QRIS BPD">
-                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm">BPD</div>
+                        <div class="absolute top-2 right-2 bg-white/80 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-slate-500 shadow-sm">BPD</div>
                     </div>
 
                     <a href="https://drive.google.com/uc?export=download&id=1BHYcMAUp3OiVeRx2HwjPPEu2StcYiUpm" target="_blank" class="mt-6 block w-full py-3 bg-slate-800 text-white text-center rounded-xl font-bold text-sm hover:bg-blue-600 transition shadow-lg shadow-slate-800/20 group-hover:shadow-blue-500/30 flex items-center justify-center gap-2">
@@ -1523,7 +1523,7 @@
                                     <i class="far fa-clock text-sm"></i>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-[10px] text-slate-600 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p>
+                                    <p class="text-sm text-slate-600 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p>
                                     <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p>
                                 </div>
                             </div>
@@ -1532,7 +1532,7 @@
                                     <i class="far fa-calendar-alt text-sm"></i>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-[10px] text-slate-600 font-bold uppercase leading-none mb-0.5">Sabtu</p>
+                                    <p class="text-sm text-slate-600 font-bold uppercase leading-none mb-0.5">Sabtu</p>
                                     <p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p>
                                 </div>
                             </div>
@@ -1541,7 +1541,7 @@
                                     <i class="fas fa-mug-hot text-sm"></i>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-[10px] text-slate-600 font-bold uppercase leading-none mb-0.5">Rehat (Jum'at)</p>
+                                    <p class="text-sm text-slate-600 font-bold uppercase leading-none mb-0.5">Rehat (Jum'at)</p>
                                     <p class="text-xs text-slate-700 font-bold leading-none">11.30 - 13.00</p>
                                 </div>
                             </div>
@@ -1715,52 +1715,52 @@
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-quran text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Syariat Islam</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Pedoman utama kami.</p>
+                    <p class="text-sm text-slate-500 mt-1">Pedoman utama kami.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-handshake text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Amanah</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Kode etik & moral.</p>
+                    <p class="text-sm text-slate-500 mt-1">Kode etik & moral.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-users text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Kemanfaatan</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Dampak besar bagi mustahik.</p>
+                    <p class="text-sm text-slate-500 mt-1">Dampak besar bagi mustahik.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-balance-scale-right text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Keadilan</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Perlakuan setara.</p>
+                    <p class="text-sm text-slate-500 mt-1">Perlakuan setara.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-gavel text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Kepastian Hukum</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Jaminan bagi semua.</p>
+                    <p class="text-sm text-slate-500 mt-1">Jaminan bagi semua.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-project-diagram text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Terintegrasi</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Hierarki yang solid.</p>
+                    <p class="text-sm text-slate-500 mt-1">Hierarki yang solid.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-file-contract text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Akuntabilitas</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Dapat dipertanggungjawabkan.</p>
+                    <p class="text-sm text-slate-500 mt-1">Dapat dipertanggungjawabkan.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-user-tie text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Profesional</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Kompetensi tinggi.</p>
+                    <p class="text-sm text-slate-500 mt-1">Kompetensi tinggi.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-search-dollar text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Transparansi</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Terbuka & Kredibel.</p>
+                    <p class="text-sm text-slate-500 mt-1">Terbuka & Kredibel.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
                     <i class="fas fa-link text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Sinergi</h5>
-                    <p class="text-[10px] text-slate-500 mt-1">Kemitraan harmonis.</p>
+                    <p class="text-sm text-slate-500 mt-1">Kemitraan harmonis.</p>
                 </div>
                  <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default md:col-span-2 lg:col-span-2 flex items-center gap-4">
                     <i class="fas fa-rocket text-orange-500 text-3xl group-hover:rotate-45 transition block"></i>
@@ -1950,7 +1950,7 @@
                         <i class="fas fa-eye"></i>
                     </div>
                     <div>
-                        <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-widest mb-0.5">Visualisasi Kawasan</p>
+                        <p class="text-sm text-emerald-300 font-bold uppercase tracking-widest mb-0.5">Visualisasi Kawasan</p>
                         <p class="text-lg font-bold leading-none">Tampak Depan (Gerbang Utama)</p>
                     </div>
                 </div>
@@ -2219,7 +2219,7 @@
                     <img src="muallimin_terpadu.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Fasilitas Existing">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute bottom-4 left-4">
-                        <span class="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Existing</span>
+                        <span class="bg-emerald-500 text-white text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Existing</span>
                         <h4 class="text-white font-bold text-lg">Telah Terbangun</h4>
                     </div>
                     <div class="absolute top-4 right-4 bg-white/90 text-emerald-700 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"><i class="fas fa-check"></i></div>
@@ -2287,7 +2287,7 @@
                     <img src="auditorium.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0" alt="Future Plan">
                     <div class="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
                     <div class="absolute bottom-4 left-4">
-                        <span class="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Vision</span>
+                        <span class="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1 inline-block">Vision</span>
                         <h4 class="text-white font-bold text-lg">Rencana Masa Depan</h4>
                     </div>
                 </div>
@@ -2517,7 +2517,7 @@
                     <div class="p-8 flex flex-col h-full">
                         <div class="text-center mb-6">
                             <img src="bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
-                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
+                            <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">3440 000 348</h3>
                             <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
@@ -2538,7 +2538,7 @@
                     <div class="p-8 flex flex-col h-full">
                         <div class="text-center mb-6">
                             <img src="bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
-                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
+                            <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">7930 030 303</h3>
                             <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
@@ -2559,7 +2559,7 @@
                     <div class="p-8 flex flex-col h-full">
                         <div class="text-center mb-6">
                             <img src="bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
-                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
+                            <p class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
                             <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">801 241 004 624</h3>
                             <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
@@ -2599,11 +2599,11 @@
                             <div class="flex flex-wrap justify-center md:justify-start gap-2">
                                 <div class="group/badge bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
                                     <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-500 flex items-center justify-center"><i class="far fa-clock text-sm"></i></div>
-                                    <div class="text-left"><p class="text-[10px] text-slate-600 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p></div>
+                                    <div class="text-left"><p class="text-sm text-slate-600 font-bold uppercase leading-none mb-0.5">Senin - Jumat</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 15.00</p></div>
                                 </div>
                                 <div class="group/badge bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl px-3 py-2 flex items-center gap-2 transition-colors">
                                     <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center"><i class="far fa-calendar-alt text-sm"></i></div>
-                                    <div class="text-left"><p class="text-[10px] text-slate-600 font-bold uppercase leading-none mb-0.5">Sabtu</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p></div>
+                                    <div class="text-left"><p class="text-sm text-slate-600 font-bold uppercase leading-none mb-0.5">Sabtu</p><p class="text-xs text-slate-700 font-bold leading-none">08.00 - 12.00</p></div>
                                 </div>
                             </div>
                         </div>
@@ -2739,7 +2739,7 @@
                             <i class="fas fa-search text-lg"></i>
                         </div>
                         <div class="absolute right-3 top-3">
-                            <span class="text-[10px] font-bold bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-md hidden md:inline-block">ENTER</span>
+                            <span class="text-sm font-bold bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-md hidden md:inline-block">ENTER</span>
                         </div>
                     </div>
                     <button id="btn-refresh-news" onclick="refreshNews()" class="px-4 py-3 rounded-xl bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center group" title="Refresh data berita">
@@ -2869,7 +2869,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-leaf"></i></div>
-                    <span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Ramadhan</span>
+                    <span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">Ramadhan</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">Zakat Fitrah</p>
                 <h4 id="stat-detail-fitrah" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -2882,7 +2882,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-coins"></i></div>
-                    <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Harta</span>
+                    <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">Harta</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">Zakat Maal</p>
                 <h4 id="stat-detail-maal" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -2895,7 +2895,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-hand-holding-heart"></i></div>
-                    <span class="bg-orange-50 text-orange-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Jariyah</span>
+                    <span class="bg-orange-50 text-orange-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">Jariyah</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">Total Infaq</p>
                 <h4 id="stat-detail-infaq" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -2906,14 +2906,14 @@
 
             <!-- Paling Populer -->
             <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 rounded-[2rem] text-white shadow-lg shadow-purple-500/30 relative overflow-hidden hover:scale-105 transition-transform duration-300">
-                <div class="absolute -bottom-4 -right-4 text-9xl opacity-10 rotate-12"><i class="fas fa-star"></i></div>
+                <div class="absolute -bottom-4 -right-4 text-9xl opacity-30 rotate-12"><i class="fas fa-star"></i></div>
                 <div class="relative z-10 h-full flex flex-col justify-center">
                     <p class="text-white/95 font-medium mb-1 text-sm">Paling Populer</p>
-                    <h4 id="stat-r-tipe-top-2" class="text-xl font-black leading-tight mb-2">
-                        <span class="skeleton-popular-loading-2 inline-block">
+                    <h4 id="stat-r-tipe-top" class="text-xl font-black leading-tight mb-2">
+                        <span class="skeleton-popular-loading inline-block">
                             <span class="inline-block h-6 w-32 bg-white/40 rounded animate-pulse"></span>
                         </span>
-                        <span class="skeleton-popular-content-2 hidden">Belum ada data</span>
+                        <span class="skeleton-popular-content hidden">Belum ada data</span>
                     </h4>
                     <div class="inline-flex items-center gap-2 bg-white/40 backdrop-blur rounded-lg px-3 py-1 text-xs w-fit">
                         <i class="fas fa-fire text-yellow-300"></i> Trending
@@ -2925,7 +2925,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-qrcode"></i></div>
-                    <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">E-Wallet</span>
+                    <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">E-Wallet</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">QRIS</p>
                 <h4 id="stat-payment-qris" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -2938,7 +2938,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-university"></i></div>
-                    <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Banking</span>
+                    <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">Banking</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">Transfer Bank</p>
                 <h4 id="stat-payment-transfer" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -2951,7 +2951,7 @@
             <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-money-bill-wave"></i></div>
-                    <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Cash</span>
+                    <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-sm font-bold uppercase">Cash</span>
                 </div>
                 <p class="text-xs text-slate-600 font-bold uppercase">Tunai</p>
                 <h4 id="stat-payment-tunai" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
@@ -3229,7 +3229,7 @@
 
             <div class="px-8 pt-8 pb-2 flex justify-between items-end">
                 <div>
-                    <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-1">Langkah Saat Ini</span>
+                    <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-1">Langkah Saat Ini</span>
                     <h3 id="wizard-title" class="text-2xl font-black text-slate-800 flex items-center gap-2">
                         Pilih Jenis
                     </h3>
@@ -3257,7 +3257,7 @@
                     <p class="text-xs text-slate-500 group-hover:text-emerald-700/80 leading-relaxed font-medium">Pembersih jiwa di bulan suci Ramadhan.</p>
                     
                     <div class="mt-auto pt-4 opacity-0 group-[.active]:opacity-100 transition-opacity">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-600 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
+                        <span class="inline-flex items-center gap-1 text-sm font-bold bg-emerald-600 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
                     </div>
                 </div>
             </button>
@@ -3273,7 +3273,7 @@
                     <p class="text-xs text-slate-500 group-hover:text-amber-700/80 leading-relaxed font-medium">Bersihkan harta, berkahi rezeki keluarga.</p>
                     
                     <div class="mt-auto pt-4 opacity-0 group-[.active]:opacity-100 transition-opacity">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-500 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
+                        <span class="inline-flex items-center gap-1 text-sm font-bold bg-amber-500 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
                     </div>
                 </div>
             </button>
@@ -3288,7 +3288,7 @@
                     <p class="text-xs text-slate-500 group-hover:text-orange-700/80 leading-relaxed font-medium">Sedekah jariyah untuk kemaslahatan umat.</p>
                     
                     <div class="mt-auto pt-4 opacity-0 group-[.active]:opacity-100 transition-opacity">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-orange-500 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
+                        <span class="inline-flex items-center gap-1 text-sm font-bold bg-orange-500 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
                     </div>
                 </div>
             </button>
@@ -3352,7 +3352,7 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                 </span>
-                <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Kalkulator Syariah</span>
+                <span class="text-sm font-bold text-amber-600 uppercase tracking-widest">Kalkulator Syariah</span>
             </div>
             <h4 class="text-2xl font-black text-slate-800 flex items-center justify-center md:justify-start gap-2">
                 Hitung Zakat Maal
@@ -3368,7 +3368,7 @@
                     <i class="fas fa-gavel text-amber-500"></i>
                     SK Ketua BAZNAS No. 13 Tahun 2025
                 </div>
-                <div class="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-800 text-white text-[10px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-20">
+                <div class="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-800 text-white text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-20">
                     Acuan resmi nilai Nisab Zakat Maal yang berlaku saat ini di Indonesia.
                     <div class="absolute -bottom-1 right-6 w-2 h-2 bg-slate-800 rotate-45"></div>
                 </div>
@@ -3414,7 +3414,7 @@
                     oninput="formatInputRupiah(this)"
                     class="w-full rounded-2xl border-2 border-amber-200 bg-white py-5 pl-16 pr-16 text-3xl font-black text-slate-800 shadow-sm transition-all placeholder:text-slate-200 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none" />
 
-                <span class="absolute right-6 top-1/2 -translate-y-1/2 rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 border border-slate-200 pointer-events-none">
+                <span class="absolute right-6 top-1/2 -translate-y-1/2 rounded-lg bg-slate-100 px-2.5 py-1 text-sm font-bold text-slate-600 border border-slate-200 pointer-events-none">
                     IDR
                 </span>
             </div>
@@ -3438,7 +3438,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/50 p-5 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all">
                 <div>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">
+                    <p class="text-sm font-bold uppercase tracking-wider text-emerald-600 mb-1">
                         Nisab Per Tahun
                     </p>
                     <p class="text-xl font-black text-emerald-700 tracking-tight">
@@ -3452,7 +3452,7 @@
 
             <div class="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/50 p-5 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all">
                 <div>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">
+                    <p class="text-sm font-bold uppercase tracking-wider text-emerald-600 mb-1">
                         Nisab Per Bulan
                     </p>
                     <p class="text-xl font-black text-emerald-700 tracking-tight">
@@ -3507,7 +3507,7 @@
 
                 <div class="group">
                     <label class="ml-1 mb-2 block text-xs font-bold text-red-400 uppercase tracking-wide group-focus-within:text-red-500 transition-colors flex items-center gap-1">
-                        Hutang Jatuh Tempo <span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded ml-1">Pengurang</span>
+                        Hutang Jatuh Tempo <span class="bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded ml-1">Pengurang</span>
                     </label>
                     <div class="relative">
                         <span class="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-bold text-red-300 group-focus-within:text-red-500 transition-colors">Rp</span>
@@ -3538,7 +3538,7 @@
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-30 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none group-hover:opacity-20 transition-opacity"></div>
                 
                 <div class="relative z-10 text-center">
-                    <div class="inline-flex items-center gap-2 bg-white/40 backdrop-blur-md rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider mb-4 border border-white/40 shadow-sm">
+                    <div class="inline-flex items-center gap-2 bg-white/40 backdrop-blur-md rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-wider mb-4 border border-white/40 shadow-sm">
                         <i class="fas fa-check-circle text-emerald-200"></i> Wajib Zakat
                     </div>
                     
@@ -3778,8 +3778,8 @@
                 <div id="donasi-step-5" class="donasi-step-container hidden">
                     <div class="bg-slate-50 rounded-2xl p-6 mb-6 border border-slate-100">
                         <div class="flex justify-between items-start mb-6 pb-6 border-b border-slate-200 border-dashed">
-                            <div><p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">Jenis Donasi</p><h4 id="summary-type" class="text-lg font-bold text-slate-800">Zakat Maal</h4></div>
-                            <div class="text-right"><p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">Nominal</p><h4 id="summary-nominal" class="text-2xl font-black text-orange-600">Rp 0</h4></div>
+                            <div><p class="text-sm text-slate-600 font-bold uppercase tracking-widest mb-1">Jenis Donasi</p><h4 id="summary-type" class="text-lg font-bold text-slate-800">Zakat Maal</h4></div>
+                            <div class="text-right"><p class="text-sm text-slate-600 font-bold uppercase tracking-widest mb-1">Nominal</p><h4 id="summary-nominal" class="text-2xl font-black text-orange-600">Rp 0</h4></div>
                         </div>
                         <div class="space-y-3 text-sm">
                             <div class="flex justify-between items-center"><span class="text-slate-500 font-medium">Nama</span> <span id="summary-nama" class="font-bold text-slate-800 bg-white px-2 py-1 rounded border border-slate-200"></span></div>
@@ -3847,7 +3847,7 @@
                 <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-white rounded-full border-t-2 border-r-2 border-slate-100 z-10"></div>
                 <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full border-t-2 border-l-2 border-slate-100 z-10"></div>
                 
-                <p class="text-[10px] font-extrabold text-slate-600 uppercase tracking-[0.2em] mb-2">TOTAL TRANSFER</p>
+                <p class="text-sm font-extrabold text-slate-600 uppercase tracking-[0.2em] mb-2">TOTAL TRANSFER</p>
                 
                 <h3 id="final-nominal-display" class="text-4xl md:text-5xl font-black text-slate-800 tracking-tighter mb-1 drop-shadow-sm group-hover:text-orange-600 transition-colors duration-300">Rp 0</h3>
                 <div class="h-px w-full bg-slate-200 my-5"></div>
@@ -3883,7 +3883,7 @@
                     <div class="relative flex items-center justify-center gap-4 text-white">
                         <i class="fab fa-whatsapp text-4xl filter drop-shadow-md animate-pulse"></i>
                         <div class="text-left">
-                            <span class="block text-[10px] font-bold opacity-90 uppercase tracking-widest mb-0.5 text-green-100">Langkah Terakhir</span>
+                            <span class="block text-sm font-bold opacity-90 uppercase tracking-widest mb-0.5 text-green-100">Langkah Terakhir</span>
                             <span class="block text-xl font-black leading-none tracking-tight">Konfirmasi WhatsApp</span>
                         </div>
                     </div>
@@ -3895,7 +3895,7 @@
                 </button>
             </div>
             
-            <p class="mt-8 text-[10px] text-slate-600 font-medium opacity-60">
+            <p class="mt-8 text-sm text-slate-600 font-medium opacity-60">
                 Lazismu Mu'allimin &copy; 2025 - Memberi Untuk Negeri
             </p>
 
@@ -3949,7 +3949,7 @@
                 
                 <div class="text-center md:text-left flex-1 space-y-3">
                     <div>
-                        <span class="inline-block py-1 px-3 rounded-lg bg-orange-50 border border-orange-100 text-[10px] font-bold tracking-widest text-orange-600 uppercase mb-2">Dashboard Donatur</span>
+                        <span class="inline-block py-1 px-3 rounded-lg bg-orange-50 border border-orange-100 text-sm font-bold tracking-widest text-orange-600 uppercase mb-2">Dashboard Donatur</span>
                         <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight">
                             Ahlan Wa Sahlan, <br>
                             <span id="dash-name" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">User</span>! 👋
@@ -3961,7 +3961,7 @@
                     
                     <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
                         <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm">
-                            <div class="w-6 h-6 bg-yellow-100 rounded-full text-yellow-600 flex items-center justify-center"><i class="fas fa-crown text-[10px]"></i></div>
+                            <div class="w-6 h-6 bg-yellow-100 rounded-full text-yellow-600 flex items-center justify-center"><i class="fas fa-crown text-sm"></i></div>
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Status: <span id="dash-level" class="text-slate-800 font-black">Donatur</span></span>
                         </div>
                     </div>
@@ -3995,7 +3995,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nama Lengkap</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nama Lengkap</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-user"></i></div>
                             <span id="dash-nama" class="font-bold text-slate-800 text-base md:text-lg truncate">Loading...</span>
@@ -4003,7 +4003,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nomor Induk (NIS)</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Nomor Induk (NIS)</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-fingerprint"></i></div>
                             <span id="dash-nis" class="font-mono font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200 text-sm group-hover:bg-orange-50 group-hover:text-orange-700 group-hover:border-orange-100 transition-colors">...</span>
@@ -4011,7 +4011,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-orange-200 hover:bg-white hover:shadow-lg hover:shadow-orange-500/5 transition-all group duration-300">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Kelas</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-orange-500 transition-colors">Kelas</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all shadow-sm"><i class="fas fa-chalkboard"></i></div>
                             <span id="dash-kelas" class="font-bold text-slate-800 text-lg">...</span>
@@ -4019,7 +4019,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:shadow-blue-500/5 transition-all group duration-300 sm:col-span-2 lg:col-span-1">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-blue-500 transition-colors">Asrama / Gedung</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-blue-500 transition-colors">Asrama / Gedung</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all shadow-sm"><i class="fas fa-building"></i></div>
                             <span id="dash-asrama" class="font-bold text-slate-800 text-sm md:text-base truncate leading-tight">...</span>
@@ -4027,7 +4027,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-lg hover:shadow-emerald-500/5 transition-all group duration-300">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Wali Kelas</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Wali Kelas</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all shadow-sm"><i class="fas fa-user-tie"></i></div>
                             <span id="dash-wali" class="font-bold text-slate-800 text-sm truncate">...</span>
@@ -4035,7 +4035,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-5 rounded-[1.5rem] border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-lg hover:shadow-emerald-500/5 transition-all group duration-300">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Musyrif Asrama</span>
+                        <span class="text-sm font-bold text-slate-600 uppercase tracking-widest block mb-2 group-hover:text-emerald-500 transition-colors">Musyrif Asrama</span>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center text-sm group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all shadow-sm"><i class="fas fa-user-shield"></i></div>
                             <span id="dash-musyrif" class="font-bold text-slate-800 text-sm truncate">...</span>
@@ -4091,7 +4091,7 @@
                         <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">Terakhir</p>
                     </div>
                     <h3 id="dash-stat-last" class="text-lg md:text-xl font-black text-slate-800 line-clamp-1 group-hover:text-purple-600 transition-colors mb-2">-</h3>
-                    <p id="dash-stat-last-date" class="text-[10px] font-bold text-slate-500 bg-slate-50 inline-block px-3 py-1 rounded-lg border border-slate-200">Belum ada data</p>
+                    <p id="dash-stat-last-date" class="text-sm font-bold text-slate-500 bg-slate-50 inline-block px-3 py-1 rounded-lg border border-slate-200">Belum ada data</p>
                 </div>
             </div>
         </div>
@@ -4164,7 +4164,7 @@
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50/50 text-[10px] font-extrabold text-slate-600 uppercase tracking-wider border-b border-slate-100">
+                        <tr class="bg-slate-50/50 text-sm font-extrabold text-slate-600 uppercase tracking-wider border-b border-slate-100">
                             <th class="p-6 min-w-[140px]">Tanggal</th>
                             <th class="p-6 min-w-[180px]">Jenis Donasi</th>
                             <th class="p-6 min-w-[150px]">Nominal</th>
@@ -4225,7 +4225,7 @@
 
         <div id="tab-content-reward" class="p-6 md:p-10">
             <div class="text-center mb-10">
-                <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-black uppercase tracking-widest text-amber-600 mb-3 inline-block">
+                <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-sm font-black uppercase tracking-widest text-amber-600 mb-3 inline-block">
                     Gamification
                 </span>
                 <h3 class="text-3xl font-black text-slate-800 mb-2">Peta Harta Kebaikan</h3>
@@ -4243,7 +4243,7 @@
                         <div class="absolute top-0 right-0 p-4 opacity-5"><i class="fas fa-medal text-6xl"></i></div>
                         <div class="flex justify-between items-start mb-2 relative z-10">
                             <span class="font-black text-amber-500 text-lg">Level 1</span>
-                            <span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-lg">Min. Rp 500rb</span>
+                            <span class="bg-slate-100 text-slate-500 text-sm font-bold px-2 py-1 rounded-lg">Min. Rp 500rb</span>
                         </div>
                         <h4 class="font-bold text-slate-800 mb-2">Certificate of Kindness</h4>
                         <p class="text-xs text-slate-500 mb-3">Mendapatkan Sertifikat Penghargaan Non-Akademik resmi.</p>
@@ -4262,7 +4262,7 @@
                         <div class="absolute top-0 right-0 p-4 opacity-5"><i class="fas fa-gift text-6xl"></i></div>
                         <div class="flex justify-between items-start mb-2 relative z-10">
                             <span class="font-black text-slate-500 group-hover:text-blue-500 transition-colors text-lg">Level 2</span>
-                            <span class="bg-slate-200 text-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg">Min. Rp 1 Juta</span>
+                            <span class="bg-slate-200 text-slate-600 text-sm font-bold px-2 py-1 rounded-lg">Min. Rp 1 Juta</span>
                         </div>
                         <h4 class="font-bold text-slate-700 mb-2">Exclusive Merchandise</h4>
                         <p class="text-xs text-slate-500 mb-3">Membuka kunci Goodybag Eksklusif Lazismu + Benefit Level 1.</p>
@@ -4282,7 +4282,7 @@
                         <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-white/30 rounded-full blur-2xl"></div>
                         <div class="flex justify-between items-start mb-2 relative z-10">
                             <span class="font-black text-yellow-400 text-lg"><i class="fas fa-crown mr-1"></i> VIP Level 3</span>
-                            <span class="bg-white/40 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-lg">Kelipatan 5 Juta</span>
+                            <span class="bg-white/40 backdrop-blur text-white text-sm font-bold px-2 py-1 rounded-lg">Kelipatan 5 Juta</span>
                         </div>
                         <h4 class="font-bold text-white mb-2 text-xl">The Scholarship</h4>
                         <p class="text-xs text-purple-100 mb-4 leading-relaxed opacity-90">
@@ -4454,12 +4454,12 @@
             <div class="lg:col-span-2">
                 <h5 class="font-bold text-lg text-white mb-6">Menu</h5>
                 <ul class="space-y-3 text-sm text-slate-600">
-                    <li><a href="#home" onclick="showPage('home')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-[10px] opacity-50"></i> Beranda</a></li>
-                    <li><a href="#tentang" onclick="showPage('tentang')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-[10px] opacity-50"></i> Tentang Kami</a></li>
-                    <li><a href="#berita" onclick="showPage('berita')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-[10px] opacity-50"></i> Kabar Berita</a></li>
-                    <li><a href="#riwayat" onclick="showPage('riwayat')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-[10px] opacity-50"></i> Laporan</a></li>
-                    <li><a href="#rekapitulasi" onclick="showPage('rekapitulasi')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-[10px] opacity-50"></i> Rekapitulasi</a></li>
-                    <li><a href="#donasi" onclick="showPage('donasi')" class="flex items-center gap-2 text-orange-400 hover:text-orange-300 hover:translate-x-1 transition-all duration-300 font-bold"><i class="fas fa-heart text-[10px]"></i> Donasi</a></li>
+                    <li><a href="#home" onclick="showPage('home')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-sm opacity-50"></i> Beranda</a></li>
+                    <li><a href="#tentang" onclick="showPage('tentang')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-sm opacity-50"></i> Tentang Kami</a></li>
+                    <li><a href="#berita" onclick="showPage('berita')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-sm opacity-50"></i> Kabar Berita</a></li>
+                    <li><a href="#riwayat" onclick="showPage('riwayat')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-sm opacity-50"></i> Laporan</a></li>
+                    <li><a href="#rekapitulasi" onclick="showPage('rekapitulasi')" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300"><i class="fas fa-chevron-right text-sm opacity-50"></i> Rekapitulasi</a></li>
+                    <li><a href="#donasi" onclick="showPage('donasi')" class="flex items-center gap-2 text-orange-400 hover:text-orange-300 hover:translate-x-1 transition-all duration-300 font-bold"><i class="fas fa-heart text-sm"></i> Donasi</a></li>
                 </ul>
             </div>
 
@@ -4479,8 +4479,8 @@
                         Lembaga terverifikasi Aman, Transparan & Profesional dibawah naungan Lazismu Pusat.
                     </p>
                     <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20 cursor-default hover:bg-emerald-500/20 transition">Audit Syariah</span>
-                        <span class="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-bold border border-blue-500/20 cursor-default hover:bg-blue-500/20 transition">Opini WTP</span>
+                        <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-500 text-sm font-bold border border-emerald-500/20 cursor-default hover:bg-emerald-500/20 transition">Audit Syariah</span>
+                        <span class="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-500 text-sm font-bold border border-blue-500/20 cursor-default hover:bg-blue-500/20 transition">Opini WTP</span>
                     </div>
                 </div>
             </div>
@@ -4588,7 +4588,7 @@
 
             <div class="text-center mb-6">
 
-                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-black tracking-widest uppercase mb-3 border border-emerald-200">
+                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-600 text-sm font-black tracking-widest uppercase mb-3 border border-emerald-200">
 
                     Konfirmasi Niat
 
@@ -4624,7 +4624,7 @@
 
                         <h4 class="font-bold text-slate-800 group-hover:text-rose-700 text-sm">Infaq Pembangunan</h4>
 
-                        <p class="text-[10px] text-slate-500">Pengembangan Kampus Terpadu</p>
+                        <p class="text-sm text-slate-500">Pengembangan Kampus Terpadu</p>
 
                     </div>
 
@@ -4650,7 +4650,7 @@
 
                         <h4 class="font-bold text-slate-800 group-hover:text-amber-700 text-sm">Zakat Maal</h4>
 
-                        <p class="text-[10px] text-slate-500">Pembersih Harta (Jika Nishab Tercapai)</p>
+                        <p class="text-sm text-slate-500">Pembersih Harta (Jika Nishab Tercapai)</p>
 
                     </div>
 

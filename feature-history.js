@@ -417,13 +417,13 @@ export function renderHomeLatestDonations() {
                         <i class="fas ${iconClass}"></i>
                     </div>
                     
-                    <span class="text-[10px] font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    <span class="text-sm font-bold ${bgBadge} border px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
                         ${displayType}
                     </span>
                 </div>
 
                 <div>
-                    <p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
+                    <p class="text-sm text-slate-600 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
                     
                     <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}">
                         ${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}
@@ -440,7 +440,7 @@ export function renderHomeLatestDonations() {
                 </div>
             </div>
 
-            <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-600">
+            <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-sm text-slate-600">
                 <div class="flex items-center gap-1.5">
                     <i class="far fa-clock text-orange-400"></i>
                     <span>${timeAgo(item.Timestamp)}</span>
@@ -905,14 +905,14 @@ export function renderRiwayatList() {
         if (status === 'Terverifikasi') {
             statusBadgeHTML = `
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 shadow-sm ml-auto sm:ml-0" title="Donasi Diterima">
-                    <i class="fas fa-check-circle text-[10px]"></i> 
-                    <span class="text-[10px] font-bold uppercase tracking-wider">Diterima</span>
+                    <i class="fas fa-check-circle text-sm"></i> 
+                    <span class="text-sm font-bold uppercase tracking-wider">Diterima</span>
                 </div>`;
         } else {
             statusBadgeHTML = `
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm ml-auto sm:ml-0" title="Menunggu Verifikasi Admin">
-                    <i class="fas fa-hourglass-half text-[10px] animate-pulse"></i> 
-                    <span class="text-[10px] font-bold uppercase tracking-wider">Proses</span>
+                    <i class="fas fa-hourglass-half text-sm animate-pulse"></i> 
+                    <span class="text-sm font-bold uppercase tracking-wider">Proses</span>
                 </div>`;
         }
 
@@ -951,7 +951,7 @@ export function renderRiwayatList() {
 
         const alumniYear = item.DetailAlumni || item.detailAlumni;
         const alumniBadge = alumniYear ?
-            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-sm font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
 
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
@@ -967,7 +967,7 @@ export function renderRiwayatList() {
                         <i class="fas ${iconClass}"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
+                        <p class="text-sm text-slate-600 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
 
                         <div class="flex items-center flex-wrap gap-y-1 mb-1">
                             <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
@@ -978,7 +978,7 @@ export function renderRiwayatList() {
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wide truncate">${displayType}</span>
                             <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
+                            <span class="text-sm px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
                         </div>
                     </div>
                 </div>

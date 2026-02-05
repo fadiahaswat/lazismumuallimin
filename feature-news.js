@@ -127,7 +127,7 @@ export function renderNewsGrid(postsToRender, appendMode) {
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-50 group-hover:opacity-40 transition-opacity z-20"></div>
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
                     <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
-                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
+                    <span class="block text-sm font-bold text-slate-500 uppercase">${month}</span>
                 </div>
                 <div class="absolute bottom-4 left-4 z-30">
                     <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">

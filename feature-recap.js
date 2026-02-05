@@ -395,11 +395,11 @@ function renderRekapTable(cls) {
         totalKelas += subtotal;
 
         const badgeKelas = cls.startsWith('tahfizh-') ? 
-            `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
+            `<span class="text-sm bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
 
         let labelTahfizh = '';
         if (s.musyrifKhusus) {
-             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
+             labelTahfizh = `<span class="ml-1 text-sm text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
 
         const tr = document.createElement('tr');
