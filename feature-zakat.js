@@ -1,7 +1,6 @@
 // Zakat Calculator and Management Module
 import { donasiData } from './state.js';
-import { showToast } from './utils.js';
-import { formatRupiah } from './utils.js';
+import { showToast, formatRupiah, formatNumber } from './utils.js';
 import { ZAKAT } from './constants.js';
 import { showElement, hideElement } from './dom-utils.js';
 import { goToStep } from './feature-donation.js';
@@ -15,7 +14,7 @@ export function formatInputRupiah(input) {
     if (val === '') {
         input.value = '';
     } else {
-        input.value = parseInt(val).toLocaleString('id-ID');
+        input.value = formatNumber(val);
     }
     
     // Update state immediately when typing
@@ -131,7 +130,7 @@ export function applyZakatResult() {
     const inputManual = document.getElementById('manual-zakat-input');
     if (inputManual) {
         if (nominal > 0) {
-            inputManual.value = nominal.toLocaleString('id-ID');
+            inputManual.value = formatNumber(nominal);
             
             // Force update state
             if (typeof donasiData !== 'undefined') {
