@@ -1,6 +1,6 @@
 import { riwayatData, currentUser, timeFilterState, setTimeFilterState } from './state.js';
 import { GAS_API_URL } from './config.js';
-import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast } from './utils.js';
+import { formatRupiah, formatNumber, timeAgo, animateValue, escapeHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
 
@@ -401,7 +401,7 @@ export function renderHomeLatestDonations() {
                         <div class="flex items-baseline gap-1">
                             <span class="text-xs text-slate-500 font-medium">Rp</span>
                             <span class="text-xl md:text-2xl font-black text-slate-800 group-hover:text-orange-600 transition-colors">
-                                ${(parseInt(item.Nominal) || 0).toLocaleString('id-ID')}
+                                ${formatNumber(parseInt(item.Nominal) || 0)}
                             </span>
                         </div>
                     </div>

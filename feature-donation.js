@@ -1,12 +1,9 @@
 import { donasiData, currentUser } from './state.js';
-import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
+import { formatRupiah, formatNumber, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
+import { DELAYS } from './constants.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
-
-// Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
-// Mencegah race condition antara page visibility changes dan step navigation
-const DOM_UPDATE_DELAY_MS = 50;
 
 // Expected parts when splitting santri value format: "Nama::NIS::Rombel"
 const EXPECTED_SANTRI_PARTS = 3;
@@ -101,11 +98,11 @@ export function goToStep(step) {
                                         radioAnSantri.click();
                                     }
                                 }
-                            }, 200); // Jeda tunggu nama
+                            }, DELAYS.CASCADE_SELECT);
                         }
-                    }, 200); // Jeda tunggu rombel
+                    }, DELAYS.CASCADE_SELECT);
                 }
-            }, 100); // Jeda awal DOM Ready
+            }, DELAYS.DOM_READY);
 
         } else {
             // Jika Belum Login
@@ -207,7 +204,7 @@ function processDonationFlow(type, nominal) {
                 // Isi input manual zakat jika ada nominalnya
                 const inputManualZakat = document.getElementById('manual-zakat-input');
                 if(inputManualZakat && nominal > 0) {
-                    inputManualZakat.value = nominal.toLocaleString('id-ID');
+                    inputManualZakat.value = formatNumber(nominal);
                     // Trigger event input manual agar state tersimpan
                     if(window.formatInputRupiah) window.formatInputRupiah(inputManualZakat);
                     
@@ -232,7 +229,7 @@ function processDonationFlow(type, nominal) {
                 }
             }, 300);
         }
-    }, DOM_UPDATE_DELAY_MS);
+    }, DELAYS.PRELOADER);
 }
 
 // Helper untuk Infaq (lanjut ke Step 2)
@@ -246,7 +243,7 @@ function proceedToNominal(nominal) {
             donasiData.nominal = nominal;
             donasiData.nominalAsli = nominal;
             
-            if(inputCustom) inputCustom.value = donasiData.nominal.toLocaleString('id-ID');
+            if(inputCustom) inputCustom.value = formatNumber(donasiData.nominal);
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
             showToast(`Paket Infaq ${formatRupiah(nominal)} terpilih`, 'success');
         } else {
@@ -442,7 +439,7 @@ export function setupWizardLogic() {
             
             const customInput = document.getElementById('nominal-custom');
             if (customInput) {
-                customInput.value = donasiData.nominal.toLocaleString('id-ID');
+                customInput.value = formatNumber(donasiData.nominal);
             }
         };
     });
@@ -458,7 +455,7 @@ export function setupWizardLogic() {
             if (val === '') {
                 this.value = '';
             } else {
-                this.value = donasiData.nominal.toLocaleString('id-ID');
+                this.value = formatNumber(donasiData.nominal);
             }
             
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));

@@ -62,6 +62,10 @@ export function formatRupiah(num) {
     return "Rp " + parseInt(num).toLocaleString('id-ID');
 }
 
+export function formatNumber(num) {
+    return parseInt(num).toLocaleString('id-ID');
+}
+
 export function timeAgo(date) {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     let interval = seconds / 31536000;
