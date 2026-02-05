@@ -110,12 +110,11 @@ export function renderGlobalLeaderboard() {
     if (!container) return;
 
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-24">
-                <div class="w-24 h-24 rounded-full border-4 border-orange-100 border-t-orange-500 animate-spin mb-6"></div>
-                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Sedang Menghitung Donasi...</h3>
-            </div>
-        `;
+        const loadingTemplate = document.getElementById('recap-loading-template');
+        if (loadingTemplate) {
+            container.innerHTML = '';
+            container.appendChild(loadingTemplate.content.cloneNode(true));
+        }
         return;
     }
 
@@ -134,7 +133,11 @@ export function renderGlobalLeaderboard() {
     })).sort((a, b) => b.total - a.total);
 
     if (leaderboard.length === 0) {
-        container.innerHTML = `<div class="p-10 text-center border-2 border-dashed border-slate-300 rounded-xl">Data Kosong</div>`;
+        const emptyTemplate = document.getElementById('recap-empty-template');
+        if (emptyTemplate) {
+            container.innerHTML = '';
+            container.appendChild(emptyTemplate.content.cloneNode(true));
+        }
         return;
     }
 
@@ -305,7 +308,11 @@ function renderRekapTable(cls) {
     }
 
     if (students.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td></tr>';
+        const emptyTemplate = document.getElementById('recap-table-empty-template');
+        if (emptyTemplate) {
+            tbody.innerHTML = '';
+            tbody.appendChild(emptyTemplate.content.cloneNode(true));
+        }
         document.getElementById('rekap-wali').innerText = "-";
         document.getElementById('rekap-musyrif').innerText = "-";
         document.getElementById('rekap-total-kelas').innerText = "Rp 0";

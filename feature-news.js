@@ -12,7 +12,11 @@ export async function fetchNews(isLoadMore = false) {
         if (btnMore) btnMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
     } else {
         const grid = document.getElementById('news-grid');
-        if(grid) grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-400">Memuat berita terbaru...</p></div>';
+        const loadingTemplate = document.getElementById('news-loading-template');
+        if(grid && loadingTemplate) {
+            grid.innerHTML = '';
+            grid.appendChild(loadingTemplate.content.cloneNode(true));
+        }
     }
 
     let apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/posts/?number=${NEWS_PER_PAGE}&page=${newsState.page}`;
@@ -52,19 +56,12 @@ export async function fetchNews(isLoadMore = false) {
             if (newsState.category) pesanKosong = `Belum ada berita di kategori ini.`;
 
             const grid = document.getElementById('news-grid');
-            if(grid) {
-                grid.innerHTML = `
-                <div class="col-span-full text-center py-24">
-                    <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
-                        <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
-                        <i class="far fa-folder-open text-5xl text-slate-300"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
-                    <p class="text-slate-400 max-w-xs mx-auto mb-8">${pesanKosong}</p>
-                    <button onclick="window.resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
-                        <i class="fas fa-undo mr-2"></i> Reset Filter
-                    </button>
-                </div>`;
+            const emptyTemplate = document.getElementById('news-empty-template');
+            if(grid && emptyTemplate) {
+                const emptyElement = emptyTemplate.content.cloneNode(true);
+                emptyElement.querySelector('[data-message]').textContent = pesanKosong;
+                grid.innerHTML = '';
+                grid.appendChild(emptyElement);
             }
         } else {
             renderNewsGrid(isLoadMore ? data.posts : newsState.posts, isLoadMore);
@@ -81,16 +78,18 @@ export async function fetchNews(isLoadMore = false) {
         console.error(err);
         newsState.isLoading = false;
         const grid = document.getElementById('news-grid');
-        if(grid) grid.innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita. Periksa koneksi.</p>';
+        const errorTemplate = document.getElementById('news-error-template');
+        if(grid && errorTemplate) {
+            grid.innerHTML = '';
+            grid.appendChild(errorTemplate.content.cloneNode(true));
+        }
     }
 }
 
 export function renderNewsGrid(postsToRender, appendMode) {
     const container = document.getElementById('news-grid');
-    if(!container) return;
-
-    let html = '';
-    let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
+    const template = document.getElementById('news-card-template');
+    if(!container || !template) return;
 
     const getBadgeColor = (catName) => {
         const colors = [
@@ -103,6 +102,10 @@ export function renderNewsGrid(postsToRender, appendMode) {
         for (let i = 0; i < catName.length; i++) hash = catName.charCodeAt(i) + ((hash << 5) - hash);
         return colors[Math.abs(hash) % colors.length];
     };
+
+    if (!appendMode) container.innerHTML = '';
+
+    let startIndex = appendMode ? (newsState.posts.length - postsToRender.length) : 0;
 
     postsToRender.forEach((post, i) => {
         const globalIndex = startIndex + i;
@@ -119,42 +122,23 @@ export function renderNewsGrid(postsToRender, appendMode) {
         const categoryName = post.categories ? Object.values(post.categories)[0].name : 'Umum';
         const badgeClass = getBadgeColor(categoryName);
 
-        html += `
-        <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="window.openNewsModal(${globalIndex})">
-            <div class="relative h-60 overflow-hidden">
-                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
-                <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
-                    <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
-                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
-                </div>
-                <div class="absolute bottom-4 left-4 z-30">
-                    <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
-                        ${categoryName}
-                    </span>
-                </div>
-            </div>
-            <div class="p-6 md:p-8 flex flex-col flex-grow relative">
-                <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
-                    ${post.title}
-                </h3>
-                <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
-                    ${stripHtml(post.excerpt)}
-                </p>
-                <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
-                        <i class="far fa-user-circle"></i> Admin Lazismu
-                    </div>
-                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
-                        <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
-                    </span>
-                </div>
-            </div>
-        </div>`;
-    });
+        const card = template.content.cloneNode(true);
+        const cardElement = card.querySelector('.group');
+        
+        cardElement.setAttribute('onclick', `window.openNewsModal(${globalIndex})`);
+        card.querySelector('[data-src]').src = img;
+        card.querySelector('[data-alt]').alt = post.title;
+        card.querySelector('[data-day]').textContent = day;
+        card.querySelector('[data-month]').textContent = month;
+        card.querySelector('[data-badge-class]').className += ' ' + badgeClass;
+        card.querySelector('[data-category]').textContent = categoryName;
+        card.querySelector('[data-title]').textContent = post.title;
+        card.querySelector('[data-excerpt]').textContent = stripHtml(post.excerpt);
 
-    if (appendMode) container.innerHTML += html;
-    else container.innerHTML = html;
+        container.appendChild(card);
+    });
+}
+
 }
 
 export function filterNews(cat) {

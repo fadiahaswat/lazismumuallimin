@@ -47,7 +47,13 @@ export async function loadRiwayat(forceRefresh = false) {
             }
         }
     } catch (e) {
-        if (loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+        if (loader) {
+            const errorTemplate = document.getElementById('history-error-template');
+            if (errorTemplate) {
+                loader.innerHTML = '';
+                loader.appendChild(errorTemplate.content.cloneNode(true));
+            }
+        }
     } finally {
         riwayatData.isLoading = false; 
     }
@@ -326,7 +332,11 @@ export function renderHomeLatestDonations() {
     const latest = riwayatData.allData.slice(0, 6);
 
     if (latest.length === 0) {
-        container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
+        const emptyTemplate = document.getElementById('history-empty-template');
+        if (emptyTemplate) {
+            container.innerHTML = '';
+            container.appendChild(emptyTemplate.content.cloneNode(true));
+        }
         return;
     }
 
@@ -478,12 +488,11 @@ export function renderAlumniLeaderboard() {
 
     // 1. State: Loading
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-12 text-slate-400">
-                <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-brand-orange"></i>
-                <span class="text-sm font-medium animate-pulse">Memuat Data Alumni...</span>
-            </div>
-        `;
+        const loadingTemplate = document.getElementById('alumni-loading-template');
+        if (loadingTemplate) {
+            container.innerHTML = '';
+            container.appendChild(loadingTemplate.content.cloneNode(true));
+        }
         return;
     }
 
@@ -525,12 +534,11 @@ export function renderAlumniLeaderboard() {
 
     // 4. State: Empty
     if (leaderboard.length === 0) {
-        container.innerHTML = `
-            <div class="text-center py-8 px-4 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
-                <i class="fas fa-users-slash text-4xl text-slate-300 mb-3"></i>
-                <p class="text-slate-500 font-medium text-sm">Belum ada data kontribusi alumni.</p>
-            </div>
-        `;
+        const emptyTemplate = document.getElementById('alumni-empty-template');
+        if (emptyTemplate) {
+            container.innerHTML = '';
+            container.appendChild(emptyTemplate.content.cloneNode(true));
+        }
         return;
     }
 

@@ -396,12 +396,28 @@ export function setupWizardLogic() {
 
             if (hasil >= nisab) {
                 const zakat = hasil * 0.025;
-                if (msg) msg.innerHTML = `<span class="text-green-600 block">WAJIB ZAKAT</span>Kewajiban: ${formatRupiah(zakat)}`;
+                if (msg) {
+                    const template = document.getElementById('zakat-wajib-template');
+                    if (template) {
+                        const content = template.content.cloneNode(true);
+                        content.querySelector('[data-amount]').textContent = `Kewajiban: ${formatRupiah(zakat)}`;
+                        msg.innerHTML = '';
+                        msg.appendChild(content);
+                    }
+                }
                 donasiData.nominal = zakat;
                 if (btnMaal) btnMaal.classList.remove('hidden');
                 if (btnSkip) btnSkip.classList.add('hidden');
             } else {
-                if (msg) msg.innerHTML = `<span class="text-orange-600 block">BELUM WAJIB</span>Belum mencapai nishab (${formatRupiah(nisab)})`;
+                if (msg) {
+                    const template = document.getElementById('zakat-belum-wajib-template');
+                    if (template) {
+                        const content = template.content.cloneNode(true);
+                        content.querySelector('[data-message]').textContent = `Belum mencapai nishab (${formatRupiah(nisab)})`;
+                        msg.innerHTML = '';
+                        msg.appendChild(content);
+                    }
+                }
                 if (btnMaal) btnMaal.classList.add('hidden');
                 if (btnSkip) btnSkip.classList.remove('hidden');
             }
