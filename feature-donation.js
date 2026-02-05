@@ -757,6 +757,13 @@ export function setupWizardLogic() {
     // --- LANGKAH TERAKHIR: Kirim Data ---
     const btnSubmitFinal = document.getElementById('btn-submit-final');
     if (btnSubmitFinal) {
+        // Helper function to reset button state
+        const resetSubmitButton = (btn) => {
+            btn.disabled = false;
+            btn.querySelector('.default-text').classList.remove('hidden');
+            btn.querySelector('.loading-text').classList.add('hidden');
+        };
+
         btnSubmitFinal.onclick = async () => {
             const btn = document.getElementById('btn-submit-final');
             const check = document.getElementById('confirm-check');
@@ -800,9 +807,7 @@ export function setupWizardLogic() {
             const validation = validateDonationData(payload);
             if (!validation.isValid) {
                 showToast(validation.errors[0], 'error');
-                btn.disabled = false;
-                btn.querySelector('.default-text').classList.remove('hidden');
-                btn.querySelector('.loading-text').classList.add('hidden');
+                resetSubmitButton(btn);
                 return;
             }
 
@@ -1023,9 +1028,7 @@ export function setupWizardLogic() {
 
             } catch (e) {
                 showToast("Gagal mengirim data: " + e.message, "error");
-                btn.disabled = false;
-                btn.querySelector('.default-text').classList.remove('hidden');
-                btn.querySelector('.loading-text').classList.add('hidden');
+                resetSubmitButton(btn);
             }
         };
     }

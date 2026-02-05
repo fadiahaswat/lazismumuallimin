@@ -2,8 +2,25 @@
 // Security utilities for preventing abuse and bot attacks
 
 /**
+ * SECURITY NOTICE:
+ * These client-side security measures provide a first line of defense but can be bypassed.
+ * For production environments, implement these additional server-side protections:
+ * 
+ * 1. Server-side rate limiting (by IP address in Google Apps Script)
+ * 2. Server-side input validation (re-validate all fields)
+ * 3. HMAC verification (use a secret key to verify data integrity)
+ * 4. Google reCAPTCHA v3 (for robust bot detection)
+ * 5. Database security rules (already implemented in Firestore)
+ * 
+ * See KEAMANAN.md for detailed implementation guide.
+ */
+
+/**
  * Rate limiting implementation using localStorage
  * Prevents bot spam by limiting number of submissions per time window
+ * 
+ * LIMITATION: Can be bypassed by clearing localStorage or using incognito mode.
+ * Should be combined with server-side rate limiting for production use.
  */
 class RateLimiter {
     constructor(maxRequests = 5, windowMinutes = 15) {
@@ -159,20 +176,20 @@ export function validateDonationData(data) {
 
 /**
  * Sanitize text input to prevent XSS attacks
+ * Note: This is a basic client-side sanitization. Server-side validation is required.
  */
 function sanitizeText(text) {
     if (!text) return text;
     
-    // Remove any HTML tags
+    // Use textContent to automatically escape HTML
     const temp = document.createElement('div');
     temp.textContent = text;
-    let sanitized = temp.innerHTML;
+    let sanitized = temp.textContent; // Get the escaped text
     
-    // Remove potentially dangerous characters
+    // Remove potentially dangerous patterns
     sanitized = sanitized
-        .replace(/[<>]/g, '') // Remove angle brackets
         .replace(/javascript:/gi, '') // Remove javascript: protocol
-        .replace(/on\w+=/gi, ''); // Remove event handlers
+        .replace(/on\w+=/gi, ''); // Remove event handlers like onclick=
     
     return sanitized.trim();
 }
@@ -192,6 +209,9 @@ export function addSecurityHeaders(payload) {
 
 /**
  * Generate a simple checksum for data integrity
+ * WARNING: This is NOT cryptographically secure and can be bypassed by attackers.
+ * For production use, implement server-side HMAC verification with a secret key.
+ * This checksum only provides basic integrity check against accidental modification.
  */
 function generateChecksum(data) {
     const str = JSON.stringify(data);
@@ -228,7 +248,13 @@ export function detectBotActivity() {
  * Check if form was filled too quickly
  */
 function checkFormFillTime() {
-    const formStartTime = window.donationFormStartTime || Date.now();
+    const formStartTime = window.donationFormStartTime;
+    
+    // If timestamp not set, consider it suspicious
+    if (!formStartTime) {
+        return false;
+    }
+    
     const elapsed = Date.now() - formStartTime;
     const minTime = 3000; // 3 seconds minimum
     return elapsed >= minTime;
@@ -244,6 +270,7 @@ function checkUserInteraction() {
 
 /**
  * Check for automation signatures
+ * Note: This is a heuristic check and should be combined with other signals
  */
 function checkAutomationSignatures() {
     // Check for common automation tools
@@ -251,10 +278,8 @@ function checkAutomationSignatures() {
         return true; // Selenium/WebDriver detected
     }
     
-    // Check for headless browsers
-    if (navigator.plugins.length === 0) {
-        return true; // Likely headless
-    }
+    // Note: Removed plugins.length check as it causes false positives
+    // on mobile browsers and privacy-focused browsers
     
     return false;
 }
