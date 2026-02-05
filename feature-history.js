@@ -472,120 +472,241 @@ export function renderHomeLatestDonations() {
 }
 
 // Render alumni leaderboard grouped by graduation year (angkatan)
-export function renderAlumniLeaderboard() {
+window.renderAlumniLeaderboard = function() {
     const container = document.getElementById('alumni-leaderboard-container');
     if (!container) return;
 
-    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-24">
-                <div class="w-24 h-24 rounded-full border-4 border-purple-100 border-t-purple-500 animate-spin mb-6"></div>
-                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Memuat Data Alumni...</h3>
+    // 1. State Loading
+    container.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-12 text-slate-400 animate-pulse">
+            <i class="fas fa-circle-notch fa-spin fa-3x mb-4 text-purple-300"></i>
+            <p>Memuat data kontribusi alumni...</p>
+        </div>
+    `;
+
+    // Mengambil data dari riwayatData global
+    if (!window.riwayatData || !window.riwayatData.allData || window.riwayatData.allData.length === 0) {
+         container.innerHTML = `
+            <div class="text-center py-8 text-slate-500 bg-slate-50 rounded-2xl border border-slate-100 m-4">
+                <i class="fas fa-inbox fa-3x mb-3 text-slate-300"></i>
+                <p>Belum ada data kontribusi alumni yang tercatat.</p>
+                <a href="#donasi-sekarang" class="mt-4 inline-block px-6 py-2 bg-purple-600 text-white rounded-full font-semibold text-sm hover:bg-purple-700 transition">Jadilah yang Pertama!</a>
             </div>
         `;
         return;
     }
 
-    // Group donations by graduation year (angkatan)
-    const angkatanTotals = {};
-    
-    riwayatData.allData.forEach(d => {
-        // 1. CEK KOLOM KHUSUS ALUMNI DULU (Prioritas Utama)
-        // Data dari input form donasi tersimpan di sini
-        let year = d.DetailAlumni || d.detailAlumni || d.alumniTahun;
+    // 2. Proses Pengelompokan Data (Diperbaiki & Dikembangkan)
+    // Kita akan menyimpan object { total: number, count: number }
+    const angkatanStats = {};
+    let grandTotalAlumni = 0;
+    let totalDonaturAlumni = 0;
 
-        // 2. JIKA KOSONG, BARU CARI MANUAL DI NAMA/KETERANGAN (Fallback untuk data lama)
+    window.riwayatData.allData.forEach(d => {
+        // --- Logika Pencarian Tahun (FIXED LOGIC) ---
+        let year = d.DetailAlumni || d.detailAlumni || d.alumniTahun; // Prioritas 1: Kolom khusus
+
         if (!year) {
-            const nama = d.NamaDonatur || "";
-            const keterangan = d.Keterangan || "";
-            const combined = `${nama} ${keterangan}`.toLowerCase();
-            
+             // Prioritas 2: Regex Fallback (untuk data lama)
+            const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
             const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
-            if (yearMatch) {
-                year = yearMatch[1] || yearMatch[2];
-            }
+            if (yearMatch) year = yearMatch[1] || yearMatch[2];
         }
+        // -------------------------------------------
 
-        // 3. JIKA TAHUN DITEMUKAN & VALID, JUMLAHKAN
         if (year) {
-            // Pastikan format tahun 4 digit angka
             const cleanYear = String(year).trim();
             if (/^\d{4}$/.test(cleanYear)) {
                 const yearInt = parseInt(cleanYear);
                 const currentYear = new Date().getFullYear();
                 
-                // Filter tahun yang masuk akal (misal: 1950 - sekarang)
-                if (yearInt >= 1950 && yearInt <= currentYear) {
-                    const val = parseInt(d.Nominal) || 0;
-                    angkatanTotals[yearInt] = (angkatanTotals[yearInt] || 0) + val;
+                if (yearInt >= 1950 && yearInt <= currentYear + 1) {
+                    const nominal = parseInt(d.Nominal) || 0;
+                    
+                    // Inisialisasi object jika angkatan ini belum ada
+                    if (!angkatanStats[yearInt]) {
+                        angkatanStats[yearInt] = { total: 0, count: 0 };
+                    }
+                    
+                    // Tambahkan nominal dan increment jumlah donatur
+                    angkatanStats[yearInt].total += nominal;
+                    angkatanStats[yearInt].count += 1;
+
+                    // Statistik Global Section Ini
+                    grandTotalAlumni += nominal;
+                    totalDonaturAlumni += 1;
                 }
             }
         }
     });
-    
-    const leaderboard = Object.keys(angkatanTotals).map(year => ({
-        year: year,
-        total: angkatanTotals[year]
-    })).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // Sort by year descending
 
-    if (leaderboard.length === 0) {
-        container.innerHTML = `
-            <div class="p-10 text-center border-2 border-dashed border-purple-300 rounded-xl bg-purple-50/50">
-                <i class="fas fa-graduation-cap text-6xl text-purple-300 mb-4"></i>
-                <h3 class="text-lg font-bold text-slate-700 mb-2">Belum Ada Data Alumni</h3>
-                <p class="text-slate-500 text-sm">Donasi alumni akan muncul di sini berdasarkan angkatan kelulusan.</p>
+    // Jika setelah diproses ternyata tidak ada data alumni valid
+    if (Object.keys(angkatanStats).length === 0) {
+         container.innerHTML = `
+            <div class="text-center py-8 text-slate-500 bg-slate-50 rounded-2xl border border-slate-100 m-4">
+                <i class="far fa-sad-tear fa-3x mb-3 text-slate-300"></i>
+                <p>Belum ada donasi yang teridentifikasi dari Alumni.</p>
+                 <p class="text-sm mt-2">Pastikan Anda mengisi "Tahun Angkatan" saat berdonasi.</p>
             </div>
         `;
         return;
     }
 
-    let html = `<div class="space-y-4">`;
+    // 3. Sorting (Urutkan dari nominal terbesar)
+    const sortedAngkatan = Object.entries(angkatanStats)
+        .map(([year, stats]) => ({ year, ...stats }))
+        .sort((a, b) => b.total - a.total);
+
+
+    // 4. Memisahkan Top 3 (Podium) dan Sisanya (List)
+    const topThree = sortedAngkatan.slice(0, 3);
+    const restOfList = sortedAngkatan.slice(3);
+    const maxTotal = topThree[0].total; // Untuk kalkulasi progress bar
+
+    // Helper function untuk format Rupiah
+    const formatRupiah = (num) => 'Rp ' + new Intl.NumberFormat('id-ID').format(num);
+
+
+    // --- RENDER HTML ---
+
+    let htmlContent = ``;
+
+    // --- A. Ringkasan Statistik Kecil ---
+    htmlContent += `
+        <div class="flex justify-center gap-8 mb-12 text-center text-sm font-medium text-slate-600 animate-fadeInUp">
+            <div>
+                <i class="fas fa-users text-purple-500 mr-2"></i>
+                <span class="font-bold text-slate-800">${totalDonaturAlumni}</span> Total Alumni Berdonasi
+            </div>
+             <div>
+                <i class="fas fa-coins text-amber-500 mr-2"></i>
+                <span class="font-bold text-slate-800">${formatRupiah(grandTotalAlumni)}</span> Terkumpul
+            </div>
+        </div>
+    `;
+
+    // --- B. Section Podium (Top 3) ---
+    htmlContent += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end mb-12 px-4">`;
     
-    leaderboard.forEach((item, index) => {
-        const rank = index + 1;
-        let badgeColor = 'bg-slate-100 text-slate-600 border-slate-200';
-        let cardStyle = 'bg-white border-slate-200 hover:border-purple-300';
-        
-        if (rank === 1) {
-            badgeColor = 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white border-yellow-300';
-            cardStyle = 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300 ring-4 ring-yellow-400/20';
-        } else if (rank === 2) {
-            badgeColor = 'bg-gradient-to-r from-slate-300 to-slate-400 text-white border-slate-300';
-            cardStyle = 'bg-gradient-to-r from-slate-50 to-slate-100 border-slate-300';
-        } else if (rank === 3) {
-            badgeColor = 'bg-gradient-to-r from-orange-300 to-orange-500 text-white border-orange-300';
-            cardStyle = 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-300';
+    // Urutan render di grid: Rank 2 (Kiri), Rank 1 (Tengah), Rank 3 (Kanan)
+    const podiumOrder = [topThree[1], topThree[0], topThree[2]].filter(Boolean);
+
+    podiumOrder.forEach((data, index) => {
+        let rank, themeClass, iconClass, heightClass, orderClass;
+
+        if (data === topThree[0]) { // Rank 1 Gold
+            rank = 1;
+            themeClass = "bg-gradient-to-b from-yellow-50 via-yellow-100 to-amber-200 border-amber-300 shadow-amber-200/50 ring-4 ring-amber-100 ring-offset-2";
+            iconClass = "fas fa-trophy text-amber-500 text-4xl drop-shadow-sm";
+            heightClass = "md:h-[380px]"; // Paling tinggi
+            orderClass = "md:order-2"; // Tengah di desktop
+        } else if (data === topThree[1]) { // Rank 2 Silver
+            rank = 2;
+            themeClass = "bg-gradient-to-b from-slate-50 via-slate-100 to-slate-300 border-slate-300 shadow-slate-200/50";
+            iconClass = "fas fa-medal text-slate-400 text-3xl";
+            heightClass = "md:h-[340px] md:mb-4";
+            orderClass = "md:order-1"; // Kiri di desktop
+        } else { // Rank 3 Bronze
+            rank = 3;
+            themeClass = "bg-gradient-to-b from-orange-50 via-orange-100 to-orange-200 border-orange-300 shadow-orange-200/50";
+            iconClass = "fas fa-medal text-orange-600 text-3xl";
+            heightClass = "md:h-[320px] md:mb-8";
+            orderClass = "md:order-3"; // Kanan di desktop
         }
 
-        html += `
-            <div class="${cardStyle} rounded-2xl p-5 border-2 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-4 flex-1">
-                        <div class="${badgeColor} w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-md border-2 shrink-0">
-                            ${rank <= 3 ? '<i class="fas fa-medal"></i>' : rank}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-1">
-                                <i class="fas fa-graduation-cap text-purple-500"></i>
-                                <h4 class="text-xl font-black text-slate-800">Angkatan ${item.year}</h4>
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium">Alumni Mu'allimin ${item.year}</p>
-                        </div>
+        htmlContent += `
+            <div class="soft-card relative flex flex-col justify-end items-center p-6 rounded-[2rem] border-2 ${themeClass} shadow-xl text-center transform hover:-translate-y-2 transition-all duration-300 ${heightClass} ${orderClass} animate-fadeInUp" style="animation-delay: ${rank * 150}ms">
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-white p-3 rounded-full shadow-md">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="mt-8 mb-2">
+                     <span class="inline-block px-3 py-1 bg-white/60 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Peringkat #${rank}</span>
+                    <h3 class="text-4xl font-black text-slate-800 tracking-tight">
+                        <span class="text-lg font-bold text-slate-500 mr-1">Angkatan</span>${data.year}
+                    </h3>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-md w-full py-4 px-4 rounded-2xl mt-4 shadow-sm">
+                    <div class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-600">
+                        ${formatRupiah(data.total)}
                     </div>
-                    <div class="text-right shrink-0">
-                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">Total Donasi</p>
-                        <h3 class="text-2xl md:text-3xl font-black text-purple-600 tracking-tight">
-                            ${formatRupiah(item.total)}
-                        </h3>
+                    <div class="text-sm font-medium text-slate-500 mt-1">
+                        <i class="fas fa-user-friends mr-1 opacity-75"></i> ${data.count} Donatur
                     </div>
                 </div>
+                
+                 ${rank === 1 ? '<div class="absolute inset-x-0 bottom-0 h-2 bg-amber-400/50 blur-md -mb-1 rounded-[2rem]"></div>' : ''}
             </div>
         `;
     });
+    htmlContent += `</div>`; // End Podium Grid
 
-    html += `</div>`;
-    container.innerHTML = html;
-}
+
+    // --- C. Section List (Rank 4 ke bawah) ---
+    if (restOfList.length > 0) {
+        htmlContent += `
+        <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 animate-fadeInUp delay-500">
+            <h4 class="text-lg font-bold text-slate-700 mb-6 flex items-center">
+                <i class="fas fa-list-ol mr-3 text-purple-500 bg-purple-100 p-2 rounded-lg"></i>
+                Peringkat Angkatan Lainnya
+            </h4>
+            <div class="flex flex-col gap-4">
+        `;
+
+        restOfList.forEach((data, index) => {
+            const rank = index + 4;
+            // Menghitung persentase donasi relatif terhadap Juara 1 untuk progress bar
+            const percentage = (data.total / maxTotal) * 100;
+            // Warna progress bar berbeda untuk top 10
+            const progressColor = rank <= 10 ? 'bg-purple-500' : 'bg-slate-400';
+
+            htmlContent += `
+                <div class="group flex flex-col md:flex-row md:items-center justify-between bg-white hover:bg-purple-50 rounded-2xl p-5 border border-slate-100 hover:border-purple-200 transition-all duration-300 shadow-sm hover:shadow-md">
+                    
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <div class="flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-600 font-bold rounded-full mr-4 group-hover:bg-purple-200 group-hover:text-purple-700 transition-colors">
+                            #${rank}
+                        </div>
+                        <div>
+                             <h5 class="text-xl font-black text-slate-700 group-hover:text-purple-800 transition-colors">
+                                Angkatan ${data.year}
+                            </h5>
+                            <div class="text-sm text-slate-500 font-medium flex items-center mt-1">
+                                <i class="fas fa-user-friends text-xs mr-2 opacity-60"></i> ${data.count} Donatur
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end min-w-[180px]">
+                         <div class="text-lg font-black text-purple-700 mb-2">
+                            ${formatRupiah(data.total)}
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full ${progressColor} opacity-80 rounded-full transition-all duration-1000 ease-out" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        htmlContent += `
+            </div> </div> `;
+    }
+
+    // --- D. Call to Action (CTA) Footer ---
+    htmlContent += `
+        <div class="text-center mt-12 animate-fadeInUp delay-700">
+            <p class="text-slate-600 mb-4">Angkatan Anda belum berada di puncak?</p>
+            <a href="#donasi-sekarang" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full font-bold text-lg shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition transform">
+                <i class="fas fa-rocket mr-3"></i>
+                Ayo Tingkatkan Kontribusi Angkatan!
+            </a>
+        </div>
+    `;
+
+    // Inject ke container
+    container.innerHTML = htmlContent;
+};
 
 function getFilteredData() {
     let filtered = riwayatData.allData;
