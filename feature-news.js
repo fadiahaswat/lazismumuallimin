@@ -166,14 +166,63 @@ export function filterNews(cat) {
     newsState.page = 1;
     newsState.hasMore = true;
 
+    // Update button styles with new color scheme
     document.querySelectorAll('.news-filter-btn').forEach(btn => {
         const btnSlug = btn.getAttribute('data-slug');
         if (btnSlug === cat) {
-            btn.classList.remove('bg-gray-100', 'text-gray-600');
-            btn.classList.add('bg-brand-orange', 'text-white');
+            // Active state - find the color scheme
+            const colorMap = {
+                '': ['bg-slate-900', 'text-white'],
+                // These will be dynamically applied based on the button's original color
+            };
+            
+            // Remove all possible inactive states
+            btn.classList.remove('bg-blue-100', 'text-blue-700', 'bg-emerald-100', 'text-emerald-700', 
+                               'bg-purple-100', 'text-purple-700', 'bg-orange-100', 'text-orange-700',
+                               'bg-pink-100', 'text-pink-700', 'bg-cyan-100', 'text-cyan-700',
+                               'bg-gray-100', 'text-gray-600');
+            
+            // Add active state
+            if (btnSlug === '') {
+                btn.classList.add('bg-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-900/20', 'scale-105');
+            } else {
+                // Add active color based on button's hover color
+                if (btn.classList.contains('hover:bg-blue-600')) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/30', 'scale-105');
+                } else if (btn.classList.contains('hover:bg-emerald-600')) {
+                    btn.classList.add('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-600/30', 'scale-105');
+                } else if (btn.classList.contains('hover:bg-purple-600')) {
+                    btn.classList.add('bg-purple-600', 'text-white', 'shadow-lg', 'shadow-purple-600/30', 'scale-105');
+                } else if (btn.classList.contains('hover:bg-orange-600')) {
+                    btn.classList.add('bg-orange-600', 'text-white', 'shadow-lg', 'shadow-orange-600/30', 'scale-105');
+                } else if (btn.classList.contains('hover:bg-pink-600')) {
+                    btn.classList.add('bg-pink-600', 'text-white', 'shadow-lg', 'shadow-pink-600/30', 'scale-105');
+                } else if (btn.classList.contains('hover:bg-cyan-600')) {
+                    btn.classList.add('bg-cyan-600', 'text-white', 'shadow-lg', 'shadow-cyan-600/30', 'scale-105');
+                }
+            }
         } else {
-            btn.classList.add('bg-gray-100', 'text-gray-600');
-            btn.classList.remove('bg-brand-orange', 'text-white');
+            // Inactive state - restore original colors
+            btn.classList.remove('bg-slate-900', 'text-white', 'bg-blue-600', 'bg-emerald-600', 
+                               'bg-purple-600', 'bg-orange-600', 'bg-pink-600', 'bg-cyan-600',
+                               'shadow-lg', 'scale-105');
+            
+            // Restore light background based on hover state
+            if (btn.classList.contains('hover:bg-blue-600')) {
+                btn.classList.add('bg-blue-100', 'text-blue-700');
+            } else if (btn.classList.contains('hover:bg-emerald-600')) {
+                btn.classList.add('bg-emerald-100', 'text-emerald-700');
+            } else if (btn.classList.contains('hover:bg-purple-600')) {
+                btn.classList.add('bg-purple-100', 'text-purple-700');
+            } else if (btn.classList.contains('hover:bg-orange-600')) {
+                btn.classList.add('bg-orange-100', 'text-orange-700');
+            } else if (btn.classList.contains('hover:bg-pink-600')) {
+                btn.classList.add('bg-pink-100', 'text-pink-700');
+            } else if (btn.classList.contains('hover:bg-cyan-600')) {
+                btn.classList.add('bg-cyan-100', 'text-cyan-700');
+            } else if (btnSlug === '') {
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            }
         }
     });
 
@@ -305,3 +354,93 @@ export async function refreshNews() {
         if (icon) icon.classList.remove('fa-spin');
     }
 }
+
+// Fetch and render news categories for filter buttons
+export async function fetchNewsCategories() {
+    try {
+        const apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/categories`;
+        const res = await fetch(apiURL);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        renderNewsCategories(data.categories);
+    } catch (error) {
+        console.error('Failed to fetch news categories:', error);
+        // Keep the "Semua" button even if categories fail to load
+        const container = document.getElementById('news-filter-container');
+        if (container) {
+            // Remove skeleton loaders
+            const skeletons = container.querySelectorAll('.animate-pulse');
+            skeletons.forEach(el => el.remove());
+        }
+    }
+}
+
+// Render category filter buttons with enhanced design
+function renderNewsCategories(categories) {
+    const container = document.getElementById('news-filter-container');
+    if (!container) return;
+    
+    // Remove skeleton loaders
+    const skeletons = container.querySelectorAll('.animate-pulse');
+    skeletons.forEach(el => el.remove());
+    
+    // Get top categories (limit to 5-6 for better UX)
+    const topCategories = Object.values(categories)
+        .filter(cat => cat.post_count > 0) // Only show categories with posts
+        .sort((a, b) => b.post_count - a.post_count)
+        .slice(0, 6);
+    
+    // Color schemes for category buttons
+    const colorSchemes = [
+        { bg: 'bg-blue-100', text: 'text-blue-700', hover: 'hover:bg-blue-600', active: 'bg-blue-600' },
+        { bg: 'bg-emerald-100', text: 'text-emerald-700', hover: 'hover:bg-emerald-600', active: 'bg-emerald-600' },
+        { bg: 'bg-purple-100', text: 'text-purple-700', hover: 'hover:bg-purple-600', active: 'bg-purple-600' },
+        { bg: 'bg-orange-100', text: 'text-orange-700', hover: 'hover:bg-orange-600', active: 'bg-orange-600' },
+        { bg: 'bg-pink-100', text: 'text-pink-700', hover: 'hover:bg-pink-600', active: 'bg-pink-600' },
+        { bg: 'bg-cyan-100', text: 'text-cyan-700', hover: 'hover:bg-cyan-600', active: 'bg-cyan-600' }
+    ];
+    
+    // Add category buttons after "Semua" button
+    topCategories.forEach((cat, index) => {
+        const scheme = colorSchemes[index % colorSchemes.length];
+        const button = document.createElement('button');
+        button.setAttribute('data-slug', cat.slug);
+        button.onclick = () => filterNews(cat.slug);
+        button.className = `news-filter-btn ${scheme.bg} ${scheme.text} ${scheme.hover} hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all shadow-sm hover:shadow-md transform hover:scale-105 active:scale-95 flex items-center gap-2`;
+        button.innerHTML = `
+            <i class="fas fa-tag text-xs"></i>
+            <span>${cat.name}</span>
+            <span class="ml-1 px-2 py-0.5 bg-white/30 rounded-full text-xs font-black">${cat.post_count}</span>
+        `;
+        container.appendChild(button);
+    });
+}
+
+// Handle search with Enter key
+window.handleNewsSearch = function(event) {
+    if (event.key === 'Enter') {
+        const searchValue = event.target.value.trim();
+        newsState.search = searchValue;
+        newsState.category = '';
+        newsState.page = 1;
+        newsState.hasMore = true;
+        
+        // Reset filter buttons
+        document.querySelectorAll('.news-filter-btn').forEach(btn => {
+            const btnSlug = btn.getAttribute('data-slug');
+            if (btnSlug === '') {
+                btn.classList.add('bg-slate-900', 'text-white');
+                btn.classList.remove('bg-blue-100', 'text-blue-700', 'bg-emerald-100', 'text-emerald-700');
+            } else {
+                const colorClasses = ['bg-blue-600', 'bg-emerald-600', 'bg-purple-600', 'bg-orange-600', 'bg-pink-600', 'bg-cyan-600', 'text-white'];
+                btn.classList.remove(...colorClasses);
+            }
+        });
+        
+        fetchNews();
+    }
+};
