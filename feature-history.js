@@ -263,8 +263,26 @@ function calculateStats() {
     const elRHari = document.getElementById('stat-r-hari-ini');
     if (elRHari) animateValue(elRHari, 0, todayTotal, 1000, true);
 
-    const elRTipe = document.getElementById('stat-r-tipe-top');
-    if (elRTipe) elRTipe.innerText = popularType;
+    // Update "Paling Populer" with skeleton removal and better empty state
+    const updatePopularType = (elementId, loadingClass, contentClass) => {
+        const elRTipe = document.getElementById(elementId);
+        if (elRTipe) {
+            const loadingSkeleton = document.querySelector(`.${loadingClass}`);
+            const contentSkeleton = document.querySelector(`.${contentClass}`);
+            
+            if (loadingSkeleton) loadingSkeleton.classList.add('hidden');
+            if (contentSkeleton) contentSkeleton.classList.remove('hidden');
+            
+            if (popularType && popularType !== '-') {
+                elRTipe.innerHTML = `<span class="${contentClass}">${popularType}</span>`;
+            } else {
+                elRTipe.innerHTML = `<span class="${contentClass} text-white/60">Belum ada data bulan ini</span>`;
+            }
+        }
+    };
+    
+    updatePopularType('stat-r-tipe-top', 'skeleton-popular-loading', 'skeleton-popular-content');
+    updatePopularType('stat-r-tipe-top-2', 'skeleton-popular-loading-2', 'skeleton-popular-content-2');
 
     const elDetFitrah = document.getElementById('stat-detail-fitrah');
     if (elDetFitrah) animateValue(elDetFitrah, 0, totalFitrah, 1500, true);
@@ -778,8 +796,8 @@ window.renderAlumniLeaderboard = function() {
                             <i class="fas fa-hand-holding-heart mr-3 text-2xl group-hover:animate-bounce"></i>
                             Donasi Sekarang
                         </a>
-                        <a href="#riwayat" class="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-base border-2 border-white/30 hover:bg-white/20 transition-all duration-300">
-                            <i class="fas fa-chart-line mr-3"></i>
+                        <a href="#riwayat" class="inline-flex items-center px-8 py-4 bg-white/25 backdrop-blur-sm text-white rounded-2xl font-bold text-base border-2 border-white/50 hover:bg-white/30 hover:border-white/60 transition-all duration-300 group">
+                            <i class="fas fa-chart-line mr-3 group-hover:translate-x-1 transition-transform"></i>
                             Lihat Riwayat Lengkap
                         </a>
                     </div>

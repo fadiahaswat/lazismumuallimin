@@ -241,10 +241,10 @@ export function renderGlobalLeaderboard() {
                         </div>
 
                         <!-- Amount Display -->
-                        <div class="w-full bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-100 shadow-sm mb-4">
+                        <div class="w-full bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-slate-100 shadow-sm mb-4">
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Terkumpul</p>
                             <h4 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r ${theme.amountGradient} tracking-tight">
-                                ${formatRupiah(item.total)}
+                                ${formatRupiah(item.total || 0)}
                             </h4>
                         </div>
 
@@ -294,7 +294,7 @@ export function renderGlobalLeaderboard() {
                     <!-- Amount -->
                     <div class="flex-shrink-0 text-center md:text-right bg-gradient-to-br from-slate-50 to-white p-4 rounded-xl border border-slate-100">
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total</p>
-                        <span class="block font-black text-slate-800 text-2xl">${formatRupiah(item.total)}</span>
+                        <span class="block font-black text-slate-800 text-2xl">${formatRupiah(item.total || 0)}</span>
                     </div>
                 </div>
             `;

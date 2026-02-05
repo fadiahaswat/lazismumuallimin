@@ -122,8 +122,8 @@ export function renderNewsGrid(postsToRender, appendMode) {
         html += `
         <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="window.openNewsModal(${globalIndex})">
             <div class="relative h-60 overflow-hidden">
-                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10" onerror="this.src='https://via.placeholder.com/600x400?text=Lazismu+Update'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-50 group-hover:opacity-40 transition-opacity z-20"></div>
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
                     <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
                     <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
@@ -142,8 +142,8 @@ export function renderNewsGrid(postsToRender, appendMode) {
                     ${stripHtml(post.excerpt)}
                 </p>
                 <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
-                        <i class="far fa-user-circle"></i> Admin Lazismu
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
+                        <i class="far fa-user-circle text-slate-500"></i> Admin Lazismu
                     </div>
                     <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
                         <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
