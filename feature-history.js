@@ -315,7 +315,7 @@ function calculateStats() {
     if (tunaiBar) setTimeout(() => tunaiBar.style.width = `${(totalTunai / maxPayment) * 100}%`, 300);
 
     // Render alumni leaderboard
-    renderAlumniLeaderboard();
+    window.renderAlumniLeaderboard();
 }
 
 // Menampilkan 6 donasi terbaru di halaman depan (Home)
