@@ -472,10 +472,12 @@ export function renderHomeLatestDonations() {
 }
 
 // Render alumni leaderboard grouped by graduation year (angkatan)
+// Render alumni leaderboard grouped by graduation year (angkatan)
 export function renderAlumniLeaderboard() {
     const container = document.getElementById('alumni-leaderboard-container');
     if (!container) return;
 
+    // Tampilkan loading jika data belum siap
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
         container.innerHTML = `
             <div class="flex flex-col items-center justify-center py-24">
@@ -488,30 +490,53 @@ export function renderAlumniLeaderboard() {
 
     // Group donations by graduation year (angkatan)
     const angkatanTotals = {};
+    const currentYear = new Date().getFullYear();
     
     riwayatData.allData.forEach(d => {
-        // Check if donatur is alumni by looking for year patterns (e.g., "Alumni 2010", "Angkatan 2015")
-        const nama = d.NamaDonatur || "";
-        const keterangan = d.Keterangan || "";
-        const combined = `${nama} ${keterangan}`.toLowerCase();
+        let year = null;
+
+        // 1. PRIORITAS UTAMA: Cek kolom khusus DetailAlumni (input dari form)
+        // Kita cek variasi penulisan properti (DetailAlumni atau detailAlumni)
+        if (d.DetailAlumni && String(d.DetailAlumni).trim() !== "") {
+            year = String(d.DetailAlumni).trim();
+        } else if (d.detailAlumni && String(d.detailAlumni).trim() !== "") {
+            year = String(d.detailAlumni).trim();
+        } 
         
-        // Extract year from various patterns
-        const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
-        
-        if (yearMatch) {
-            const year = yearMatch[1] || yearMatch[2];
-            if (year && year >= 1990 && year <= new Date().getFullYear()) {
+        // 2. FALLBACK: Jika kolom khusus kosong, coba cari pola tahun di Nama/Keterangan
+        // Ini berguna untuk data lama yang diinput manual tanpa lewat form khusus alumni
+        if (!year) {
+            const nama = d.NamaDonatur || "";
+            const keterangan = d.Keterangan || "";
+            const combined = `${nama} ${keterangan}`.toLowerCase();
+            
+            // Regex mencari kata kunci diikuti 4 digit angka, atau string yang isinya cuma 4 angka
+            const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
+            
+            if (yearMatch) {
+                year = yearMatch[1] || yearMatch[2];
+            }
+        }
+
+        // 3. Validasi & Agregasi
+        if (year) {
+            const numYear = parseInt(year);
+            // Validasi: Tahun harus masuk akal (misal antara 1950 s.d. tahun ini)
+            if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear) {
                 const val = parseInt(d.Nominal) || 0;
-                angkatanTotals[year] = (angkatanTotals[year] || 0) + val;
+                angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
             }
         }
     });
 
+    // Ubah object ke array dan urutkan
     const leaderboard = Object.keys(angkatanTotals).map(year => ({
         year: year,
         total: angkatanTotals[year]
-    })).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // Sort by year descending
+    })).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // Sort tahun descending (terbaru di atas)
+    // Jika ingin sort berdasarkan total donasi terbesar, ganti jadi: b.total - a.total
 
+    // Tampilkan pesan jika kosong
     if (leaderboard.length === 0) {
         container.innerHTML = `
             <div class="p-10 text-center border-2 border-dashed border-purple-300 rounded-xl bg-purple-50/50">
@@ -523,6 +548,7 @@ export function renderAlumniLeaderboard() {
         return;
     }
 
+    // Render HTML Cards
     let html = `<div class="space-y-4">`;
     
     leaderboard.forEach((item, index) => {
@@ -530,6 +556,8 @@ export function renderAlumniLeaderboard() {
         let badgeColor = 'bg-slate-100 text-slate-600 border-slate-200';
         let cardStyle = 'bg-white border-slate-200 hover:border-purple-300';
         
+        // Highlight 3 Angkatan Teratas (opsional, jika sort by total donasi)
+        // Karena sort by tahun, ini hanya memberi warna beda untuk 3 list pertama
         if (rank === 1) {
             badgeColor = 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white border-yellow-300';
             cardStyle = 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300 ring-4 ring-yellow-400/20';
