@@ -186,10 +186,17 @@ function sanitizeText(text) {
     temp.textContent = text;
     let sanitized = temp.textContent; // Get the escaped text
     
-    // Remove potentially dangerous patterns
+    // Remove dangerous URL schemes (javascript:, data:, vbscript:)
     sanitized = sanitized
-        .replace(/javascript:/gi, '') // Remove javascript: protocol
-        .replace(/on\w+=/gi, ''); // Remove event handlers like onclick=
+        .replace(/javascript:/gi, '')
+        .replace(/data:/gi, '')
+        .replace(/vbscript:/gi, '');
+    
+    // Remove ALL occurrences of event handlers (not just first one)
+    // This prevents injection via patterns like "ononclick="
+    while (/on\w+=/i.test(sanitized)) {
+        sanitized = sanitized.replace(/on\w+=/gi, '');
+    }
     
     return sanitized.trim();
 }
