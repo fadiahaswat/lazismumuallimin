@@ -485,7 +485,7 @@ window.renderAlumniLeaderboard = function() {
     `;
 
     // Mengambil data dari riwayatData global
-    if (!window.riwayatData || !window.riwayatData.allData || window.riwayatData.allData.length === 0) {
+    if (!riwayatData || !riwayatData.allData || riwayatData.allData.length === 0) {
          container.innerHTML = `
             <div class="text-center py-8 text-slate-500 bg-slate-50 rounded-2xl border border-slate-100 m-4">
                 <i class="fas fa-inbox fa-3x mb-3 text-slate-300"></i>
@@ -502,7 +502,7 @@ window.renderAlumniLeaderboard = function() {
     let grandTotalAlumni = 0;
     let totalDonaturAlumni = 0;
 
-    window.riwayatData.allData.forEach(d => {
+    riwayatData.allData.forEach(d => {
         // --- Logika Pencarian Tahun (FIXED LOGIC) ---
         let year = d.DetailAlumni || d.detailAlumni || d.alumniTahun; // Prioritas 1: Kolom khusus
 
