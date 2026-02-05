@@ -281,7 +281,7 @@ function calculateStats() {
                 span.textContent = popularType; // Use textContent to prevent XSS
             } else {
                 span.textContent = 'Belum ada data bulan ini';
-                span.className = `${contentClass} text-white/90`;
+                span.className = `${contentClass} text-white/60`;
             }
             
             elRTipe.innerHTML = ''; // Clear existing content
@@ -358,7 +358,7 @@ export function renderHomeLatestDonations() {
     const latest = riwayatData.allData.slice(0, 6);
 
     if (latest.length === 0) {
-        container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-600 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
+        container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
         return;
     }
 
@@ -423,7 +423,7 @@ export function renderHomeLatestDonations() {
                 </div>
 
                 <div>
-                    <p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
                     
                     <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}">
                         ${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}
@@ -440,7 +440,7 @@ export function renderHomeLatestDonations() {
                 </div>
             </div>
 
-            <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-600">
+            <div class="relative z-10 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
                 <div class="flex items-center gap-1.5">
                     <i class="far fa-clock text-orange-400"></i>
                     <span>${timeAgo(item.Timestamp)}</span>
@@ -490,12 +490,12 @@ export function renderHomeLatestDonations() {
                     <i class="fas fa-layer-group text-8xl text-blue-600"></i>
                 </div>
 
-                <div class="relative z-10 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-600 flex items-center justify-center mb-3 shadow-inner group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                <div class="relative z-10 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center mb-3 shadow-inner group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
                     <i class="fas fa-arrow-right text-lg group-hover:-rotate-45 transition-transform duration-300"></i>
                 </div>
                 
                 <span class="font-bold text-base text-slate-700 group-hover:text-blue-600 transition-colors">Lihat Semua</span>
-                <span class="text-xs text-slate-600 mt-1 group-hover:text-blue-500/80">Buka arsip lengkap</span>
+                <span class="text-xs text-slate-400 mt-1 group-hover:text-blue-500/80">Buka arsip lengkap</span>
             </div>
         </div>
     `;
@@ -510,7 +510,7 @@ window.renderAlumniLeaderboard = function() {
 
     // 1. State Loading
     container.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-12 text-slate-600 animate-pulse">
+        <div class="flex flex-col items-center justify-center py-12 text-slate-400 animate-pulse">
             <i class="fas fa-circle-notch fa-spin fa-3x mb-4 text-purple-300"></i>
             <p>Memuat data kontribusi alumni...</p>
         </div>
@@ -772,7 +772,7 @@ window.renderAlumniLeaderboard = function() {
                         <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
                             <div class="h-full ${progressColor} rounded-full transition-all duration-1000 ease-out shadow-lg" style="width: ${percentage}%"></div>
                         </div>
-                        <div class="text-xs font-semibold text-slate-600 mt-2">${percentage.toFixed(1)}% dari juara 1</div>
+                        <div class="text-xs font-semibold text-slate-400 mt-2">${percentage.toFixed(1)}% dari juara 1</div>
                     </div>
                 </div>
             `;
@@ -967,7 +967,7 @@ export function renderRiwayatList() {
                         <i class="fas ${iconClass}"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">${labelSebutan}</p>
 
                         <div class="flex items-center flex-wrap gap-y-1 mb-1">
                             <h4 class="font-bold text-slate-800 text-lg group-hover:text-brand-orange transition-colors truncate pr-2">
@@ -988,7 +988,7 @@ export function renderRiwayatList() {
                         ${nominalHTML}
                     </span>
                     <div class="flex flex-col sm:items-end gap-2">
-                        <div class="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
                             <i class="far fa-clock"></i> ${date} • ${time}
                         </div>
                         ${statusBadgeHTML}
@@ -1167,7 +1167,7 @@ export function renderPersonalHistoryTable() {
         row.innerHTML = `
             <td class="p-5 whitespace-nowrap">
                 <div class="font-bold text-slate-700">${dateStr}</div>
-                <div class="text-xs text-slate-600">${timeAgo(item.Timestamp)}</div>
+                <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
             </td>
             <td class="p-5">
                 <div class="font-bold text-slate-700">${item.JenisDonasi}</div>
