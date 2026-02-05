@@ -14,10 +14,7 @@ export function showToast(message, type = 'warning') {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
-    const template = document.getElementById('toast-template');
-    if (!template) return;
-
-    const toast = template.content.cloneNode(true).querySelector('.toast');
+    const toast = document.createElement('div');
     toast.className = `toast ${type}`;
 
     let icon = 'fa-exclamation-triangle text-orange-500';
@@ -26,8 +23,7 @@ export function showToast(message, type = 'warning') {
 
     // Escape the message to prevent XSS
     const escapedMessage = escapeHtml(String(message));
-    toast.querySelector('i').className = `fas ${icon} text-xl`;
-    toast.querySelector('span').textContent = escapedMessage;
+    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${escapedMessage}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -64,10 +60,6 @@ function fallbackCopy(text) {
 
 export function formatRupiah(num) {
     return "Rp " + parseInt(num).toLocaleString('id-ID');
-}
-
-export function formatNumber(num) {
-    return parseInt(num).toLocaleString('id-ID');
 }
 
 export function timeAgo(date) {

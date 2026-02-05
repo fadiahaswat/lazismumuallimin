@@ -1,9 +1,12 @@
 import { donasiData, currentUser } from './state.js';
-import { formatRupiah, formatNumber, showToast, generateUniqueCode } from './utils.js';
+import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
-import { DELAYS } from './constants.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
+
+// Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
+// Mencegah race condition antara page visibility changes dan step navigation
+const DOM_UPDATE_DELAY_MS = 50;
 
 // Expected parts when splitting santri value format: "Nama::NIS::Rombel"
 const EXPECTED_SANTRI_PARTS = 3;
@@ -98,11 +101,11 @@ export function goToStep(step) {
                                         radioAnSantri.click();
                                     }
                                 }
-                            }, DELAYS.CASCADE_SELECT);
+                            }, 200); // Jeda tunggu nama
                         }
-                    }, DELAYS.CASCADE_SELECT);
+                    }, 200); // Jeda tunggu rombel
                 }
-            }, DELAYS.DOM_READY);
+            }, 100); // Jeda awal DOM Ready
 
         } else {
             // Jika Belum Login
@@ -204,7 +207,7 @@ function processDonationFlow(type, nominal) {
                 // Isi input manual zakat jika ada nominalnya
                 const inputManualZakat = document.getElementById('manual-zakat-input');
                 if(inputManualZakat && nominal > 0) {
-                    inputManualZakat.value = formatNumber(nominal);
+                    inputManualZakat.value = nominal.toLocaleString('id-ID');
                     // Trigger event input manual agar state tersimpan
                     if(window.formatInputRupiah) window.formatInputRupiah(inputManualZakat);
                     
@@ -229,7 +232,7 @@ function processDonationFlow(type, nominal) {
                 }
             }, 300);
         }
-    }, DELAYS.PRELOADER);
+    }, DOM_UPDATE_DELAY_MS);
 }
 
 // Helper untuk Infaq (lanjut ke Step 2)
@@ -243,7 +246,7 @@ function proceedToNominal(nominal) {
             donasiData.nominal = nominal;
             donasiData.nominalAsli = nominal;
             
-            if(inputCustom) inputCustom.value = formatNumber(donasiData.nominal);
+            if(inputCustom) inputCustom.value = donasiData.nominal.toLocaleString('id-ID');
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
             showToast(`Paket Infaq ${formatRupiah(nominal)} terpilih`, 'success');
         } else {
@@ -396,28 +399,12 @@ export function setupWizardLogic() {
 
             if (hasil >= nisab) {
                 const zakat = hasil * 0.025;
-                if (msg) {
-                    const template = document.getElementById('zakat-wajib-template');
-                    if (template) {
-                        const content = template.content.cloneNode(true);
-                        content.querySelector('[data-amount]').textContent = `Kewajiban: ${formatRupiah(zakat)}`;
-                        msg.innerHTML = '';
-                        msg.appendChild(content);
-                    }
-                }
+                if (msg) msg.innerHTML = `<span class="text-green-600 block">WAJIB ZAKAT</span>Kewajiban: ${formatRupiah(zakat)}`;
                 donasiData.nominal = zakat;
                 if (btnMaal) btnMaal.classList.remove('hidden');
                 if (btnSkip) btnSkip.classList.add('hidden');
             } else {
-                if (msg) {
-                    const template = document.getElementById('zakat-belum-wajib-template');
-                    if (template) {
-                        const content = template.content.cloneNode(true);
-                        content.querySelector('[data-message]').textContent = `Belum mencapai nishab (${formatRupiah(nisab)})`;
-                        msg.innerHTML = '';
-                        msg.appendChild(content);
-                    }
-                }
+                if (msg) msg.innerHTML = `<span class="text-orange-600 block">BELUM WAJIB</span>Belum mencapai nishab (${formatRupiah(nisab)})`;
                 if (btnMaal) btnMaal.classList.add('hidden');
                 if (btnSkip) btnSkip.classList.remove('hidden');
             }
@@ -455,7 +442,7 @@ export function setupWizardLogic() {
             
             const customInput = document.getElementById('nominal-custom');
             if (customInput) {
-                customInput.value = formatNumber(donasiData.nominal);
+                customInput.value = donasiData.nominal.toLocaleString('id-ID');
             }
         };
     });
@@ -471,7 +458,7 @@ export function setupWizardLogic() {
             if (val === '') {
                 this.value = '';
             } else {
-                this.value = formatNumber(donasiData.nominal);
+                this.value = donasiData.nominal.toLocaleString('id-ID');
             }
             
             document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('selected'));
