@@ -4705,8 +4705,117 @@
     </div>
 </div>
 
-    <script src="data-santri.js" defer></script>
-    <script src="data-kelas.js" defer></script>
+<!-- HTML Templates -->
+<template id="toast-template">
+    <div class="toast">
+        <i class="fas text-xl"></i>
+        <span class="font-bold text-sm text-slate-700"></span>
+    </div>
+</template>
+
+<template id="news-loading-template">
+    <div class="col-span-full text-center py-20">
+        <div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div>
+        <p class="text-slate-400">Memuat berita terbaru...</p>
+    </div>
+</template>
+
+<template id="news-empty-template">
+    <div class="col-span-full text-center py-24">
+        <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
+            <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
+            <i class="far fa-folder-open text-5xl text-slate-300"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
+        <p class="text-slate-400 max-w-xs mx-auto mb-8" data-message></p>
+        <button onclick="window.resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-undo mr-2"></i> Reset Filter
+        </button>
+    </div>
+</template>
+
+<template id="news-error-template">
+    <p class="text-center text-red-500 col-span-full">Gagal memuat berita. Periksa koneksi.</p>
+</template>
+
+<template id="news-card-template">
+    <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" data-onclick>
+        <div class="relative h-60 overflow-hidden">
+            <div class="absolute inset-0 bg-slate-200 animate-pulse"></div>
+            <img data-src data-alt class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
+            <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
+                <span class="block text-xl font-black text-slate-800 leading-none" data-day></span>
+                <span class="block text-[10px] font-bold text-slate-500 uppercase" data-month></span>
+            </div>
+            <div class="absolute bottom-4 left-4 z-30">
+                <span data-badge-class class="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm" data-category></span>
+            </div>
+        </div>
+        <div class="p-6 md:p-8 flex flex-col flex-grow relative">
+            <h3 class="font-bold text-xl text-slate-800 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2" data-title></h3>
+            <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow" data-excerpt></p>
+            <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                    <i class="far fa-user-circle"></i> Admin Lazismu
+                </div>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                    <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="history-empty-template">
+    <div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>
+</template>
+
+<template id="history-error-template">
+    <p class="text-red-500">Gagal memuat data.</p>
+</template>
+
+<template id="alumni-loading-template">
+    <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+        <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-brand-orange"></i>
+        <span class="text-sm font-medium animate-pulse">Memuat Data Alumni...</span>
+    </div>
+</template>
+
+<template id="alumni-empty-template">
+    <div class="text-center py-8 px-4 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+        <i class="fas fa-users-slash text-4xl text-slate-300 mb-3"></i>
+        <p class="text-slate-500 font-medium text-sm">Belum ada data kontribusi alumni.</p>
+    </div>
+</template>
+
+<template id="recap-empty-template">
+    <div class="p-10 text-center border-2 border-dashed border-slate-300 rounded-xl">Data Kosong</div>
+</template>
+
+<template id="recap-loading-template">
+    <div class="flex flex-col items-center justify-center py-24">
+        <div class="w-24 h-24 rounded-full border-4 border-orange-100 border-t-orange-500 animate-spin mb-6"></div>
+        <h3 class="text-xl font-bold text-slate-800 animate-pulse">Sedang Menghitung Donasi...</h3>
+    </div>
+</template>
+
+<template id="recap-table-empty-template">
+    <tr>
+        <td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td>
+    </tr>
+</template>
+
+<template id="zakat-wajib-template">
+    <span class="text-green-600 block">WAJIB ZAKAT</span><span data-amount></span>
+</template>
+
+<template id="zakat-belum-wajib-template">
+    <span class="text-orange-600 block">BELUM WAJIB</span><span data-message></span>
+</template>
+
+    <script type="module" src="data-santri.js"></script>
+    <script type="module" src="data-kelas.js"></script>
 
     <script type="module" src="main.js"></script>
 

@@ -14,7 +14,10 @@ export function showToast(message, type = 'warning') {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
-    const toast = document.createElement('div');
+    const template = document.getElementById('toast-template');
+    if (!template) return;
+
+    const toast = template.content.cloneNode(true).querySelector('.toast');
     toast.className = `toast ${type}`;
 
     let icon = 'fa-exclamation-triangle text-orange-500';
@@ -23,7 +26,8 @@ export function showToast(message, type = 'warning') {
 
     // Escape the message to prevent XSS
     const escapedMessage = escapeHtml(String(message));
-    toast.innerHTML = `<i class="fas ${icon} text-xl"></i><span class="font-bold text-sm text-slate-700">${escapedMessage}</span>`;
+    toast.querySelector('i').className = `fas ${icon} text-xl`;
+    toast.querySelector('span').textContent = escapedMessage;
     container.appendChild(toast);
 
     setTimeout(() => {
