@@ -139,8 +139,6 @@ export function renderNewsGrid(postsToRender, appendMode) {
     });
 }
 
-}
-
 export function filterNews(cat) {
     newsState.category = cat;
     newsState.search = '';
