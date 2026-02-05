@@ -3,7 +3,7 @@ import { loginWithGoogle, loginWithNIS, doLogout, linkGoogleAccount, updateUIFor
 import { showPage, scrollToSection, setupNavigation, setupModalLogic, toggleUserDropdown, toggleProfileDropdown, openChangePassModal, saveNewPassword, openAvatarModal, saveAvatar, hideLoginSuggestion } from './ui-navigation.js';
 import { setupWizardLogic, goToStep, startBeautificationDonation, confirmPackageChoice } from './feature-donation.js';
 import { setupHistoryLogic, loadRiwayat, loadPersonalDashboard, openReceiptWindow, refreshDashboard, refreshRiwayat } from './feature-history.js';
-import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, refreshNews } from './feature-news.js';
+import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, refreshNews, fetchNewsCategories } from './feature-news.js';
 import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.js';
 import { parseSantriData } from './santri-manager.js';
 import { copyText, showToast } from './utils.js';
@@ -134,8 +134,8 @@ async function init() {
             showPage('home');
         }
 
-        // Fetch news category initially (simulated)
-        // fetchNewsCategories(); 
+        // Fetch news categories for filter buttons
+        fetchNewsCategories();
 
     } catch (error) {
         console.error("Terjadi kesalahan fatal:", error);
@@ -371,7 +371,7 @@ window.applyZakatResult = function() {
     let nominal = parseInt(elAmount.dataset.value) || 0;
     
     // Pindah ke tab manual
-    switchZakatMode('manual');
+    window.switchZakatMode('manual');
     
     // Isi input manual
     const inputManual = document.getElementById('manual-zakat-input');

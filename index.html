@@ -1965,43 +1965,88 @@
              <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100/40 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
         </div>
 
-        <div class="container max-w-6xl mx-auto px-4 relative z-10">
+        <div class="container max-w-7xl mx-auto px-4 relative z-10">
             
-            <div class="text-center mb-12">
-                <span class="text-emerald-600 font-bold tracking-widest text-sm uppercase block mb-3">Tokoh Bangsa Bicara</span>
-                <h2 class="text-3xl md:text-4xl font-black text-slate-800">Harapan Besar Untuk Mu'allimin</h2>
+            <!-- Enhanced Header with Better Visual Hierarchy -->
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full mb-6 shadow-lg border border-emerald-200">
+                    <i class="fas fa-quote-left text-emerald-600"></i>
+                    <span class="text-emerald-700 font-black tracking-widest text-sm uppercase">Tokoh Bangsa Bicara</span>
+                    <i class="fas fa-quote-right text-emerald-600"></i>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-black text-slate-800 mb-4 tracking-tight">
+                    Harapan Besar Untuk <br class="hidden md:block">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Mu'allimin</span>
+                </h2>
+                <p class="text-slate-500 text-lg max-w-2xl mx-auto">
+                    Inspirasi dan dukungan dari para pemimpin bangsa untuk kemajuan Mu'allimin
+                </p>
             </div>
 
-            <div class="relative bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 md:p-12 min-h-[500px] flex items-center">
+            <!-- Enhanced Carousel Container -->
+            <div class="relative bg-gradient-to-br from-white to-slate-50 rounded-[3rem] shadow-2xl shadow-slate-300/50 border-2 border-slate-100 p-6 md:p-16 min-h-[600px] flex items-center overflow-hidden">
                 
-                <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 w-12 h-12 rounded-full shadow-lg border border-slate-100 flex items-center justify-center transition-all duration-300 group hidden md:flex">
-                    <i class="fas fa-chevron-left text-xl group-hover:-translate-x-1 transition-transform"></i>
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-200/30 to-teal-200/30 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-200/30 to-cyan-200/30 rounded-full blur-3xl -ml-20 -mb-20"></div>
+                
+                <!-- Navigation Buttons - Enhanced Design -->
+                <button onclick="changeSlide(-1)" class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-teal-500 text-slate-600 hover:text-white w-14 h-14 md:w-16 md:h-16 rounded-2xl shadow-2xl border-2 border-emerald-100 hover:border-emerald-500 flex items-center justify-center transition-all duration-300 group hidden md:flex hover:scale-110">
+                    <i class="fas fa-chevron-left text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </button>
 
-                <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 w-12 h-12 rounded-full shadow-lg border border-slate-100 flex items-center justify-center transition-all duration-300 group hidden md:flex">
-                    <i class="fas fa-chevron-right text-xl group-hover:translate-x-1 transition-transform"></i>
+                <button onclick="changeSlide(1)" class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-500 text-slate-600 hover:text-white w-14 h-14 md:w-16 md:h-16 rounded-2xl shadow-2xl border-2 border-emerald-100 hover:border-emerald-500 flex items-center justify-center transition-all duration-300 group hidden md:flex hover:scale-110">
+                    <i class="fas fa-chevron-right text-2xl group-hover:translate-x-1 transition-transform"></i>
                 </button>
 
-                <div id="testimoni-track" class="w-full flex transition-transform duration-700 ease-in-out">
+                <!-- Enhanced Track Container -->
+                <div id="testimoni-track" class="w-full flex transition-transform duration-700 ease-in-out relative z-10">
                     
-                    <div class="w-full shrink-0 px-4 md:px-12 flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-                        <div class="w-full md:w-1/3 flex flex-col items-center text-center">
-                            <div class="relative w-48 h-48 md:w-56 md:h-56 mb-6">
-                                <div class="absolute inset-0 bg-emerald-200 rounded-full blur-xl opacity-50 animate-pulse"></div>
-                                <img src="buya_syafii.jpg" alt="Buya Syafii" class="relative w-full h-full object-cover rounded-full border-4 border-white shadow-xl">
+                    <!-- Slide 1: Buya Syafii Maarif - Enhanced Design -->
+                    <div class="w-full shrink-0 px-4 md:px-16 flex flex-col md:flex-row gap-10 md:gap-16 items-center">
+                        <!-- Profile Section with Better Design -->
+                        <div class="w-full md:w-2/5 flex flex-col items-center text-center">
+                            <div class="relative w-56 h-56 md:w-72 md:h-72 mb-8 group">
+                                <!-- Multiple glow layers for depth -->
+                                <div class="absolute inset-0 bg-gradient-to-br from-emerald-300 to-teal-300 rounded-full blur-2xl opacity-40 animate-pulse group-hover:opacity-60 transition-opacity"></div>
+                                <div class="absolute inset-0 bg-emerald-400 rounded-full blur-xl opacity-30"></div>
+                                <!-- Image with enhanced border -->
+                                <img src="buya_syafii.jpg" alt="Buya Syafii" class="relative w-full h-full object-cover rounded-full border-8 border-white shadow-2xl shadow-emerald-900/20 group-hover:scale-105 transition-transform duration-500">
+                                <!-- Decorative ring -->
+                                <div class="absolute -inset-2 border-4 border-emerald-200 rounded-full opacity-50"></div>
                             </div>
-                            <h4 class="font-bold text-slate-800 text-xl">Buya Syafii Maarif (Alm.)</h4>
-                            <p class="text-sm text-emerald-600 font-bold mt-1 uppercase tracking-wide">Mantan Ketum PP Muhammadiyah</p>
-                            <span class="inline-block mt-2 px-3 py-1 bg-slate-100 text-slate-500 text-xs rounded-full font-medium">Alumnus Mu'allimin</span>
+                            <div class="space-y-3">
+                                <h4 class="font-black text-slate-900 text-2xl md:text-3xl">Buya Syafii Maarif (Alm.)</h4>
+                                <p class="text-base text-emerald-600 font-black uppercase tracking-wider">Mantan Ketua Umum PP Muhammadiyah</p>
+                                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                                    <span class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 text-sm rounded-xl font-bold border-2 border-emerald-200 shadow-sm">
+                                        <i class="fas fa-graduation-cap"></i> Alumnus Mu'allimin
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 text-sm rounded-xl font-bold">
+                                        <i class="fas fa-star text-amber-500"></i> Tokoh Nasional
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="w-full md:w-2/3 text-center md:text-left relative">
-                            <i class="fas fa-quote-left text-6xl text-slate-100 absolute -top-8 -left-4 -z-10"></i>
-                            <h3 class="text-xl md:text-2xl font-serif font-bold text-slate-800 mb-6 leading-tight">
-                                "Mu'allimin Milik Bangsa, <br class="hidden md:block">Bukan Hanya Muhammadiyah"
+                        
+                        <!-- Quote Section with Enhanced Typography -->
+                        <div class="w-full md:w-3/5 text-center md:text-left relative">
+                            <!-- Decorative quotes -->
+                            <i class="fas fa-quote-left text-7xl md:text-8xl text-emerald-100 absolute -top-12 -left-8 -z-10"></i>
+                            <i class="fas fa-quote-right text-5xl text-emerald-50 absolute -bottom-8 -right-4 -z-10"></i>
+                            
+                            <h3 class="text-2xl md:text-4xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-600 mb-8 leading-tight">
+                                "Mu'allimin Milik Bangsa,<br class="hidden md:block">
+                                Bukan Hanya Muhammadiyah"
                             </h3>
-                            <div class="space-y-4 text-slate-600 text-base md:text-lg leading-relaxed font-light">
-                                <p>"Kampus ini adalah mimpi panjang yang menjadi kenyataan... Mu'allimin ini anak kandung sejarah yang lahir di Kampung Kauman, namun sekarang harus melesat jauh ke depan."</p>
-                                <p class="font-medium text-slate-800">"Dari kampus di Sedayu ini, saya berharap lahir 'anak-anak panah' yang siap melesat ke berbagai penjuru dunia, menguasai ilmu agama sekaligus ilmu umum, dan menjadi pemimpin yang bervisi negarawan."</p>
+                            
+                            <div class="space-y-6 text-slate-600 text-base md:text-xl leading-relaxed">
+                                <p class="p-6 bg-gradient-to-r from-slate-50 to-emerald-50/30 rounded-2xl border-l-4 border-emerald-500 italic">
+                                    "Kampus ini adalah mimpi panjang yang menjadi kenyataan... Mu'allimin ini anak kandung sejarah yang lahir di Kampung Kauman, namun sekarang harus melesat jauh ke depan."
+                                </p>
+                                <p class="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl font-semibold text-slate-800 shadow-sm border border-emerald-100">
+                                    "Dari kampus di Sedayu ini, saya berharap lahir 'anak-anak panah' yang siap melesat ke berbagai penjuru dunia, menguasai ilmu agama sekaligus ilmu umum, dan menjadi pemimpin yang bervisi negarawan."
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -2811,52 +2856,103 @@
             </div>
         </div>
 
-        <!-- Payment Method Statistics -->
-        <div class="max-w-5xl mx-auto mb-8 animate-fade-in-up" style="animation-delay: 0.2s">
-            <div class="text-center mb-6">
-                <h3 class="text-2xl font-black text-slate-800 mb-2">Statistik Metode Pembayaran</h3>
-                <p class="text-slate-500 text-sm">Rincian pembayaran berdasarkan metode yang digunakan</p>
-            </div>
+        <!-- Unified Statistics Grid - All Metrics Together -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in-up" style="animation-delay: 0.2s">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- QRIS Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-qrcode"></i></div>
-                        <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">E-Wallet</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">QRIS</p>
-                    <h4 id="stat-payment-qris" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-qris-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
+            <!-- Zakat Fitrah -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-leaf"></i></div>
+                    <span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Ramadhan</span>
                 </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Zakat Fitrah</p>
+                <h4 id="stat-detail-fitrah" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 40%"></div>
+                </div>
+            </div>
 
-                <!-- Transfer Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-university"></i></div>
-                        <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Banking</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">Transfer Bank</p>
-                    <h4 id="stat-payment-transfer" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-transfer-bar" class="bg-teal-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
+            <!-- Zakat Maal -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-coins"></i></div>
+                    <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Harta</span>
                 </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Zakat Maal</p>
+                <h4 id="stat-detail-maal" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 60%"></div>
+                </div>
+            </div>
 
-                <!-- Cash Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-money-bill-wave"></i></div>
-                        <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Cash</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">Tunai</p>
-                    <h4 id="stat-payment-tunai" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-tunai-bar" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+            <!-- Total Infaq -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-hand-holding-heart"></i></div>
+                    <span class="bg-orange-50 text-orange-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Jariyah</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Total Infaq</p>
+                <h4 id="stat-detail-infaq" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 80%"></div>
+                </div>
+            </div>
+
+            <!-- Paling Populer -->
+            <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 rounded-[2rem] text-white shadow-lg shadow-purple-500/30 relative overflow-hidden hover:scale-105 transition-transform duration-300">
+                <div class="absolute -bottom-4 -right-4 text-9xl opacity-10 rotate-12"><i class="fas fa-star"></i></div>
+                <div class="relative z-10 h-full flex flex-col justify-center">
+                    <p class="text-white/80 font-medium mb-1 text-sm">Paling Populer</p>
+                    <h4 id="stat-r-tipe-top" class="text-xl font-black leading-tight mb-2">Memuat...</h4>
+                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-lg px-3 py-1 text-xs w-fit">
+                        <i class="fas fa-fire text-yellow-300"></i> Trending
                     </div>
                 </div>
+            </div>
+
+            <!-- QRIS -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-qrcode"></i></div>
+                    <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">E-Wallet</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">QRIS</p>
+                <h4 id="stat-payment-qris" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-qris-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Transfer Bank -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-university"></i></div>
+                    <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Banking</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Transfer Bank</p>
+                <h4 id="stat-payment-transfer" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-transfer-bar" class="bg-teal-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Tunai -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-money-bill-wave"></i></div>
+                    <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Cash</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Tunai</p>
+                <h4 id="stat-payment-tunai" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-tunai-bar" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Empty slot for better 4-column layout on large screens -->
+            <div class="hidden lg:block"></div>
+
+        </div>
             </div>
         </div>
 
