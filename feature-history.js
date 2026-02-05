@@ -471,57 +471,46 @@ export function renderHomeLatestDonations() {
     container.innerHTML = html;
 }
 
-// Render alumni leaderboard grouped by graduation year (angkatan)
-// Render alumni leaderboard grouped by graduation year (angkatan)
+// Render alumni leaderboard (Desain Baru: Ranked by Total Donation)
 export function renderAlumniLeaderboard() {
     const container = document.getElementById('alumni-leaderboard-container');
     if (!container) return;
 
-    // Tampilkan loading jika data belum siap
+    // 1. State: Loading
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
         container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-24">
-                <div class="w-24 h-24 rounded-full border-4 border-purple-100 border-t-purple-500 animate-spin mb-6"></div>
-                <h3 class="text-xl font-bold text-slate-800 animate-pulse">Memuat Data Alumni...</h3>
+            <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+                <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-brand-orange"></i>
+                <span class="text-sm font-medium animate-pulse">Memuat Data Alumni...</span>
             </div>
         `;
         return;
     }
 
-    // Group donations by graduation year (angkatan)
+    // 2. Data Processing (Aggregation)
     const angkatanTotals = {};
     const currentYear = new Date().getFullYear();
-    
+
     riwayatData.allData.forEach(d => {
         let year = null;
 
-        // 1. PRIORITAS UTAMA: Cek kolom khusus DetailAlumni (input dari form)
-        // Kita cek variasi penulisan properti (DetailAlumni atau detailAlumni)
+        // PRIORITAS 1: Cek kolom input khusus alumni (DetailAlumni)
         if (d.DetailAlumni && String(d.DetailAlumni).trim() !== "") {
             year = String(d.DetailAlumni).trim();
         } else if (d.detailAlumni && String(d.detailAlumni).trim() !== "") {
             year = String(d.detailAlumni).trim();
-        } 
+        }
         
-        // 2. FALLBACK: Jika kolom khusus kosong, coba cari pola tahun di Nama/Keterangan
-        // Ini berguna untuk data lama yang diinput manual tanpa lewat form khusus alumni
+        // PRIORITAS 2: Fallback ke Regex Nama/Keterangan jika kolom khusus kosong
         if (!year) {
-            const nama = d.NamaDonatur || "";
-            const keterangan = d.Keterangan || "";
-            const combined = `${nama} ${keterangan}`.toLowerCase();
-            
-            // Regex mencari kata kunci diikuti 4 digit angka, atau string yang isinya cuma 4 angka
+            const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
             const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
-            
-            if (yearMatch) {
-                year = yearMatch[1] || yearMatch[2];
-            }
+            if (yearMatch) year = yearMatch[1] || yearMatch[2];
         }
 
-        // 3. Validasi & Agregasi
+        // Validasi Tahun & Akumulasi Nominal
         if (year) {
             const numYear = parseInt(year);
-            // Validasi: Tahun harus masuk akal (misal antara 1950 s.d. tahun ini)
             if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear) {
                 const val = parseInt(d.Nominal) || 0;
                 angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
@@ -529,73 +518,85 @@ export function renderAlumniLeaderboard() {
         }
     });
 
-    // Ubah object ke array dan urutkan
-    const leaderboard = Object.keys(angkatanTotals).map(year => ({
-        year: year,
-        total: angkatanTotals[year]
-    })).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // Sort tahun descending (terbaru di atas)
-    // Jika ingin sort berdasarkan total donasi terbesar, ganti jadi: b.total - a.total
+    // 3. Sorting (High to Low Donation)
+    const leaderboard = Object.keys(angkatanTotals)
+        .map(year => ({ year: year, total: angkatanTotals[year] }))
+        .sort((a, b) => b.total - a.total); // Urutkan berdasarkan Total Donasi Terbesar
 
-    // Tampilkan pesan jika kosong
+    // 4. State: Empty
     if (leaderboard.length === 0) {
         container.innerHTML = `
-            <div class="p-10 text-center border-2 border-dashed border-purple-300 rounded-xl bg-purple-50/50">
-                <i class="fas fa-graduation-cap text-6xl text-purple-300 mb-4"></i>
-                <h3 class="text-lg font-bold text-slate-700 mb-2">Belum Ada Data Alumni</h3>
-                <p class="text-slate-500 text-sm">Donasi alumni akan muncul di sini berdasarkan angkatan kelulusan.</p>
+            <div class="text-center py-8 px-4 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                <i class="fas fa-users-slash text-4xl text-slate-300 mb-3"></i>
+                <p class="text-slate-500 font-medium text-sm">Belum ada data kontribusi alumni.</p>
             </div>
         `;
         return;
     }
 
-    // Render HTML Cards
-    let html = `<div class="space-y-4">`;
+    // Hitung persentase untuk progress bar (Base = Donasi Tertinggi)
+    const maxTotal = leaderboard[0].total;
+
+    // 5. Render HTML (New Design)
+    let html = `<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">`;
     
+    // Header
+    html += `
+        <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <h4 class="font-bold text-slate-700 flex items-center gap-2">
+                <i class="fas fa-trophy text-yellow-500"></i> Top Kontribusi
+            </h4>
+            <span class="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-600 rounded text-xs">
+                ${leaderboard.length} Angkatan
+            </span>
+        </div>
+        <div class="divide-y divide-slate-50">
+    `;
+
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
-        let badgeColor = 'bg-slate-100 text-slate-600 border-slate-200';
-        let cardStyle = 'bg-white border-slate-200 hover:border-purple-300';
+        const percentage = (item.total / maxTotal) * 100;
         
-        // Highlight 3 Angkatan Teratas (opsional, jika sort by total donasi)
-        // Karena sort by tahun, ini hanya memberi warna beda untuk 3 list pertama
+        // Styling untuk Top 3
+        let rankBadge = `<span class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 font-bold text-sm border border-slate-200">${rank}</span>`;
+        let barColor = "bg-slate-200";
+        let rowClass = "hover:bg-slate-50 transition-colors";
+
         if (rank === 1) {
-            badgeColor = 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white border-yellow-300';
-            cardStyle = 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300 ring-4 ring-yellow-400/20';
+            rankBadge = `<div class="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 border border-yellow-200 shadow-sm"><i class="fas fa-crown text-sm"></i></div>`;
+            barColor = "bg-gradient-to-r from-yellow-400 to-amber-500";
+            rowClass = "bg-yellow-50/30 hover:bg-yellow-50/60 transition-colors";
         } else if (rank === 2) {
-            badgeColor = 'bg-gradient-to-r from-slate-300 to-slate-400 text-white border-slate-300';
-            cardStyle = 'bg-gradient-to-r from-slate-50 to-slate-100 border-slate-300';
+            rankBadge = `<div class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 border border-slate-300 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+            barColor = "bg-gradient-to-r from-slate-400 to-slate-500";
         } else if (rank === 3) {
-            badgeColor = 'bg-gradient-to-r from-orange-300 to-orange-500 text-white border-orange-300';
-            cardStyle = 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-300';
+            rankBadge = `<div class="w-8 h-8 flex items-center justify-center rounded-full bg-orange-100 text-orange-600 border border-orange-200 shadow-sm"><i class="fas fa-medal text-sm"></i></div>`;
+            barColor = "bg-gradient-to-r from-orange-400 to-orange-500";
         }
 
         html += `
-            <div class="${cardStyle} rounded-2xl p-5 border-2 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-4 flex-1">
-                        <div class="${badgeColor} w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-md border-2 shrink-0">
-                            ${rank <= 3 ? '<i class="fas fa-medal"></i>' : rank}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-1">
-                                <i class="fas fa-graduation-cap text-purple-500"></i>
-                                <h4 class="text-xl font-black text-slate-800">Angkatan ${item.year}</h4>
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium">Alumni Mu'allimin ${item.year}</p>
-                        </div>
+            <div class="p-4 ${rowClass} relative group">
+                <div class="flex items-center gap-4 relative z-10">
+                    <div class="shrink-0">
+                        ${rankBadge}
                     </div>
-                    <div class="text-right shrink-0">
-                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">Total Donasi</p>
-                        <h3 class="text-2xl md:text-3xl font-black text-purple-600 tracking-tight">
-                            ${formatRupiah(item.total)}
-                        </h3>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-700 text-sm">Angkatan ${item.year}</span>
+                            <span class="font-bold text-slate-800 text-sm">${formatRupiah(item.total)}</span>
+                        </div>
+                        
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="${barColor} h-2 rounded-full transition-all duration-1000 ease-out group-hover:brightness-110" style="width: ${percentage}%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     });
 
-    html += `</div>`;
+    html += `</div></div>`; // Close wrapper
     container.innerHTML = html;
 }
 
