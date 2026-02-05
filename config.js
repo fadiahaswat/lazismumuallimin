@@ -1,20 +1,11 @@
 // config.js
 
 // --- KONFIGURASI API & SERVER ---
-// IMPORTANT: These API endpoints are intentionally public for client-side use.
-// Security is enforced through:
-// 1. Firebase Firestore Rules (see firestore.rules)
-// 2. Google Apps Script server-side validation
-// 3. Rate limiting on client-side
-// 4. Bot detection mechanisms
 export const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec";
 export const WORDPRESS_SITE = 'lazismumuallimin.wordpress.com';
 export const NEWS_PER_PAGE = 6;
 
 // --- KONFIGURASI FIREBASE ---
-// NOTE: Firebase client configuration is public by design.
-// Security is enforced through Firestore security rules (see firestore.rules).
-// DO NOT store sensitive data in client-accessible configuration.
 export const firebaseConfig = {
     apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
     authDomain: "lazismu-auth.firebaseapp.com",

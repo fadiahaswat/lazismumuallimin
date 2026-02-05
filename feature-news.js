@@ -12,7 +12,7 @@ export async function fetchNews(isLoadMore = false) {
         if (btnMore) btnMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
     } else {
         const grid = document.getElementById('news-grid');
-        if(grid) grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-600">Memuat berita terbaru...</p></div>';
+        if(grid) grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="animate-spin inline-block w-8 h-8 border-4 border-slate-200 border-t-orange-500 rounded-full mb-4"></div><p class="text-slate-400">Memuat berita terbaru...</p></div>';
     }
 
     let apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/posts/?number=${NEWS_PER_PAGE}&page=${newsState.page}`;
@@ -57,10 +57,10 @@ export async function fetchNews(isLoadMore = false) {
                 <div class="col-span-full text-center py-24">
                     <div class="inline-block p-6 rounded-full bg-slate-50 mb-6 relative">
                         <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
-                        <i class="far fa-folder-open text-5xl text-slate-500"></i>
+                        <i class="far fa-folder-open text-5xl text-slate-300"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
-                    <p class="text-slate-600 max-w-xs mx-auto mb-8">${pesanKosong}</p>
+                    <p class="text-slate-400 max-w-xs mx-auto mb-8">${pesanKosong}</p>
                     <button onclick="window.resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
                         <i class="fas fa-undo mr-2"></i> Reset Filter
                     </button>
@@ -122,12 +122,11 @@ export function renderNewsGrid(postsToRender, appendMode) {
         html += `
         <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="window.openNewsModal(${globalIndex})">
             <div class="relative h-60 overflow-hidden">
-                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div>
-                <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10" onerror="this.src='https://via.placeholder.com/600x400?text=Lazismu+Update'">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-50 group-hover:opacity-40 transition-opacity z-20"></div>
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-20"></div>
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
                     <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>
-                    <span class="block text-sm font-bold text-slate-500 uppercase">${month}</span>
+                    <span class="block text-[10px] font-bold text-slate-500 uppercase">${month}</span>
                 </div>
                 <div class="absolute bottom-4 left-4 z-30">
                     <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border shadow-sm">
@@ -143,10 +142,10 @@ export function renderNewsGrid(postsToRender, appendMode) {
                     ${stripHtml(post.excerpt)}
                 </p>
                 <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
-                        <i class="far fa-user-circle text-slate-500"></i> Admin Lazismu
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <i class="far fa-user-circle"></i> Admin Lazismu
                     </div>
-                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 shadow-sm">
                         <i class="fas fa-arrow-right transform group-hover:-rotate-45 transition-transform"></i>
                     </span>
                 </div>
@@ -167,57 +166,14 @@ export function filterNews(cat) {
     newsState.page = 1;
     newsState.hasMore = true;
 
-    // Update button styles with new color scheme
     document.querySelectorAll('.news-filter-btn').forEach(btn => {
         const btnSlug = btn.getAttribute('data-slug');
         if (btnSlug === cat) {
-            // Remove all possible inactive states
-            btn.classList.remove('bg-blue-100', 'text-blue-700', 'bg-emerald-100', 'text-emerald-700', 
-                               'bg-purple-100', 'text-purple-700', 'bg-orange-100', 'text-orange-700',
-                               'bg-pink-100', 'text-pink-700', 'bg-cyan-100', 'text-cyan-700',
-                               'bg-gray-100', 'text-gray-600');
-            
-            // Add active state based on button's category
-            if (btnSlug === '') {
-                btn.classList.add('bg-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-900/20', 'scale-105');
-            } else {
-                // Add active color based on button's hover color
-                if (btn.classList.contains('hover:bg-blue-600')) {
-                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/30', 'scale-105');
-                } else if (btn.classList.contains('hover:bg-emerald-600')) {
-                    btn.classList.add('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-600/30', 'scale-105');
-                } else if (btn.classList.contains('hover:bg-purple-600')) {
-                    btn.classList.add('bg-purple-600', 'text-white', 'shadow-lg', 'shadow-purple-600/30', 'scale-105');
-                } else if (btn.classList.contains('hover:bg-orange-600')) {
-                    btn.classList.add('bg-orange-600', 'text-white', 'shadow-lg', 'shadow-orange-600/30', 'scale-105');
-                } else if (btn.classList.contains('hover:bg-pink-600')) {
-                    btn.classList.add('bg-pink-600', 'text-white', 'shadow-lg', 'shadow-pink-600/30', 'scale-105');
-                } else if (btn.classList.contains('hover:bg-cyan-600')) {
-                    btn.classList.add('bg-cyan-600', 'text-white', 'shadow-lg', 'shadow-cyan-600/30', 'scale-105');
-                }
-            }
+            btn.classList.remove('bg-gray-100', 'text-gray-600');
+            btn.classList.add('bg-brand-orange', 'text-white');
         } else {
-            // Inactive state - restore original colors
-            btn.classList.remove('bg-slate-900', 'text-white', 'bg-blue-600', 'bg-emerald-600', 
-                               'bg-purple-600', 'bg-orange-600', 'bg-pink-600', 'bg-cyan-600',
-                               'shadow-lg', 'scale-105');
-            
-            // Restore light background based on hover state
-            if (btn.classList.contains('hover:bg-blue-600')) {
-                btn.classList.add('bg-blue-100', 'text-blue-700');
-            } else if (btn.classList.contains('hover:bg-emerald-600')) {
-                btn.classList.add('bg-emerald-100', 'text-emerald-700');
-            } else if (btn.classList.contains('hover:bg-purple-600')) {
-                btn.classList.add('bg-purple-100', 'text-purple-700');
-            } else if (btn.classList.contains('hover:bg-orange-600')) {
-                btn.classList.add('bg-orange-100', 'text-orange-700');
-            } else if (btn.classList.contains('hover:bg-pink-600')) {
-                btn.classList.add('bg-pink-100', 'text-pink-700');
-            } else if (btn.classList.contains('hover:bg-cyan-600')) {
-                btn.classList.add('bg-cyan-100', 'text-cyan-700');
-            } else if (btnSlug === '') {
-                btn.classList.add('bg-gray-100', 'text-gray-600');
-            }
+            btn.classList.add('bg-gray-100', 'text-gray-600');
+            btn.classList.remove('bg-brand-orange', 'text-white');
         }
     });
 
@@ -349,93 +305,3 @@ export async function refreshNews() {
         if (icon) icon.classList.remove('fa-spin');
     }
 }
-
-// Fetch and render news categories for filter buttons
-export async function fetchNewsCategories() {
-    try {
-        const apiURL = `https://public-api.wordpress.com/rest/v1.1/sites/${WORDPRESS_SITE}/categories`;
-        const res = await fetch(apiURL);
-        
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        
-        const data = await res.json();
-        renderNewsCategories(data.categories);
-    } catch (error) {
-        console.error('Failed to fetch news categories:', error);
-        // Keep the "Semua" button even if categories fail to load
-        const container = document.getElementById('news-filter-container');
-        if (container) {
-            // Remove skeleton loaders
-            const skeletons = container.querySelectorAll('.animate-pulse');
-            skeletons.forEach(el => el.remove());
-        }
-    }
-}
-
-// Render category filter buttons with enhanced design
-function renderNewsCategories(categories) {
-    const container = document.getElementById('news-filter-container');
-    if (!container) return;
-    
-    // Remove skeleton loaders
-    const skeletons = container.querySelectorAll('.animate-pulse');
-    skeletons.forEach(el => el.remove());
-    
-    // Get top categories (limit to 5-6 for better UX)
-    const topCategories = Object.values(categories)
-        .filter(cat => cat.post_count > 0) // Only show categories with posts
-        .sort((a, b) => b.post_count - a.post_count)
-        .slice(0, 6);
-    
-    // Color schemes for category buttons
-    const colorSchemes = [
-        { bg: 'bg-blue-100', text: 'text-blue-700', hover: 'hover:bg-blue-600', active: 'bg-blue-600' },
-        { bg: 'bg-emerald-100', text: 'text-emerald-700', hover: 'hover:bg-emerald-600', active: 'bg-emerald-600' },
-        { bg: 'bg-purple-100', text: 'text-purple-700', hover: 'hover:bg-purple-600', active: 'bg-purple-600' },
-        { bg: 'bg-orange-100', text: 'text-orange-700', hover: 'hover:bg-orange-600', active: 'bg-orange-600' },
-        { bg: 'bg-pink-100', text: 'text-pink-700', hover: 'hover:bg-pink-600', active: 'bg-pink-600' },
-        { bg: 'bg-cyan-100', text: 'text-cyan-700', hover: 'hover:bg-cyan-600', active: 'bg-cyan-600' }
-    ];
-    
-    // Add category buttons after "Semua" button
-    topCategories.forEach((cat, index) => {
-        const scheme = colorSchemes[index % colorSchemes.length];
-        const button = document.createElement('button');
-        button.setAttribute('data-slug', cat.slug);
-        button.onclick = () => filterNews(cat.slug);
-        button.className = `news-filter-btn ${scheme.bg} ${scheme.text} ${scheme.hover} hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all shadow-sm hover:shadow-md transform hover:scale-105 active:scale-95 flex items-center gap-2`;
-        button.innerHTML = `
-            <i class="fas fa-tag text-xs"></i>
-            <span>${cat.name}</span>
-            <span class="ml-1 px-2 py-0.5 bg-white/30 rounded-full text-xs font-black">${cat.post_count}</span>
-        `;
-        container.appendChild(button);
-    });
-}
-
-// Handle search with Enter key
-window.handleNewsSearch = function(event) {
-    if (event.key === 'Enter') {
-        const searchValue = event.target.value.trim();
-        newsState.search = searchValue;
-        newsState.category = '';
-        newsState.page = 1;
-        newsState.hasMore = true;
-        
-        // Reset filter buttons
-        document.querySelectorAll('.news-filter-btn').forEach(btn => {
-            const btnSlug = btn.getAttribute('data-slug');
-            if (btnSlug === '') {
-                btn.classList.add('bg-slate-900', 'text-white');
-                btn.classList.remove('bg-blue-100', 'text-blue-700', 'bg-emerald-100', 'text-emerald-700');
-            } else {
-                const colorClasses = ['bg-blue-600', 'bg-emerald-600', 'bg-purple-600', 'bg-orange-600', 'bg-pink-600', 'bg-cyan-600', 'text-white'];
-                btn.classList.remove(...colorClasses);
-            }
-        });
-        
-        fetchNews();
-    }
-};

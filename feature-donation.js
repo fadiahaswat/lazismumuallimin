@@ -3,13 +3,6 @@ import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
-import { 
-    validateDonationData, 
-    addSecurityHeaders, 
-    performSecurityChecks, 
-    rateLimiter,
-    initSecurityTracking 
-} from './security-utils.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
 // Mencegah race condition antara page visibility changes dan step navigation
@@ -268,9 +261,6 @@ function proceedToNominal(nominal) {
 }
 
 export function setupWizardLogic() {
-    // Initialize security tracking when donation wizard is set up
-    initSecurityTracking();
-    
     // --- LANGKAH 1: Pilih Jenis Donasi ---
     document.querySelectorAll('.choice-button').forEach(btn => {
         btn.onclick = () => {
@@ -731,7 +721,7 @@ export function setupWizardLogic() {
             if (donasiData.kodeUnik > 0) {
                 const htmlPesan = `
                     <div id="msg-kode-unik-summary" class="mt-2 text-right animate-fade-in-up">
-                        <span class="inline-block bg-yellow-50 text-yellow-700 text-sm font-bold px-2 py-1 rounded border border-yellow-200">
+                        <span class="inline-block bg-yellow-50 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded border border-yellow-200">
                             <i class="fas fa-asterisk text-[8px] mr-1"></i>Kode Unik: ${donasiData.kodeUnik} (Masuk ke donasi)
                         </span>
                     </div>`;
@@ -757,34 +747,18 @@ export function setupWizardLogic() {
     // --- LANGKAH TERAKHIR: Kirim Data ---
     const btnSubmitFinal = document.getElementById('btn-submit-final');
     if (btnSubmitFinal) {
-        // Helper function to reset button state
-        const resetSubmitButton = (btn) => {
-            btn.disabled = false;
-            btn.querySelector('.default-text').classList.remove('hidden');
-            btn.querySelector('.loading-text').classList.add('hidden');
-        };
-
         btnSubmitFinal.onclick = async () => {
             const btn = document.getElementById('btn-submit-final');
             const check = document.getElementById('confirm-check');
 
             if (!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-            // === SECURITY CHECKS ===
-            
-            // 1. Perform security validation
-            const securityCheck = performSecurityChecks();
-            if (!securityCheck.allowed) {
-                showToast(securityCheck.message, 'error');
-                return;
-            }
-
-            // 2. Ubah tombol jadi Loading
+            // 1. Ubah tombol jadi Loading
             btn.disabled = true;
             btn.querySelector('.default-text').classList.add('hidden');
             btn.querySelector('.loading-text').classList.remove('hidden');
 
-            // 3. Siapkan Data (Payload)
+            // 2. Siapkan Data (Payload)
             const payload = {
                 "type": donasiData.subType || donasiData.type,
                 "nominal": donasiData.nominalTotal, 
@@ -803,33 +777,19 @@ export function setupWizardLogic() {
                 "NoKTP": donasiData.nik || ""
             };
 
-            // 4. Validate payload data
-            const validation = validateDonationData(payload);
-            if (!validation.isValid) {
-                showToast(validation.errors[0], 'error');
-                resetSubmitButton(btn);
-                return;
-            }
-
-            // 5. Add security headers
-            const securePayload = addSecurityHeaders(validation.sanitizedData);
-
             try {
-                // 6. Record this submission attempt for rate limiting
-                rateLimiter.recordRequest();
-
-                // 7. Kirim ke Google Apps Script
+                // 3. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ action: "create", payload: securePayload })
+                    body: JSON.stringify({ action: "create", payload: payload })
                 });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                // 8. Update Data Tampilan di Halaman Sukses
+                // 4. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');
                 const finalType = document.getElementById('final-type-display');
                 const finalName = document.getElementById('final-name-display');
@@ -854,7 +814,7 @@ export function setupWizardLogic() {
                                         <i class="fas fa-exclamation text-sm"></i>
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-sm font-bold text-yellow-800 uppercase tracking-wide mb-0.5">PENTING</p>
+                                        <p class="text-[10px] font-bold text-yellow-800 uppercase tracking-wide mb-0.5">PENTING</p>
                                         <p class="text-xs text-slate-600 leading-tight">
                                             Mohon transfer tepat hingga <span class="font-black text-orange-600 border-b-2 border-orange-200">${donasiData.kodeUnik}</span> digit terakhir agar terverifikasi otomatis.
                                         </p>
@@ -872,7 +832,7 @@ export function setupWizardLogic() {
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.classList.remove('hidden');
 
-                // --- 9. GENERATE KONTEN INTRUKSI PEMBAYARAN & DOA ---
+                // --- 5. GENERATE KONTEN INTRUKSI PEMBAYARAN & DOA ---
                 
                 // A. Generate Doa
                 const prayerHTML = `
@@ -907,18 +867,18 @@ export function setupWizardLogic() {
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div onclick="openQrisModal('bni')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-orange-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
                                     <div class="h-8 flex items-center mb-3"><img src="bank-bni.png" class="h-full object-contain"></div>
-                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-bold uppercase tracking-wide group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition">Lihat QR</button>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition">Lihat QR</button>
                                 </div>
                                 <div onclick="openQrisModal('bsi')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-teal-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
                                     <div class="h-10 flex items-center mb-3"><img src="bank-bsi.png" class="h-full object-contain"></div>
-                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-bold uppercase tracking-wide group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition">Lihat QR</button>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition">Lihat QR</button>
                                 </div>
                                 <div onclick="openQrisModal('bpd')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-blue-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
                                     <div class="h-8 flex items-center mb-3"><img src="bank-bpd.png" class="h-full object-contain"></div>
-                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-bold uppercase tracking-wide group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition">Lihat QR</button>
+                                    <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition">Lihat QR</button>
                                 </div>
                             </div>
-                            <p class="text-center text-sm text-slate-400 mt-4 bg-slate-50 py-2 rounded-lg"><i class="fas fa-info-circle mr-1"></i> Mendukung GoPay, OVO, Dana, ShopeePay, & Mobile Banking</p>
+                            <p class="text-center text-[10px] text-slate-400 mt-4 bg-slate-50 py-2 rounded-lg"><i class="fas fa-info-circle mr-1"></i> Mendukung GoPay, OVO, Dana, ShopeePay, & Mobile Banking</p>
                         </div>`;
                 
                 } else if (donasiData.metode === 'Transfer') {
@@ -935,7 +895,7 @@ export function setupWizardLogic() {
                                         <img src="bank-bni.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">3440 000 348</p>
                                     </div>
                                 </div>
@@ -950,7 +910,7 @@ export function setupWizardLogic() {
                                         <img src="bank-bsi.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">7930 030 303</p>
                                     </div>
                                 </div>
@@ -965,7 +925,7 @@ export function setupWizardLogic() {
                                         <img src="bank-bpd.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
                                         <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">801 241 004 624</p>
                                     </div>
                                 </div>
@@ -1028,7 +988,9 @@ export function setupWizardLogic() {
 
             } catch (e) {
                 showToast("Gagal mengirim data: " + e.message, "error");
-                resetSubmitButton(btn);
+                btn.disabled = false;
+                btn.querySelector('.default-text').classList.remove('hidden');
+                btn.querySelector('.loading-text').classList.add('hidden');
             }
         };
     }
