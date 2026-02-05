@@ -371,7 +371,7 @@ window.applyZakatResult = function() {
     let nominal = parseInt(elAmount.dataset.value) || 0;
     
     // Pindah ke tab manual
-    switchZakatMode('manual');
+    window.switchZakatMode('manual');
     
     // Isi input manual
     const inputManual = document.getElementById('manual-zakat-input');

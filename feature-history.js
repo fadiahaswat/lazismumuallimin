@@ -1003,6 +1003,7 @@ function updateDashboardUI() {
     }
 
     renderPersonalHistoryTable();
+    updateRewardLevels(totalDonasi);
 }
 
 export function renderPersonalHistoryTable() {
@@ -1231,4 +1232,96 @@ window.switchAppreciationTab = function(tabName) {
         btnRules.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold transition-all shadow-sm bg-white text-slate-800 ring-1 ring-slate-200 transform scale-[1.02]";
         btnReward.className = "flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-white/50 transition-all";
     }
+};
+
+// Update reward levels in Peta Harta Kebaikan based on student's total donations
+function updateRewardLevels(totalDonasi) {
+    // Get all reward level groups in the dashboard
+    const rewardContainer = document.querySelector('#tab-content-reward');
+    if (!rewardContainer) return;
+    
+    const rewardGroups = rewardContainer.querySelectorAll('.relative.flex.items-center.justify-between');
+    
+    if (rewardGroups.length < 3) return;
+    
+    const level1Group = rewardGroups[0]; // Min. Rp 500rb
+    const level2Group = rewardGroups[1]; // Min. Rp 1 Juta
+    const level3Group = rewardGroups[2]; // Min. Rp 5 Juta (kelipatan)
+    
+    // Level 1: Rp 500,000 - Certificate of Kindness
+    if (totalDonasi >= 500000) {
+        level1Group.classList.add('is-active');
+        const icon = level1Group.querySelector('.w-10.h-10');
+        if (icon) {
+            icon.classList.remove('bg-slate-200');
+            icon.classList.add('bg-gradient-to-br', 'from-amber-400', 'to-orange-500');
+        }
+    } else {
+        level1Group.classList.remove('is-active');
+        const icon = level1Group.querySelector('.w-10.h-10');
+        if (icon) {
+            icon.classList.add('bg-slate-200');
+            icon.classList.remove('bg-gradient-to-br', 'from-amber-400', 'to-orange-500');
+        }
+    }
+    
+    // Level 2: Rp 1,000,000 - Exclusive Merchandise + Progress Bar
+    const level2Progress = (totalDonasi / 1000000) * 100;
+    const progressBar2 = level2Group.querySelector('.bg-blue-500');
+    
+    if (totalDonasi >= 1000000) {
+        level2Group.classList.add('is-active');
+        const icon = level2Group.querySelector('.w-10.h-10');
+        if (icon) {
+            icon.classList.remove('bg-slate-200', 'text-slate-400');
+            icon.classList.add('bg-gradient-to-br', 'from-blue-400', 'to-blue-600', 'text-white');
+            const lockIcon = icon.querySelector('.fa-lock');
+            if (lockIcon) {
+                lockIcon.classList.remove('fa-lock');
+                lockIcon.classList.add('fa-gift');
+            }
+        }
+        if (progressBar2) {
+            progressBar2.style.width = '100%';
+        }
+    } else {
+        level2Group.classList.remove('is-active');
+        if (progressBar2) {
+            progressBar2.style.width = Math.min(level2Progress, 99) + '%';
+        }
+    }
+    
+    // Level 3: Rp 5,000,000 (kelipatan) - The Scholarship
+    if (totalDonasi >= 5000000) {
+        level3Group.classList.add('is-active');
+        const icon = level3Group.querySelector('.w-10.h-10');
+        if (icon) {
+            icon.classList.remove('bg-slate-200', 'text-slate-400');
+            icon.classList.add('bg-gradient-to-br', 'from-purple-500', 'to-indigo-600', 'text-white');
+            const lockIcon = icon.querySelector('.fa-lock');
+            if (lockIcon) {
+                lockIcon.classList.remove('fa-lock');
+                lockIcon.classList.add('fa-crown');
+            }
+        }
+        
+        // Update button text to show how many scholarships earned
+        const scholarshipCount = Math.floor(totalDonasi / 5000000);
+        const button = level3Group.querySelector('button');
+        if (button && scholarshipCount > 0) {
+            button.innerHTML = `<i class="fas fa-trophy mr-2"></i> ${scholarshipCount}x Voucher SPP Terbuka!`;
+            button.classList.add('animate-pulse');
+        }
+    } else {
+        level3Group.classList.remove('is-active');
+        // Show progress towards Level 3
+        const level3Progress = (totalDonasi / 5000000) * 100;
+        const button = level3Group.querySelector('button');
+        if (button) {
+            const remaining = 5000000 - totalDonasi;
+            button.innerHTML = `Kurang ${formatRupiah(remaining)} lagi!`;
+            button.classList.remove('animate-pulse');
+        }
+    }
+}
 };
