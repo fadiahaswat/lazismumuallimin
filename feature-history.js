@@ -490,23 +490,39 @@ export function renderAlumniLeaderboard() {
     const angkatanTotals = {};
     
     riwayatData.allData.forEach(d => {
-        // Check if donatur is alumni by looking for year patterns (e.g., "Alumni 2010", "Angkatan 2015")
-        const nama = d.NamaDonatur || "";
-        const keterangan = d.Keterangan || "";
-        const combined = `${nama} ${keterangan}`.toLowerCase();
-        
-        // Extract year from various patterns
-        const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
-        
-        if (yearMatch) {
-            const year = yearMatch[1] || yearMatch[2];
-            if (year && year >= 1990 && year <= new Date().getFullYear()) {
-                const val = parseInt(d.Nominal) || 0;
-                angkatanTotals[year] = (angkatanTotals[year] || 0) + val;
+        // 1. CEK KOLOM KHUSUS ALUMNI DULU (Prioritas Utama)
+        // Data dari input form donasi tersimpan di sini
+        let year = d.DetailAlumni || d.detailAlumni || d.alumniTahun;
+
+        // 2. JIKA KOSONG, BARU CARI MANUAL DI NAMA/KETERANGAN (Fallback untuk data lama)
+        if (!year) {
+            const nama = d.NamaDonatur || "";
+            const keterangan = d.Keterangan || "";
+            const combined = `${nama} ${keterangan}`.toLowerCase();
+            
+            const yearMatch = combined.match(/(?:alumni|angkatan|tahun|lulusan)\s*(\d{4})|^(\d{4})\s*$/i);
+            if (yearMatch) {
+                year = yearMatch[1] || yearMatch[2];
+            }
+        }
+
+        // 3. JIKA TAHUN DITEMUKAN & VALID, JUMLAHKAN
+        if (year) {
+            // Pastikan format tahun 4 digit angka
+            const cleanYear = String(year).trim();
+            if (/^\d{4}$/.test(cleanYear)) {
+                const yearInt = parseInt(cleanYear);
+                const currentYear = new Date().getFullYear();
+                
+                // Filter tahun yang masuk akal (misal: 1950 - sekarang)
+                if (yearInt >= 1950 && yearInt <= currentYear) {
+                    const val = parseInt(d.Nominal) || 0;
+                    angkatanTotals[yearInt] = (angkatanTotals[yearInt] || 0) + val;
+                }
             }
         }
     });
-
+    
     const leaderboard = Object.keys(angkatanTotals).map(year => ({
         year: year,
         total: angkatanTotals[year]
