@@ -170,19 +170,13 @@ export function filterNews(cat) {
     document.querySelectorAll('.news-filter-btn').forEach(btn => {
         const btnSlug = btn.getAttribute('data-slug');
         if (btnSlug === cat) {
-            // Active state - find the color scheme
-            const colorMap = {
-                '': ['bg-slate-900', 'text-white'],
-                // These will be dynamically applied based on the button's original color
-            };
-            
             // Remove all possible inactive states
             btn.classList.remove('bg-blue-100', 'text-blue-700', 'bg-emerald-100', 'text-emerald-700', 
                                'bg-purple-100', 'text-purple-700', 'bg-orange-100', 'text-orange-700',
                                'bg-pink-100', 'text-pink-700', 'bg-cyan-100', 'text-cyan-700',
                                'bg-gray-100', 'text-gray-600');
             
-            // Add active state
+            // Add active state based on button's category
             if (btnSlug === '') {
                 btn.classList.add('bg-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-900/20', 'scale-105');
             } else {

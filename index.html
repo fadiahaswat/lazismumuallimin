@@ -2856,52 +2856,103 @@
             </div>
         </div>
 
-        <!-- Payment Method Statistics -->
-        <div class="max-w-5xl mx-auto mb-8 animate-fade-in-up" style="animation-delay: 0.2s">
-            <div class="text-center mb-6">
-                <h3 class="text-2xl font-black text-slate-800 mb-2">Statistik Metode Pembayaran</h3>
-                <p class="text-slate-500 text-sm">Rincian pembayaran berdasarkan metode yang digunakan</p>
-            </div>
+        <!-- Unified Statistics Grid - All Metrics Together -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in-up" style="animation-delay: 0.2s">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- QRIS Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-qrcode"></i></div>
-                        <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">E-Wallet</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">QRIS</p>
-                    <h4 id="stat-payment-qris" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-qris-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
+            <!-- Zakat Fitrah -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-leaf"></i></div>
+                    <span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Ramadhan</span>
                 </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Zakat Fitrah</p>
+                <h4 id="stat-detail-fitrah" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 40%"></div>
+                </div>
+            </div>
 
-                <!-- Transfer Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-university"></i></div>
-                        <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Banking</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">Transfer Bank</p>
-                    <h4 id="stat-payment-transfer" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-transfer-bar" class="bg-teal-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
+            <!-- Zakat Maal -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-coins"></i></div>
+                    <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Harta</span>
                 </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Zakat Maal</p>
+                <h4 id="stat-detail-maal" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 60%"></div>
+                </div>
+            </div>
 
-                <!-- Cash Statistics -->
-                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition duration-300 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-money-bill-wave"></i></div>
-                        <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Cash</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-bold uppercase">Tunai</p>
-                    <h4 id="stat-payment-tunai" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
-                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div id="stat-payment-tunai-bar" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+            <!-- Total Infaq -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-hand-holding-heart"></i></div>
+                    <span class="bg-orange-50 text-orange-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Jariyah</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Total Infaq</p>
+                <h4 id="stat-detail-infaq" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 80%"></div>
+                </div>
+            </div>
+
+            <!-- Paling Populer -->
+            <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 rounded-[2rem] text-white shadow-lg shadow-purple-500/30 relative overflow-hidden hover:scale-105 transition-transform duration-300">
+                <div class="absolute -bottom-4 -right-4 text-9xl opacity-10 rotate-12"><i class="fas fa-star"></i></div>
+                <div class="relative z-10 h-full flex flex-col justify-center">
+                    <p class="text-white/80 font-medium mb-1 text-sm">Paling Populer</p>
+                    <h4 id="stat-r-tipe-top" class="text-xl font-black leading-tight mb-2">Memuat...</h4>
+                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-lg px-3 py-1 text-xs w-fit">
+                        <i class="fas fa-fire text-yellow-300"></i> Trending
                     </div>
                 </div>
+            </div>
+
+            <!-- QRIS -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-qrcode"></i></div>
+                    <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">E-Wallet</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">QRIS</p>
+                <h4 id="stat-payment-qris" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-qris-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Transfer Bank -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-university"></i></div>
+                    <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Banking</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Transfer Bank</p>
+                <h4 id="stat-payment-transfer" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-transfer-bar" class="bg-teal-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Tunai -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:rotate-12 transition"><i class="fas fa-money-bill-wave"></i></div>
+                    <span class="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase">Cash</span>
+                </div>
+                <p class="text-xs text-slate-400 font-bold uppercase">Tunai</p>
+                <h4 id="stat-payment-tunai" class="text-2xl font-black text-slate-800 mb-3">Rp 0</h4>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="stat-payment-tunai-bar" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Empty slot for better 4-column layout on large screens -->
+            <div class="hidden lg:block"></div>
+
+        </div>
             </div>
         </div>
 
