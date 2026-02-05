@@ -122,7 +122,8 @@ export function renderNewsGrid(postsToRender, appendMode) {
         html += `
         <div class="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer fade-in" onclick="window.openNewsModal(${globalIndex})">
             <div class="relative h-60 overflow-hidden">
-                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div> <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10" onerror="this.src='https://via.placeholder.com/600x400?text=Lazismu+Update'">
+                <div class="absolute inset-0 bg-slate-200 animate-pulse"></div>
+                <img src="${img}" alt="${post.title}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1 relative z-10" onerror="this.src='https://via.placeholder.com/600x400?text=Lazismu+Update'">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-50 group-hover:opacity-40 transition-opacity z-20"></div>
                 <div class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 text-center shadow-lg border border-white/20">
                     <span class="block text-xl font-black text-slate-800 leading-none">${day}</span>

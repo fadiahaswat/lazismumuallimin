@@ -273,11 +273,19 @@ function calculateStats() {
             if (loadingSkeleton) loadingSkeleton.classList.add('hidden');
             if (contentSkeleton) contentSkeleton.classList.remove('hidden');
             
+            // Create span element safely to prevent XSS
+            const span = document.createElement('span');
+            span.className = contentClass;
+            
             if (popularType && popularType !== '-') {
-                elRTipe.innerHTML = `<span class="${contentClass}">${popularType}</span>`;
+                span.textContent = popularType; // Use textContent to prevent XSS
             } else {
-                elRTipe.innerHTML = `<span class="${contentClass} text-white/60">Belum ada data bulan ini</span>`;
+                span.textContent = 'Belum ada data bulan ini';
+                span.className = `${contentClass} text-white/60`;
             }
+            
+            elRTipe.innerHTML = ''; // Clear existing content
+            elRTipe.appendChild(span);
         }
     };
     
