@@ -59,7 +59,16 @@ function fallbackCopy(text) {
 }
 
 export function formatRupiah(num) {
-    return "Rp " + parseInt(num).toLocaleString('id-ID');
+    const parsed = parseInt(num) || 0;
+    return "Rp " + parsed.toLocaleString('id-ID');
+}
+
+export function formatRupiahWithEmpty(num) {
+    const parsed = parseInt(num) || 0;
+    if (parsed === 0) {
+        return '<span class="text-slate-400 text-sm">Belum ada data</span>';
+    }
+    return "Rp " + parsed.toLocaleString('id-ID');
 }
 
 export function timeAgo(date) {
