@@ -289,8 +289,8 @@ function calculateStats() {
         }
     };
     
+    // Only update the single "Paling Populer" card (removed duplicate QRIS section)
     updatePopularType('stat-r-tipe-top', 'skeleton-popular-loading', 'skeleton-popular-content');
-    updatePopularType('stat-r-tipe-top-2', 'skeleton-popular-loading-2', 'skeleton-popular-content-2');
 
     const elDetFitrah = document.getElementById('stat-detail-fitrah');
     if (elDetFitrah) animateValue(elDetFitrah, 0, totalFitrah, 1500, true);
