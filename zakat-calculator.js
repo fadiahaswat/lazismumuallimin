@@ -1,0 +1,181 @@
+// Zakat Calculator Module
+// Functions for zakat calculation and management
+import { donasiData } from './state.js';
+import { showToast } from './utils.js';
+import { goToStep } from './feature-donation.js';
+
+/**
+ * Format input field as Rupiah and update donation state
+ * @param {HTMLInputElement} input - The input element to format
+ */
+export function formatInputRupiah(input) {
+    let val = input.value.replace(/\D/g, ''); 
+    if (val === '') {
+        input.value = '';
+    } else {
+        input.value = parseInt(val).toLocaleString('id-ID');
+    }
+    
+    // UPDATE LANGSUNG KE STATE SAAT MENGETIK
+    if(input.id === 'manual-zakat-input') {
+        const numVal = parseInt(val) || 0;
+        donasiData.nominal = numVal;
+        donasiData.nominalAsli = numVal;
+    }
+}
+
+/**
+ * Switch between manual and calculator zakat modes
+ * @param {string} mode - 'manual' or 'calculator'
+ */
+export function switchZakatMode(mode) {
+    const btnManual = document.getElementById('btn-mode-manual');
+    const btnCalc = document.getElementById('btn-mode-calculator');
+    const divManual = document.getElementById('mode-manual');
+    const divCalc = document.getElementById('mode-calculator');
+
+    if (!btnManual || !btnCalc || !divManual || !divCalc) return;
+
+    // Style Definitions
+    const activeClass = "bg-white text-slate-800 shadow-sm border-slate-200 ring-1 ring-slate-100";
+    const inactiveClass = "text-slate-500 hover:text-slate-800 hover:bg-white/60 border-transparent";
+
+    // Reset Classes First
+    btnManual.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'manual' ? activeClass : inactiveClass}`;
+    btnCalc.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'calculator' ? activeClass : inactiveClass}`;
+
+    if (mode === 'manual') {
+        divManual.classList.remove('hidden');
+        divManual.classList.add('animate-fade-in-up');
+        divCalc.classList.add('hidden');
+    } else {
+        divCalc.classList.remove('hidden');
+        divCalc.classList.add('animate-fade-in-up');
+        divManual.classList.add('hidden');
+    }
+}
+
+/**
+ * Calculate zakat from calculator inputs
+ */
+export function calculateZakat() {
+    const inputs = document.querySelectorAll('.calc-input');
+    let totalHarta = 0;
+    let hutang = 0;
+
+    // Ambil 3 input pertama (Aset)
+    for(let i=0; i<3; i++) {
+        if(inputs[i]) {
+            let val = inputs[i].value.replace(/\D/g, '');
+            totalHarta += parseInt(val || 0);
+        }
+    }
+    // Input Ke-4 = Hutang
+    if(inputs[3]) {
+        let valHutang = inputs[3].value.replace(/\D/g, '');
+        hutang = parseInt(valHutang || 0);
+    }
+
+    const hartaBersih = totalHarta - hutang;
+    const NISAB_TAHUN = 85685972; 
+
+    const resultDiv = document.getElementById('calc-result');
+    if(resultDiv) resultDiv.classList.remove('hidden');
+    
+    const elTotal = document.getElementById('total-harta');
+    if(elTotal) elTotal.innerText = "Rp " + hartaBersih.toLocaleString('id-ID');
+
+    const divWajib = document.getElementById('status-wajib');
+    const divTidak = document.getElementById('status-tidak-wajib');
+
+    if (hartaBersih >= NISAB_TAHUN) {
+        if(divWajib) divWajib.classList.remove('hidden');
+        if(divTidak) divTidak.classList.add('hidden');
+
+        const zakat = Math.ceil(hartaBersih * 0.025);
+        const elAmount = document.getElementById('final-zakat-amount');
+        if(elAmount) {
+            elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
+            elAmount.dataset.value = zakat;
+        }
+    } else {
+        if(divWajib) divWajib.classList.add('hidden');
+        if(divTidak) divTidak.classList.remove('hidden');
+        
+        // Reset value di tombol jika tidak wajib
+        const elAmount = document.getElementById('final-zakat-amount');
+        if(elAmount) elAmount.dataset.value = 0;
+    }
+    
+    if(resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * Apply calculator result to manual input
+ */
+export function applyZakatResult() {
+    const elAmount = document.getElementById('final-zakat-amount');
+    if (!elAmount) return;
+    
+    let nominal = parseInt(elAmount.dataset.value) || 0;
+    
+    // Pindah ke tab manual
+    switchZakatMode('manual');
+    
+    // Isi input manual
+    const inputManual = document.getElementById('manual-zakat-input');
+    if (inputManual) {
+        if (nominal > 0) {
+            inputManual.value = nominal.toLocaleString('id-ID');
+            
+            // UPDATE STATE
+            donasiData.nominal = nominal;
+            donasiData.nominalAsli = nominal;
+        } else {
+            inputManual.value = "";
+            inputManual.focus();
+        }
+    }
+}
+
+/**
+ * Handle manual zakat next button
+ */
+export function handleManualZakatNext() {
+    const input = document.getElementById('manual-zakat-input');
+    if (!input) return;
+
+    // Ambil nilai bersih dari input
+    const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
+
+    if (cleanVal < 10000) {
+        if(typeof showToast === 'function') showToast('Minimal nominal zakat Rp 10.000', 'warning');
+        else alert('Minimal nominal zakat Rp 10.000');
+        return;
+    }
+
+    // A. SIMPAN KE STATE GLOBAL
+    donasiData.nominal = cleanVal;
+    donasiData.nominalAsli = cleanVal;
+    donasiData.type = 'Zakat Maal'; 
+    donasiData.subType = null; // Pastikan subType kosong agar tidak dianggap infaq
+
+    console.log("Zakat Maal Saved:", donasiData); // Debugging di Console
+
+    // B. PINDAH KE STEP 3 (Lewati Step 2 Nominal Buttons)
+    if(typeof goToStep === 'function') {
+        goToStep(3);
+    } else {
+        // Fallback Manual jika goToStep error
+        console.warn("goToStep function missing, using fallback");
+        document.getElementById('donasi-step-1').classList.add('hidden');
+        document.getElementById('donasi-step-2').classList.add('hidden');
+        document.getElementById('donasi-step-3').classList.remove('hidden');
+        
+        // Update progress
+        const circles = document.querySelectorAll('.step-circle');
+        if(circles[2]) circles[2].classList.add('active');
+        
+        document.getElementById('donasi-step-3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}

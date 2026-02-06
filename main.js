@@ -8,7 +8,8 @@ import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.j
 import { parseSantriData } from './santri-manager.js';
 import { copyText, showToast } from './utils.js';
 import { qrisDatabase } from './config.js';
-import { donasiData } from './state.js'; // <--- WAJIB DITAMBAHKAN AGAR SINKRON
+import { donasiData } from './state.js';
+import { formatInputRupiah, switchZakatMode, calculateZakat, applyZakatResult, handleManualZakatNext } from './zakat-calculator.js';
 
 // --- LOGIKA MODAL QRIS ---
 function openQrisModal(key) {
@@ -259,191 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ============================================================================
-   LOGIKA ZAKAT MAAL (FINAL FIX SINKRONISASI)
+   LOGIKA ZAKAT MAAL - Expose functions to window for HTML inline handlers
    ============================================================================ */
 
-// 1. Format Input Rupiah & Auto-Save
-window.formatInputRupiah = function(input) {
-    let val = input.value.replace(/\D/g, ''); 
-    if (val === '') {
-        input.value = '';
-    } else {
-        input.value = parseInt(val).toLocaleString('id-ID');
-    }
-    
-    // UPDATE LANGSUNG KE STATE SAAT MENGETIK
-    if(input.id === 'manual-zakat-input') {
-        const numVal = parseInt(val) || 0;
-        if(typeof donasiData !== 'undefined') {
-            donasiData.nominal = numVal;
-            donasiData.nominalAsli = numVal;
-            // console.log("Input Update:", donasiData.nominal); // Debugging
-        }
-    }
-};
-
-// 2. Switch Tab Mode
-window.switchZakatMode = function(mode) {
-    const btnManual = document.getElementById('btn-mode-manual');
-    const btnCalc = document.getElementById('btn-mode-calculator');
-    const divManual = document.getElementById('mode-manual');
-    const divCalc = document.getElementById('mode-calculator');
-
-    if (!btnManual || !btnCalc || !divManual || !divCalc) return;
-
-    // Style Definitions
-    const activeClass = "bg-white text-slate-800 shadow-sm border-slate-200 ring-1 ring-slate-100";
-    const inactiveClass = "text-slate-500 hover:text-slate-800 hover:bg-white/60 border-transparent";
-
-    // Reset Classes First
-    btnManual.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'manual' ? activeClass : inactiveClass}`;
-    btnCalc.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'calculator' ? activeClass : inactiveClass}`;
-
-    if (mode === 'manual') {
-        divManual.classList.remove('hidden');
-        divManual.classList.add('animate-fade-in-up');
-        divCalc.classList.add('hidden');
-    } else {
-        divCalc.classList.remove('hidden');
-        divCalc.classList.add('animate-fade-in-up');
-        divManual.classList.add('hidden');
-    }
-};
-
-// 3. Hitung Zakat
-window.calculateZakat = function() {
-    const inputs = document.querySelectorAll('.calc-input');
-    let totalHarta = 0;
-    let hutang = 0;
-
-    // Ambil 3 input pertama (Aset)
-    for(let i=0; i<3; i++) {
-        if(inputs[i]) {
-            let val = inputs[i].value.replace(/\D/g, '');
-            totalHarta += parseInt(val || 0);
-        }
-    }
-    // Input Ke-4 = Hutang
-    if(inputs[3]) {
-        let valHutang = inputs[3].value.replace(/\D/g, '');
-        hutang = parseInt(valHutang || 0);
-    }
-
-    const hartaBersih = totalHarta - hutang;
-    const NISAB_TAHUN = 85685972; 
-
-    const resultDiv = document.getElementById('calc-result');
-    if(resultDiv) resultDiv.classList.remove('hidden');
-    
-    const elTotal = document.getElementById('total-harta');
-    if(elTotal) elTotal.innerText = "Rp " + hartaBersih.toLocaleString('id-ID');
-
-    const divWajib = document.getElementById('status-wajib');
-    const divTidak = document.getElementById('status-tidak-wajib');
-
-    if (hartaBersih >= NISAB_TAHUN) {
-        if(divWajib) divWajib.classList.remove('hidden');
-        if(divTidak) divTidak.classList.add('hidden');
-
-        const zakat = Math.ceil(hartaBersih * 0.025);
-        const elAmount = document.getElementById('final-zakat-amount');
-        if(elAmount) {
-            elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
-            elAmount.dataset.value = zakat;
-        }
-    } else {
-        if(divWajib) divWajib.classList.add('hidden');
-        if(divTidak) divTidak.classList.remove('hidden');
-        
-        // Reset value di tombol jika tidak wajib
-        const elAmount = document.getElementById('final-zakat-amount');
-        if(elAmount) elAmount.dataset.value = 0;
-    }
-    
-    if(resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-};
-
-// 4. Apply Hasil ke Input Manual
-window.applyZakatResult = function() {
-    const elAmount = document.getElementById('final-zakat-amount');
-    if (!elAmount) return;
-    
-    let nominal = parseInt(elAmount.dataset.value) || 0;
-    
-    // Pindah ke tab manual
-    switchZakatMode('manual');
-    
-    // Isi input manual
-    const inputManual = document.getElementById('manual-zakat-input');
-    if (inputManual) {
-        if (nominal > 0) {
-            inputManual.value = nominal.toLocaleString('id-ID');
-            
-            // PAKSA UPDATE STATE
-            if(typeof donasiData !== 'undefined') {
-                donasiData.nominal = nominal;
-                donasiData.nominalAsli = nominal;
-            }
-        } else {
-            inputManual.value = "";
-            inputManual.focus();
-        }
-    }
-};
-
-// 5. Tombol Lanjut (SINKRONISASI TOTAL)
-window.handleManualZakatNext = function() {
-    const input = document.getElementById('manual-zakat-input');
-    if (!input) return;
-
-    // Ambil nilai bersih dari input
-    const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
-
-    if (cleanVal < 10000) {
-        if(typeof showToast === 'function') showToast('Minimal nominal zakat Rp 10.000', 'warning');
-        else alert('Minimal nominal zakat Rp 10.000');
-        return;
-    }
-
-    // A. SIMPAN KE STATE GLOBAL
-    // Cek apakah donasiData tersedia
-    if (typeof donasiData === 'undefined') {
-        console.error("CRITICAL: donasiData undefined di main.js");
-        alert("Terjadi kesalahan sistem (State Error). Silakan refresh halaman.");
-        return;
-    }
-
-    // Set Data
-    donasiData.nominal = cleanVal;
-    donasiData.nominalAsli = cleanVal;
-    donasiData.type = 'Zakat Maal'; 
-    donasiData.subType = null; // Pastikan subType kosong agar tidak dianggap infaq
-
-    console.log("Zakat Maal Saved:", donasiData); // Debugging di Console
-
-    // B. PINDAH KE STEP 3 (Lewati Step 2 Nominal Buttons)
-    // Pastikan fungsi goToStep tersedia
-    if(typeof goToStep === 'function') {
-        goToStep(3);
-    } else {
-        // Fallback Manual jika goToStep error
-        console.warn("goToStep function missing, using fallback");
-        document.getElementById('donasi-step-1').classList.add('hidden');
-        document.getElementById('donasi-step-2').classList.add('hidden');
-        
-        const step3 = document.getElementById('donasi-step-3');
-        if(step3) {
-            step3.classList.remove('hidden');
-            step3.classList.add('animate-fade-in-up');
-        }
-        
-        // Update UI Wizard Manual
-        const indicator = document.getElementById('wizard-step-indicator');
-        const bar = document.getElementById('wizard-progress-bar');
-        const title = document.getElementById('wizard-title');
-        
-        if(indicator) indicator.innerText = "Step 3/5";
-        if(bar) bar.style.width = "60%";
-        if(title) title.innerText = "Isi Data Diri";
-    }
-};
+// Expose zakat calculator functions to window for HTML inline event handlers
+window.formatInputRupiah = formatInputRupiah;
+window.switchZakatMode = switchZakatMode;
+window.calculateZakat = calculateZakat;
+window.applyZakatResult = applyZakatResult;
+window.handleManualZakatNext = handleManualZakatNext;
