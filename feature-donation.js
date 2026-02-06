@@ -779,47 +779,10 @@ export function setupWizardLogic() {
 
             try {
                 // 3. Kirim ke Google Apps Script
-                // 1. Siapkan Kunci (Harus sama dengan di index.html)
-                const SITE_KEY = '6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6';                
-                // 2. Bungkus proses submit dalam reCAPTCHA
-                grecaptcha.ready(function() {
-                    // Action 'submit' memberitahu Google ini adalah aksi kirim formulir
-                    grecaptcha.execute(SITE_KEY, {action: 'submit'}).then(async function(token) {
-                        
-                        // --- MULAI PROSES KIRIM ---
-                        try {
-                            // Masukkan token "surat jalan" dari Google ke data donasi
-                            payload.recaptchaToken = token; 
-                
-                            // Kirim ke Server (Google Apps Script)
-                            const response = await fetch(GAS_API_URL, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain" },
-                                body: JSON.stringify({
-                                    action: "create",
-                                    payload: payload // Data donasi + Token
-                                })
-                            });
-                
-                            const result = await response.json();
-                
-                            // Cek jawaban server
-                            if (result.status === 'success') {
-                                // Berhasil! Tampilkan modal sukses
-                                showSuccessModal(); 
-                                resetForm();
-                            } else {
-                                // Gagal (Mungkin terdeteksi bot atau error lain)
-                                throw new Error(result.message);
-                            }
-                
-                        } catch (error) {
-                            console.error("Gagal Donasi:", error);
-                            showToast("Gagal: " + error.message, "error");
-                        }
-                        // --- SELESAI PROSES KIRIM ---
-                        
-                    });
+                const response = await fetch(GAS_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ action: "create", payload: payload })
                 });
                 
                 if (!response.ok) {
