@@ -16,7 +16,7 @@ export function formatInputRupiah(input) {
         input.value = parseInt(val).toLocaleString('id-ID');
     }
     
-    // UPDATE LANGSUNG KE STATE SAAT MENGETIK
+    // Update state when typing in manual zakat input
     if(input.id === 'manual-zakat-input') {
         const numVal = parseInt(val) || 0;
         donasiData.nominal = numVal;
@@ -128,7 +128,7 @@ export function applyZakatResult() {
         if (nominal > 0) {
             inputManual.value = nominal.toLocaleString('id-ID');
             
-            // UPDATE STATE
+            // Update state
             donasiData.nominal = nominal;
             donasiData.nominalAsli = nominal;
         } else {
@@ -149,24 +149,23 @@ export function handleManualZakatNext() {
     const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
 
     if (cleanVal < 10000) {
-        if(typeof showToast === 'function') showToast('Minimal nominal zakat Rp 10.000', 'warning');
-        else alert('Minimal nominal zakat Rp 10.000');
+        showToast('Minimal nominal zakat Rp 10.000', 'warning');
         return;
     }
 
-    // A. SIMPAN KE STATE GLOBAL
+    // Save to global state
     donasiData.nominal = cleanVal;
     donasiData.nominalAsli = cleanVal;
     donasiData.type = 'Zakat Maal'; 
-    donasiData.subType = null; // Pastikan subType kosong agar tidak dianggap infaq
+    donasiData.subType = null; // Ensure subType is empty so it's not treated as infaq
 
-    console.log("Zakat Maal Saved:", donasiData); // Debugging di Console
+    console.log("Zakat Maal Saved:", donasiData);
 
-    // B. PINDAH KE STEP 3 (Lewati Step 2 Nominal Buttons)
+    // Move to step 3 (skip step 2 nominal buttons)
     if(typeof goToStep === 'function') {
         goToStep(3);
     } else {
-        // Fallback Manual jika goToStep error
+        // Fallback if goToStep is not available
         console.warn("goToStep function missing, using fallback");
         document.getElementById('donasi-step-1').classList.add('hidden');
         document.getElementById('donasi-step-2').classList.add('hidden');
