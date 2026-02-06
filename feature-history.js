@@ -326,7 +326,9 @@ export function renderHomeLatestDonations() {
     const container = document.getElementById('home-latest-donations');
     if (!container) return;
 
-    const latest = riwayatData.allData.slice(0, 6);
+    // Filter hanya donasi yang sudah Terverifikasi
+    const verified = riwayatData.allData.filter(d => d.Status === 'Terverifikasi');
+    const latest = verified.slice(0, 6);
 
     if (latest.length === 0) {
         container.innerHTML = '<div class="text-center col-span-full py-4 text-slate-400 text-sm">Belum ada donasi. Jadilah yang pertama!</div>';
@@ -495,6 +497,9 @@ export function renderAlumniLeaderboard() {
     const currentYear = new Date().getFullYear();
 
     riwayatData.allData.forEach(d => {
+        // Hanya hitung donasi yang sudah Terverifikasi
+        if (d.Status !== 'Terverifikasi') return;
+        
         let year = null;
 
         // PRIORITAS 1: Cek kolom input khusus alumni (DetailAlumni)
@@ -812,6 +817,9 @@ export async function loadPersonalDashboard(userEmail) {
 
     if (riwayatData.allData) {
         myDonations = riwayatData.allData.filter(item => {
+            // Hanya hitung donasi yang sudah Terverifikasi
+            if (item.Status !== 'Terverifikasi') return false;
+            
             const emailData = item.Email ? String(item.Email).toLowerCase() : "";
             const emailUser = userEmail ? String(userEmail).toLowerCase() : "";
             const matchEmail = emailData && emailUser && emailData === emailUser;
