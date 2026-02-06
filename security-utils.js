@@ -331,6 +331,27 @@ export function initSecurityTracking() {
 export const rateLimiter = new RateLimiter(5, 15);
 
 /**
+ * Simple password hashing function
+ * NOTE: This is NOT cryptographically secure. For production, use a proper
+ * server-side authentication system with bcrypt or Argon2.
+ * This provides basic protection against plain-text password exposure.
+ * 
+ * @param {string} password - Plain text password
+ * @returns {string} - Hashed password (prefixed with 'H')
+ */
+export function hashPassword(password) {
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    // Add a salt-like component (not true salt, but better than nothing)
+    const salted = hash ^ 0xDEADBEEF;
+    return 'H' + Math.abs(salted).toString(36);
+}
+
+/**
  * Main security check before donation submission
  * @returns {object} { allowed: boolean, message: string }
  */

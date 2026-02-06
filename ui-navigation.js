@@ -3,6 +3,7 @@ import { loadRiwayat } from './feature-history.js';
 import { fetchNews } from './feature-news.js'; // Hapus newsState dari sini
 import { currentUser, newsState } from './state.js'; // Tambahkan newsState di sini
 import { SantriManager } from './santri-manager.js';
+import { hashPassword } from './security-utils.js';
 
 // Flag to prevent duplicate hashchange listeners
 let hashchangeListenerAdded = false;
@@ -160,24 +161,6 @@ export function saveNewPassword() {
     showToast("Password berhasil diganti!", "success");
     const modal = document.getElementById('pass-modal');
     if (modal) modal.classList.add('hidden');
-}
-
-/**
- * Simple password hashing function
- * NOTE: This is NOT cryptographically secure. For production, use a proper
- * server-side authentication system with bcrypt or Argon2.
- * This provides basic protection against plain-text password exposure.
- */
-function hashPassword(password) {
-    let hash = 0;
-    for (let i = 0; i < password.length; i++) {
-        const char = password.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    // Add a salt-like component (not true salt, but better than nothing)
-    const salted = hash ^ 0xDEADBEEF;
-    return 'H' + Math.abs(salted).toString(36);
 }
 
 // Avatar UI

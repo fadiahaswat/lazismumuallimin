@@ -6,6 +6,7 @@ import { SantriManager, santriDB } from './santri-manager.js';
 import { currentUser, setCurrentUser, donasiData } from './state.js';
 import { showToast } from './utils.js';
 import { loadPersonalDashboard, renderDashboardProfil } from './feature-history.js';
+import { hashPassword } from './security-utils.js';
 
 // Init Firebase
 const app = initializeApp(firebaseConfig);
@@ -159,22 +160,6 @@ export async function loginWithGoogle() {
     }
 }
 
-/**
- * Simple password hashing function (matches ui-navigation.js)
- * NOTE: This is NOT cryptographically secure. For production, use a proper
- * server-side authentication system with bcrypt or Argon2.
- */
-function hashPassword(password) {
-    let hash = 0;
-    for (let i = 0; i < password.length; i++) {
-        const char = password.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    const salted = hash ^ 0xDEADBEEF;
-    return 'H' + Math.abs(salted).toString(36);
-}
-
 export function loginWithNIS() {
     const nisInput = document.getElementById('login-nis').value.trim();
     const passInput = document.getElementById('login-pass').value.trim();
@@ -207,8 +192,15 @@ export function loginWithNIS() {
                 // Legacy plain-text password - compare directly and migrate
                 validPassword = prefs.password === passInput;
                 if (validPassword) {
-                    // Migrate to hashed password
-                    SantriManager.savePrefs(santri.nis, { password: hashPassword(passInput) });
+                    // Migrate to hashed password with error handling
+                    try {
+                        const hashedPwd = hashPassword(passInput);
+                        SantriManager.savePrefs(santri.nis, { password: hashedPwd });
+                        console.log(`Password migrated to hashed format for NIS: ${santri.nis}`);
+                    } catch (error) {
+                        console.error(`Failed to migrate password for NIS ${santri.nis}:`, error);
+                        // Continue with login even if migration fails
+                    }
                 }
             }
         } else {
@@ -216,8 +208,14 @@ export function loginWithNIS() {
             const defaultHash = hashPassword(String(santri.nis));
             validPassword = hashPassword(passInput) === defaultHash;
             if (validPassword) {
-                // Store the hashed default password
-                SantriManager.savePrefs(santri.nis, { password: defaultHash });
+                // Store the hashed default password with error handling
+                try {
+                    SantriManager.savePrefs(santri.nis, { password: defaultHash });
+                    console.log(`Default password stored as hash for NIS: ${santri.nis}`);
+                } catch (error) {
+                    console.error(`Failed to store default password for NIS ${santri.nis}:`, error);
+                    // Continue with login even if storage fails
+                }
             }
         }
 
