@@ -4096,180 +4096,52 @@
         </div>
 
         <!-- Appreciation & Sanctions Section for Students -->
-        <div id="santri-appreciation-section" class="hidden max-w-5xl mx-auto mb-10">
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-[2.5rem] shadow-xl border-2 border-amber-200 overflow-hidden relative">
-                
-                <!-- Header -->
-                <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 md:p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 text-white/10 text-9xl -mr-8 -mt-4"><i class="fas fa-award"></i></div>
-                    <div class="relative z-10 flex items-center gap-4">
-                        <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-trophy text-3xl text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight">Apresiasi & Sanksi</h3>
-                            <p class="text-amber-50 text-sm font-medium">Program Penghargaan dan Peraturan Fundraising</p>
-                        </div>
-                    </div>
+        <div id="gamification-container" class="max-w-6xl mx-auto mb-16 hidden animate-fade-in-up">
+    <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden relative mb-8">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-amber-200 to-orange-100 rounded-bl-full opacity-50 blur-3xl"></div>
+        
+        <div class="relative z-10 p-8 md:p-10">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-6">
+                <div>
+                    <span class="inline-block py-1 px-3 rounded-lg bg-slate-900 text-white text-[10px] font-bold tracking-widest uppercase mb-2">
+                        <i class="fas fa-medal text-amber-400 mr-1"></i> Level Fundraising
+                    </span>
+                    <h3 id="current-tier-name" class="text-3xl md:text-4xl font-black text-slate-800">Menghitung Level...</h3>
+                    <p id="next-tier-info" class="text-slate-500 font-medium mt-1">...</p>
                 </div>
-
-                <!-- Content -->
-                <div class="p-6 md:p-8 space-y-6">
-                    
-                    <!-- Apresiasi Section -->
-                    <div>
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shadow-lg">
-                                <i class="fas fa-star text-white"></i>
-                            </div>
-                            <h4 class="text-xl font-black text-slate-800">A. Apresiasi Siswa</h4>
-                        </div>
-
-                        <div class="space-y-4">
-                            <!-- Tier 1 -->
-                            <div class="bg-white rounded-2xl p-6 border-2 border-amber-200 hover:border-amber-400 transition-all shadow-sm hover:shadow-lg group">
-                                <div class="flex items-start gap-4">
-                                    <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-bronze-400 to-amber-600 flex items-center justify-center shadow-md">
-                                        <span class="text-white font-black text-lg">1</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <h5 class="font-black text-lg text-slate-800">Tier 1</h5>
-                                            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Min. Rp 500.000</span>
-                                        </div>
-                                        <ul class="space-y-2 text-sm text-slate-600">
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-check-circle text-green-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Sertifikat Penghargaan</strong> Non-Akademik</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-check-circle text-green-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Konversi Nilai:</strong> 30 Poin Prestasi (Pengabdian Sosial)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tier 2 -->
-                            <div class="bg-white rounded-2xl p-6 border-2 border-blue-200 hover:border-blue-400 transition-all shadow-sm hover:shadow-lg group">
-                                <div class="flex items-start gap-4">
-                                    <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center shadow-md">
-                                        <span class="text-white font-black text-lg">2</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <h5 class="font-black text-lg text-slate-800">Tier 2</h5>
-                                            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">≥ Rp 1.000.000</span>
-                                        </div>
-                                        <ul class="space-y-2 text-sm text-slate-600">
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-check-circle text-green-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Benefit Tier 1</strong></span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-plus-circle text-blue-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Exclusive Goodybag Lazismu</strong></span>
-                                            </li>
-                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tier 3 -->
-                            <div class="bg-white rounded-2xl p-6 border-2 border-purple-200 hover:border-purple-400 transition-all shadow-sm hover:shadow-lg group">
-                                <div class="flex items-start gap-4">
-                                    <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-md">
-                                        <span class="text-white font-black text-lg">3</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <h5 class="font-black text-lg text-slate-800">Tier 3</h5>
-                                            <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">Kelipatan Rp 5.000.000</span>
-                                        </div>
-                                        <ul class="space-y-2 text-sm text-slate-600">
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-check-circle text-green-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Benefit Tier 1 & 2</strong></span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <i class="fas fa-crown text-yellow-500 mt-0.5 shrink-0"></i>
-                                                <span><strong>Voucher Bebas SPP 1 Bulan</strong></span>
-                                            </li>
-                                            <li class="flex items-start gap-2 text-xs bg-purple-50 -mx-2 px-2 py-1.5 rounded-lg">
-                                                <i class="fas fa-info-circle text-purple-500 mt-0.5 shrink-0"></i>
-                                                <span class="italic">Berlaku kelipatan, misal Rp 10 Juta = 2 Bulan bebas SPP</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Top Fundraiser per Angkatan -->
-                            <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-6 border-2 border-yellow-300 shadow-md">
-                                <div class="flex items-start gap-4">
-                                    <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg animate-pulse">
-                                        <i class="fas fa-trophy text-white text-xl"></i>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <h5 class="font-black text-lg text-slate-800">🏆 Terbanyak Per Angkatan</h5>
-                                        </div>
-                                        <p class="text-sm text-slate-700 mb-2">
-                                            <strong>Goodybag Spesial (Varian Berbeda)</strong> untuk top fundraiser di setiap angkatan
-                                        </p>
-                                        <p class="text-xs text-slate-500 bg-white/60 inline-block px-3 py-1 rounded-lg">
-                                            <i class="fas fa-exclamation-circle"></i> Minimal perolehan Rp 500.000
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sanksi Section -->
-                    <div class="pt-6 border-t-2 border-slate-200">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center shadow-lg">
-                                <i class="fas fa-exclamation-triangle text-white"></i>
-                            </div>
-                            <h4 class="text-xl font-black text-slate-800">C. Sanksi Administrasi</h4>
-                        </div>
-
-                        <div class="bg-red-50 rounded-2xl p-6 border-2 border-red-200">
-                            <p class="text-sm text-slate-700 mb-4 font-medium">
-                                Bagi siswa yang <strong>menghilangkan map/amplop/dokumen fisik</strong> atau <strong>tidak melaporkan hasil perolehan:</strong>
-                            </p>
-                            <ul class="space-y-3">
-                                <li class="flex items-start gap-3 bg-white rounded-xl p-4 border border-red-100">
-                                    <i class="fas fa-money-bill-wave text-red-500 text-xl mt-0.5 shrink-0"></i>
-                                    <div>
-                                        <p class="font-bold text-slate-800 mb-1">Denda: Rp 50.000</p>
-                                        <p class="text-xs text-slate-600">Wajib dibayarkan untuk mengganti dokumen yang hilang</p>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-3 bg-white rounded-xl p-4 border border-red-100">
-                                    <i class="fas fa-file-signature text-red-500 text-xl mt-0.5 shrink-0"></i>
-                                    <div>
-                                        <p class="font-bold text-slate-800 mb-1">Surat Pernyataan Bermaterai Rp 10.000</p>
-                                        <p class="text-xs text-slate-600">Wajib lapor diri dan menandatangani surat pernyataan yang diketahui orang tua/wali</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Note -->
-                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                        <p class="text-xs text-slate-500 text-center">
-                            <i class="fas fa-info-circle text-blue-500"></i> 
-                            Informasi ini berlaku untuk seluruh santri yang mengikuti program fundraising Lazismu Mu'allimin
-                        </p>
-                    </div>
-
+                <div class="text-right hidden md:block">
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Total Capaian</p>
+                    <h4 id="user-total-progress" class="text-2xl font-black text-emerald-600">Rp 0</h4>
                 </div>
             </div>
+
+            <div class="relative w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+                <div id="tier-progress-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400 to-red-600 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between mt-3 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <span>Start</span>
+                <span id="target-next-tier">Target: Rp 500rb</span>
+            </div>
         </div>
+    </div>
+
+    <div class="flex justify-center mb-8">
+        <div class="bg-slate-100 p-1.5 rounded-2xl inline-flex gap-1">
+            <button onclick="switchTab('rewards')" id="tab-btn-rewards" class="px-6 py-2.5 rounded-xl bg-white text-slate-800 font-bold text-sm shadow-sm transition-all">
+                <i class="fas fa-gift mr-2 text-orange-500"></i> Reward & Benefit
+            </button>
+            <button onclick="switchTab('rules')" id="tab-btn-rules" class="px-6 py-2.5 rounded-xl text-slate-500 hover:text-slate-700 font-bold text-sm hover:bg-white/50 transition-all">
+                <i class="fas fa-book mr-2 text-blue-500"></i> Aturan & Sanksi
+            </button>
+        </div>
+    </div>
+
+    <div id="content-rewards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        </div>
+
+    <div id="content-rules" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+        </div>
+</div>
 
     </div>
 </section>
@@ -4713,6 +4585,7 @@
 </body>
 
 </html>
+
 
 
 
