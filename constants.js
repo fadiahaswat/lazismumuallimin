@@ -15,6 +15,12 @@ export const ZAKAT = {
     MIN_NOMINAL: 10000       // Minimum donation amount
 };
 
+// Donation limits
+export const DONATION = {
+    MAX_AMOUNT: 10000000,    // Maximum donation amount per transaction (10 million IDR)
+    WA_CONTACT: '6281196961918'  // WhatsApp contact for donations above limit
+};
+
 // Animation and UI timing (in milliseconds)
 export const DELAYS = {
     PRELOADER: 50,
