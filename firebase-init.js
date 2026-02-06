@@ -182,10 +182,10 @@ export function loginWithNIS() {
         const prefs = SantriManager.getPrefs(santri.nis);
         
         // Check password: support both hashed and plain-text for migration
-        // If stored password starts with 'H', it's hashed
+        // Hashed passwords use format: $H1$<hash>
         let validPassword = false;
         if (prefs.password) {
-            if (prefs.password.startsWith('H')) {
+            if (prefs.password.startsWith('$H1$')) {
                 // Hashed password - compare hashes
                 validPassword = prefs.password === hashPassword(passInput);
             } else {

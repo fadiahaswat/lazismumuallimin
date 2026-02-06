@@ -337,7 +337,7 @@ export const rateLimiter = new RateLimiter(5, 15);
  * This provides basic protection against plain-text password exposure.
  * 
  * @param {string} password - Plain text password
- * @returns {string} - Hashed password (prefixed with 'H')
+ * @returns {string} - Hashed password (prefixed with '$H1$')
  */
 export function hashPassword(password) {
     let hash = 0;
@@ -348,7 +348,8 @@ export function hashPassword(password) {
     }
     // Add a salt-like component (not true salt, but better than nothing)
     const salted = hash ^ 0xDEADBEEF;
-    return 'H' + Math.abs(salted).toString(36);
+    // Use versioned format to prevent collision with plain-text passwords
+    return '$H1$' + Math.abs(salted).toString(36);
 }
 
 /**
