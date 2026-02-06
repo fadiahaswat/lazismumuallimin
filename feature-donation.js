@@ -4,6 +4,13 @@ import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
 import { DONATION } from './constants.js';
+import { 
+    initSecurityTracking, 
+    performSecurityChecks, 
+    validateDonationData, 
+    addSecurityHeaders,
+    rateLimiter 
+} from './security-utils.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
 // Mencegah race condition antara page visibility changes dan step navigation
@@ -258,6 +265,9 @@ function processDonationFlow(type, nominal) {
     // 2. Reset ke Langkah 1 dengan delay untuk memastikan showPage selesai
     // Delay diperlukan karena showPage() melakukan DOM manipulation asynchronous
     setTimeout(() => {
+        // Initialize security tracking when donation form starts
+        initSecurityTracking();
+        
         // Tampilkan wizard dan sembunyikan payment instructions
         const wizard = document.getElementById('donasi-wizard');
         if (wizard) wizard.classList.remove('hidden');
@@ -845,21 +855,47 @@ export function setupWizardLogic() {
 
             if (!check || !check.checked) return showToast("Mohon centang pernyataan konfirmasi");
 
-            // 1. Ubah tombol jadi Loading
+            // === SECURITY CHECKS START ===
+            
+            // 1. Perform security checks (rate limiting & bot detection)
+            const securityCheck = performSecurityChecks();
+            if (!securityCheck.allowed) {
+                showToast(securityCheck.message, 'error');
+                return;
+            }
+
+            // 2. Validate donation data
+            const validationResult = validateDonationData({
+                type: donasiData.subType || donasiData.type,
+                nominal: donasiData.nominalTotal,
+                nama: donasiData.nama,
+                hp: donasiData.hp,
+                email: donasiData.email,
+                metode: donasiData.metode
+            });
+
+            if (!validationResult.isValid) {
+                showToast(`Validasi gagal: ${validationResult.errors.join(', ')}`, 'error');
+                return;
+            }
+
+            // === SECURITY CHECKS END ===
+
+            // 3. Ubah tombol jadi Loading
             btn.disabled = true;
             btn.querySelector('.default-text').classList.add('hidden');
             btn.querySelector('.loading-text').classList.remove('hidden');
 
-            // 2. Siapkan Data (Payload)
+            // 4. Siapkan Data (Payload) - menggunakan data yang sudah disanitasi
             const payload = {
                 "type": donasiData.subType || donasiData.type,
                 "nominal": donasiData.nominalTotal, 
-                "nama": donasiData.nama,
+                "nama": validationResult.sanitizedData.nama,
                 "hp": donasiData.hp,
                 "email": donasiData.email,
-                "alamat": donasiData.alamat,
+                "alamat": validationResult.sanitizedData.alamat || donasiData.alamat,
                 "metode": donasiData.metode,
-                "doa": donasiData.doa,
+                "doa": validationResult.sanitizedData.doa || donasiData.doa,
                 "donaturTipe": donasiData.donaturTipe,
                 "alumniTahun": donasiData.alumniTahun || "",
                 "DetailAlumni": donasiData.alumniTahun || "",
@@ -869,19 +905,25 @@ export function setupWizardLogic() {
                 "NoKTP": donasiData.nik || ""
             };
 
+            // 5. Add security headers to payload
+            const securePayload = addSecurityHeaders(payload);
+
             try {
-                // 3. Kirim ke Google Apps Script
+                // 6. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ action: "create", payload: payload })
+                    body: JSON.stringify({ action: "create", payload: securePayload })
                 });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                // 4. Update Data Tampilan di Halaman Sukses
+                // 7. Record successful submission for rate limiting
+                rateLimiter.recordRequest();
+
+                // 8. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');
                 const finalType = document.getElementById('final-type-display');
                 const finalName = document.getElementById('final-name-display');
