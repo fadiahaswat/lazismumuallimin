@@ -160,6 +160,9 @@ function calculateStats() {
     let totalTunai = 0;
 
     data.forEach(d => {
+        // Hanya hitung donasi yang sudah Terverifikasi
+        if (d.Status !== 'Terverifikasi') return;
+        
         const val = parseInt(d.Nominal) || 0;
         total += val;
         if (val > maxDonation) {
