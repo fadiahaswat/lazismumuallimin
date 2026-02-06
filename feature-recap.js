@@ -121,6 +121,9 @@ export function renderGlobalLeaderboard() {
 
     const classTotals = {};
     riwayatData.allData.forEach(d => {
+        // Hanya hitung donasi yang sudah Terverifikasi
+        if (d.Status !== 'Terverifikasi') return;
+        
         const rombel = d.KelasSantri || d.rombelSantri;
         if (rombel) {
             const val = parseInt(d.Nominal) || 0;
@@ -319,6 +322,9 @@ function renderRekapTable(cls) {
         let qris = 0, transfer = 0, tunai = 0;
 
         riwayatData.allData.forEach(d => {
+            // Hanya hitung donasi yang sudah Terverifikasi
+            if (d.Status !== 'Terverifikasi') return;
+            
             const matchNama = d.NamaSantri && s.nama && d.NamaSantri.trim() === s.nama.trim();
             const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
 
