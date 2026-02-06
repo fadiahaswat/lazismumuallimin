@@ -3,6 +3,7 @@
 import { donasiData } from './state.js';
 import { showToast } from './utils.js';
 import { goToStep } from './feature-donation.js';
+import { ZAKAT } from './constants.js';
 
 /**
  * Format input field as Rupiah and update donation state
@@ -77,7 +78,6 @@ export function calculateZakat() {
     }
 
     const hartaBersih = totalHarta - hutang;
-    const NISAB_TAHUN = 85685972; 
 
     const resultDiv = document.getElementById('calc-result');
     if(resultDiv) resultDiv.classList.remove('hidden');
@@ -88,11 +88,11 @@ export function calculateZakat() {
     const divWajib = document.getElementById('status-wajib');
     const divTidak = document.getElementById('status-tidak-wajib');
 
-    if (hartaBersih >= NISAB_TAHUN) {
+    if (hartaBersih >= ZAKAT.NISAB_TAHUN) {
         if(divWajib) divWajib.classList.remove('hidden');
         if(divTidak) divTidak.classList.add('hidden');
 
-        const zakat = Math.ceil(hartaBersih * 0.025);
+        const zakat = Math.ceil(hartaBersih * ZAKAT.RATE);
         const elAmount = document.getElementById('final-zakat-amount');
         if(elAmount) {
             elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
@@ -148,8 +148,8 @@ export function handleManualZakatNext() {
     // Ambil nilai bersih dari input
     const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
 
-    if (cleanVal < 10000) {
-        showToast('Minimal nominal zakat Rp 10.000', 'warning');
+    if (cleanVal < ZAKAT.MIN_NOMINAL) {
+        showToast(`Minimal nominal zakat Rp ${ZAKAT.MIN_NOMINAL.toLocaleString('id-ID')}`, 'warning');
         return;
     }
 
@@ -162,19 +162,5 @@ export function handleManualZakatNext() {
     console.log("Zakat Maal Saved:", donasiData);
 
     // Move to step 3 (skip step 2 nominal buttons)
-    if(typeof goToStep === 'function') {
-        goToStep(3);
-    } else {
-        // Fallback if goToStep is not available
-        console.warn("goToStep function missing, using fallback");
-        document.getElementById('donasi-step-1').classList.add('hidden');
-        document.getElementById('donasi-step-2').classList.add('hidden');
-        document.getElementById('donasi-step-3').classList.remove('hidden');
-        
-        // Update progress
-        const circles = document.querySelectorAll('.step-circle');
-        if(circles[2]) circles[2].classList.add('active');
-        
-        document.getElementById('donasi-step-3').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    goToStep(3);
 }
