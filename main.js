@@ -269,3 +269,229 @@ window.switchZakatMode = switchZakatMode;
 window.calculateZakat = calculateZakat;
 window.applyZakatResult = applyZakatResult;
 window.handleManualZakatNext = handleManualZakatNext;
+
+/* =========================================
+   SISTEM GAMIFIKASI & APRESIASI SANTRI
+   ========================================= */
+
+// Data Config (Mudah diedit di masa depan)
+const TIER_DATA = [
+    {
+        level: 1,
+        name: "Pejuang Kebaikan",
+        min: 500000,
+        color: "from-amber-400 to-orange-500",
+        icon: "fas fa-star",
+        benefits: [
+            "Sertifikat Penghargaan",
+            "30 Poin Prestasi Siswa"
+        ]
+    },
+    {
+        level: 2,
+        name: "Ksatria Dermawan",
+        min: 1000000,
+        color: "from-blue-400 to-indigo-600",
+        icon: "fas fa-shield-alt",
+        benefits: [
+            "Semua Benefit Level 1",
+            "Exclusive Goodybag Lazismu",
+            "Prioritas Pelayanan"
+        ]
+    },
+    {
+        level: 3,
+        name: "Pahlawan Lazismu",
+        min: 5000000,
+        color: "from-purple-500 to-pink-600",
+        icon: "fas fa-crown",
+        benefits: [
+            "Semua Benefit Level 2",
+            "Voucher Bebas SPP 1 Bulan",
+            "Gala Dinner Bersama Direksi"
+        ]
+    }
+];
+
+const RULES_DATA = [
+    {
+        title: "Dokumen Hilang",
+        desc: "Kehilangan map/amplop/dokumen fisik fundraising.",
+        sanction: "Denda Ganti Cetak Rp 50.000",
+        icon: "fas fa-file-excel",
+        color: "text-red-500 bg-red-50"
+    },
+    {
+        title: "Lalai Lapor",
+        desc: "Tidak melaporkan hasil perolehan sesuai tenggat waktu.",
+        sanction: "Surat Pernyataan Bermaterai (Rp 10.000)",
+        icon: "fas fa-user-clock",
+        color: "text-orange-500 bg-orange-50"
+    }
+];
+
+// Fungsi Utama untuk Merender Gamifikasi
+// Panggil fungsi ini saat Dashboard dimuat (misal di dalam loadPersonalDashboard)
+function renderGamification(totalDonasiSantri) {
+    const container = document.getElementById('gamification-container');
+    if (!container) return;
+    
+    container.classList.remove('hidden'); // Tampilkan section
+
+    // 1. Hitung Level Saat Ini
+    let currentTierIdx = -1;
+    let nextTier = TIER_DATA[0];
+    
+    // Cari level tertinggi yang sudah dicapai
+    for (let i = 0; i < TIER_DATA.length; i++) {
+        if (totalDonasiSantri >= TIER_DATA[i].min) {
+            currentTierIdx = i;
+        }
+    }
+
+    // Tentukan target berikutnya
+    if (currentTierIdx < TIER_DATA.length - 1) {
+        nextTier = TIER_DATA[currentTierIdx + 1];
+    } else {
+        nextTier = null; // Sudah max level
+    }
+
+    // 2. Update Header UI
+    const tierNameEl = document.getElementById('current-tier-name');
+    const nextInfoEl = document.getElementById('next-tier-info');
+    const progressBar = document.getElementById('tier-progress-bar');
+    const targetLabel = document.getElementById('target-next-tier');
+    const totalEl = document.getElementById('user-total-progress');
+
+    // Format Rupiah helper
+    const fmt = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
+
+    totalEl.innerText = fmt(totalDonasiSantri);
+
+    if (currentTierIdx === -1) {
+        tierNameEl.innerText = "Pemula";
+        tierNameEl.className = "text-3xl md:text-4xl font-black text-slate-400";
+        nextInfoEl.innerHTML = `Butuh <strong>${fmt(nextTier.min - totalDonasiSantri)}</strong> lagi untuk naik level.`;
+        
+        // Hitung persentase ke level 1
+        let pct = (totalDonasiSantri / nextTier.min) * 100;
+        progressBar.style.width = `${pct}%`;
+        targetLabel.innerText = `Target: ${fmt(nextTier.min)}`;
+        
+    } else if (nextTier) {
+        const currTier = TIER_DATA[currentTierIdx];
+        tierNameEl.innerText = currTier.name;
+        // Ubah warna text sesuai tier
+        if(currentTierIdx === 0) tierNameEl.className = "text-3xl md:text-4xl font-black text-amber-500";
+        if(currentTierIdx === 1) tierNameEl.className = "text-3xl md:text-4xl font-black text-indigo-600";
+        if(currentTierIdx === 2) tierNameEl.className = "text-3xl md:text-4xl font-black text-pink-600";
+
+        nextInfoEl.innerHTML = `Luar biasa! <strong>${fmt(nextTier.min - totalDonasiSantri)}</strong> lagi menuju ${nextTier.name}.`;
+        
+        // Progress bar logic (range antara current tier min dan next tier min)
+        const range = nextTier.min - currTier.min;
+        const currentInTier = totalDonasiSantri - currTier.min;
+        let pct = (currentInTier / range) * 100;
+        progressBar.style.width = `${pct}%`;
+        targetLabel.innerText = `Next: ${fmt(nextTier.min)}`;
+
+    } else {
+        // Max Level
+        const maxTier = TIER_DATA[TIER_DATA.length - 1];
+        tierNameEl.innerText = maxTier.name + " (MAX)";
+        tierNameEl.className = "text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600";
+        nextInfoEl.innerText = "Anda adalah legenda kebaikan!";
+        progressBar.style.width = "100%";
+        targetLabel.innerText = "Unstoppable";
+    }
+
+    // 3. Render Reward Cards
+    const rewardsContainer = document.getElementById('content-rewards');
+    rewardsContainer.innerHTML = '';
+
+    TIER_DATA.forEach((tier, index) => {
+        const isUnlocked = index <= currentTierIdx;
+        const isNext = index === currentTierIdx + 1;
+        
+        // Styling logic
+        let cardClass = isUnlocked 
+            ? "bg-white border-emerald-500 shadow-xl shadow-emerald-500/10 transform -translate-y-2" 
+            : (isNext ? "bg-white border-slate-200 opacity-100" : "bg-slate-50 border-slate-100 opacity-60 grayscale");
+            
+        let iconBg = isUnlocked ? `bg-gradient-to-br ${tier.color} text-white` : "bg-slate-200 text-slate-400";
+        let statusBadge = isUnlocked 
+            ? `<span class="absolute top-4 right-4 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-check"></i> Dicapai</span>`
+            : (isNext ? `<span class="absolute top-4 right-4 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-pulse">Target Berikutnya</span>` : `<span class="absolute top-4 right-4 bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-lock"></i> Terkunci</span>`);
+
+        const benefitsList = tier.benefits.map(b => 
+            `<li class="flex items-start gap-2 text-xs text-slate-600 mb-1">
+                <i class="fas fa-check-circle ${isUnlocked ? 'text-emerald-500' : 'text-slate-300'} mt-0.5"></i> ${b}
+             </li>`
+        ).join('');
+
+        const html = `
+        <div class="relative p-6 rounded-3xl border-2 transition-all duration-300 group ${cardClass}">
+            ${statusBadge}
+            <div class="w-14 h-14 rounded-2xl ${iconBg} flex items-center justify-center text-xl shadow-lg mb-4 transition-transform group-hover:scale-110">
+                <i class="${tier.icon}"></i>
+            </div>
+            <h4 class="font-black text-lg text-slate-800 mb-1">${tier.name}</h4>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Target: ${fmt(tier.min)}</p>
+            
+            <div class="h-px bg-slate-100 w-full mb-4"></div>
+            
+            <ul class="space-y-2">
+                ${benefitsList}
+            </ul>
+        </div>
+        `;
+        rewardsContainer.innerHTML += html;
+    });
+
+    // 4. Render Rules Cards
+    const rulesContainer = document.getElementById('content-rules');
+    rulesContainer.innerHTML = '';
+    
+    RULES_DATA.forEach(rule => {
+        const html = `
+        <div class="flex items-start gap-5 bg-white p-6 rounded-3xl border border-slate-100 hover:border-red-200 hover:shadow-lg transition-all">
+            <div class="w-12 h-12 rounded-full ${rule.color} flex items-center justify-center text-xl shrink-0">
+                <i class="${rule.icon}"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-800 text-lg mb-1">${rule.title}</h4>
+                <p class="text-sm text-slate-500 mb-3 leading-relaxed">${rule.desc}</p>
+                <div class="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-xs font-bold inline-block border border-red-100">
+                    <i class="fas fa-gavel mr-1"></i> ${rule.sanction}
+                </div>
+            </div>
+        </div>
+        `;
+        rulesContainer.innerHTML += html;
+    });
+}
+
+// Fungsi Tab Switcher
+window.switchTab = function(tabName) {
+    const rewardsContent = document.getElementById('content-rewards');
+    const rulesContent = document.getElementById('content-rules');
+    const btnRewards = document.getElementById('tab-btn-rewards');
+    const btnRules = document.getElementById('tab-btn-rules');
+
+    if (tabName === 'rewards') {
+        rewardsContent.classList.remove('hidden');
+        rulesContent.classList.add('hidden');
+        
+        btnRewards.className = "px-6 py-2.5 rounded-xl bg-white text-slate-800 font-bold text-sm shadow-sm transition-all";
+        btnRules.className = "px-6 py-2.5 rounded-xl text-slate-500 hover:text-slate-700 font-bold text-sm hover:bg-white/50 transition-all";
+    } else {
+        rewardsContent.classList.add('hidden');
+        rulesContent.classList.remove('hidden');
+
+        btnRules.className = "px-6 py-2.5 rounded-xl bg-white text-slate-800 font-bold text-sm shadow-sm transition-all";
+        btnRewards.className = "px-6 py-2.5 rounded-xl text-slate-500 hover:text-slate-700 font-bold text-sm hover:bg-white/50 transition-all";
+    }
+}
+
+// Expose render function to window so other modules can call it
+window.renderGamification = renderGamification;
