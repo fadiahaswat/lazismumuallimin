@@ -869,6 +869,8 @@ function updateDashboardUI() {
 
     if (typeof renderGamification === 'function') {
         renderGamification(totalDonasi);
+    } else {
+        console.log("Fungsi renderGamification belum siap");
     }
 
     const elStatTotal = document.getElementById('dash-stat-total');
