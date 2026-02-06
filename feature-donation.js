@@ -3,6 +3,7 @@ import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
+import { DONATION } from './constants.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
 // Mencegah race condition antara page visibility changes dan step navigation
@@ -10,6 +11,92 @@ const DOM_UPDATE_DELAY_MS = 50;
 
 // Expected parts when splitting santri value format: "Nama::NIS::Rombel"
 const EXPECTED_SANTRI_PARTS = 3;
+
+// --- FUNGSI HELPER ---
+
+// Show modal for donation limit exceeded
+function showDonationLimitModal(amount) {
+    const waMessage = encodeURIComponent(
+        `Assalamu'alaikum,\n\nSaya ingin melakukan donasi sebesar ${formatRupiah(amount)}.\n\nMohon bantuan untuk proses donasi ini.\n\nJazakumullah khairan katsiran.`
+    );
+    const waLink = `https://wa.me/${DONATION.WA_CONTACT}?text=${waMessage}`;
+    
+    const modalHTML = `
+        <div id="donation-limit-modal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-fade-in-up">
+                <!-- Header -->
+                <div class="bg-gradient-to-br from-orange-500 to-red-500 p-8 text-center text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-8 -mt-8"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-white/30">
+                            <i class="fas fa-exclamation-triangle text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-2">Donasi Besar Terdeteksi</h3>
+                        <p class="text-sm opacity-90 font-medium">Nominal melebihi batas maksimal</p>
+                    </div>
+                </div>
+                
+                <!-- Body -->
+                <div class="p-8">
+                    <div class="bg-orange-50 border border-orange-100 rounded-2xl p-5 mb-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-orange-800 uppercase tracking-wide">Untuk Keamanan</p>
+                                <p class="text-sm font-black text-orange-900">${formatRupiah(amount)}</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-orange-700 leading-relaxed">
+                            Untuk menghindari potensi kejahilan dan memastikan keamanan transaksi, donasi di atas <strong class="text-orange-900">${formatRupiah(DONATION.MAX_AMOUNT)}</strong> harus diproses langsung oleh petugas Lazismu Muallimin.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <a href="${waLink}" target="_blank" class="group w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 active:scale-95">
+                            <i class="fab fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
+                            <div class="text-left">
+                                <span class="block text-sm opacity-90">Hubungi via WhatsApp</span>
+                                <span class="block text-xs opacity-75">Petugas akan membantu Anda</span>
+                            </div>
+                        </a>
+                        
+                        <button onclick="closeDonationLimitModal()" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali & Ubah Nominal
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <div class="flex items-start gap-3 text-xs text-slate-500">
+                            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                            <p class="leading-relaxed">
+                                Petugas kami akan membantu Anda menyelesaikan proses donasi dengan aman dan tercatat dengan baik. Jazakumullah khairan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove any existing modal
+    const existingModal = document.getElementById('donation-limit-modal');
+    if (existingModal) existingModal.remove();
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// Close the donation limit modal
+window.closeDonationLimitModal = function() {
+    const modal = document.getElementById('donation-limit-modal');
+    if (modal) {
+        modal.classList.add('animate-fade-out');
+        setTimeout(() => modal.remove(), 300);
+    }
+};
 
 // --- FUNGSI NAVIGASI WIZARD ---
 
@@ -468,8 +555,13 @@ export function setupWizardLogic() {
     const btnNextStep3 = document.querySelector('[data-next-step="3"]');
     if (btnNextStep3) {
         btnNextStep3.onclick = () => {
-            if (donasiData.nominal < 1000) showToast("Nominal minimal Rp 1.000");
-            else goToStep(3);
+            if (donasiData.nominal < 1000) {
+                showToast("Nominal minimal Rp 1.000");
+            } else if (donasiData.nominal > DONATION.MAX_AMOUNT) {
+                showDonationLimitModal(donasiData.nominal);
+            } else {
+                goToStep(3);
+            }
         };
     }
 
