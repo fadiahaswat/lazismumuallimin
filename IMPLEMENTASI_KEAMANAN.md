@@ -357,6 +357,28 @@ function doPost(e) {
 1. **Client-side bypass** - Semua proteksi client-side bisa di-bypass oleh attacker yang sophisticated
 2. **No server-side rate limiting** - Perlu implementasi di Google Apps Script
 3. **Simple checksum** - Perlu upgrade ke HMAC untuk production
+4. **CSP with unsafe-inline** - Saat ini CSP menggunakan 'unsafe-inline' karena banyak inline event handlers (onclick, dll). Untuk keamanan maksimal, perlu refactor ke addEventListener()
+
+---
+
+## 🔮 Future Improvements
+
+### High Priority
+1. **Refactor Inline Event Handlers** - Migrate dari onclick ke addEventListener() agar bisa remove 'unsafe-inline' dari CSP
+2. **Server-side Rate Limiting** - Implementasi di Google Apps Script berdasarkan IP address
+3. **HMAC Verification** - Ganti simple checksum dengan HMAC menggunakan secret key
+4. **reCAPTCHA v3** - Tambahkan untuk bot detection yang lebih robust
+
+### Medium Priority
+5. **Session Management** - Implementasi proper session management
+6. **Audit Logging** - Log semua security events (rate limit hit, bot detection, validation failures)
+7. **Monitoring Dashboard** - Real-time monitoring untuk aktivitas mencurigakan
+8. **Automated Testing** - Unit tests untuk semua security functions
+
+### Low Priority
+9. **Subresource Integrity (SRI)** - Tambahkan untuk semua CDN resources
+10. **Security Headers Server-Side** - Implementasi di server untuk override meta tags
+11. **CORS Policy** - Fine-tune CORS untuk production environment
 
 ---
 
