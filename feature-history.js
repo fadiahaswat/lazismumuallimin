@@ -1131,7 +1131,7 @@ const TIER_DATA = [
         min: 1000000,
         color: "from-blue-400 to-indigo-600",
         icon: "fas fa-shield-alt",
-        benefits: ["Semua Benefit Level 1", "Exclusive Goodybag Lazismu", "Prioritas Pelayanan"]
+        benefits: ["Semua Benefit Level 1", "Exclusive Goodybag Lazismu"]
     },
     {
         level: 3,
@@ -1139,7 +1139,7 @@ const TIER_DATA = [
         min: 5000000,
         color: "from-purple-500 to-pink-600",
         icon: "fas fa-crown",
-        benefits: ["Semua Benefit Level 2", "Voucher Bebas SPP 1 Bulan", "Gala Dinner Bersama Direksi"]
+        benefits: ["Semua Benefit Level 2", "Voucher Bebas SPP 1 Bulan"]
     }
 ];
 
