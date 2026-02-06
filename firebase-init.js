@@ -12,6 +12,78 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
+// Session expiration time (7 days in milliseconds)
+const SESSION_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
+
+// Login rate limiting to prevent brute force attacks
+const LOGIN_RATE_LIMIT = {
+    maxAttempts: 5,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    storageKey: 'login_attempts'
+};
+
+/**
+ * Check and record login attempt for rate limiting
+ * @returns {Object} { allowed: boolean, remainingTime: number, message: string }
+ */
+function checkLoginRateLimit() {
+    const now = Date.now();
+    let attempts = [];
+    
+    try {
+        const stored = localStorage.getItem(LOGIN_RATE_LIMIT.storageKey);
+        if (stored) {
+            attempts = JSON.parse(stored);
+        }
+    } catch (error) {
+        console.error('Error reading login attempts:', error);
+    }
+    
+    // Filter out old attempts outside the time window
+    attempts = attempts.filter(timestamp => now - timestamp < LOGIN_RATE_LIMIT.windowMs);
+    
+    // Check if limit exceeded
+    if (attempts.length >= LOGIN_RATE_LIMIT.maxAttempts) {
+        const oldestAttempt = Math.min(...attempts);
+        const resetTime = oldestAttempt + LOGIN_RATE_LIMIT.windowMs;
+        const remainingMs = resetTime - now;
+        const remainingMinutes = Math.ceil(remainingMs / 60000);
+        
+        return {
+            allowed: false,
+            remainingTime: remainingMinutes,
+            message: `Terlalu banyak percobaan login. Silakan coba lagi dalam ${remainingMinutes} menit.`
+        };
+    }
+    
+    // Record this attempt
+    attempts.push(now);
+    localStorage.setItem(LOGIN_RATE_LIMIT.storageKey, JSON.stringify(attempts));
+    
+    return { allowed: true };
+}
+
+/**
+ * Clear login rate limit (called on successful login)
+ */
+function clearLoginRateLimit() {
+    localStorage.removeItem(LOGIN_RATE_LIMIT.storageKey);
+}
+
+/**
+ * Check if a session has expired
+ * @param {Object} session - Session object with loginTime
+ * @returns {boolean} - True if session is still valid
+ */
+function isSessionValid(session) {
+    if (!session || !session.loginTime) {
+        return false;
+    }
+    const now = Date.now();
+    const elapsed = now - session.loginTime;
+    return elapsed < SESSION_EXPIRY_MS;
+}
+
 // Listen for Auth Changes
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -22,6 +94,16 @@ onAuthStateChanged(auth, (user) => {
         if (santriSession) {
             try {
                 const santriUser = JSON.parse(santriSession);
+                
+                // Check if session has expired
+                if (!isSessionValid(santriUser)) {
+                    console.log("Session expired, logging out");
+                    localStorage.removeItem('lazismu_user_santri');
+                    updateUIForLogout();
+                    showToast("Sesi Anda telah berakhir. Silakan login kembali.", "warning");
+                    return;
+                }
+                
                 updateUIForLogin(santriUser);
             } catch (error) {
                 console.error("Failed to parse santri session:", error);
@@ -59,7 +141,8 @@ export async function loginWithGoogle() {
                     isSantri: true,
                     rombel: santri.kelas || santri.rombel,
                     nis: santri.nis,
-                    linkedEmail: googleUser.email
+                    linkedEmail: googleUser.email,
+                    loginTime: Date.now() // Add session timestamp
                 };
                 
                 localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
@@ -76,11 +159,33 @@ export async function loginWithGoogle() {
     }
 }
 
+/**
+ * Simple password hashing function (matches ui-navigation.js)
+ * NOTE: This is NOT cryptographically secure. For production, use a proper
+ * server-side authentication system with bcrypt or Argon2.
+ */
+function hashPassword(password) {
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    const salted = hash ^ 0xDEADBEEF;
+    return 'H' + Math.abs(salted).toString(36);
+}
+
 export function loginWithNIS() {
     const nisInput = document.getElementById('login-nis').value.trim();
     const passInput = document.getElementById('login-pass').value.trim();
 
     if (!nisInput || !passInput) return showToast("Mohon isi NIS dan Password", "warning");
+
+    // Check rate limit to prevent brute force attacks
+    const rateCheck = checkLoginRateLimit();
+    if (!rateCheck.allowed) {
+        return showToast(rateCheck.message, "error");
+    }
 
     if (typeof window.santriData === 'undefined' || window.santriData.length === 0) {
         return showToast("Data Santri sedang dimuat...", "warning");
@@ -90,7 +195,31 @@ export function loginWithNIS() {
 
     if (santri) {
         const prefs = SantriManager.getPrefs(santri.nis);
-        const validPassword = prefs.password ? (prefs.password === passInput) : (String(santri.nis) === passInput);
+        
+        // Check password: support both hashed and plain-text for migration
+        // If stored password starts with 'H', it's hashed
+        let validPassword = false;
+        if (prefs.password) {
+            if (prefs.password.startsWith('H')) {
+                // Hashed password - compare hashes
+                validPassword = prefs.password === hashPassword(passInput);
+            } else {
+                // Legacy plain-text password - compare directly and migrate
+                validPassword = prefs.password === passInput;
+                if (validPassword) {
+                    // Migrate to hashed password
+                    SantriManager.savePrefs(santri.nis, { password: hashPassword(passInput) });
+                }
+            }
+        } else {
+            // Default password is NIS
+            const defaultHash = hashPassword(String(santri.nis));
+            validPassword = hashPassword(passInput) === defaultHash;
+            if (validPassword) {
+                // Store the hashed default password
+                SantriManager.savePrefs(santri.nis, { password: defaultHash });
+            }
+        }
 
         if (validPassword) {
             const avatarUrl = prefs.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(santri.nama)}&background=10b981&color=fff`;
@@ -103,9 +232,13 @@ export function loginWithNIS() {
                 isSantri: true, 
                 rombel: santri.kelas || santri.rombel,
                 nis: santri.nis,
-                linkedEmail: prefs.linkedEmail
+                linkedEmail: prefs.linkedEmail,
+                loginTime: Date.now() // Add session timestamp
             };
 
+            // Clear rate limit on successful login
+            clearLoginRateLimit();
+            
             localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
             updateUIForLogin(mockUser);
             renderDashboardProfil(santri.nis); 

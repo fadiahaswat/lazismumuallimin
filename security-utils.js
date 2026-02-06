@@ -203,6 +203,20 @@ function sanitizeText(text) {
 
 /**
  * Add timestamp and signature to payload for replay attack prevention
+ * NOTE: The checksum generated here provides basic integrity checking but is NOT
+ * cryptographically secure and can be easily bypassed by a determined attacker.
+ * 
+ * PRODUCTION RECOMMENDATION:
+ * Replace this with server-side HMAC using a secret key:
+ * 1. Store a secret key securely on the server
+ * 2. Generate HMAC-SHA256 on server: HMAC(secret_key, payload_data)
+ * 3. Server validates the HMAC before processing any request
+ * 4. This prevents tampering since attackers don't have the secret key
+ * 
+ * Current implementation provides:
+ * - Basic integrity check against accidental corruption
+ * - Timestamp for replay attack prevention (if validated server-side)
+ * - Client version tracking for compatibility
  */
 export function addSecurityHeaders(payload) {
     return {
@@ -210,6 +224,7 @@ export function addSecurityHeaders(payload) {
         timestamp: new Date().toISOString(),
         clientVersion: '1.0.0',
         // Generate a simple hash for integrity check
+        // WARNING: Not cryptographically secure - see function comment above
         checksum: generateChecksum(payload)
     };
 }

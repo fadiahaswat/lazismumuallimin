@@ -146,13 +146,38 @@ export function saveNewPassword() {
 
     if (!p1 || !p2) return showToast("Password tidak boleh kosong", "warning");
     if (p1 !== p2) return showToast("Konfirmasi password tidak cocok", "error");
-    if (p1.length < 4) return showToast("Password minimal 4 karakter", "warning");
-
-    SantriManager.savePrefs(currentUser.nis, { password: p1 });
+    
+    // Enhanced password validation for better security
+    if (p1.length < 8) return showToast("Password minimal 8 karakter", "warning");
+    if (!/[A-Z]/.test(p1)) return showToast("Password harus mengandung minimal 1 huruf besar", "warning");
+    if (!/[a-z]/.test(p1)) return showToast("Password harus mengandung minimal 1 huruf kecil", "warning");
+    if (!/[0-9]/.test(p1)) return showToast("Password harus mengandung minimal 1 angka", "warning");
+    
+    // Hash the password before storing (simple hash for client-side)
+    const hashedPassword = hashPassword(p1);
+    SantriManager.savePrefs(currentUser.nis, { password: hashedPassword });
     
     showToast("Password berhasil diganti!", "success");
     const modal = document.getElementById('pass-modal');
     if (modal) modal.classList.add('hidden');
+}
+
+/**
+ * Simple password hashing function
+ * NOTE: This is NOT cryptographically secure. For production, use a proper
+ * server-side authentication system with bcrypt or Argon2.
+ * This provides basic protection against plain-text password exposure.
+ */
+function hashPassword(password) {
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    // Add a salt-like component (not true salt, but better than nothing)
+    const salted = hash ^ 0xDEADBEEF;
+    return 'H' + Math.abs(salted).toString(36);
 }
 
 // Avatar UI
