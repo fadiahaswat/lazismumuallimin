@@ -1,12 +1,12 @@
-// Zakat Calculator and Management Module
+// Zakat Calculator Module
+// Functions for zakat calculation and management
 import { donasiData } from './state.js';
-import { showToast, formatRupiah, formatNumber } from './utils.js';
-import { ZAKAT } from './constants.js';
-import { showElement, hideElement } from './dom-utils.js';
+import { showToast } from './utils.js';
 import { goToStep } from './feature-donation.js';
+import { ZAKAT } from './constants.js';
 
 /**
- * Format input as Rupiah and update donation state
+ * Format input field as Rupiah and update donation state
  * @param {HTMLInputElement} input - The input element to format
  */
 export function formatInputRupiah(input) {
@@ -14,16 +14,14 @@ export function formatInputRupiah(input) {
     if (val === '') {
         input.value = '';
     } else {
-        input.value = formatNumber(val);
+        input.value = parseInt(val).toLocaleString('id-ID');
     }
     
-    // Update state immediately when typing
-    if (input.id === 'manual-zakat-input') {
+    // Update state when typing in manual zakat input
+    if(input.id === 'manual-zakat-input') {
         const numVal = parseInt(val) || 0;
-        if (typeof donasiData !== 'undefined') {
-            donasiData.nominal = numVal;
-            donasiData.nominalAsli = numVal;
-        }
+        donasiData.nominal = numVal;
+        donasiData.nominalAsli = numVal;
     }
 }
 
@@ -39,15 +37,14 @@ export function switchZakatMode(mode) {
 
     if (!btnManual || !btnCalc || !divManual || !divCalc) return;
 
-    // Style definitions
+    // Style Definitions
     const activeClass = "bg-white text-slate-800 shadow-sm border-slate-200 ring-1 ring-slate-100";
     const inactiveClass = "text-slate-500 hover:text-slate-800 hover:bg-white/60 border-transparent";
 
-    // Update button classes
+    // Reset Classes First
     btnManual.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'manual' ? activeClass : inactiveClass}`;
     btnCalc.className = `flex-1 flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all border ${mode === 'calculator' ? activeClass : inactiveClass}`;
 
-    // Toggle visibility and animation
     if (mode === 'manual') {
         divManual.classList.remove('hidden');
         divManual.classList.add('animate-fade-in-up');
@@ -60,62 +57,61 @@ export function switchZakatMode(mode) {
 }
 
 /**
- * Calculate zakat based on assets and liabilities
+ * Calculate zakat from calculator inputs
  */
 export function calculateZakat() {
     const inputs = document.querySelectorAll('.calc-input');
     let totalHarta = 0;
     let hutang = 0;
 
-    // Get first 3 inputs (Assets)
-    for (let i = 0; i < 3; i++) {
-        if (inputs[i]) {
+    // Ambil 3 input pertama (Aset)
+    for(let i=0; i<3; i++) {
+        if(inputs[i]) {
             let val = inputs[i].value.replace(/\D/g, '');
             totalHarta += parseInt(val || 0);
         }
     }
-    
-    // 4th input = Liabilities
-    if (inputs[3]) {
+    // Input Ke-4 = Hutang
+    if(inputs[3]) {
         let valHutang = inputs[3].value.replace(/\D/g, '');
         hutang = parseInt(valHutang || 0);
     }
 
     const hartaBersih = totalHarta - hutang;
-    
+
     const resultDiv = document.getElementById('calc-result');
-    if (resultDiv) resultDiv.classList.remove('hidden');
+    if(resultDiv) resultDiv.classList.remove('hidden');
     
     const elTotal = document.getElementById('total-harta');
-    if (elTotal) elTotal.innerText = formatRupiah(hartaBersih);
+    if(elTotal) elTotal.innerText = "Rp " + hartaBersih.toLocaleString('id-ID');
 
     const divWajib = document.getElementById('status-wajib');
     const divTidak = document.getElementById('status-tidak-wajib');
 
     if (hartaBersih >= ZAKAT.NISAB_TAHUN) {
-        showElement('status-wajib');
-        hideElement('status-tidak-wajib');
+        if(divWajib) divWajib.classList.remove('hidden');
+        if(divTidak) divTidak.classList.add('hidden');
 
         const zakat = Math.ceil(hartaBersih * ZAKAT.RATE);
         const elAmount = document.getElementById('final-zakat-amount');
-        if (elAmount) {
-            elAmount.innerText = formatRupiah(zakat);
+        if(elAmount) {
+            elAmount.innerText = "Rp " + zakat.toLocaleString('id-ID');
             elAmount.dataset.value = zakat;
         }
     } else {
-        hideElement('status-wajib');
-        showElement('status-tidak-wajib');
+        if(divWajib) divWajib.classList.add('hidden');
+        if(divTidak) divTidak.classList.remove('hidden');
         
-        // Reset value if not required to pay zakat
+        // Reset value di tombol jika tidak wajib
         const elAmount = document.getElementById('final-zakat-amount');
-        if (elAmount) elAmount.dataset.value = 0;
+        if(elAmount) elAmount.dataset.value = 0;
     }
     
-    if (resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if(resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /**
- * Apply calculated zakat result to manual input
+ * Apply calculator result to manual input
  */
 export function applyZakatResult() {
     const elAmount = document.getElementById('final-zakat-amount');
@@ -123,20 +119,18 @@ export function applyZakatResult() {
     
     let nominal = parseInt(elAmount.dataset.value) || 0;
     
-    // Switch to manual tab
+    // Pindah ke tab manual
     switchZakatMode('manual');
     
-    // Fill manual input
+    // Isi input manual
     const inputManual = document.getElementById('manual-zakat-input');
     if (inputManual) {
         if (nominal > 0) {
-            inputManual.value = formatNumber(nominal);
+            inputManual.value = nominal.toLocaleString('id-ID');
             
-            // Force update state
-            if (typeof donasiData !== 'undefined') {
-                donasiData.nominal = nominal;
-                donasiData.nominalAsli = nominal;
-            }
+            // Update state
+            donasiData.nominal = nominal;
+            donasiData.nominalAsli = nominal;
         } else {
             inputManual.value = "";
             inputManual.focus();
@@ -145,32 +139,21 @@ export function applyZakatResult() {
 }
 
 /**
- * Handle manual zakat input and proceed to next step
+ * Handle manual zakat next button
  */
 export function handleManualZakatNext() {
     const input = document.getElementById('manual-zakat-input');
     if (!input) return;
 
-    // Get clean value from input
+    // Ambil nilai bersih dari input
     const cleanVal = parseInt(input.value.replace(/\D/g, '')) || 0;
 
     if (cleanVal < ZAKAT.MIN_NOMINAL) {
-        if (typeof showToast === 'function') {
-            showToast(`Minimal nominal zakat ${formatRupiah(ZAKAT.MIN_NOMINAL)}`, 'warning');
-        } else {
-            alert(`Minimal nominal zakat ${formatRupiah(ZAKAT.MIN_NOMINAL)}`);
-        }
+        showToast(`Minimal nominal zakat Rp ${ZAKAT.MIN_NOMINAL.toLocaleString('id-ID')}`, 'warning');
         return;
     }
 
     // Save to global state
-    if (typeof donasiData === 'undefined') {
-        console.error("CRITICAL: donasiData undefined in feature-zakat.js");
-        alert("Terjadi kesalahan sistem (State Error). Silakan refresh halaman.");
-        return;
-    }
-
-    // Set data
     donasiData.nominal = cleanVal;
     donasiData.nominalAsli = cleanVal;
     donasiData.type = 'Zakat Maal'; 
@@ -179,27 +162,5 @@ export function handleManualZakatNext() {
     console.log("Zakat Maal Saved:", donasiData);
 
     // Move to step 3 (skip step 2 nominal buttons)
-    if (typeof goToStep === 'function') {
-        goToStep(3);
-    } else {
-        // Manual fallback if goToStep errors
-        console.warn("goToStep function missing, using fallback");
-        hideElement('donasi-step-1');
-        hideElement('donasi-step-2');
-        
-        const step3 = document.getElementById('donasi-step-3');
-        if (step3) {
-            step3.classList.remove('hidden');
-            step3.classList.add('animate-fade-in-up');
-        }
-        
-        // Update wizard UI manually
-        const indicator = document.getElementById('wizard-step-indicator');
-        const bar = document.getElementById('wizard-progress-bar');
-        const title = document.getElementById('wizard-title');
-        
-        if (indicator) indicator.innerText = "Step 3/5";
-        if (bar) bar.style.width = "60%";
-        if (title) title.innerText = "Isi Data Diri";
-    }
+    goToStep(3);
 }

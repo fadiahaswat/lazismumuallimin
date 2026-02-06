@@ -4,6 +4,7 @@ import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
 import { DONATION } from './constants.js';
+import { formatInputRupiah, switchZakatMode } from './zakat-calculator.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
 // Mencegah race condition antara page visibility changes dan step navigation
@@ -286,17 +287,14 @@ function processDonationFlow(type, nominal) {
 
             setTimeout(() => {
                 // Pastikan Mode Manual Aktif (Bypass Kalkulator)
-                // Fungsi switchZakatMode ada di global (window) dari main.js
-                if (typeof window.switchZakatMode === 'function') {
-                    window.switchZakatMode('manual');
-                }
+                switchZakatMode('manual');
                 
                 // Isi input manual zakat jika ada nominalnya
                 const inputManualZakat = document.getElementById('manual-zakat-input');
                 if(inputManualZakat && nominal > 0) {
                     inputManualZakat.value = nominal.toLocaleString('id-ID');
                     // Trigger event input manual agar state tersimpan
-                    if(window.formatInputRupiah) window.formatInputRupiah(inputManualZakat);
+                    formatInputRupiah(inputManualZakat);
                     
                     // Pada Zakat Maal, Step 1 adalah mengisi nominal di input manual.
                     // Kita tidak perlu loncat ke Step 2 (Pilihan Nominal Tombol), 

@@ -2,3 +2,6 @@ node_modules/
 package-lock.json
 test-security.mjs
 test-security-integration.html
+*.backup
+*.bak
+*.tmp
