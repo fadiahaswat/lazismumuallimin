@@ -149,7 +149,7 @@
             <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl -mt-10 -mr-10"></div>
             <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mb-10 -ml-10"></div>
             
-            <button id="hubungi-modal-close" class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white transition-all duration-300 group">
+            <button id="hubungi-modal-close" aria-label="Tutup modal" class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white transition-all duration-300 group">
                 <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
         </div>
@@ -216,7 +216,7 @@
         <div class="bg-slate-50 p-6 text-center border-b border-slate-100">
             <h3 class="text-xl font-black text-slate-800">Masuk Akun</h3>
             <p class="text-xs text-slate-500 mt-1">Pilih metode masuk untuk melanjutkan</p>
-            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition">
+            <button onclick="closeLoginModal()" aria-label="Tutup modal login" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition">
                 <i class="fas fa-times text-xl"></i>
             </button>
         </div>
@@ -266,7 +266,7 @@
         </div>
 
         <div class="absolute top-4 right-4 z-50">
-            <button onclick="closeNewsModal()" class="w-10 h-10 bg-slate-900 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:rotate-90 transform hover:scale-110 border-2 border-white/20">
+            <button onclick="closeNewsModal()" aria-label="Tutup berita" class="w-10 h-10 bg-slate-900 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:rotate-90 transform hover:scale-110 border-2 border-white/20">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -394,12 +394,12 @@
             <div id="santri-menu-options" class="px-2 space-y-1 hidden">
                 <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 mt-1">Pengaturan Santri</p>
                 
-                <button onclick="openAvatarModal()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-3 transition group">
+                <button onclick="openAvatarModal()" aria-label="Ganti Avatar" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-3 transition group">
                     <div class="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center group-hover:bg-yellow-100 transition"><i class="fas fa-smile"></i></div>
                     <span class="text-xs font-bold text-slate-600 group-hover:text-slate-800">Ganti Avatar</span>
                 </button>
                 
-                <button onclick="openChangePassModal()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-3 transition group">
+                <button onclick="openChangePassModal()" aria-label="Ganti Password" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-3 transition group">
                     <div class="w-7 h-7 rounded-md bg-blue-50 text-blue-500 flex items-center justify-center group-hover:bg-blue-100 transition"><i class="fas fa-key"></i></div>
                     <span class="text-xs font-bold text-slate-600 group-hover:text-slate-800">Ganti Password</span>
                 </button>
@@ -413,7 +413,7 @@
             </div>
 
             <div class="px-2 pb-1">
-                <button onclick="doLogout()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 flex items-center gap-3 transition group">
+                <button onclick="doLogout()" aria-label="Keluar dari akun" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 flex items-center gap-3 transition group">
                     <div class="w-7 h-7 rounded-md bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-100 transition"><i class="fas fa-sign-out-alt"></i></div>
                     <span class="text-xs font-bold text-red-500 group-hover:text-red-600">Keluar Akun</span>
                 </button>
@@ -422,7 +422,7 @@
     </div>
 </div>
             
-    <button id="menu-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-all border border-transparent hover:border-orange-200">
+    <button id="menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-all border border-transparent hover:border-orange-200">
         <i class="fas fa-bars text-lg"></i>
     </button>
 </div>

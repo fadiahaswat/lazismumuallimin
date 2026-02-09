@@ -256,6 +256,12 @@ export function openNewsModal(index) {
     modal.classList.remove('hidden');
     const progress = document.getElementById('reading-progress');
     if (progress) progress.style.width = '0%';
+    
+    // Reset scroll position to top
+    const modalContent = panel.querySelector('.overflow-y-auto, .custom-scrollbar');
+    if (modalContent) {
+        modalContent.scrollTop = 0;
+    }
 
     setTimeout(() => {
         modal.classList.remove('opacity-0');

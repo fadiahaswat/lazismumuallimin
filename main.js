@@ -140,7 +140,7 @@ async function init() {
 
     } catch (error) {
         console.error("Terjadi kesalahan fatal:", error);
-        alert("Gagal memuat data. Silakan refresh halaman.");
+        showToast("Gagal memuat data. Silakan refresh halaman.", "error");
     } finally {
         // C. HILANGKAN LOADING SCREEN & CLEANUP INTERVAL (only if showing preloader)
         if (textInterval) {

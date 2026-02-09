@@ -71,8 +71,19 @@ export function setupNavigation() {
     const menuLinks = document.getElementById('menu-links');
     if (menuToggle && menuLinks) {
         menuToggle.onclick = () => {
-            menuLinks.classList.toggle('hidden');
+            const isHidden = menuLinks.classList.toggle('hidden');
+            menuToggle.setAttribute('aria-expanded', !isHidden);
         };
+        
+        // Auto-close mobile menu when navigating
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (!menuLinks.classList.contains('hidden')) {
+                    menuLinks.classList.add('hidden');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
     }
     
     // Handle browser back/forward button navigation (only add listener once)
