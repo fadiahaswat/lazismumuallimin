@@ -177,7 +177,16 @@ export function validateInput(input, isValid, errorMessage = '') {
         if (errorMessage) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'validation-error text-red-500 text-xs mt-1 ml-1 font-medium animate-fade-in-up';
-            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i>${escapeHtml(errorMessage)}`;
+            
+            // Create icon element
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-exclamation-circle mr-1';
+            
+            // Create text node with escaped message
+            const textNode = document.createTextNode(escapeHtml(errorMessage));
+            
+            errorDiv.appendChild(icon);
+            errorDiv.appendChild(textNode);
             input.parentElement?.appendChild(errorDiv);
         }
     }

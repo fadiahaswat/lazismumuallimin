@@ -24,7 +24,8 @@ export const DONATION = {
 // Form validation constants
 export const VALIDATION = {
     MIN_PHONE_LENGTH: 10,    // Minimum phone number length
-    EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/  // RFC-compliant email pattern
+    EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,  // Basic email validation pattern
+    PHONE_PATTERN: /^[0-9+\-\s()]+$/  // Allow digits, +, -, spaces, and parentheses
 };
 
 // Animation and UI timing (in milliseconds)

@@ -771,6 +771,9 @@ export function setupWizardLogic() {
             } else if (hpInput.value.trim().length < VALIDATION.MIN_PHONE_LENGTH) {
                 validateInput(hpInput, false, `Nomor WhatsApp minimal ${VALIDATION.MIN_PHONE_LENGTH} digit`);
                 isValid = false;
+            } else if (!VALIDATION.PHONE_PATTERN.test(hpInput.value.trim())) {
+                validateInput(hpInput, false, 'Nomor WhatsApp hanya boleh berisi angka');
+                isValid = false;
             } else {
                 validateInput(hpInput, true);
             }
