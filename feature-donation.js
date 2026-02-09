@@ -867,7 +867,19 @@ export function setupWizardLogic() {
                 "NoKTP": donasiData.nik || ""
             };
 
-            try {
+            try {               
+                const tokenRecaptcha = await new Promise((resolve) => {
+                    grecaptcha.ready(() => {
+                        // Meminta token ke Google
+                        grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'donasi'}).then((token) => {
+                            resolve(token);
+                        });
+                    });
+                });
+            
+                // Masukkan token ini ke dalam paket data yang mau dikirim
+                payload.recaptchaToken = tokenRecaptcha;
+            
                 // 3. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
