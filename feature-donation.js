@@ -867,19 +867,7 @@ export function setupWizardLogic() {
                 "NoKTP": donasiData.nik || ""
             };
 
-            try {               
-                const tokenRecaptcha = await new Promise((resolve) => {
-                    grecaptcha.ready(() => {
-                        // Meminta token ke Google
-                        grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'donasi'}).then((token) => {
-                            resolve(token);
-                        });
-                    });
-                });
-            
-                // Masukkan token ini ke dalam paket data yang mau dikirim
-                payload.recaptchaToken = tokenRecaptcha;
-            
+            try {
                 // 3. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
@@ -889,14 +877,6 @@ export function setupWizardLogic() {
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // 3a. Parse dan validasi response dari backend
-                const result = await response.json();
-                
-                // Cek apakah backend berhasil menyimpan data
-                if (result.status !== "success") {
-                    throw new Error(result.message || "Gagal menyimpan data ke database");
                 }
 
                 // 4. Update Data Tampilan di Halaman Sukses
