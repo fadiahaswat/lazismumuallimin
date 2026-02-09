@@ -124,3 +124,40 @@ export function stripHtml(html) {
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
 }
+
+// Add visual validation feedback to input fields
+export function validateInput(input, isValid, errorMessage = '') {
+    if (!input) return;
+    
+    // Remove existing validation classes
+    input.classList.remove('border-red-500', 'border-green-500', 'bg-red-50', 'bg-green-50');
+    
+    // Remove existing error message if any
+    const existingError = input.parentElement?.querySelector('.validation-error');
+    if (existingError) existingError.remove();
+    
+    if (isValid) {
+        // Valid state
+        input.classList.add('border-green-500', 'bg-green-50');
+    } else {
+        // Invalid state
+        input.classList.add('border-red-500', 'bg-red-50');
+        
+        // Add error message if provided
+        if (errorMessage) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'validation-error text-red-500 text-xs mt-1 ml-1 font-medium animate-fade-in-up';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i>${escapeHtml(errorMessage)}`;
+            input.parentElement?.appendChild(errorDiv);
+        }
+    }
+}
+
+// Clear validation state from input
+export function clearValidation(input) {
+    if (!input) return;
+    
+    input.classList.remove('border-red-500', 'border-green-500', 'bg-red-50', 'bg-green-50');
+    const existingError = input.parentElement?.querySelector('.validation-error');
+    if (existingError) existingError.remove();
+}

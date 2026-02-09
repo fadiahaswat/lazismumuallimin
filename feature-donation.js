@@ -1,5 +1,5 @@
 import { donasiData, currentUser } from './state.js';
-import { formatRupiah, showToast, generateUniqueCode } from './utils.js';
+import { formatRupiah, showToast, generateUniqueCode, validateInput, clearValidation } from './utils.js';
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
@@ -713,6 +713,23 @@ export function setupWizardLogic() {
         };
     });
 
+    // Add input event listeners to clear validation on user interaction
+    const formInputs = [
+        'nama-muzakki-input',
+        'no-hp',
+        'alamat',
+        'email',
+        'alumni-tahun'
+    ];
+    
+    formInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', () => clearValidation(input));
+            input.addEventListener('focus', () => clearValidation(input));
+        }
+    });
+
     const btnNextStep4 = document.querySelector('[data-next-step="4"]');
     if (btnNextStep4) {
         btnNextStep4.onclick = () => {
@@ -726,18 +743,75 @@ export function setupWizardLogic() {
             const checkAlsoAlumni = document.getElementById('check-also-alumni');
             const isAlsoAlumni = checkAlsoAlumni ? checkAlsoAlumni.checked : false;
 
-            if (donasiData.donaturTipe === 'santri' && !donasiData.namaSantri) return showToast("Wajib memilih data santri");
-            if (isAlsoAlumni && alumniInput && !alumniInput.value) return showToast("Tahun lulus wajib diisi bagi Alumni");
-            if (!nameInput || !nameInput.value) return showToast("Nama donatur wajib diisi");
-            if (!hpInput || !hpInput.value) return showToast("Nomor WhatsApp wajib diisi");
-            if (!alamatInput || !alamatInput.value) return showToast("Alamat wajib diisi");
+            // Clear previous validation states
+            clearValidation(nameInput);
+            clearValidation(hpInput);
+            clearValidation(alamatInput);
+            clearValidation(emailInput);
+            clearValidation(alumniInput);
 
-            donasiData.nama = nameInput.value;
-            donasiData.hp = hpInput.value;
-            donasiData.alamat = alamatInput.value;
-            donasiData.email = emailInput ? emailInput.value : '';
-            donasiData.doa = doaInput ? doaInput.value : '';
-            donasiData.nik = nikInput ? nikInput.value : '';
+            // Validate fields with visual feedback
+            let isValid = true;
+
+            if (donasiData.donaturTipe === 'santri' && !donasiData.namaSantri) {
+                showToast("Wajib memilih data santri");
+                return;
+            }
+            
+            if (!nameInput || !nameInput.value.trim()) {
+                validateInput(nameInput, false, 'Nama donatur wajib diisi');
+                isValid = false;
+            } else {
+                validateInput(nameInput, true);
+            }
+            
+            if (!hpInput || !hpInput.value.trim()) {
+                validateInput(hpInput, false, 'Nomor WhatsApp wajib diisi');
+                isValid = false;
+            } else if (hpInput.value.trim().length < 10) {
+                validateInput(hpInput, false, 'Nomor WhatsApp minimal 10 digit');
+                isValid = false;
+            } else {
+                validateInput(hpInput, true);
+            }
+            
+            if (!alamatInput || !alamatInput.value.trim()) {
+                validateInput(alamatInput, false, 'Alamat wajib diisi');
+                isValid = false;
+            } else {
+                validateInput(alamatInput, true);
+            }
+            
+            // Email validation (optional but must be valid if filled)
+            if (emailInput && emailInput.value.trim()) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value.trim())) {
+                    validateInput(emailInput, false, 'Format email tidak valid');
+                    isValid = false;
+                } else {
+                    validateInput(emailInput, true);
+                }
+            }
+            
+            // Alumni year validation
+            if (isAlsoAlumni && alumniInput && !alumniInput.value) {
+                validateInput(alumniInput, false, 'Tahun lulus wajib diisi bagi Alumni');
+                isValid = false;
+            } else if (alumniInput && alumniInput.value) {
+                validateInput(alumniInput, true);
+            }
+
+            if (!isValid) {
+                showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+                return;
+            }
+
+            donasiData.nama = nameInput.value.trim();
+            donasiData.hp = hpInput.value.trim();
+            donasiData.alamat = alamatInput.value.trim();
+            donasiData.email = emailInput ? emailInput.value.trim() : '';
+            donasiData.doa = doaInput ? doaInput.value.trim() : '';
+            donasiData.nik = nikInput ? nikInput.value.trim() : '';
 
             if (isAlsoAlumni) {
                 donasiData.isAlumni = true;

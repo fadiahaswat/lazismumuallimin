@@ -234,8 +234,14 @@ body {
 
 /* 1. Aturan Umum: Berlaku untuk halaman Tentang, Berita, Riwayat, dll */
 .page-section {
-    padding-top: 140px !important; /* Memberi jarak agar judul tidak ketutup header */
+    padding-top: 100px !important; /* Responsive padding for mobile */
     padding-bottom: 80px !important;
+}
+
+@media (min-width: 768px) {
+    .page-section {
+        padding-top: 140px !important; /* Larger padding for desktop */
+    }
 }
 
 /* 2. PENGECUALIAN KHUSUS HOME (FIX CELAH BACKGROUND) */
@@ -397,4 +403,54 @@ body {
 /* Fade Out for skeleton when content loads */
 .skeleton-fade-out {
     animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* =========================================
+   11. ACCESSIBILITY - FOCUS INDICATORS
+   ========================================= */
+
+/* Better focus indicators for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid #F15A22;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(241, 90, 34, 0.1);
+}
+
+/* Skip to main content link (accessibility) */
+.skip-to-main {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 1em;
+    background-color: #F15A22;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.skip-to-main:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1rem;
+}
+
+/* Improve button interaction states */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Touch target minimum size for mobile accessibility */
+@media (max-width: 768px) {
+    button,
+    a[role="button"],
+    input[type="button"],
+    input[type="submit"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
 }
