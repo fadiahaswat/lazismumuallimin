@@ -2,6 +2,7 @@
 
 // --- KONFIGURASI API & SERVER ---
 export const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec";
+export const RECAPTCHA_SITE_KEY = "6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6"; // <-- Tambahkan baris ini
 export const WORDPRESS_SITE = 'lazismumuallimin.wordpress.com';
 export const NEWS_PER_PAGE = 6;
 
