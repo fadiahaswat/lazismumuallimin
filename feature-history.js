@@ -476,7 +476,7 @@ export function renderHomeLatestDonations() {
     container.innerHTML = html;
 }
 
-// FORMAT BARU: renderAlumniLeaderboard dengan Statistik Global
+// GANTI FUNGSI renderAlumniLeaderboard DENGAN INI:
 
 export function renderAlumniLeaderboard() {
     const container = document.getElementById('alumni-leaderboard-container');
@@ -484,179 +484,213 @@ export function renderAlumniLeaderboard() {
 
     // 1. Cek Status Data
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
-        return; // Biarkan loading default terlihat
+        return; 
     }
 
-    // 2. Variabel Penampung Data
+    // 2. Variabel Penampung
     const angkatanTotals = {};
-    const uniqueAlumni = new Set(); // Untuk menghitung jumlah orang (unik)
-    let grandTotalAlumni = 0;       // Untuk menghitung total nominal
+    const uniqueAlumni = new Set();
+    let grandTotalAlumni = 0;
     const currentYear = new Date().getFullYear();
 
-    // 3. Iterasi Data
+    // 3. Iterasi Data (Logika Deteksi Lebih Cerdas)
     riwayatData.allData.forEach(d => {
         if (d.Status !== 'Terverifikasi') return;
         
         let year = null;
         
-        // Deteksi Tahun (Prioritas kolom khusus -> Regex)
+        // A. Cek Kolom Khusus (Prioritas Utama)
         if (d.DetailAlumni && String(d.DetailAlumni).trim() !== "") {
             year = String(d.DetailAlumni).trim();
         } else if (d.detailAlumni && String(d.detailAlumni).trim() !== "") {
             year = String(d.detailAlumni).trim();
-        } else {
+        } 
+        // B. Cek Keterangan Saja (Jika isinya cuma angka tahun, misal: "2005")
+        else if (d.Keterangan && /^\d{4}$/.test(String(d.Keterangan).trim())) {
+            year = String(d.Keterangan).trim();
+        }
+        // C. Cek Pola Kata di Nama/Keterangan (misal: "Alumni 98", "Angkatan 2010")
+        else {
             const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
-            const yearMatch = combined.match(/(?:alumni|angkatan|lulusan|th)\s*(\d{4})|^(\d{4})$/i);
-            if (yearMatch) year = yearMatch[1] || yearMatch[2];
+            // Regex: cari kata kunci diikuti 4 digit, ATAU 2 digit (untuk '98)
+            const yearMatch = combined.match(/(?:alumni|angkatan|lulusan|letting|thn|th)\s*(\d{2,4})/i);
+            if (yearMatch) {
+                let y = yearMatch[1];
+                // Konversi 2 digit ke 4 digit (misal: 98 -> 1998, 05 -> 2005)
+                if (y.length === 2) {
+                    y = parseInt(y) > 50 ? `19${y}` : `20${y}`;
+                }
+                year = y;
+            }
         }
 
         if (year) {
             const numYear = parseInt(year);
-            // Validasi tahun (1950 - Sekarang)
-            if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear) {
+            // Validasi: Tahun 1950 s/d Tahun Depan (biar aman)
+            if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear + 1) {
                 const val = parseInt(d.Nominal) || 0;
                 
-                // A. Agregasi per Angkatan
                 angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
-                
-                // B. Hitung Grand Total
                 grandTotalAlumni += val;
 
-                // C. Catat Donatur Unik (berdasarkan nama)
-                if (d.NamaDonatur && d.NamaDonatur.trim().toLowerCase() !== 'hamba allah') {
-                    uniqueAlumni.add(d.NamaDonatur.trim().toLowerCase());
-                } else {
-                    // Jika Hamba Allah, kita anggap unik per transaksi (atau bisa diabaikan tergantung kebijakan)
-                    // Disini kita gunakan ID transaksi atau index jika nama tidak valid untuk estimasi
-                    uniqueAlumni.add(`anon-${Math.random()}`); 
+                // Hitung partisipan unik
+                let donaturId = d.NamaDonatur ? d.NamaDonatur.trim().toLowerCase() : "";
+                if (!donaturId || donaturId === 'hamba allah') {
+                    // Gunakan timestamp+nominal sebagai ID unik sementara untuk Hamba Allah
+                    donaturId = `anon-${d.Timestamp}-${d.Nominal}`; 
                 }
+                uniqueAlumni.add(donaturId);
             }
         }
     });
 
-    // 4. Transformasi Data Leaderboard
+    // 4. Transformasi Data & Sorting
     const leaderboard = Object.keys(angkatanTotals)
         .map(year => ({ year: year, total: angkatanTotals[year] }))
-        .sort((a, b) => b.total - a.total);
+        .sort((a, b) => b.total - a.total); // Urutkan terbesar
 
-    // Jika kosong
+    // Jika tidak ada data alumni sama sekali
     if (leaderboard.length === 0) {
         container.innerHTML = `
-            <div class="text-center py-12 bg-slate-800/50 rounded-3xl border border-slate-700 border-dashed">
+            <div class="text-center py-12 bg-slate-800/50 rounded-3xl border border-slate-700 border-dashed animate-fade-in-up">
                 <i class="fas fa-user-graduate text-4xl text-slate-600 mb-4"></i>
                 <p class="text-slate-400">Belum ada data alumni yang terdeteksi.</p>
+                <p class="text-xs text-slate-600 mt-2">Tulis tahun angkatan di keterangan saat donasi.</p>
             </div>`;
         return;
     }
 
-    // Pisahkan Top 3 dan Sisa
     const top3 = leaderboard.slice(0, 3);
     const rest = leaderboard.slice(3);
     const maxTotal = leaderboard[0].total;
 
     // === BUILD HTML ===
-    let html = `<div class="space-y-12 animate-fade-in-up">`;
+    let html = `<div class="space-y-16 animate-fade-in-up">`;
 
-    // --- BAGIAN BARU: STATISTIK GLOBAL (2 KARTU) ---
+    // A. STATISTIK GLOBAL (2 KARTU)
     html += `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group">
-                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
-                
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl shadow-sm ring-1 ring-emerald-500/30">
-                    <i class="fas fa-coins"></i>
+            <div class="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20">
+                    <i class="fas fa-hand-holding-heart"></i>
                 </div>
-                <div>
-                    <p class="text-sm font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
+                <div class="relative z-10">
+                    <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
                     <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${formatRupiah(grandTotalAlumni)}</h3>
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group">
-                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
-                
-                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-3xl shadow-sm ring-1 ring-blue-500/30">
+            <div class="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-blue-500/50 transition-all">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
+                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-3xl shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20">
                     <i class="fas fa-users"></i>
                 </div>
-                <div>
-                    <p class="text-sm font-bold text-blue-500 uppercase tracking-widest mb-1">Partisipan</p>
+                <div class="relative z-10">
+                    <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Total Partisipan</p>
                     <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-lg font-bold text-slate-500">Orang</span></h3>
                 </div>
             </div>
         </div>
     `;
 
-    // --- BAGIAN PODIUM (TOP 3) ---
+    // B. PODIUM (TOP 3) - Logika Order CSS
     if (top3.length > 0) {
-        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto mb-16 pt-8">`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto relative pt-10">`;
         
-        const podiumOrder = [];
-        if (top3[1]) podiumOrder.push({ ...top3[1], rank: 2 }); // Juara 2
-        if (top3[0]) podiumOrder.push({ ...top3[0], rank: 1 }); // Juara 1
-        if (top3[2]) podiumOrder.push({ ...top3[2], rank: 3 }); // Juara 3
-
-        podiumOrder.forEach(item => {
-            const isChamp = item.rank === 1;
-            let cardStyle = isChamp 
-                ? "bg-gradient-to-b from-yellow-500/20 to-slate-900 border-yellow-500/50 shadow-[0_0_50px_-10px_rgba(234,179,8,0.3)] z-10 md:-mb-8 h-full md:h-[320px]" 
-                : "bg-slate-800/50 border-slate-700 md:h-[260px]";
+        // Kita render Top 3 sesuai urutan array (Juara 1, 2, 3) tapi pakai CSS order untuk posisi visual
+        top3.forEach((item, index) => {
+            const rank = index + 1;
+            let orderClass = "";
+            let cardHeight = "";
+            let colorTheme = "";
+            let icon = "";
             
-            let badgeColor = "", icon = "", titleColor = "";
-
-            if (item.rank === 1) { 
-                badgeColor = "bg-yellow-500 text-slate-900"; icon = "fa-crown"; titleColor = "text-yellow-400";
-            } else if (item.rank === 2) { 
-                badgeColor = "bg-slate-300 text-slate-900"; icon = "fa-medal"; titleColor = "text-slate-300";
-            } else { 
-                badgeColor = "bg-orange-700 text-white"; icon = "fa-medal"; titleColor = "text-orange-400";
+            // Konfigurasi Tampilan per Ranking
+            if (rank === 1) {
+                // Juara 1: Tengah di Desktop (Order 2), Paling Atas di HP (Order 1)
+                orderClass = "order-1 md:order-2"; 
+                cardHeight = "h-full md:h-[340px]"; // Lebih tinggi
+                colorTheme = "from-yellow-500/20 to-amber-600/10 border-yellow-500/50 shadow-[0_0_40px_-10px_rgba(234,179,8,0.3)]";
+                icon = "fa-crown";
+            } else if (rank === 2) {
+                // Juara 2: Kiri di Desktop (Order 1), Kedua di HP (Order 2)
+                orderClass = "order-2 md:order-1";
+                cardHeight = "h-full md:h-[280px]";
+                colorTheme = "from-slate-400/20 to-slate-600/10 border-slate-500/50";
+                icon = "fa-medal";
+            } else {
+                // Juara 3: Kanan di Desktop (Order 3), Ketiga di HP (Order 3)
+                orderClass = "order-3 md:order-3";
+                cardHeight = "h-full md:h-[260px]";
+                colorTheme = "from-orange-700/20 to-orange-900/10 border-orange-700/50";
+                icon = "fa-medal";
             }
 
+            const badgeColor = rank === 1 ? "bg-yellow-500 text-slate-900" : (rank === 2 ? "bg-slate-300 text-slate-900" : "bg-orange-700 text-white");
+            const textColor = rank === 1 ? "text-yellow-400" : (rank === 2 ? "text-slate-300" : "text-orange-400");
+
             html += `
-            <div class="relative flex flex-col items-center justify-end p-6 rounded-[2rem] border ${cardStyle} backdrop-blur-sm transition-transform hover:scale-[1.02]">
+            <div class="${orderClass} relative flex flex-col items-center justify-end p-6 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight} z-10">
+                
                 <div class="absolute -top-6">
-                    <div class="w-12 h-12 ${badgeColor} rounded-xl flex items-center justify-center text-xl font-bold shadow-lg rotate-3">
+                    <div class="w-12 h-12 ${badgeColor} rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg rotate-6 transform hover:rotate-0 transition-all duration-300">
                         <i class="fas ${icon}"></i>
                     </div>
                 </div>
-                <div class="text-center mt-8">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Angkatan</span>
-                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2">${item.year}</h3>
-                    <div class="h-px w-12 bg-slate-600 mx-auto my-4"></div>
-                    <p class="text-xs text-slate-400 mb-1">Total Donasi</p>
-                    <p class="text-xl md:text-2xl font-bold ${titleColor}">${formatRupiah(item.total)}</p>
+
+                <div class="text-center mt-8 w-full">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block opacity-70">Peringkat ${rank}</span>
+                    <h3 class="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">${item.year}</h3>
+                    
+                    <div class="w-full h-px bg-white/10 my-4"></div>
+                    
+                    <p class="text-xs text-slate-400 mb-1 font-medium">Total Donasi</p>
+                    <p class="text-xl md:text-2xl font-bold ${textColor}">${formatRupiah(item.total)}</p>
                 </div>
-                ${isChamp ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.5)]"></div>' : ''}
+                
+                ${rank === 1 ? '<div class="absolute inset-x-10 bottom-0 h-1 bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.8)] rounded-t-full"></div>' : ''}
             </div>`;
         });
+        
         html += `</div>`;
     }
 
-    // --- BAGIAN LIST (RANK 4 DST) ---
+    // C. LIST SISANYA (Rank 4 dst)
     if (rest.length > 0) {
         html += `
-        <div class="bg-slate-800/50 rounded-3xl border border-slate-700 overflow-hidden max-w-3xl mx-auto backdrop-blur-md">
-            <div class="px-6 py-4 border-b border-slate-700 bg-slate-800 flex items-center gap-3">
-                <i class="fas fa-list-ol text-slate-400"></i>
-                <h4 class="font-bold text-slate-300 text-sm">Peringkat Selanjutnya</h4>
+        <div class="bg-slate-800/40 rounded-3xl border border-slate-700 overflow-hidden max-w-3xl mx-auto backdrop-blur-md">
+            <div class="px-6 py-4 border-b border-slate-700 bg-slate-800/60 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-slate-400">
+                        <i class="fas fa-list-ol"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-300 text-sm">Peringkat Selanjutnya</h4>
+                </div>
+                <span class="text-xs font-bold text-slate-500 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">${rest.length} Angkatan</span>
             </div>
+            
             <div class="divide-y divide-slate-700/50 max-h-[400px] overflow-y-auto custom-scrollbar">`;
 
         rest.forEach((item, index) => {
             const realRank = index + 4;
+            // Progress bar relatif terhadap Juara 1
             const percentage = (item.total / maxTotal) * 100;
 
             html += `
             <div class="group p-4 hover:bg-slate-700/30 transition-colors flex items-center gap-4">
-                <div class="w-8 h-8 rounded-full bg-slate-700 text-slate-400 font-bold text-xs flex items-center justify-center border border-slate-600">
+                <div class="w-10 h-10 rounded-full bg-slate-800 text-slate-500 font-bold text-sm flex items-center justify-center border border-slate-700 group-hover:border-slate-600 group-hover:text-slate-300 transition-all">
                     #${realRank}
                 </div>
                 <div class="flex-1">
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="font-bold text-slate-200">Angkatan ${item.year}</span>
-                        <span class="font-mono text-slate-300">${formatRupiah(item.total)}</span>
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="font-bold text-slate-200 text-lg">Angkatan ${item.year}</span>
+                        <span class="font-mono font-bold text-emerald-400 text-sm bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                            ${formatRupiah(item.total)}
+                        </span>
                     </div>
-                    <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-purple-500 h-full rounded-full opacity-50 group-hover:opacity-100 transition-all duration-500" style="width: ${percentage}%"></div>
+                    <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden shadow-inner">
+                        <div class="bg-gradient-to-r from-purple-600 to-blue-500 h-full rounded-full opacity-60 group-hover:opacity-100 group-hover:shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-500" style="width: ${percentage}%"></div>
                     </div>
                 </div>
             </div>`;
@@ -665,7 +699,7 @@ export function renderAlumniLeaderboard() {
         html += `</div></div>`;
     }
 
-    html += `</div>`; 
+    html += `</div>`; // Tutup wrapper utama
     container.innerHTML = html;
 }
 
