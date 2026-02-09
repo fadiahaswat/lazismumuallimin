@@ -1,5 +1,22 @@
 // utils.js
 
+// Development mode check
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Safe logging functions that only log in development
+export const logger = {
+    log: (...args) => {
+        if (isDevelopment) console.log(...args);
+    },
+    warn: (...args) => {
+        if (isDevelopment) console.warn(...args);
+    },
+    error: (...args) => {
+        // Always log errors
+        console.error(...args);
+    }
+};
+
 export function escapeHtml(text) {
     if (!text) return text;
     return text
