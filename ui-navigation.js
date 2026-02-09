@@ -1,4 +1,4 @@
-import { showToast } from './utils.js';
+import { showToast, logger } from './utils.js';
 import { loadRiwayat } from './feature-history.js';
 import { fetchNews } from './feature-news.js'; // Hapus newsState dari sini
 import { currentUser, newsState } from './state.js'; // Tambahkan newsState di sini
@@ -71,8 +71,19 @@ export function setupNavigation() {
     const menuLinks = document.getElementById('menu-links');
     if (menuToggle && menuLinks) {
         menuToggle.onclick = () => {
-            menuLinks.classList.toggle('hidden');
+            const isHidden = menuLinks.classList.toggle('hidden');
+            menuToggle.setAttribute('aria-expanded', !isHidden);
         };
+        
+        // Auto-close mobile menu when navigating
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (!menuLinks.classList.contains('hidden')) {
+                    menuLinks.classList.add('hidden');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
     }
     
     // Handle browser back/forward button navigation (only add listener once)
@@ -121,7 +132,7 @@ export function openChangePassModal() {
     const pass2 = document.getElementById('new-pass-2');
     
     if (!modal) {
-        console.error("Password modal not found");
+        logger.warn("Password modal not found");
         return;
     }
     
@@ -137,7 +148,7 @@ export function saveNewPassword() {
     const p2El = document.getElementById('new-pass-2');
     
     if (!p1El || !p2El) {
-        console.error("Password input fields not found");
+        logger.warn("Password input fields not found");
         return;
     }
     
@@ -200,7 +211,7 @@ export function saveAvatar(emoji) {
     try {
         localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
     } catch (error) {
-        console.error("Failed to save user to localStorage:", error);
+        logger.error("Failed to save user to localStorage:", error);
         showToast("Avatar berhasil diganti, tetapi gagal menyimpan ke cache", "warning");
     }
 

@@ -1,5 +1,22 @@
 // utils.js
 
+// Development mode check
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Safe logging functions that only log in development
+export const logger = {
+    log: (...args) => {
+        if (isDevelopment) console.log(...args);
+    },
+    warn: (...args) => {
+        if (isDevelopment) console.warn(...args);
+    },
+    error: (...args) => {
+        // Always log errors
+        console.error(...args);
+    }
+};
+
 export function escapeHtml(text) {
     if (!text) return text;
     return text
@@ -123,4 +140,63 @@ export function stripHtml(html) {
     let tmp = document.createElement("DIV");
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
+}
+
+// Debounce function for better performance
+export function debounce(func, wait = 300) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Add visual validation feedback to input fields
+export function validateInput(input, isValid, errorMessage = '') {
+    if (!input) return;
+    
+    // Remove existing validation classes
+    input.classList.remove('border-red-500', 'border-green-500', 'bg-red-50', 'bg-green-50');
+    
+    // Remove existing error message if any
+    const existingError = input.parentElement?.querySelector('.validation-error');
+    if (existingError) existingError.remove();
+    
+    if (isValid) {
+        // Valid state
+        input.classList.add('border-green-500', 'bg-green-50');
+    } else {
+        // Invalid state
+        input.classList.add('border-red-500', 'bg-red-50');
+        
+        // Add error message if provided
+        if (errorMessage) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'validation-error text-red-500 text-xs mt-1 ml-1 font-medium animate-fade-in-up';
+            
+            // Create icon element
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-exclamation-circle mr-1';
+            
+            // Create text node with escaped message
+            const textNode = document.createTextNode(escapeHtml(errorMessage));
+            
+            errorDiv.appendChild(icon);
+            errorDiv.appendChild(textNode);
+            input.parentElement?.appendChild(errorDiv);
+        }
+    }
+}
+
+// Clear validation state from input
+export function clearValidation(input) {
+    if (!input) return;
+    
+    input.classList.remove('border-red-500', 'border-green-500', 'bg-red-50', 'bg-green-50');
+    const existingError = input.parentElement?.querySelector('.validation-error');
+    if (existingError) existingError.remove();
 }

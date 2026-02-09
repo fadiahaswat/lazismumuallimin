@@ -1,4 +1,3 @@
-// 1. Imports
 import { loginWithGoogle, loginWithNIS, doLogout, linkGoogleAccount, updateUIForLogout } from './firebase-init.js';
 import { showPage, scrollToSection, setupNavigation, setupModalLogic, toggleUserDropdown, toggleProfileDropdown, openChangePassModal, saveNewPassword, openAvatarModal, saveAvatar, hideLoginSuggestion } from './ui-navigation.js';
 import { setupWizardLogic, goToStep, startBeautificationDonation, confirmPackageChoice } from './feature-donation.js';
@@ -6,7 +5,7 @@ import { setupHistoryLogic, loadRiwayat, loadPersonalDashboard, openReceiptWindo
 import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, refreshNews } from './feature-news.js';
 import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.js';
 import { parseSantriData } from './santri-manager.js';
-import { copyText, showToast } from './utils.js';
+import { copyText, showToast, logger } from './utils.js';
 import { qrisDatabase } from './config.js';
 import { donasiData } from './state.js';
 import { formatInputRupiah, switchZakatMode, calculateZakat, applyZakatResult, handleManualZakatNext } from './zakat-calculator.js';
@@ -69,7 +68,7 @@ function hasCachedData() {
 
 // 2. Initialization Function
 async function init() {
-    console.log("Memulai inisialisasi aplikasi...");
+    logger.log("Memulai inisialisasi aplikasi...");
 
     // Check if we should show preloader
     const shouldShowPreloader = !hasCachedData();
@@ -78,7 +77,7 @@ async function init() {
     // If we have cached data, hide preloader immediately
     if (!shouldShowPreloader && preloader) {
         preloader.style.display = 'none';
-        console.log("Menggunakan data cache, melewati preloader...");
+        logger.log("Menggunakan data cache, melewati preloader...");
     }
 
     // A. JALANKAN TEKS LOADING BERJALAN (only if showing preloader)
@@ -111,14 +110,14 @@ async function init() {
         await Promise.all(promises);
 
         if (typeof window.santriData !== 'undefined' && window.santriData.length > 0) {
-            console.log("Data Santri OK:", window.santriData.length);
+            logger.log("Data Santri OK:", window.santriData.length);
             parseSantriData();
         } else {
-            console.warn("Data santri kosong/gagal dimuat.");
+            logger.warn("Data santri kosong/gagal dimuat.");
         }
 
         if (typeof window.classMetaData !== 'undefined' && Object.keys(window.classMetaData).length > 0) {
-            console.log("Data Wali Kelas OK.");
+            logger.log("Data Wali Kelas OK.");
         }
 
         setupNavigation();
@@ -139,8 +138,8 @@ async function init() {
         // fetchNewsCategories(); 
 
     } catch (error) {
-        console.error("Terjadi kesalahan fatal:", error);
-        alert("Gagal memuat data. Silakan refresh halaman.");
+        logger.error("Terjadi kesalahan fatal:", error);
+        showToast("Gagal memuat data. Silakan refresh halaman.", "error");
     } finally {
         // C. HILANGKAN LOADING SCREEN & CLEANUP INTERVAL (only if showing preloader)
         if (textInterval) {
