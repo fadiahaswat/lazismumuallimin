@@ -476,7 +476,7 @@ export function renderHomeLatestDonations() {
     container.innerHTML = html;
 }
 
-// GANTIKAN fungsi renderAlumniLeaderboard() yang lama dengan yang ini:
+// FORMAT BARU: renderAlumniLeaderboard dengan Statistik Global
 
 export function renderAlumniLeaderboard() {
     const container = document.getElementById('alumni-leaderboard-container');
@@ -484,13 +484,16 @@ export function renderAlumniLeaderboard() {
 
     // 1. Cek Status Data
     if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
-        return; // Biarkan loading state default di HTML terlihat
+        return; // Biarkan loading default terlihat
     }
 
-    // 2. Pengolahan Data (Sama seperti sebelumnya, tapi lebih ketat)
+    // 2. Variabel Penampung Data
     const angkatanTotals = {};
+    const uniqueAlumni = new Set(); // Untuk menghitung jumlah orang (unik)
+    let grandTotalAlumni = 0;       // Untuk menghitung total nominal
     const currentYear = new Date().getFullYear();
 
+    // 3. Iterasi Data
     riwayatData.allData.forEach(d => {
         if (d.Status !== 'Terverifikasi') return;
         
@@ -509,20 +512,34 @@ export function renderAlumniLeaderboard() {
 
         if (year) {
             const numYear = parseInt(year);
-            // Validasi tahun yang masuk akal (misal: 1950 - Sekarang)
+            // Validasi tahun (1950 - Sekarang)
             if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear) {
                 const val = parseInt(d.Nominal) || 0;
+                
+                // A. Agregasi per Angkatan
                 angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
+                
+                // B. Hitung Grand Total
+                grandTotalAlumni += val;
+
+                // C. Catat Donatur Unik (berdasarkan nama)
+                if (d.NamaDonatur && d.NamaDonatur.trim().toLowerCase() !== 'hamba allah') {
+                    uniqueAlumni.add(d.NamaDonatur.trim().toLowerCase());
+                } else {
+                    // Jika Hamba Allah, kita anggap unik per transaksi (atau bisa diabaikan tergantung kebijakan)
+                    // Disini kita gunakan ID transaksi atau index jika nama tidak valid untuk estimasi
+                    uniqueAlumni.add(`anon-${Math.random()}`); 
+                }
             }
         }
     });
 
-    // 3. Sorting & Transformasi Data
+    // 4. Transformasi Data Leaderboard
     const leaderboard = Object.keys(angkatanTotals)
         .map(year => ({ year: year, total: angkatanTotals[year] }))
         .sort((a, b) => b.total - a.total);
 
-    // 4. State Kosong
+    // Jika kosong
     if (leaderboard.length === 0) {
         container.innerHTML = `
             <div class="text-center py-12 bg-slate-800/50 rounded-3xl border border-slate-700 border-dashed">
@@ -532,20 +549,47 @@ export function renderAlumniLeaderboard() {
         return;
     }
 
-    // 5. Pisahkan Top 3 dan Sisanya
+    // Pisahkan Top 3 dan Sisa
     const top3 = leaderboard.slice(0, 3);
     const rest = leaderboard.slice(3);
-    const maxTotal = leaderboard[0].total; // Untuk progress bar
+    const maxTotal = leaderboard[0].total;
 
     // === BUILD HTML ===
     let html = `<div class="space-y-12 animate-fade-in-up">`;
 
-    // BAGIAN A: PODIUM (Hanya jika ada data)
+    // --- BAGIAN BARU: STATISTIK GLOBAL (2 KARTU) ---
+    html += `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div class="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+                
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl shadow-sm ring-1 ring-emerald-500/30">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
+                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${formatRupiah(grandTotalAlumni)}</h3>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
+                
+                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-3xl shadow-sm ring-1 ring-blue-500/30">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-blue-500 uppercase tracking-widest mb-1">Partisipan</p>
+                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-lg font-bold text-slate-500">Orang</span></h3>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // --- BAGIAN PODIUM (TOP 3) ---
     if (top3.length > 0) {
-        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto mb-16">`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto mb-16 pt-8">`;
         
-        // Susunan Visual: Juara 2 (Kiri), Juara 1 (Tengah), Juara 3 (Kanan)
-        // Kita atur ulang array agar urutannya: [Rank 2, Rank 1, Rank 3] untuk tampilan desktop
         const podiumOrder = [];
         if (top3[1]) podiumOrder.push({ ...top3[1], rank: 2 }); // Juara 2
         if (top3[0]) podiumOrder.push({ ...top3[0], rank: 1 }); // Juara 1
@@ -553,14 +597,11 @@ export function renderAlumniLeaderboard() {
 
         podiumOrder.forEach(item => {
             const isChamp = item.rank === 1;
-            // Styling khusus per peringkat
             let cardStyle = isChamp 
                 ? "bg-gradient-to-b from-yellow-500/20 to-slate-900 border-yellow-500/50 shadow-[0_0_50px_-10px_rgba(234,179,8,0.3)] z-10 md:-mb-8 h-full md:h-[320px]" 
                 : "bg-slate-800/50 border-slate-700 md:h-[260px]";
             
-            let badgeColor = "";
-            let icon = "";
-            let titleColor = "";
+            let badgeColor = "", icon = "", titleColor = "";
 
             if (item.rank === 1) { 
                 badgeColor = "bg-yellow-500 text-slate-900"; icon = "fa-crown"; titleColor = "text-yellow-400";
@@ -572,13 +613,11 @@ export function renderAlumniLeaderboard() {
 
             html += `
             <div class="relative flex flex-col items-center justify-end p-6 rounded-[2rem] border ${cardStyle} backdrop-blur-sm transition-transform hover:scale-[1.02]">
-                
                 <div class="absolute -top-6">
                     <div class="w-12 h-12 ${badgeColor} rounded-xl flex items-center justify-center text-xl font-bold shadow-lg rotate-3">
                         <i class="fas ${icon}"></i>
                     </div>
                 </div>
-
                 <div class="text-center mt-8">
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Angkatan</span>
                     <h3 class="text-3xl md:text-4xl font-black text-white mb-2">${item.year}</h3>
@@ -586,14 +625,13 @@ export function renderAlumniLeaderboard() {
                     <p class="text-xs text-slate-400 mb-1">Total Donasi</p>
                     <p class="text-xl md:text-2xl font-bold ${titleColor}">${formatRupiah(item.total)}</p>
                 </div>
-                
                 ${isChamp ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.5)]"></div>' : ''}
             </div>`;
         });
         html += `</div>`;
     }
 
-    // BAGIAN B: LIST SISA (Rank 4 ke bawah)
+    // --- BAGIAN LIST (RANK 4 DST) ---
     if (rest.length > 0) {
         html += `
         <div class="bg-slate-800/50 rounded-3xl border border-slate-700 overflow-hidden max-w-3xl mx-auto backdrop-blur-md">
@@ -627,7 +665,7 @@ export function renderAlumniLeaderboard() {
         html += `</div></div>`;
     }
 
-    html += `</div>`; // Close wrapper
+    html += `</div>`; 
     container.innerHTML = html;
 }
 
