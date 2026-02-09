@@ -3,7 +3,7 @@ import { formatRupiah, showToast, generateUniqueCode, validateInput, clearValida
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
-import { DONATION } from './constants.js';
+import { DONATION, VALIDATION } from './constants.js';
 import { formatInputRupiah, switchZakatMode } from './zakat-calculator.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
@@ -768,8 +768,8 @@ export function setupWizardLogic() {
             if (!hpInput || !hpInput.value.trim()) {
                 validateInput(hpInput, false, 'Nomor WhatsApp wajib diisi');
                 isValid = false;
-            } else if (hpInput.value.trim().length < 10) {
-                validateInput(hpInput, false, 'Nomor WhatsApp minimal 10 digit');
+            } else if (hpInput.value.trim().length < VALIDATION.MIN_PHONE_LENGTH) {
+                validateInput(hpInput, false, `Nomor WhatsApp minimal ${VALIDATION.MIN_PHONE_LENGTH} digit`);
                 isValid = false;
             } else {
                 validateInput(hpInput, true);
@@ -784,8 +784,7 @@ export function setupWizardLogic() {
             
             // Email validation (optional but must be valid if filled)
             if (emailInput && emailInput.value.trim()) {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(emailInput.value.trim())) {
+                if (!VALIDATION.EMAIL_PATTERN.test(emailInput.value.trim())) {
                     validateInput(emailInput, false, 'Format email tidak valid');
                     isValid = false;
                 } else {
