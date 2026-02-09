@@ -49,6 +49,7 @@ export function parseSantriData() {
         
         const waliKhusus = item.wali_khusus || "";
         const musyrifKhusus = item.musyrif_khusus || "";
+        const asrama = item.asrama || ""; // Ambil data asrama
 
         if (!rombel) return;
 
@@ -62,7 +63,8 @@ export function parseSantriData() {
             nis, 
             rombel, 
             waliKhusus,   
-            musyrifKhusus 
+            musyrifKhusus, 
+            asrama // <-- JANGAN LUPA MASUKKAN KE SINI
         });
     });
     
