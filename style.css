@@ -1,6 +1,10 @@
 /* =========================================
    1. BASE STYLES
    ========================================= */
+html {
+    overflow-x: hidden; /* Prevent horizontal scroll at root level */
+}
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: #f8fafc;
@@ -8,6 +12,8 @@ body {
     background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
     background-size: 40px 40px;
     overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+    position: relative; /* Ensure contained positioning */
+    max-width: 100vw; /* Prevent content from exceeding viewport width */
 }
 
 /* Font Arab untuk doa */

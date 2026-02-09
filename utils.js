@@ -142,6 +142,19 @@ export function stripHtml(html) {
     return tmp.textContent || tmp.innerText || "";
 }
 
+// Debounce function for better performance
+export function debounce(func, wait = 300) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Add visual validation feedback to input fields
 export function validateInput(input, isValid, errorMessage = '') {
     if (!input) return;
