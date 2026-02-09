@@ -891,6 +891,14 @@ export function setupWizardLogic() {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
+                // 3a. Parse dan validasi response dari backend
+                const result = await response.json();
+                
+                // Cek apakah backend berhasil menyimpan data
+                if (result.status !== "success") {
+                    throw new Error(result.message || "Gagal menyimpan data ke database");
+                }
+
                 // 4. Update Data Tampilan di Halaman Sukses
                 const finalNominal = document.getElementById('final-nominal-display');
                 const finalType = document.getElementById('final-type-display');

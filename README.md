@@ -74,8 +74,26 @@ Sebelum deploy ke production:
 2. Pastikan file `dist/tailwind.css` sudah ter-commit
 3. Upload semua files ke server
 
+## Google Apps Script Setup
+
+Website ini menggunakan Google Apps Script sebagai backend untuk menyimpan data donasi ke Google Sheets. Setup lengkap:
+
+1. **File `code.gs`** berisi kode Google Apps Script yang sudah diperbaiki
+2. **Lihat `RECAPTCHA_FIX.md`** untuk panduan lengkap setup dan troubleshooting
+3. **Deploy script** ke Google Apps Script dan update `GAS_API_URL` di `config.js`
+
+### Integrasi reCAPTCHA v3
+
+Website ini menggunakan Google reCAPTCHA v3 untuk keamanan. Pastikan:
+- Site Key sudah dikonfigurasi di `config.js`
+- Secret Key sudah dikonfigurasi di Google Apps Script (`code.gs`)
+- Script reCAPTCHA sudah dimuat di `index.html`
+
+📖 **Baca [RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md) untuk panduan lengkap troubleshooting masalah reCAPTCHA**
+
 ## Notes
 
 - File `node_modules/` tidak di-commit (sudah ada di .gitignore)
 - File CSS di `dist/` perlu di-commit karena diperlukan untuk production
 - Jangan gunakan Tailwind CDN untuk production (sudah diganti dengan build process ini)
+- **PENTING:** Jangan commit Secret Key reCAPTCHA ke repository publik
