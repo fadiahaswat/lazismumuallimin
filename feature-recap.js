@@ -361,7 +361,7 @@ function renderRekapTable(cls) {
         tr.innerHTML = `
             <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
             <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">
-                ${s.nama} ${badgeKelas} ${labelTahfizh}
+                ${s.nama} ${badgeKelas} ${labelTahfizh} ${labelMujanib}
             </td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>
