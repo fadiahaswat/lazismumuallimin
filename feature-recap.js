@@ -347,6 +347,15 @@ function renderRekapTable(cls) {
              labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
 
+        let labelMujanib = '';
+        
+        const asramaStr = String(s.asrama || '').trim();
+        const kelasStr = String(s.rombel || '');
+
+        if (kelasStr.startsWith('4') && (asramaStr === '1' || asramaStr === '10')) {
+            labelMujanib = `<span class="ml-1 text-[10px] text-purple-600 bg-purple-50 px-1.5 rounded border border-purple-100" title="Asrama ${asramaStr}"><i class="fas fa-user-shield"></i> Mujanib</span>`;
+        }
+
         const tr = document.createElement('tr');
         tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
         tr.innerHTML = `
