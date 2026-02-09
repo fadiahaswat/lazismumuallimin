@@ -352,8 +352,10 @@ function renderRekapTable(cls) {
         const asramaStr = String(s.asrama || '').trim();
         const kelasStr = String(s.rombel || '');
 
-        if (kelasStr.startsWith('4') && (asramaStr === '1' || asramaStr === '10')) {
-            labelMujanib = `<span class="ml-1 text-[10px] text-purple-600 bg-purple-50 px-1.5 rounded border border-purple-100" title="Asrama ${asramaStr}"><i class="fas fa-user-shield"></i> Mujanib</span>`;
+        const kodeAsrama = asramaStr.split(' -')[0].trim();
+
+        if (kelasStr.startsWith('4') && (kodeAsrama === '1' || kodeAsrama === '10')) {
+            labelMujanib = `<span class="ml-1 text-[10px] text-purple-600 bg-purple-50 px-1.5 rounded border border-purple-100" title="Asrama: ${asramaStr}"><i class="fas fa-user-shield"></i> Mujanib</span>`;
         }
 
         const tr = document.createElement('tr');
