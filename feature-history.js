@@ -355,6 +355,8 @@ export function renderHomeLatestDonations() {
             labelSebutan = "Muzaki"; 
         } else if (displayType.toLowerCase().includes('infaq') || displayType.toLowerCase().includes('wakaf')) {
             labelSebutan = "Munfiq"; 
+        } else if (displayType.toLowerCase().includes('fidyah')) {
+            labelSebutan = "Pembayar Fidyah"; 
         }
 
         if (displayType.includes('Fitrah')) {
@@ -365,6 +367,10 @@ export function renderHomeLatestDonations() {
             iconClass = 'fa-sack-dollar';
             bgIcon = 'bg-amber-100 text-amber-600';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+        } else if (displayType.includes('Fidyah')) {
+            iconClass = 'fa-moon';
+            bgIcon = 'bg-indigo-100 text-indigo-600';
+            bgBadge = 'bg-indigo-50 text-indigo-700 border-indigo-100';
         } else if (displayType.includes('Kampus')) {
             iconClass = 'fa-school';
             bgIcon = 'bg-rose-100 text-rose-600';
