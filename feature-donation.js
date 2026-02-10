@@ -897,9 +897,9 @@ export function setupWizardLogic() {
 
             // 4. Logika Kode Unik
             const isDigital = (donasiData.metode === 'Transfer' || donasiData.metode === 'QRIS');
-            const isZakat = (donasiData.type === 'Zakat Fitrah' || donasiData.type === 'Zakat Maal' || donasiData.type === 'Fidyah');
+            const isReligiousObligation = (donasiData.type === 'Zakat Fitrah' || donasiData.type === 'Zakat Maal' || donasiData.type === 'Fidyah');
 
-            if (isDigital && !isZakat && !isAlreadyTransferred) {
+            if (isDigital && !isReligiousObligation && !isAlreadyTransferred) {
                 const kodeUnik = generateUniqueCode(); 
                 donasiData.kodeUnik = kodeUnik;
                 donasiData.nominalTotal = donasiData.nominalAsli + kodeUnik;
