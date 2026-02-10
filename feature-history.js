@@ -153,6 +153,7 @@ function calculateStats() {
     let totalFitrah = 0;
     let totalMaal = 0;
     let totalInfaq = 0;
+    let totalFidyah = 0;
 
     // Payment method statistics
     let totalQRIS = 0;
@@ -185,6 +186,7 @@ function calculateStats() {
         if (typeName.includes('Fitrah')) totalFitrah += val;
         else if (typeName.includes('Maal')) totalMaal += val;
         else if (typeName.includes('Infaq')) totalInfaq += val;
+        else if (typeName.includes('Fidyah')) totalFidyah += val;
 
         const rombel = d.KelasSantri || d.rombelSantri;
         const nama = d.NamaSantri || d.namaSantri;
@@ -271,6 +273,9 @@ function calculateStats() {
 
     const elDetInfaq = document.getElementById('stat-detail-infaq');
     if (elDetInfaq) animateValue(elDetInfaq, 0, totalInfaq, 1500, true);
+
+    const elDetFidyah = document.getElementById('stat-detail-fidyah');
+    if (elDetFidyah) animateValue(elDetFidyah, 0, totalFidyah, 1500, true);
 
     // Update statistics for each grade level (1-6)
     for (let grade = 1; grade <= 6; grade++) {
@@ -782,6 +787,7 @@ export function renderRiwayatList() {
         let labelSebutan = "Donatur"; 
         if (displayType.toLowerCase().includes('zakat')) labelSebutan = "Muzaki";
         else if (displayType.toLowerCase().includes('infaq') || displayType.toLowerCase().includes('wakaf')) labelSebutan = "Munfiq";
+        else if (displayType.toLowerCase().includes('fidyah')) labelSebutan = "Pembayar Fidyah";
 
         // Status Maker-Checker
         const status = item.Status || "Belum Verifikasi";
@@ -816,6 +822,9 @@ export function renderRiwayatList() {
         } else if (displayType.includes('Maal')) {
             iconClass = 'fa-sack-dollar'; bgIcon = 'bg-amber-100 text-amber-600'; borderClass = 'hover:border-amber-200';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+        } else if (displayType.includes('Fidyah')) {
+            iconClass = 'fa-moon'; bgIcon = 'bg-indigo-100 text-indigo-600'; borderClass = 'hover:border-indigo-200';
+            bgBadge = 'bg-indigo-50 text-indigo-700 border-indigo-100';
         } else if (displayType.includes('Kampus')) {
             iconClass = 'fa-school'; bgIcon = 'bg-rose-100 text-rose-600'; borderClass = 'hover:border-rose-200';
             bgBadge = 'bg-rose-50 text-rose-700 border-rose-100';

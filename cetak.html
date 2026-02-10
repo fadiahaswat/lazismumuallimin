@@ -284,6 +284,10 @@
             labelInfaq = labelInfaq.replace('Pengembangan', '').trim();
             Utils.set('jenis-infaq', labelInfaq);
 
+        } else if (jenis.includes('fidyah')) {
+            // FIDYAH
+            Utils.set('nominal-lain', fmtNominal);
+            Utils.set('jenis-lain', 'Fidyah');
         } else {
             // LAINNYA
             Utils.set('nominal-lain', fmtNominal);
