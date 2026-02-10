@@ -378,6 +378,8 @@ export function setupWizardLogic() {
                 btn.classList.add('border-amber-500', 'bg-amber-50');
             } else if (type === 'Infaq') {
                 btn.classList.add('border-orange-500', 'bg-orange-50');
+            } else if (type === 'Fidyah') {
+                btn.classList.add('border-sky-500', 'bg-sky-50');
             }
 
             // 4. Update Data Logic
@@ -388,12 +390,19 @@ export function setupWizardLogic() {
             const zakatFitrah = document.getElementById('zakat-fitrah-checker');
             const zakatMaal = document.getElementById('zakat-maal-checker');
             const step1Nav = document.getElementById('step-1-nav-default');
+            const fidyahChecker = document.getElementById('fidyah-checker');
 
             // Hide All Sections
             if (infaqOpts) infaqOpts.classList.add('hidden');
             if (zakatFitrah) zakatFitrah.classList.add('hidden');
             if (zakatMaal) zakatMaal.classList.add('hidden');
             if (step1Nav) step1Nav.classList.add('hidden');
+            if (fidyahChecker) fidyahChecker.classList.add('hidden');
+
+            if (type === 'Fidyah' && fidyahChecker) {
+                fidyahChecker.classList.remove('hidden');
+                if(step1Nav) step1Nav.classList.add('hidden'); // Sembunyikan nav default, pakai tombol khusus di checker
+            }
 
             // Show Specific Section
             if (type === 'Infaq' && infaqOpts) {
@@ -443,7 +452,8 @@ export function setupWizardLogic() {
     const fitrahInput = document.getElementById('fitrah-jumlah-orang');
     if (fitrahInput) {
         fitrahInput.oninput = (e) => {
-            const total = (parseInt(e.target.value) || 0) * 37500;
+            // GANTI 37500 DENGAN ZAKAT.FITRAH
+            const total = (parseInt(e.target.value) || 0) * ZAKAT.FITRAH; 
             const totalInput = document.getElementById('fitrah-total');
             if (totalInput) totalInput.value = formatRupiah(total);
             donasiData.nominal = total;
@@ -453,7 +463,26 @@ export function setupWizardLogic() {
     const btnFitrahNext = document.getElementById('btn-fitrah-next');
     if (btnFitrahNext) {
         btnFitrahNext.onclick = () => {
-            if (donasiData.nominal < 37500) return showToast("Minimal 1 jiwa");
+            if (donasiData.nominal < ZAKAT.FITRAH) return showToast("Minimal 1 jiwa");
+            goToStep(3);
+        };
+    }
+
+    // --- Logika Fidyah (BARU) ---
+    const fidyahInput = document.getElementById('fidyah-jumlah-hari');
+    if (fidyahInput) {
+        fidyahInput.oninput = (e) => {
+            const total = (parseInt(e.target.value) || 0) * ZAKAT.FIDYAH;
+            const totalInput = document.getElementById('fidyah-total');
+            if (totalInput) totalInput.value = formatRupiah(total);
+            donasiData.nominal = total;
+        };
+    }
+    
+    const btnFidyahNext = document.getElementById('btn-fidyah-next');
+    if (btnFidyahNext) {
+        btnFidyahNext.onclick = () => {
+            if (donasiData.nominal < ZAKAT.FIDYAH) return showToast("Minimal 1 hari/jiwa");
             goToStep(3);
         };
     }
