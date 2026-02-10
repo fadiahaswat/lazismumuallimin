@@ -368,7 +368,7 @@ export function renderHomeLatestDonations() {
             bgIcon = 'bg-amber-100 text-amber-600';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
         } else if (displayType.includes('Fidyah')) {
-            iconClass = 'fa-moon';
+            iconClass = 'fa-utensils';
             bgIcon = 'bg-indigo-100 text-indigo-600';
             bgBadge = 'bg-indigo-50 text-indigo-700 border-indigo-100';
         } else if (displayType.includes('Kampus')) {
@@ -829,7 +829,7 @@ export function renderRiwayatList() {
             iconClass = 'fa-sack-dollar'; bgIcon = 'bg-amber-100 text-amber-600'; borderClass = 'hover:border-amber-200';
             bgBadge = 'bg-amber-50 text-amber-700 border-amber-100';
         } else if (displayType.includes('Fidyah')) {
-            iconClass = 'fa-moon'; bgIcon = 'bg-indigo-100 text-indigo-600'; borderClass = 'hover:border-indigo-200';
+            iconClass = 'fa-utensils'; bgIcon = 'bg-indigo-100 text-indigo-600'; borderClass = 'hover:border-indigo-200';
             bgBadge = 'bg-indigo-50 text-indigo-700 border-indigo-100';
         } else if (displayType.includes('Kampus')) {
             iconClass = 'fa-school'; bgIcon = 'bg-rose-100 text-rose-600'; borderClass = 'hover:border-rose-200';
