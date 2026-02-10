@@ -3,7 +3,7 @@ import { formatRupiah, showToast, generateUniqueCode, validateInput, clearValida
 import { STEP_TITLES, GAS_API_URL } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
-import { DONATION, VALIDATION } from './constants.js';
+import { DONATION, VALIDATION, ZAKAT } from './constants.js';
 import { formatInputRupiah, switchZakatMode } from './zakat-calculator.js';
 
 // Delay untuk memastikan showPage() selesai update DOM sebelum goToStep() dijalankan
