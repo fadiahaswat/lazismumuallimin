@@ -12,7 +12,9 @@ export const CACHE = {
 export const ZAKAT = {
     NISAB_TAHUN: 85685972,  // Nisab threshold for annual zakat
     RATE: 0.025,             // 2.5% zakat rate
-    MIN_NOMINAL: 10000       // Minimum donation amount
+    MIN_NOMINAL: 10000,       // Minimum donation amount
+    FITRAH: 50000,   // Update 2026: Rp 50.000
+    FIDYAH: 65000    // Update 2026: Rp 65.000 (per jiwa/hari)
 };
 
 // Donation limits
