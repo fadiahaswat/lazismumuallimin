@@ -487,89 +487,95 @@ export function renderHomeLatestDonations() {
     container.innerHTML = html;
 }
 
-// GANTI FUNGSI renderAlumniLeaderboard DENGAN INI:
-
+// Render Alumni Leaderboard dengan error handling lengkap
 export function renderAlumniLeaderboard() {
     const container = document.getElementById('alumni-leaderboard-container');
-    if (!container) return;
+    
+    // Validasi container exists
+    if (!container) {
+        logger.warn("Alumni leaderboard container not found");
+        return;
+    }
 
     // 1. Cek Status Data
-    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+    if (!riwayatData.isLoaded || !riwayatData.allData || riwayatData.allData.length === 0) {
         return; 
     }
 
-    // 2. Variabel Penampung
-    const angkatanTotals = {};
-    const uniqueAlumni = new Set();
-    let grandTotalAlumni = 0;
-    const currentYear = new Date().getFullYear();
+    try {
+        // 2. Variabel Penampung
+        const angkatanTotals = {};
+        const uniqueAlumni = new Set();
+        let grandTotalAlumni = 0;
+        const currentYear = new Date().getFullYear();
 
-    // 3. Iterasi Data (Logika Deteksi Lebih Cerdas)
-    riwayatData.allData.forEach(d => {
-        if (d.Status !== 'Terverifikasi') return;
-        
-        let year = null;
-        
-        // A. Cek Kolom Khusus (Prioritas Utama)
-        if (d.DetailAlumni && String(d.DetailAlumni).trim() !== "") {
-            year = String(d.DetailAlumni).trim();
-        } else if (d.detailAlumni && String(d.detailAlumni).trim() !== "") {
-            year = String(d.detailAlumni).trim();
-        } 
-        // B. Cek Keterangan Saja (Jika isinya cuma angka tahun, misal: "2005")
-        else if (d.Keterangan && /^\d{4}$/.test(String(d.Keterangan).trim())) {
-            year = String(d.Keterangan).trim();
-        }
-        // C. Cek Pola Kata di Nama/Keterangan (misal: "Alumni 98", "Angkatan 2010")
-        else {
-            const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
-            // Regex: cari kata kunci diikuti 4 digit, ATAU 2 digit (untuk '98)
-            const yearMatch = combined.match(/(?:alumni|angkatan|lulusan|letting|thn|th)\s*(\d{2,4})/i);
-            if (yearMatch) {
-                let y = yearMatch[1];
-                // Konversi 2 digit ke 4 digit (misal: 98 -> 1998, 05 -> 2005)
-                if (y.length === 2) {
-                    y = parseInt(y) > 50 ? `19${y}` : `20${y}`;
-                }
-                year = y;
+        // 3. Iterasi Data (Logika Deteksi Lebih Cerdas)
+        riwayatData.allData.forEach(d => {
+            if (!d || d.Status !== 'Terverifikasi') return;
+            
+            let year = null;
+            
+            // A. Cek Kolom Khusus (Prioritas Utama)
+            // STANDARDISASI: Gunakan DetailAlumni sebagai field utama
+            const detailAlumniField = d.DetailAlumni || d.detailAlumni || d.detail_alumni;
+            if (detailAlumniField && String(detailAlumniField).trim() !== "") {
+                year = String(detailAlumniField).trim();
+            } 
+            // B. Cek Keterangan Saja (Jika isinya cuma angka tahun, misal: "2005")
+            else if (d.Keterangan && /^\d{4}$/.test(String(d.Keterangan).trim())) {
+                year = String(d.Keterangan).trim();
             }
-        }
-
-        if (year) {
-            const numYear = parseInt(year);
-            // Validasi: Tahun 1950 s/d Tahun Depan (biar aman)
-            if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear + 1) {
-                const val = parseInt(d.Nominal) || 0;
-                
-                angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
-                grandTotalAlumni += val;
-
-                // Hitung partisipan unik
-                let donaturId = d.NamaDonatur ? d.NamaDonatur.trim().toLowerCase() : "";
-                if (!donaturId || donaturId === 'hamba allah') {
-                    // Gunakan timestamp+nominal sebagai ID unik sementara untuk Hamba Allah
-                    donaturId = `anon-${d.Timestamp}-${d.Nominal}`; 
+            // C. Cek Pola Kata di Nama/Keterangan (misal: "Alumni 98", "Angkatan 2010")
+            else {
+                const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
+                // Regex: cari kata kunci diikuti 4 digit, ATAU 2 digit (untuk '98)
+                const yearMatch = combined.match(/(?:alumni|angkatan|lulusan|letting|thn|th)\s*(\d{2,4})/i);
+                if (yearMatch) {
+                    let y = yearMatch[1];
+                    // Konversi 2 digit ke 4 digit (misal: 98 -> 1998, 05 -> 2005)
+                    if (y.length === 2) {
+                        const yearNum = parseInt(y);
+                        y = yearNum > 50 ? `19${y}` : `20${y}`;
+                    }
+                    year = y;
                 }
-                uniqueAlumni.add(donaturId);
             }
+
+            if (year) {
+                const numYear = parseInt(year);
+                // Validasi: Tahun 1950 s/d Tahun Depan (biar aman)
+                if (!isNaN(numYear) && numYear >= 1950 && numYear <= currentYear + 1) {
+                    const val = parseInt(d.Nominal) || 0;
+                    
+                    angkatanTotals[numYear] = (angkatanTotals[numYear] || 0) + val;
+                    grandTotalAlumni += val;
+
+                    // Hitung partisipan unik
+                    let donaturId = d.NamaDonatur ? String(d.NamaDonatur).trim().toLowerCase() : "";
+                    if (!donaturId || donaturId === 'hamba allah') {
+                        // Gunakan timestamp+nominal sebagai ID unik sementara untuk Hamba Allah
+                        donaturId = `anon-${d.Timestamp || Date.now()}-${d.Nominal || 0}`; 
+                    }
+                    uniqueAlumni.add(donaturId);
+                }
+            }
+        });
+
+        // 4. Transformasi Data & Sorting
+        const leaderboard = Object.keys(angkatanTotals)
+            .map(year => ({ year: year, total: angkatanTotals[year] }))
+            .sort((a, b) => b.total - a.total); // Urutkan terbesar
+
+        // Jika tidak ada data alumni sama sekali
+        if (leaderboard.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12 bg-slate-800/50 rounded-3xl border border-slate-700 border-dashed animate-fade-in-up">
+                    <i class="fas fa-user-graduate text-4xl text-slate-600 mb-4"></i>
+                    <p class="text-slate-400">Belum ada data alumni yang terdeteksi.</p>
+                    <p class="text-xs text-slate-600 mt-2">Tulis tahun angkatan di keterangan saat donasi.</p>
+                </div>`;
+            return;
         }
-    });
-
-    // 4. Transformasi Data & Sorting
-    const leaderboard = Object.keys(angkatanTotals)
-        .map(year => ({ year: year, total: angkatanTotals[year] }))
-        .sort((a, b) => b.total - a.total); // Urutkan terbesar
-
-    // Jika tidak ada data alumni sama sekali
-    if (leaderboard.length === 0) {
-        container.innerHTML = `
-            <div class="text-center py-12 bg-slate-800/50 rounded-3xl border border-slate-700 border-dashed animate-fade-in-up">
-                <i class="fas fa-user-graduate text-4xl text-slate-600 mb-4"></i>
-                <p class="text-slate-400">Belum ada data alumni yang terdeteksi.</p>
-                <p class="text-xs text-slate-600 mt-2">Tulis tahun angkatan di keterangan saat donasi.</p>
-            </div>`;
-        return;
-    }
 
     const top3 = leaderboard.slice(0, 3);
     const rest = leaderboard.slice(3);
@@ -712,6 +718,18 @@ export function renderAlumniLeaderboard() {
 
     html += `</div>`; // Tutup wrapper utama
     container.innerHTML = html;
+    
+    } catch (error) {
+        logger.error("Error rendering alumni leaderboard:", error);
+        if (container) {
+            container.innerHTML = `
+                <div class="text-center py-12 bg-red-900/20 rounded-3xl border border-red-700/50 border-dashed">
+                    <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                    <p class="text-red-400 font-bold mb-2">Terjadi kesalahan saat memuat Hall of Fame</p>
+                    <p class="text-xs text-red-600">Silakan refresh halaman atau hubungi admin.</p>
+                </div>`;
+        }
+    }
 }
 
 function getFilteredData() {
@@ -849,9 +867,9 @@ export function renderRiwayatList() {
         const date = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         const time = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-        const alumniYear = item.DetailAlumni || item.detailAlumni;
+        const alumniYear = item.DetailAlumni || item.detailAlumni || item.detail_alumni || null;
         const alumniBadge = alumniYear ?
-            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${alumniYear}"><i class="fas fa-graduation-cap mr-1"></i> ${alumniYear}</span>` : '';
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${escapeHtml(String(alumniYear))}"><i class="fas fa-graduation-cap mr-1"></i> ${escapeHtml(String(alumniYear))}</span>` : '';
 
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';

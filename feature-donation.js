@@ -468,21 +468,40 @@ export function setupWizardLogic() {
         };
     }
 
-    // --- Logika Fidyah (BARU) ---
+    // --- Logika Fidyah ---
     const fidyahInput = document.getElementById('fidyah-jumlah-hari');
-    if (fidyahInput) {
+    const fidyahTotalInput = document.getElementById('fidyah-total');
+    
+    if (fidyahInput && fidyahTotalInput) {
         fidyahInput.oninput = (e) => {
-            const total = (parseInt(e.target.value) || 0) * ZAKAT.FIDYAH;
-            const totalInput = document.getElementById('fidyah-total');
-            if (totalInput) totalInput.value = formatRupiah(total);
+            const jumlahHari = parseInt(e.target.value) || 0;
+            const total = jumlahHari * ZAKAT.FIDYAH;
+            fidyahTotalInput.value = formatRupiah(total);
             donasiData.nominal = total;
+            
+            // Clear validation styling when user types
+            clearValidation(fidyahInput);
         };
     }
     
     const btnFidyahNext = document.getElementById('btn-fidyah-next');
     if (btnFidyahNext) {
         btnFidyahNext.onclick = () => {
-            if (donasiData.nominal < ZAKAT.FIDYAH) return showToast("Minimal 1 hari/jiwa");
+            if (!fidyahInput) {
+                logger.error("Fidyah input element not found");
+                return showToast("Terjadi kesalahan pada form", "error");
+            }
+            
+            const jumlahHari = parseInt(fidyahInput.value) || 0;
+            
+            // Validate minimum amount
+            if (jumlahHari < 1 || donasiData.nominal < ZAKAT.FIDYAH) {
+                validateInput(fidyahInput, false, "Minimal 1 hari/jiwa");
+                return showToast("Minimal 1 hari/jiwa", "warning");
+            }
+            
+            // Clear validation and proceed
+            validateInput(fidyahInput, true);
             goToStep(3);
         };
     }
