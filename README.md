@@ -4,8 +4,10 @@ Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 
 ## 📜 Dokumentasi Penting
 
+- **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - 🎯 **RINGKASAN LENGKAP** solusi bot detection
+- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT  
+- **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - ⚡ Solusi cepat 5 menit
 - **[SK Lazismu DIY 2026](./SK_LAZISMU_DIY_2026.md)** - Surat Keputusan tentang Penetapan Besaran Zakat Fitri, Nishab Zakat Maal, dan Fidyah tahun 1447 H/2026 M
-- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT
 - **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
 - **[INDEX.md](./INDEX.md)** - Dokumentasi lengkap proyek
 
