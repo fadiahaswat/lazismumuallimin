@@ -101,6 +101,12 @@ body {
     color: #854d0e;
 }
 
+.selection-btn.selected.type-fidyah {
+    background-color: #eef2ff;
+    border-color: #6366f1;
+    color: #4338ca;
+}
+
 .selection-btn.selected.type-infaq {
     background-color: #fff7ed;
     border-color: #F15A22;
