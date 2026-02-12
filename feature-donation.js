@@ -1,6 +1,6 @@
 import { donasiData, currentUser } from './state.js';
 import { formatRupiah, showToast, generateUniqueCode, validateInput, clearValidation } from './utils.js';
-import { STEP_TITLES, GAS_API_URL } from './config.js';
+import { STEP_TITLES, GAS_API_URL, RECAPTCHA_SITE_KEY } from './config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
 import { DONATION, VALIDATION, ZAKAT } from './constants.js';
@@ -993,6 +993,20 @@ export function setupWizardLogic() {
             };
 
             try {
+                // Generate reCAPTCHA token for bot protection
+                let recaptchaToken = null;
+                try {
+                    if (typeof grecaptcha !== 'undefined') {
+                        recaptchaToken = await grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'donasi' });
+                        payload.recaptchaToken = recaptchaToken;
+                    } else {
+                        console.warn('reCAPTCHA not loaded, proceeding without verification');
+                    }
+                } catch (recaptchaError) {
+                    console.error('reCAPTCHA error:', recaptchaError);
+                    // Continue without reCAPTCHA if it fails
+                }
+
                 // 3. Kirim ke Google Apps Script
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",

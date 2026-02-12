@@ -5,6 +5,9 @@ export const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-
 export const WORDPRESS_SITE = 'lazismumuallimin.wordpress.com';
 export const NEWS_PER_PAGE = 6;
 
+// --- KONFIGURASI RECAPTCHA ---
+export const RECAPTCHA_SITE_KEY = "6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6";
+
 // --- KONFIGURASI FIREBASE ---
 export const firebaseConfig = {
     apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
