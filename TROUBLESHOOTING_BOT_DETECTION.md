@@ -309,7 +309,7 @@ Ganti `6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6` dengan SITE KEY Anda.
 
 1. Buka [Google Apps Script Editor](https://script.google.com/)
 2. Klik **Executions** di sidebar kiri
-3. Clik execution terbaru
+3. Klik execution terbaru
 4. Lihat logs
 
 **Yang harus ada:**

@@ -182,7 +182,7 @@ Submit donasi dan lihat console. Harus ada:
 
 ## ❌ Masih Bermasalah?
 
-Jika 3 solusi di atas sudah dicoba tapi masih error:
+Jika 3 solusi di atas sudah dicoba tapi masih error, coba langkah berikut:
 
 ### 1. Clear Browser Cache
 - `Ctrl+Shift+Delete` → Clear cache → Reload website
@@ -190,15 +190,29 @@ Jika 3 solusi di atas sudah dicoba tapi masih error:
 ### 2. Test Browser Lain
 - Try Chrome, Firefox, atau Edge
 
-### 3. Cek Error Message
+### 3. Cek Error Message Detail
 - Screenshot error di console
 - Screenshot error di Apps Script logs
-- Baca [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)
 
 ### 4. Verifikasi Deployment
 - Pastikan script sudah di-deploy ulang setelah perubahan
 - Copy Web app URL baru jika ada perubahan
 - Update `GAS_API_URL` di `config.js` jika URL berubah
+
+### 5. Konsultasi Dokumentasi Lengkap
+
+Jika basic fixes di atas tidak berhasil, kemungkinan masalahnya lebih kompleks. Baca dokumentasi lengkap untuk troubleshooting mendalam:
+
+**📖 [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)**
+
+Dokumentasi lengkap ini berisi:
+- ✅ 10+ FAQ dengan jawaban detail
+- ✅ Advanced debugging techniques
+- ✅ Edge case scenarios
+- ✅ Step-by-step untuk masalah kompleks
+- ✅ Monitoring dan analytics setup
+
+Baca dokumentasi lengkap **HANYA JIKA** basic fixes di halaman ini tidak berhasil.
 
 ---
 
