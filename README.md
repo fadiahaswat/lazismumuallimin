@@ -5,10 +5,11 @@ Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 ## 📜 Dokumentasi Penting
 
 ### 🔥 Hot Issues & Solutions
+- **[TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)** - 🆕 **PANDUAN LENGKAP** troubleshooting bot detection (HTML entities + threshold)
 - **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - 🎯 **RINGKASAN LENGKAP** solusi bot detection
 - **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT  
 - **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - ⚡ Solusi cepat 5 menit
-- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - 🔍 **NEW!** Panduan debug dengan console logging
+- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - 🔍 Panduan debug dengan console logging
 - **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
 
 ### 🔒 Security & Configuration
@@ -107,14 +108,38 @@ Website ini menggunakan Google reCAPTCHA v3 untuk keamanan. Pastikan:
 
 📖 **Baca [RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md) untuk panduan lengkap troubleshooting masalah reCAPTCHA**
 
-### ⚠️ Troubleshooting: Donasi Manual Terdeteksi sebagai BOT
+### ⚠️ Troubleshooting: Masih Dikira Bot?
+
+Jika Anda masih terdeteksi sebagai bot setelah mengisi donasi:
+
+**📖 Baca [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md) - Panduan Lengkap!**
+
+Panduan ini mencakup:
+- ✅ Identifikasi masalah (3 jenis masalah umum)
+- ✅ Fix HTML entities (`&amp;`, `&gt;=`, `=&gt;`) yang merusak code
+- ✅ Turunkan threshold reCAPTCHA (0.5 → 0.2)
+- ✅ Verifikasi konfigurasi reCAPTCHA
+- ✅ Testing dan debugging step-by-step
+- ✅ FAQ lengkap dengan 10+ pertanyaan umum
+
+**Solusi Cepat (TL;DR):**
+1. Fix HTML entities di `code.gs` (lihat panduan lengkap)
+2. Ubah `RECAPTCHA_THRESHOLD` dari `0.5` ke `0.2`
+3. Redeploy Google Apps Script
+4. Test donasi
+
+---
+
+### 📝 Troubleshooting: Donasi Manual Terdeteksi sebagai BOT (Legacy)
+
+> ⚠️ **DEPRECATED:** Gunakan [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md) untuk panduan terbaru!
 
 Jika donasi manual terdeteksi sebagai BOT, kemungkinan threshold reCAPTCHA terlalu ketat (default: 0.5).
 
 **Solusi Cepat:**
 1. Buka file `code.gs` di Google Apps Script Editor
 2. Cari konstanta `RECAPTCHA_THRESHOLD` (baris ~20)
-3. Ubah dari `0.5` menjadi `0.3`
+3. Ubah dari `0.5` menjadi `0.2`
 4. Save dan deploy ulang
 
 📖 **Baca [BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md) untuk panduan lengkap mengatasi masalah bot detection**
