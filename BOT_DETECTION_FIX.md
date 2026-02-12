@@ -106,15 +106,6 @@ function verifikasiRecaptcha(token) {
   const response = UrlFetchApp.fetch(url);
   const json = JSON.parse(response.getContentText());
   
-  // Log untuk monitoring dan debugging
-  Logger.log("========== reCAPTCHA Verification ==========");
-  Logger.log("Success: " + json.success);
-  Logger.log("Score: " + json.score);
-  Logger.log("Action: " + json.action);
-  Logger.log("Hostname: " + json.hostname);
-  Logger.log("Challenge Timestamp: " + json.challenge_ts);
-  Logger.log("Threshold: " + RECAPTCHA_THRESHOLD);
-  
   // Log detail untuk debugging
   Logger.log('========== reCAPTCHA Verification ==========');
   Logger.log('Success: ' + json.success);
