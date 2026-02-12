@@ -5,12 +5,18 @@ Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 ## 📜 Dokumentasi Penting
 
 ### 🔥 Hot Issues & Solutions
-- **[TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)** - 🆕 **PANDUAN LENGKAP** troubleshooting bot detection (HTML entities + threshold)
-- **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - 🎯 **RINGKASAN LENGKAP** solusi bot detection
-- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT  
-- **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - ⚡ Solusi cepat 5 menit
-- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - 🔍 Panduan debug dengan console logging
-- **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
+
+**🆘 MASIH DIKIRA BOT?** Start here:
+
+- **[BOT_DETECTION_QUICK_START.md](./BOT_DETECTION_QUICK_START.md)** - ⚡ **START HERE!** Quick diagnosis & fix dalam 5-10 menit
+- **[TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)** - 📖 **PANDUAN LENGKAP** troubleshooting dengan FAQ
+
+Additional Resources:
+- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - Penjelasan mendalam tentang threshold & bot detection
+- **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Fix HTML entities & reCAPTCHA config
+- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - Debug dengan browser console
+- **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - Ringkasan solusi
+- **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - Legacy quick fix guide
 
 ### 🔒 Security & Configuration
 - **[SECURITY_GUIDE.md](./SECURITY_GUIDE.md)** - 🔐 Panduan keamanan untuk setup credentials
