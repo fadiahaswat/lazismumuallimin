@@ -48,7 +48,7 @@ Ubah threshold dari **0.5** menjadi **0.3** atau lebih rendah.
 **Kode saat ini (Baris ~35-40):**
 ```javascript
 function verifikasiRecaptcha(token) {
-  const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+  const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
   const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
   
   const response = UrlFetchApp.fetch(url);
@@ -62,7 +62,7 @@ function verifikasiRecaptcha(token) {
 **Ubah menjadi:**
 ```javascript
 function verifikasiRecaptcha(token) {
-  const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+  const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
   const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
   
   const response = UrlFetchApp.fetch(url);
@@ -94,7 +94,7 @@ Tambahkan logging untuk melihat score setiap submission:
 
 ```javascript
 function verifikasiRecaptcha(token) {
-  const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+  const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
   const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
   
   const response = UrlFetchApp.fetch(url);
@@ -132,7 +132,7 @@ Tambahkan mekanisme fallback untuk user dengan score rendah tapi terlihat legiti
 
 ```javascript
 function verifikasiRecaptcha(token) {
-  const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+  const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
   const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
   
   const response = UrlFetchApp.fetch(url);
@@ -229,7 +229,7 @@ function doPost(e) {
       const token = requestData.payload.recaptchaToken;
       
       // Verifikasi dan dapatkan full response
-      const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+      const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
       const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
       const response = UrlFetchApp.fetch(url);
       const json = JSON.parse(response.getContentText());

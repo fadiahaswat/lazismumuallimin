@@ -225,10 +225,10 @@ Sebelum mark sebagai "DONE", pastikan:
 Jika ada masalah:
 
 1. ✅ Check dokumentasi:
-   - BOT_DETECTION_FIX.md
-   - QUICK_FIX_BOT.md
-   - BOT_DETECTION_VISUAL.md
-   - RECAPTCHA_FIX.md
+   - [BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)
+   - [QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)
+   - [BOT_DETECTION_VISUAL.md](./BOT_DETECTION_VISUAL.md)
+   - [RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)
 
 2. ✅ Check logs:
    - Google Apps Script > Executions

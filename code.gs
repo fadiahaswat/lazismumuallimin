@@ -8,11 +8,15 @@
 // Gunakan Apps Script Properties Service untuk menyimpan nilai sensitif.
 // Kode di bawah ini hanya untuk template/referensi.
 
-// Untuk production, gunakan:
+// Untuk production, gunakan Properties Service (RECOMMENDED):
+// 1. Uncomment baris di bawah ini
+// 2. Comment baris 16-19 (template values)
+// 3. Setup properties dengan setupProperties() function (lihat baris ~350)
 // const SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
 // const SECRET_KEY = PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET_KEY');
 
-// Template values (GANTI dengan nilai Anda, atau lebih baik: gunakan Properties Service)
+// ⚠️ Template values - JANGAN gunakan untuk production!
+// Baris di bawah ini harus di-COMMENT dan diganti dengan Properties Service (baris 12-13)
 const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE"; // Ganti dengan ID spreadsheet Anda
 const SHEET_NAME = "DataDonasi";
 const SHEET_KUITANSI = "DataKuitansi";
@@ -144,7 +148,8 @@ function handleGetKuitansi(id) {
 function verifikasiRecaptcha(token) {
   try {
     // ✅ FIXED: Menggunakan & (bukan &amp;) untuk URL parameter separator
-    const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + token;
+    // ✅ URL encode token untuk menghindari masalah dengan special characters
+    const url = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + encodeURIComponent(token);
     
     const response = UrlFetchApp.fetch(url);
     const json = JSON.parse(response.getContentText());
@@ -349,10 +354,16 @@ function getCurrentThreshold() {
 function setupProperties() {
   const scriptProperties = PropertiesService.getScriptProperties();
   
-  // ⚠️ GANTI dengan nilai yang benar, lalu RUN SEKALI
+  // ⚠️⚠️⚠️ PENTING - BACA SEBELUM RUN ⚠️⚠️⚠️
+  // 1. GANTI 'YOUR_SPREADSHEET_ID_HERE' dengan ID spreadsheet ASLI Anda
+  // 2. GANTI 'YOUR_SECRET_KEY_HERE' dengan reCAPTCHA secret key ASLI Anda
+  // 3. RUN fungsi ini SATU KALI
+  // 4. SETELAH RUN, HAPUS nilai asli dan kembalikan ke placeholder
+  // 5. Jangan lupa uncomment baris 12-13 untuk menggunakan Properties Service
+  
   scriptProperties.setProperties({
-    'SPREADSHEET_ID': 'YOUR_SPREADSHEET_ID_HERE',
-    'RECAPTCHA_SECRET_KEY': 'YOUR_SECRET_KEY_HERE'
+    'SPREADSHEET_ID': 'YOUR_SPREADSHEET_ID_HERE',  // ← GANTI dengan ID asli sebelum run
+    'RECAPTCHA_SECRET_KEY': 'YOUR_SECRET_KEY_HERE' // ← GANTI dengan key asli sebelum run
   });
   
   Logger.log("✅ Properties configured successfully!");

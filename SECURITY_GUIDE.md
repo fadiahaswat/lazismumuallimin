@@ -33,8 +33,8 @@ Google Apps Script menyediakan **Properties Service** untuk menyimpan credential
      const scriptProperties = PropertiesService.getScriptProperties();
      
      scriptProperties.setProperties({
-       'SPREADSHEET_ID': '1EhFeSGfar1mqzEQo5CgncmDr8nflFqcSyAaXAFmWFqE', // ← ISI YANG BENAR
-       'RECAPTCHA_SECRET_KEY': '6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm' // ← ISI YANG BENAR
+       'SPREADSHEET_ID': 'YOUR_SPREADSHEET_ID_HERE', // ← ISI YANG BENAR
+       'RECAPTCHA_SECRET_KEY': 'YOUR_RECAPTCHA_SECRET_KEY_HERE' // ← ISI YANG BENAR
      });
      
      Logger.log("✅ Properties configured successfully!");
@@ -108,8 +108,8 @@ Google Apps Script menyediakan **Properties Service** untuk menyimpan credential
 
 ```javascript
 // ❌ BURUK - Credentials visible di code
-const SPREADSHEET_ID = "1EhFeSGfar1mqzEQo5CgncmDr8nflFqcSyAaXAFmWFqE";
-const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm";
+const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE";
+const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE";
 ```
 
 **Masalah:**
