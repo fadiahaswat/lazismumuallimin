@@ -1,6 +1,24 @@
-# 📚 Documentation Index - reCAPTCHA v3 Fix
+# 📚 Documentation Index - Lazismu Mu'allimin
 
-This directory contains the complete fix and documentation for the Google reCAPTCHA v3 integration issue where donation data was not being saved to Google Sheets.
+This directory contains comprehensive documentation for the Lazismu Mu'allimin website project.
+
+## 📜 Official Documents
+
+### Zakat & Fidyah Regulations
+
+| File | Description | Language |
+|------|-------------|----------|
+| **[SK_LAZISMU_DIY_2026.md](SK_LAZISMU_DIY_2026.md)** | **COMPLETE SK Documentation** - Surat Keputusan Badan Pengurus Lazismu Wilayah D.I. Yogyakarta No. 005.BP/KEP/II.19/B/2026 tentang Penetapan Besaran Zakat Fitri, Nishab Zakat Maal, dan Fidyah tahun 1447 H/2026 M | Indonesian |
+
+**Contains:**
+- ✅ Complete SK information (No. 005.BP/KEP/II.19/B/2026)
+- ✅ Zakat Fitri: Rp 35.000 - Rp 40.000/jiwa
+- ✅ Zakat Maal Nisab: Rp 171.912.500 (85 gram emas @ Rp 2.022.500)
+- ✅ Fidyah: Rp 8.400 - Rp 50.000/hari (2 options)
+- ✅ Calculation examples and FAQ
+- ✅ Implementation in the application
+
+---
 
 ## 🚀 Quick Start (5 Minutes)
 
