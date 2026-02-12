@@ -993,37 +993,135 @@ export function setupWizardLogic() {
             };
 
             try {
+                // ========================================
+                // 🔐 reCAPTCHA BOT PROTECTION
+                // ========================================
+                console.group('🔐 reCAPTCHA Bot Detection');
+                console.log('⏱️ Timestamp:', new Date().toISOString());
+                console.log('👤 User:', donasiData.nama);
+                console.log('💰 Nominal:', formatRupiah(donasiData.nominalTotal));
+                
                 // Generate reCAPTCHA token for bot protection
                 let recaptchaToken = null;
                 try {
                     if (typeof grecaptcha !== 'undefined') {
+                        console.log('🔄 Generating reCAPTCHA token...');
                         recaptchaToken = await grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'donasi' });
                         payload.recaptchaToken = recaptchaToken;
+                        
+                        console.log('✅ reCAPTCHA token generated successfully');
+                        console.log('🔑 Token (first 50 chars):', recaptchaToken.substring(0, 50) + '...');
+                        console.log('📏 Token length:', recaptchaToken.length, 'characters');
                     } else {
-                        console.warn('reCAPTCHA not loaded, proceeding without verification');
+                        console.warn('⚠️ reCAPTCHA not loaded, proceeding without verification');
+                        console.warn('⚠️ Bot protection DISABLED - this may cause security issues');
                     }
                 } catch (recaptchaError) {
-                    console.error('reCAPTCHA error:', recaptchaError);
-                    // Continue without reCAPTCHA if it fails
+                    console.error('❌ reCAPTCHA error:', recaptchaError);
+                    console.error('📋 Error details:', {
+                        name: recaptchaError.name,
+                        message: recaptchaError.message,
+                        stack: recaptchaError.stack
+                    });
+                    console.warn('⚠️ Continuing without reCAPTCHA token');
                 }
+                console.groupEnd();
 
-                // 3. Kirim ke Google Apps Script
+                // ========================================
+                // 📤 SENDING DATA TO BACKEND
+                // ========================================
+                console.group('📤 Sending Donation Data');
+                console.log('🌐 API URL:', GAS_API_URL);
+                console.log('📦 Payload preview:', {
+                    action: 'create',
+                    nama: payload.nama,
+                    type: payload.type,
+                    nominal: payload.nominal,
+                    hasRecaptchaToken: !!payload.recaptchaToken
+                });
+                console.log('⏱️ Request time:', new Date().toISOString());
+                
                 const response = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ action: "create", payload: payload })
                 });
                 
+                console.log('📬 Response status:', response.status, response.statusText);
+                
                 if (!response.ok) {
+                    console.error('❌ HTTP error!', response.status, response.statusText);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 // 3a. Parse dan validasi response dari backend
                 const result = await response.json();
+                console.log('📥 Backend response:', result);
+                console.groupEnd();
                 
-                // 3b. Cek apakah backend berhasil menyimpan data
+                // ========================================
+                // 🤖 BOT DETECTION CHECK
+                // ========================================
                 if (result.status !== "success") {
+                    console.group('🤖 Bot Detection Analysis');
+                    console.error('❌ Backend rejected the submission');
+                    console.error('📝 Error message:', result.message);
+                    
+                    // Check if it's a bot detection error
+                    if (result.message && (result.message.toLowerCase().includes('bot') || 
+                                           result.message.toLowerCase().includes('verifikasi') ||
+                                           result.message.toLowerCase().includes('score'))) {
+                        console.error('🚫 REASON: Bot activity detected by reCAPTCHA');
+                        console.log('');
+                        console.log('📊 Possible causes:');
+                        console.log('  1. ⚡ Form filled too quickly (looks automated)');
+                        console.log('  2. 🔄 Using autofill or password manager');
+                        console.log('  3. 🕵️ Using VPN or proxy');
+                        console.log('  4. 🕶️ Using incognito/private browsing mode');
+                        console.log('  5. 📋 Copy-pasting all form fields');
+                        console.log('  6. 🖱️ No mouse movement or interaction detected');
+                        console.log('');
+                        console.log('💡 Solutions:');
+                        console.log('  ✅ Fill form more slowly and naturally');
+                        console.log('  ✅ Use normal browsing mode (not incognito)');
+                        console.log('  ✅ Disable VPN during donation');
+                        console.log('  ✅ Type manually instead of copy-paste');
+                        console.log('  ✅ Move mouse and scroll before submitting');
+                        console.log('  ✅ Wait 3-5 seconds after page load');
+                        console.log('');
+                        
+                        // Check if we have score info
+                        if (result.recaptchaScore !== undefined) {
+                            console.log('📈 reCAPTCHA Score:', result.recaptchaScore);
+                            console.log('📊 Score meaning:');
+                            console.log('  • 0.9-1.0: Definitely human ✅');
+                            console.log('  • 0.7-0.8: Likely human ✅');
+                            console.log('  • 0.5-0.6: Probably human ⚠️');
+                            console.log('  • 0.3-0.4: Suspicious ⚠️');
+                            console.log('  • 0.1-0.2: Likely bot ❌');
+                            console.log('  • 0.0-0.1: Definitely bot ❌');
+                            
+                            if (result.recaptchaScore < 0.3) {
+                                console.error('🚨 Score too low! Current:', result.recaptchaScore, '| Required: ≥0.3');
+                            }
+                        }
+                    } else {
+                        console.error('❓ Other error (not bot detection)');
+                        console.error('📋 Full error:', result);
+                    }
+                    
+                    console.log('');
+                    console.log('🔧 Admin: Check backend logs for more details');
+                    console.log('📖 Documentation: See BOT_DETECTION_FIX.md');
+                    console.groupEnd();
+                    
                     throw new Error(result.message || "Gagal menyimpan data ke database");
+                }
+                
+                // Success!
+                console.log('✅ Donation submitted successfully!');
+                if (result.recaptchaScore !== undefined) {
+                    console.log('📈 reCAPTCHA Score:', result.recaptchaScore);
                 }
 
                 // 4. Update Data Tampilan di Halaman Sukses
@@ -1224,7 +1322,70 @@ export function setupWizardLogic() {
                 }
 
             } catch (e) {
-                showToast("Gagal mengirim data: " + e.message, "error");
+                // ========================================
+                // ❌ ERROR HANDLING
+                // ========================================
+                console.group('❌ Donation Submission Error');
+                console.error('💥 Error occurred during donation submission');
+                console.error('📝 Error message:', e.message);
+                console.error('📋 Error details:', {
+                    name: e.name,
+                    message: e.message,
+                    stack: e.stack
+                });
+                
+                // Provide context-specific help
+                if (e.message.includes('bot') || e.message.includes('Bot') || e.message.includes('BOT')) {
+                    console.error('🤖 This is a BOT DETECTION error');
+                    console.log('');
+                    console.log('🔍 Why this happens:');
+                    console.log('  Your interaction pattern was flagged as automated/bot-like');
+                    console.log('');
+                    console.log('💡 How to fix:');
+                    console.log('  1. Wait 5-10 seconds before trying again');
+                    console.log('  2. Fill the form more slowly');
+                    console.log('  3. Disable VPN if you\'re using one');
+                    console.log('  4. Use normal browsing mode (not incognito)');
+                    console.log('  5. Make sure to scroll and interact naturally');
+                    console.log('');
+                    console.log('📖 For more help, see: BOT_DETECTION_FIX.md');
+                } else if (e.message.includes('HTTP')) {
+                    console.error('🌐 This is a NETWORK/HTTP error');
+                    console.log('');
+                    console.log('💡 Possible causes:');
+                    console.log('  • Internet connection issue');
+                    console.log('  • Backend server is down');
+                    console.log('  • API URL is incorrect');
+                    console.log('');
+                    console.log('🔧 Try:');
+                    console.log('  • Check your internet connection');
+                    console.log('  • Refresh the page and try again');
+                    console.log('  • Contact admin if problem persists');
+                } else if (e.message.includes('database') || e.message.includes('Database')) {
+                    console.error('💾 This is a DATABASE error');
+                    console.log('');
+                    console.log('💡 This is a backend issue - contact admin');
+                } else {
+                    console.error('❓ Unknown error type');
+                    console.log('');
+                    console.log('💡 General troubleshooting:');
+                    console.log('  • Refresh the page');
+                    console.log('  • Try again in a few minutes');
+                    console.log('  • Contact admin with error details above');
+                }
+                
+                console.log('');
+                console.log('⏱️ Error time:', new Date().toISOString());
+                console.log('👤 User:', donasiData?.nama || 'Unknown');
+                console.groupEnd();
+                
+                // Show user-friendly error message
+                let userMessage = "Gagal mengirim data: " + e.message;
+                if (e.message.includes('bot') || e.message.includes('Bot')) {
+                    userMessage = "⚠️ Aktivitas terdeteksi tidak natural. Mohon tunggu beberapa detik dan coba lagi dengan lebih santai. Lihat console (F12) untuk detail.";
+                }
+                
+                showToast(userMessage, "error");
                 btn.disabled = false;
                 btn.querySelector('.default-text').classList.remove('hidden');
                 btn.querySelector('.loading-text').classList.add('hidden');
