@@ -4,10 +4,19 @@
 // ========================================
 
 // KONFIGURASI
-const SPREADSHEET_ID = "1EhFeSGfar1mqzEQo5CgncmDr8nflFqcSyAaXAFmWFqE";
+// ⚠️ PENTING: Jangan hardcode credentials di sini untuk production!
+// Gunakan Apps Script Properties Service untuk menyimpan nilai sensitif.
+// Kode di bawah ini hanya untuk template/referensi.
+
+// Untuk production, gunakan:
+// const SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+// const SECRET_KEY = PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET_KEY');
+
+// Template values (GANTI dengan nilai Anda, atau lebih baik: gunakan Properties Service)
+const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE"; // Ganti dengan ID spreadsheet Anda
 const SHEET_NAME = "DataDonasi";
 const SHEET_KUITANSI = "DataKuitansi";
-const SECRET_KEY = "6LdhLGIsAAAAABVKoyyNjpCjIt8z_eF54m1NyUQm"; // ⚠️ JANGAN COMMIT KE PUBLIC REPO!
+const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE"; // ⚠️ GANTI dengan secret key Anda - JANGAN COMMIT!
 
 // KONFIGURASI THRESHOLD RECAPTCHA
 // ===============================
@@ -320,4 +329,61 @@ function getCurrentThreshold() {
   Logger.log("Current reCAPTCHA Threshold: " + RECAPTCHA_THRESHOLD);
   Logger.log("Recommended for manual donations: 0.3");
   Logger.log("Current setting: " + (RECAPTCHA_THRESHOLD === 0.3 ? "✅ OPTIMAL" : "⚠️ PERLU PENYESUAIAN"));
+}
+
+// ========================================
+// SETUP FUNCTIONS (Untuk Production Security)
+// ========================================
+
+/**
+ * Setup Script Properties untuk menyimpan credentials secara aman
+ * Jalankan fungsi ini SATU KALI untuk setup, kemudian hapus values dari kode
+ * 
+ * Cara menggunakan:
+ * 1. Edit fungsi ini, isi dengan nilai yang benar
+ * 2. Run fungsi setupProperties() satu kali
+ * 3. Verifikasi dengan checkProperties()
+ * 4. Hapus nilai sensitif dari fungsi ini
+ * 5. Uncomment baris 12-13 di bagian KONFIGURASI (gunakan PropertiesService)
+ */
+function setupProperties() {
+  const scriptProperties = PropertiesService.getScriptProperties();
+  
+  // ⚠️ GANTI dengan nilai yang benar, lalu RUN SEKALI
+  scriptProperties.setProperties({
+    'SPREADSHEET_ID': 'YOUR_SPREADSHEET_ID_HERE',
+    'RECAPTCHA_SECRET_KEY': 'YOUR_SECRET_KEY_HERE'
+  });
+  
+  Logger.log("✅ Properties configured successfully!");
+  Logger.log("⚠️ PENTING: Sekarang hapus nilai sensitif dari fungsi setupProperties()");
+  Logger.log("⚠️ Dan uncomment baris 12-13 untuk menggunakan Properties Service");
+}
+
+/**
+ * Verifikasi apakah Properties sudah di-setup dengan benar
+ */
+function checkProperties() {
+  const scriptProperties = PropertiesService.getScriptProperties();
+  const spreadsheetId = scriptProperties.getProperty('SPREADSHEET_ID');
+  const secretKey = scriptProperties.getProperty('RECAPTCHA_SECRET_KEY');
+  
+  Logger.log("========== Properties Check ==========");
+  Logger.log("SPREADSHEET_ID: " + (spreadsheetId ? "✅ Set" : "❌ Not set"));
+  Logger.log("RECAPTCHA_SECRET_KEY: " + (secretKey ? "✅ Set" : "❌ Not set"));
+  
+  if (spreadsheetId && secretKey) {
+    Logger.log("✅ All properties configured correctly!");
+  } else {
+    Logger.log("❌ Please run setupProperties() first");
+  }
+  Logger.log("=====================================");
+}
+
+/**
+ * Hapus semua properties (gunakan untuk reset)
+ */
+function clearProperties() {
+  PropertiesService.getScriptProperties().deleteAllProperties();
+  Logger.log("⚠️ All properties cleared!");
 }
