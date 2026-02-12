@@ -2,6 +2,12 @@
 
 Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 
+## 📜 Dokumentasi Penting
+
+- **[SK Lazismu DIY 2026](./SK_LAZISMU_DIY_2026.md)** - Surat Keputusan tentang Penetapan Besaran Zakat Fitri, Nishab Zakat Maal, dan Fidyah tahun 1447 H/2026 M
+- **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
+- **[INDEX.md](./INDEX.md)** - Dokumentasi lengkap proyek
+
 ## Setup & Development
 
 ### Prerequisites
