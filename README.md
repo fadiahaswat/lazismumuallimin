@@ -5,6 +5,7 @@ Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 ## 📜 Dokumentasi Penting
 
 - **[SK Lazismu DIY 2026](./SK_LAZISMU_DIY_2026.md)** - Surat Keputusan tentang Penetapan Besaran Zakat Fitri, Nishab Zakat Maal, dan Fidyah tahun 1447 H/2026 M
+- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT
 - **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
 - **[INDEX.md](./INDEX.md)** - Dokumentasi lengkap proyek
 
@@ -96,6 +97,18 @@ Website ini menggunakan Google reCAPTCHA v3 untuk keamanan. Pastikan:
 - Script reCAPTCHA sudah dimuat di `index.html`
 
 📖 **Baca [RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md) untuk panduan lengkap troubleshooting masalah reCAPTCHA**
+
+### ⚠️ Troubleshooting: Donasi Manual Terdeteksi sebagai BOT
+
+Jika donasi manual terdeteksi sebagai BOT, kemungkinan threshold reCAPTCHA terlalu ketat (default: 0.5).
+
+**Solusi Cepat:**
+1. Buka file `code.gs` di Google Apps Script Editor
+2. Cari konstanta `RECAPTCHA_THRESHOLD` (baris ~20)
+3. Ubah dari `0.5` menjadi `0.3`
+4. Save dan deploy ulang
+
+📖 **Baca [BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md) untuk panduan lengkap mengatasi masalah bot detection**
 
 ## Notes
 
