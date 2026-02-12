@@ -23,11 +23,12 @@ Perubahan `code.gs` di repository **belum di-deploy** ke Google Apps Script!
    - Ubah jadi: `const RECAPTCHA_THRESHOLD = 0.2;`
    - Atau copy full code dari `code.gs` di repository ini
 
-4. **JANGAN LUPA** restore credentials:
+4. **JANGAN LUPA** restore credentials dari backup:
    ```javascript
-   const SPREADSHEET_ID = "COPY_DARI_BACKUP";
-   const SECRET_KEY = "COPY_DARI_BACKUP";
+   const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_FROM_BACKUP";
+   const SECRET_KEY = "YOUR_SECRET_KEY_FROM_BACKUP";
    ```
+   ⚠️ Ganti dengan nilai asli dari backup code lama!
 
 5. **Save & Deploy**
    - Save (Ctrl+S)
