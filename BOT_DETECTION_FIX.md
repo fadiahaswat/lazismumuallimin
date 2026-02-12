@@ -224,9 +224,10 @@ Setelah implement logging (Solusi 2), lakukan:
 
 3. **Monitor selama 1-2 minggu**
    - Catat berapa % submission yang ditolak
-   - Jika masih banyak yang ditolak, turunkan threshold ke 0.15-0.18 (⚠️ minimum aman: 0.15)
-   - **PERINGATAN:** Threshold di bawah 0.15 dapat membahayakan keamanan
-   - Jika ada tanda-tanda spam, naikkan threshold ke 0.23-0.25
+   - **Jika masih banyak yang ditolak:** Turunkan threshold ke 0.18 terlebih dahulu
+   - **Jika masih ada masalah:** Turunkan ke 0.15 (absolute minimum, gunakan hanya sebagai last resort dengan monitoring ekstra ketat)
+   - **⚠️ PERINGATAN KEAMANAN:** Threshold di bawah 0.15 sangat berbahaya - bot dapat lolos dengan mudah
+   - **Jika ada tanda-tanda spam:** Naikkan threshold ke 0.23-0.25
 
 ### Menentukan Threshold Optimal
 
