@@ -8,6 +8,7 @@ Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 - **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - 🎯 **RINGKASAN LENGKAP** solusi bot detection
 - **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - ⭐ **SOLUSI** untuk donasi manual terdeteksi sebagai BOT  
 - **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - ⚡ Solusi cepat 5 menit
+- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - 🔍 **NEW!** Panduan debug dengan console logging
 - **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Panduan troubleshooting reCAPTCHA
 
 ### 🔒 Security & Configuration
@@ -117,6 +118,27 @@ Jika donasi manual terdeteksi sebagai BOT, kemungkinan threshold reCAPTCHA terla
 4. Save dan deploy ulang
 
 📖 **Baca [BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md) untuk panduan lengkap mengatasi masalah bot detection**
+
+### 🔍 Debug dengan Console Logging (NEW!)
+
+Website sekarang dilengkapi dengan comprehensive console logging untuk membantu debug masalah bot detection.
+
+**Cara menggunakan:**
+1. Buka Browser Console (tekan `F12`)
+2. Submit donasi
+3. Lihat log detail di console:
+   - 🔐 reCAPTCHA token generation
+   - 📤 Request/response details
+   - 🤖 Bot detection analysis (jika ditolak)
+   - 💡 Solutions langsung di console
+
+Console akan menunjukkan:
+- **Kenapa ditolak** (6 possible causes)
+- **Cara memperbaiki** (6 actionable solutions)
+- **reCAPTCHA score** (jika tersedia)
+- **Score interpretation** (0.0-1.0 meaning)
+
+📖 **Baca [CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md) untuk panduan lengkap console debugging**
 
 ## Notes
 
