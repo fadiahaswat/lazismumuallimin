@@ -2,6 +2,22 @@
 
 Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 
+---
+
+## 🆘 **MASIH DIKIRA BOT? BACA INI! 👇**
+
+**[📖 SOLUSI_MASIH_DIKIRA_BOT.md](./SOLUSI_MASIH_DIKIRA_BOT.md)** - **BACA DULU!** Penjelasan lengkap masalah & solusi
+
+**Quick Start:**
+1. Download file [code.gs](./code.gs) dari repository ini (sudah diperbaiki!)
+2. Replace code Anda di Google Apps Script dengan file ini
+3. Update `SPREADSHEET_ID` dan `SECRET_KEY`
+4. Deploy dan test
+
+**Atau ikuti:** [BOT_DETECTION_QUICK_START.md](./BOT_DETECTION_QUICK_START.md) untuk diagnosis & fix
+
+---
+
 ## 📜 Dokumentasi Penting
 
 ### 🔥 Hot Issues & Solutions
