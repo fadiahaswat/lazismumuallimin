@@ -11,10 +11,15 @@ Bot activity detected / Aktivitas bot terdeteksi
 
 ## 🎯 Penyebab Masalah
 
-Google reCAPTCHA v3 memberikan skor dari 0.0 (bot) sampai 1.0 (manusia) untuk setiap interaksi. Saat ini, threshold (ambang batas) di sistem kita adalah **0.5**, yang artinya:
+Google reCAPTCHA v3 memberikan skor dari 0.0 (bot) sampai 1.0 (manusia) untuk setiap interaksi. Threshold (ambang batas) menentukan skor minimum yang dianggap sebagai manusia legitimate.
 
-- **Score >= 0.5** = Dianggap manusia ✅
-- **Score < 0.5** = Dianggap bot ❌
+**Masalah yang sering terjadi:**
+- **Threshold terlalu tinggi (0.5)** = Banyak user manual ditolak ❌
+- **Threshold medium (0.3)** = Masih menolak fast typers ⚠️
+- **Threshold optimal (0.2)** = Balance antara keamanan & UX ✅
+
+- **Score >= threshold** = Dianggap manusia ✅
+- **Score < threshold** = Dianggap bot ❌
 
 ### Kenapa Manual Input Bisa Terdeteksi sebagai Bot?
 
@@ -41,7 +46,7 @@ Ada 2 cara untuk memperbaiki masalah ini:
 
 ### Solusi 1: Turunkan Threshold Score (Direkomendasikan)
 
-Ubah threshold dari **0.5** menjadi **0.3** atau lebih rendah.
+Ubah threshold dari **0.5** atau **0.3** menjadi **0.2** untuk mengakomodasi input manual yang cepat.
 
 **File yang perlu diubah:** `code.gs` di Google Apps Script
 
@@ -54,8 +59,8 @@ function verifikasiRecaptcha(token) {
   const response = UrlFetchApp.fetch(url);
   const json = JSON.parse(response.getContentText());
   
-  // Threshold saat ini: 0.5 (TERLALU KETAT)
-  return json.success && json.score >= 0.5;
+  // Threshold saat ini: 0.3 (MASIH TERLALU KETAT UNTUK FAST TYPERS)
+  return json.success && json.score >= 0.3;
 }
 ```
 
@@ -68,11 +73,11 @@ function verifikasiRecaptcha(token) {
   const response = UrlFetchApp.fetch(url);
   const json = JSON.parse(response.getContentText());
   
-  // Threshold diturunkan ke 0.3 (LEBIH FLEKSIBEL)
+  // Threshold diturunkan ke 0.2 (LEBIH FLEKSIBEL UNTUK FAST TYPERS)
   // Log score untuk monitoring
   Logger.log('reCAPTCHA Score: ' + json.score + ' | Success: ' + json.success);
   
-  return json.success && json.score >= 0.3;
+  return json.success && json.score >= 0.2;
 }
 ```
 
@@ -82,11 +87,12 @@ function verifikasiRecaptcha(token) {
 |-----------|---------------|------------------|-----------|
 | **0.7-0.9** | Sangat Ketat | High-risk transactions | Banyak false positive (user valid ditolak) ❌ |
 | **0.5** | Ketat | Default Google | Beberapa user manual ditolak ⚠️ |
-| **0.3** | Seimbang | **Recommended untuk donasi** | Balance antara keamanan & UX ✅ |
+| **0.3** | Seimbang | General forms | Masih menolak fast typers ⚠️ |
+| **0.2** | Fleksibel | **Recommended untuk donasi manual** | Balance antara keamanan & UX ✅ |
 | **0.1** | Longgar | Low-risk forms | Bot bisa lolos ⚠️ |
 | **0.0** | Tidak ada filter | Testing only | Semua bot lolos ❌ |
 
-**Rekomendasi:** Mulai dengan **0.3**, lalu monitor dan sesuaikan jika diperlukan.
+**Rekomendasi:** Mulai dengan **0.2**, lalu monitor dan sesuaikan jika diperlukan.
 
 ### Solusi 2: Tambahkan Logging untuk Monitoring
 
@@ -100,6 +106,15 @@ function verifikasiRecaptcha(token) {
   const response = UrlFetchApp.fetch(url);
   const json = JSON.parse(response.getContentText());
   
+  // Log untuk monitoring dan debugging
+  Logger.log("========== reCAPTCHA Verification ==========");
+  Logger.log("Success: " + json.success);
+  Logger.log("Score: " + json.score);
+  Logger.log("Action: " + json.action);
+  Logger.log("Hostname: " + json.hostname);
+  Logger.log("Challenge Timestamp: " + json.challenge_ts);
+  Logger.log("Threshold: " + RECAPTCHA_THRESHOLD);
+  
   // Log detail untuk debugging
   Logger.log('========== reCAPTCHA Verification ==========');
   Logger.log('Success: ' + json.success);
@@ -108,8 +123,8 @@ function verifikasiRecaptcha(token) {
   Logger.log('Hostname: ' + json.hostname);
   Logger.log('Timestamp: ' + json.challenge_ts);
   
-  // Threshold 0.3
-  const threshold = 0.3;
+  // Threshold 0.2 - lebih fleksibel untuk fast manual input
+  const threshold = 0.2;
   const isValid = json.success && json.score >= threshold;
   
   Logger.log('Threshold: ' + threshold);
@@ -140,12 +155,12 @@ function verifikasiRecaptcha(token) {
   
   Logger.log('reCAPTCHA Score: ' + json.score);
   
-  // Primary check: Score >= 0.3
-  if (json.success && json.score >= 0.3) {
+  // Primary check: Score >= 0.2
+  if (json.success && json.score >= 0.2) {
     return true;
   }
   
-  // Fallback: Score antara 0.1 - 0.3 (suspicious tapi bisa jadi manusia)
+  // Fallback: Score antara 0.1 - 0.2 (suspicious tapi bisa jadi manusia cepat)
   // Bisa ditambahkan logic tambahan di sini, misalnya:
   // - Cek apakah dari domain yang benar
   // - Cek apakah action sesuai
@@ -173,8 +188,9 @@ function verifikasiRecaptcha(token) {
 ```
 1. Cari fungsi verifikasiRecaptcha
 2. Ubah baris: return json.success && json.score >= 0.5;
-3. Menjadi: return json.success && json.score >= 0.3;
-4. Tambahkan logging jika diperlukan (lihat Solusi 2)
+3. Atau ubah: return json.success && json.score >= 0.3;
+4. Menjadi: return json.success && json.score >= 0.2;
+5. Tambahkan logging jika diperlukan (lihat Solusi 2)
 ```
 
 ### 3. Save dan Deploy
@@ -191,9 +207,11 @@ function verifikasiRecaptcha(token) {
 ```
 1. Buka website donasi
 2. Isi form dengan data valid
-3. Submit
-4. Cek apakah berhasil masuk ke Google Sheet
-5. Cek logs di Apps Script untuk lihat score yang didapat
+3. Test dengan berbagai kecepatan input (cepat dan lambat)
+4. Submit
+5. Cek apakah berhasil masuk ke Google Sheet
+6. Cek logs di Apps Script untuk lihat score yang didapat
+7. Verifikasi bahwa input cepat tidak lagi ditolak
 ```
 
 ## 🧪 Testing & Monitoring
@@ -205,17 +223,18 @@ Setelah implement logging (Solusi 2), lakukan:
 1. **Test beberapa submission normal**
    - Isi form seperti user biasa
    - Lihat score yang didapat di logs
-   - Jika score > 0.3, berarti threshold sudah pas ✅
+   - Jika score > 0.2, berarti threshold sudah pas ✅
 
 2. **Test submission cepat**
    - Isi form dengan sangat cepat
    - Atau gunakan autofill
-   - Lihat apakah masih lolos atau ditolak
+   - Verifikasi bahwa submission tetap diterima
+   - Score mungkin 0.2-0.4, tetap harus lolos ✅
 
 3. **Monitor selama 1-2 minggu**
    - Catat berapa % submission yang ditolak
-   - Jika masih banyak yang ditolak, turunkan lagi threshold ke 0.2
-   - Jika ada tanda-tanda spam, naikkan threshold
+   - Jika masih banyak yang ditolak, turunkan lagi threshold ke 0.15
+   - Jika ada tanda-tanda spam, naikkan threshold ke 0.25
 
 ### Menentukan Threshold Optimal
 
@@ -270,26 +289,27 @@ Untuk user yang sering ditolak, sarankan mereka:
 
 ## 📊 Perbandingan Before & After
 
-### Before (Threshold 0.5)
+### Before (Threshold 0.3)
 ```
 User A: Score 0.7 → ✅ Diterima
-User B: Score 0.4 → ❌ Ditolak (FALSE POSITIVE!)
-User C: Score 0.3 → ❌ Ditolak (FALSE POSITIVE!)
+User B: Score 0.4 → ✅ Diterima
+User C: Score 0.25 → ❌ Ditolak (FALSE POSITIVE - fast typer!)
 User D: Score 0.9 → ✅ Diterima
-Bot E:  Score 0.2 → ❌ Ditolak ✅
+Bot E:  Score 0.15 → ❌ Ditolak ✅
 
-Success Rate untuk Human: 50% (banyak false positive)
+Success Rate untuk Human: 75% (masih ada false positive)
 ```
 
-### After (Threshold 0.3)
+### After (Threshold 0.2)
 ```
 User A: Score 0.7 → ✅ Diterima
-User B: Score 0.4 → ✅ Diterima (FIXED!)
-User C: Score 0.3 → ✅ Diterima (FIXED!)
+User B: Score 0.4 → ✅ Diterima
+User C: Score 0.25 → ✅ Diterima (FIXED - fast typer allowed!)
 User D: Score 0.9 → ✅ Diterima
-Bot E:  Score 0.2 → ❌ Ditolak ✅
+Bot E:  Score 0.15 → ❌ Ditolak ✅
 
 Success Rate untuk Human: 100% (tidak ada false positive)
+Bot masih terdeteksi: ✅
 ```
 
 ## ⚠️ Perhatian

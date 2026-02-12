@@ -28,12 +28,17 @@ const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE"; // ⚠️ GANTI dengan secr
 // 
 // Panduan:
 // - 0.7-0.9: Sangat ketat (banyak false positive)
-// - 0.5: Default (beberapa user manual ditolak) ← MASALAH ADA DI SINI!
-// - 0.3: Seimbang (recommended untuk donasi) ← SOLUSI!
+// - 0.5: Default (beberapa user manual ditolak)
+// - 0.3: Seimbang (masih terlalu ketat untuk fast typers)
+// - 0.2: Lebih fleksibel (recommended untuk donasi manual) ← SOLUSI!
 // - 0.1: Longgar (bot bisa lolos)
 //
-// REKOMENDASI: Gunakan 0.3 untuk menghindari false positive pada input manual
-const RECAPTCHA_THRESHOLD = 0.3; // ← UBAH DARI 0.5 KE 0.3
+// REKOMENDASI: Gunakan 0.2 untuk menghindari false positive pada input manual yang cepat
+// Threshold ini masih cukup aman karena:
+// - Masih menolak bot dengan score < 0.2
+// - Mengakomodasi user yang mengetik cepat atau copy-paste data yang sudah disiapkan
+// - Mengurangi frustrasi user legitimate yang ditolak karena mengetik terlalu cepat
+const RECAPTCHA_THRESHOLD = 0.2; // ← UBAH DARI 0.3 KE 0.2 untuk fast manual input
 
 // ========================================
 // FUNGSI UTAMA
@@ -332,8 +337,8 @@ function testRecaptcha() {
 
 function getCurrentThreshold() {
   Logger.log("Current reCAPTCHA Threshold: " + RECAPTCHA_THRESHOLD);
-  Logger.log("Recommended for manual donations: 0.3");
-  Logger.log("Current setting: " + (RECAPTCHA_THRESHOLD === 0.3 ? "✅ OPTIMAL" : "⚠️ PERLU PENYESUAIAN"));
+  Logger.log("Recommended for manual donations (including fast typers): 0.2");
+  Logger.log("Current setting: " + (RECAPTCHA_THRESHOLD === 0.2 ? "✅ OPTIMAL" : "⚠️ PERLU PENYESUAIAN"));
 }
 
 // ========================================
