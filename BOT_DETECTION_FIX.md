@@ -224,8 +224,8 @@ Setelah implement logging (Solusi 2), lakukan:
 
 3. **Monitor selama 1-2 minggu**
    - Catat berapa % submission yang ditolak
-   - Jika masih banyak yang ditolak, turunkan lagi threshold ke 0.15
-   - Jika ada tanda-tanda spam, naikkan threshold ke 0.25
+   - Jika masih banyak yang ditolak, turunkan threshold ke 0.15-0.18
+   - Jika ada tanda-tanda spam, naikkan threshold ke 0.23-0.25
 
 ### Menentukan Threshold Optimal
 

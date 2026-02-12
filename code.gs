@@ -38,7 +38,7 @@ const SECRET_KEY = "YOUR_RECAPTCHA_SECRET_KEY_HERE"; // ⚠️ GANTI dengan secr
 // - Masih menolak bot dengan score < 0.2
 // - Mengakomodasi user yang mengetik cepat atau copy-paste data yang sudah disiapkan
 // - Mengurangi frustrasi user legitimate yang ditolak karena mengetik terlalu cepat
-const RECAPTCHA_THRESHOLD = 0.2; // ← UBAH DARI 0.3 KE 0.2 untuk fast manual input
+const RECAPTCHA_THRESHOLD = 0.2; // Set to 0.2 to accommodate fast manual input
 
 // ========================================
 // FUNGSI UTAMA
