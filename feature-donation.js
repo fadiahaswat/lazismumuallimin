@@ -993,7 +993,7 @@ export function setupWizardLogic() {
             };
 
             try {
-                // 2a. Generate reCAPTCHA token
+                // Generate reCAPTCHA token for bot protection
                 let recaptchaToken = null;
                 try {
                     if (typeof grecaptcha !== 'undefined') {
