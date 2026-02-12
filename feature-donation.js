@@ -355,6 +355,7 @@ export function setupWizardLogic() {
                 b.classList.remove('border-emerald-500', 'bg-emerald-50');
                 b.classList.remove('border-amber-500', 'bg-amber-50');
                 b.classList.remove('border-orange-500', 'bg-orange-50');
+                b.classList.remove('border-indigo-500', 'bg-indigo-50');
                 b.classList.add('border-slate-100'); 
             });
 
@@ -379,7 +380,7 @@ export function setupWizardLogic() {
             } else if (type === 'Infaq') {
                 btn.classList.add('border-orange-500', 'bg-orange-50');
             } else if (type === 'Fidyah') {
-                btn.classList.add('border-sky-500', 'bg-sky-50');
+                btn.classList.add('border-indigo-500', 'bg-indigo-50');
             }
 
             // 4. Update Data Logic
