@@ -11,3 +11,8 @@ test-security-integration.html
 .env.local
 .env.production
 .env.development
+
+# Test files
+test-*.html
+test-*.js
+test-*.mjs

@@ -80,9 +80,15 @@ export const RATE_LIMIT = {
  * Utility function to check if running in development mode
  */
 export function isDevelopment() {
-    return window.location.hostname === 'localhost' || 
-           window.location.hostname === '127.0.0.1' ||
-           window.location.hostname.includes('local');
+    const hostname = window.location.hostname;
+    // Check for common development hostnames
+    return hostname === 'localhost' || 
+           hostname === '127.0.0.1' ||
+           hostname === '0.0.0.0' ||
+           hostname.startsWith('localhost:') ||
+           hostname.startsWith('127.0.0.1:') ||
+           // Allow explicitly setting development mode via ENV
+           (window.ENV && window.ENV.NODE_ENV === 'development');
 }
 
 /**
