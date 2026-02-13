@@ -1,7 +1,7 @@
 // firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { firebaseConfig } from './config.js';
+import { firebaseConfig } from '../config.js';
 import { SantriManager, santriDB } from './santri-manager.js';
 import { currentUser, setCurrentUser, donasiData } from './state.js';
 import { showToast } from './utils.js';

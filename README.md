@@ -2,45 +2,6 @@
 
 Website untuk Lazismu Mu'allimin - Menempa Kader, Memberdaya Umat
 
----
-
-## 🆘 **MASIH DIKIRA BOT? BACA INI! 👇**
-
-**[📖 SOLUSI_MASIH_DIKIRA_BOT.md](./SOLUSI_MASIH_DIKIRA_BOT.md)** - **BACA DULU!** Penjelasan lengkap masalah & solusi
-
-**Quick Start:**
-1. Download file [code.gs](./code.gs) dari repository ini (sudah diperbaiki!)
-2. Replace code Anda di Google Apps Script dengan file ini
-3. Update `SPREADSHEET_ID` dan `SECRET_KEY`
-4. Deploy dan test
-
-**Atau ikuti:** [BOT_DETECTION_QUICK_START.md](./BOT_DETECTION_QUICK_START.md) untuk diagnosis & fix
-
----
-
-## 📜 Dokumentasi Penting
-
-### 🔥 Hot Issues & Solutions
-
-**🆘 MASIH DIKIRA BOT?** Start here:
-
-- **[BOT_DETECTION_QUICK_START.md](./BOT_DETECTION_QUICK_START.md)** - ⚡ **START HERE!** Quick diagnosis & fix dalam 5-10 menit
-- **[TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md)** - 📖 **PANDUAN LENGKAP** troubleshooting dengan FAQ
-
-Additional Resources:
-- **[BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md)** - Penjelasan mendalam tentang threshold & bot detection
-- **[RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md)** - Fix HTML entities & reCAPTCHA config
-- **[CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md)** - Debug dengan browser console
-- **[SOLUTION_SUMMARY.md](./SOLUTION_SUMMARY.md)** - Ringkasan solusi
-- **[QUICK_FIX_BOT.md](./QUICK_FIX_BOT.md)** - Legacy quick fix guide
-
-### 🔒 Security & Configuration
-- **[SECURITY_GUIDE.md](./SECURITY_GUIDE.md)** - 🔐 Panduan keamanan untuk setup credentials
-
-### 📚 General Documentation
-- **[SK Lazismu DIY 2026](./SK_LAZISMU_DIY_2026.md)** - Surat Keputusan tentang Penetapan Besaran Zakat Fitri, Nishab Zakat Maal, dan Fidyah tahun 1447 H/2026 M
-- **[INDEX.md](./INDEX.md)** - Dokumentasi lengkap proyek
-
 ## Setup & Development
 
 ### Prerequisites
@@ -93,16 +54,32 @@ Konfigurasi Tailwind CSS ada di file `tailwind.config.js` dengan custom settings
 
 ```
 .
+├── assets/              # Aset statis
+│   ├── images/         # Gambar umum (bank icons, templates, dll)
+│   ├── logos/          # Logo dan branding
+│   └── photos/         # Foto (bangunan, orang, fasilitas)
+├── js/                  # JavaScript modules
+│   ├── feature-*.js    # Feature modules (donation, history, news, recap)
+│   ├── firebase-init.js
+│   ├── main.js         # Main application entry point
+│   ├── santri-manager.js
+│   ├── state.js
+│   ├── ui-navigation.js
+│   ├── utils.js
+│   └── zakat-calculator.js
 ├── src/
-│   └── input.css          # Source file Tailwind CSS
+│   └── input.css        # Source file Tailwind CSS
 ├── dist/
-│   └── tailwind.css       # Compiled & minified CSS (generated)
-├── index.html             # Halaman utama
-├── maintenance_page.html  # Halaman maintenance
-├── index_notwork.html     # Halaman alternatif
-├── tailwind.config.js     # Konfigurasi Tailwind CSS
-├── package.json           # Dependencies dan scripts
-└── .gitignore            # Files yang tidak di-commit
+│   └── tailwind.css     # Compiled & minified CSS (generated)
+├── config.js            # Konfigurasi API & Firebase
+├── constants.js         # Konstanta aplikasi
+├── data-kelas.js        # Data kelas
+├── data-santri.js       # Data santri
+├── index.html           # Halaman utama
+├── maintenance_page.html # Halaman maintenance
+├── cetak.html           # Template cetak
+├── tailwind.config.js   # Konfigurasi Tailwind CSS
+└── package.json         # Dependencies dan scripts
 ```
 
 ## Production Deployment
@@ -115,11 +92,18 @@ Sebelum deploy ke production:
 
 ## Google Apps Script Setup
 
-Website ini menggunakan Google Apps Script sebagai backend untuk menyimpan data donasi ke Google Sheets. Setup lengkap:
+Website ini menggunakan Google Apps Script sebagai backend untuk menyimpan data donasi ke Google Sheets.
 
-1. **File `code.gs`** berisi kode Google Apps Script yang sudah diperbaiki
-2. **Lihat `RECAPTCHA_FIX.md`** untuk panduan lengkap setup dan troubleshooting
-3. **Deploy script** ke Google Apps Script dan update `GAS_API_URL` di `config.js`
+### Setup Script
+
+1. Buka [Google Apps Script](https://script.google.com)
+2. Buat project baru
+3. Copy isi file `code.gs` ke Apps Script editor
+4. Update konfigurasi berikut:
+   - `SPREADSHEET_ID`: ID Google Sheets Anda
+   - `SECRET_KEY`: Secret key untuk reCAPTCHA v3
+5. Deploy sebagai Web App
+6. Update `GAS_API_URL` di `config.js` dengan URL deployment
 
 ### Integrasi reCAPTCHA v3
 
@@ -128,64 +112,27 @@ Website ini menggunakan Google reCAPTCHA v3 untuk keamanan. Pastikan:
 - Secret Key sudah dikonfigurasi di Google Apps Script (`code.gs`)
 - Script reCAPTCHA sudah dimuat di `index.html`
 
-📖 **Baca [RECAPTCHA_FIX.md](./RECAPTCHA_FIX.md) untuk panduan lengkap troubleshooting masalah reCAPTCHA**
+#### Troubleshooting reCAPTCHA
 
-### ⚠️ Troubleshooting: Masih Dikira Bot?
+Jika donasi terdeteksi sebagai bot:
 
-Jika Anda masih terdeteksi sebagai bot setelah mengisi donasi:
+1. **Periksa Threshold**: Buka `code.gs` dan cari `RECAPTCHA_THRESHOLD` (default: 0.5)
+   - Nilai lebih rendah (0.2-0.3) lebih permisif
+   - Nilai lebih tinggi (0.6-0.9) lebih ketat
+   
+2. **Debug dengan Console**: 
+   - Buka Browser Console (tekan `F12`)
+   - Submit donasi dan lihat log detail
+   - Console akan menampilkan reCAPTCHA score dan alasan penolakan
 
-**📖 Baca [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md) - Panduan Lengkap!**
+3. **Verifikasi Konfigurasi**:
+   - Pastikan Site Key di `config.js` cocok dengan domain Anda
+   - Pastikan Secret Key di `code.gs` benar
+   - Verifikasi domain terdaftar di reCAPTCHA Admin Console
 
-Panduan ini mencakup:
-- ✅ Identifikasi masalah (3 jenis masalah umum)
-- ✅ Fix HTML entities (`&amp;`, `&gt;=`, `=&gt;`) yang merusak code
-- ✅ Turunkan threshold reCAPTCHA (0.5 → 0.2)
-- ✅ Verifikasi konfigurasi reCAPTCHA
-- ✅ Testing dan debugging step-by-step
-- ✅ FAQ lengkap dengan 10+ pertanyaan umum
+## Firebase Configuration
 
-**Solusi Cepat (TL;DR):**
-1. Fix HTML entities di `code.gs` (lihat panduan lengkap)
-2. Ubah `RECAPTCHA_THRESHOLD` dari `0.5` ke `0.2`
-3. Redeploy Google Apps Script
-4. Test donasi
-
----
-
-### 📝 Troubleshooting: Donasi Manual Terdeteksi sebagai BOT (Legacy)
-
-> ⚠️ **DEPRECATED:** Gunakan [TROUBLESHOOTING_BOT_DETECTION.md](./TROUBLESHOOTING_BOT_DETECTION.md) untuk panduan terbaru!
-
-Jika donasi manual terdeteksi sebagai BOT, kemungkinan threshold reCAPTCHA terlalu ketat (default: 0.5).
-
-**Solusi Cepat:**
-1. Buka file `code.gs` di Google Apps Script Editor
-2. Cari konstanta `RECAPTCHA_THRESHOLD` (baris ~20)
-3. Ubah dari `0.5` menjadi `0.2`
-4. Save dan deploy ulang
-
-📖 **Baca [BOT_DETECTION_FIX.md](./BOT_DETECTION_FIX.md) untuk panduan lengkap mengatasi masalah bot detection**
-
-### 🔍 Debug dengan Console Logging (NEW!)
-
-Website sekarang dilengkapi dengan comprehensive console logging untuk membantu debug masalah bot detection.
-
-**Cara menggunakan:**
-1. Buka Browser Console (tekan `F12`)
-2. Submit donasi
-3. Lihat log detail di console:
-   - 🔐 reCAPTCHA token generation
-   - 📤 Request/response details
-   - 🤖 Bot detection analysis (jika ditolak)
-   - 💡 Solutions langsung di console
-
-Console akan menunjukkan:
-- **Kenapa ditolak** (6 possible causes)
-- **Cara memperbaiki** (6 actionable solutions)
-- **reCAPTCHA score** (jika tersedia)
-- **Score interpretation** (0.0-1.0 meaning)
-
-📖 **Baca [CONSOLE_LOGGING_GUIDE.md](./CONSOLE_LOGGING_GUIDE.md) untuk panduan lengkap console debugging**
+Website menggunakan Firebase untuk autentikasi. Konfigurasi ada di `config.js`.
 
 ## Notes
 
@@ -193,3 +140,7 @@ Console akan menunjukkan:
 - File CSS di `dist/` perlu di-commit karena diperlukan untuk production
 - Jangan gunakan Tailwind CDN untuk production (sudah diganti dengan build process ini)
 - **PENTING:** Jangan commit Secret Key reCAPTCHA ke repository publik
+
+## License
+
+© 2024-2026 Lazismu Mu'allimin. All rights reserved.
