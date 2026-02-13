@@ -168,17 +168,17 @@ function calculateStats() {
         total += val;
         if (val > maxDonation) {
             maxDonation = val;
-            maxDonationName = d.NamaDonatur || "Hamba Allah";
+            maxDonationName = d.nama || d.NamaDonatur || "Hamba Allah";
         }
 
         const dateObj = new Date(d.Timestamp);
         if (dateObj.toDateString() === todayStr) todayTotal += val;
 
-        const typeName = d.JenisDonasi || "Lainnya";
+        const typeName = d.type || d.JenisDonasi || "Lainnya";
         donationTypes[typeName] = (donationTypes[typeName] || 0) + 1;
 
         // Track payment methods
-        const metode = d.MetodePembayaran || "";
+        const metode = d.metode || d.MetodePembayaran || "";
         if (metode === 'QRIS') totalQRIS += val;
         else if (metode === 'Transfer') totalTransfer += val;
         else if (metode === 'Tunai') totalTunai += val;
@@ -409,8 +409,8 @@ export function renderHomeLatestDonations() {
                 <div>
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">${labelSebutan}</p>
                     
-                    <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}">
-                        ${escapeHtml(item.NamaDonatur) || 'Hamba Allah'}
+                    <h5 class="font-bold text-slate-800 text-base mb-2 line-clamp-1" title="${escapeHtml(item.nama || item.NamaDonatur) || 'Hamba Allah'}">
+                        ${escapeHtml(item.nama || item.NamaDonatur) || 'Hamba Allah'}
                     </h5>
 
                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-orange-200 group-hover:bg-orange-50/30 transition-colors">
@@ -527,7 +527,7 @@ export function renderAlumniLeaderboard() {
             }
             // C. Cek Pola Kata di Nama/Keterangan (misal: "Alumni 98", "Angkatan 2010")
             else {
-                const combined = `${d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
+                const combined = `${d.nama || d.NamaDonatur || ""} ${d.Keterangan || ""}`.toLowerCase();
                 // Regex: cari kata kunci diikuti 4 digit, ATAU 2 digit (untuk '98)
                 const yearMatch = combined.match(/(?:alumni|angkatan|lulusan|letting|thn|th)\s*(\d{2,4})/i);
                 if (yearMatch) {
@@ -551,7 +551,7 @@ export function renderAlumniLeaderboard() {
                     grandTotalAlumni += val;
 
                     // Hitung partisipan unik
-                    let donaturId = d.NamaDonatur ? String(d.NamaDonatur).trim().toLowerCase() : "";
+                    let donaturId = d.nama || d.NamaDonatur ? String(d.nama || d.NamaDonatur).trim().toLowerCase() : "";
                     if (!donaturId || donaturId === 'hamba allah') {
                         // Gunakan timestamp+nominal sebagai ID unik sementara untuk Hamba Allah
                         donaturId = `anon-${d.Timestamp || Date.now()}-${d.Nominal || 0}`; 
@@ -742,10 +742,10 @@ function getFilteredData() {
     const endDate = endDateEl ? endDateEl.value : '';
 
     if (typeFilter !== 'all') {
-        filtered = filtered.filter(d => d.JenisDonasi === typeFilter || d.type === typeFilter);
+        filtered = filtered.filter(d => (d.type || d.JenisDonasi) === typeFilter);
     }
     if (methodFilter !== 'all') {
-        filtered = filtered.filter(d => d.MetodePembayaran === methodFilter);
+        filtered = filtered.filter(d => (d.metode || d.MetodePembayaran) === methodFilter);
     }
 
     if (startDate || endDate) {
@@ -801,11 +801,11 @@ export function renderRiwayatList() {
         let bgIcon = 'bg-slate-100 text-slate-400';
         let borderClass = 'border-slate-100';
 
-        const type = item.JenisDonasi || item.type || "";
+        const type = item.type || item.JenisDonasi || "";
         const subType = item.SubJenis || item.subType || "";
         const displayType = subType || type;
-        const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
-        const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
+        const paymentMethod = item.metode || item.MetodePembayaran || "Tunai";
+        const donaturName = escapeHtml(item.nama || item.NamaDonatur) || 'Hamba Allah';
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
 
         let labelSebutan = "Donatur"; 
@@ -987,7 +987,7 @@ function updateDashboardUI() {
         totalDonasi += val;
         
         // Track payment methods
-        const metode = d.MetodePembayaran || "";
+        const metode = d.metode || d.MetodePembayaran || "";
         if (metode === 'QRIS') totalQRIS += val;
         else if (metode === 'Transfer') totalTransfer += val;
         else if (metode === 'Tunai') totalTunai += val;
@@ -1096,7 +1096,7 @@ export function renderPersonalHistoryTable() {
                 <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
             </td>
             <td class="p-5">
-                <div class="font-bold text-slate-700">${item.JenisDonasi}</div>
+                <div class="font-bold text-slate-700">${item.type || item.JenisDonasi}</div>
                 <div class="text-xs text-slate-500">${item.SubJenis || '-'}</div>
             </td>
             <td class="p-5 font-bold text-slate-700">
@@ -1104,7 +1104,7 @@ export function renderPersonalHistoryTable() {
             </td>
             <td class="p-5 text-center">
                 <span class="px-3 py-1 rounded-full text-xs font-bold border bg-white text-slate-500">
-                    ${item.MetodePembayaran}
+                    ${item.metode || item.MetodePembayaran}
                 </span>
             </td>
             <td class="p-5 text-center">
@@ -1168,15 +1168,15 @@ export async function renderDashboardProfil(nisUser) {
 
 export function openReceiptWindow(itemData) {
     const paketData = {
-        nama: itemData.NamaDonatur || itemData.nama || "Hamba Allah",
-        alamat: itemData.Alamat || "-",
-        hp: itemData.NoHP || itemData.hp || "-",
-        nominal: itemData.Nominal || itemData.nominal || 0,
+        nama: itemData.nama || itemData.NamaDonatur || "Hamba Allah",
+        alamat: itemData.alamat || itemData.Alamat || "-",
+        hp: itemData.hp || itemData.NoHP || "-",
+        nominal: itemData.nominal || itemData.Nominal || 0,
         
-        jenis: itemData.JenisDonasi || itemData.type || "Infaq",
+        jenis: itemData.type || itemData.JenisDonasi || "Infaq",
         sub: itemData.SubJenis || "", 
         
-        metode: itemData.MetodePembayaran || itemData.metode || "Tunai",
+        metode: itemData.metode || itemData.MetodePembayaran || "Tunai",
         tanggal: itemData.Timestamp || new Date().toISOString()
     };
 
