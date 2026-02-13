@@ -1,5 +1,5 @@
 import { riwayatData, currentUser, timeFilterState, setTimeFilterState } from './state.js';
-import { GAS_API_URL } from './config.js';
+import { GAS_API_URL } from '../config.js';
 import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
