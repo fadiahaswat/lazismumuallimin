@@ -1,0 +1,98 @@
+<!-- env-loader-example.html -->
+<!-- 
+  Example of how to load environment variables in production
+  
+  OPTION 1: Include this before loading your application scripts
+  Replace the values with your actual production values
+  
+  OPTION 2: Use your hosting platform's environment variable injection
+  (Netlify, Vercel, Firebase Hosting, etc.)
+-->
+
+<script>
+  // Initialize global ENV object
+  window.ENV = {
+    // Firebase Configuration
+    FIREBASE_API_KEY: 'your-production-firebase-api-key',
+    FIREBASE_AUTH_DOMAIN: 'your-project.firebaseapp.com',
+    FIREBASE_PROJECT_ID: 'your-project-id',
+    FIREBASE_STORAGE_BUCKET: 'your-project.firebasestorage.app',
+    FIREBASE_MESSAGING_SENDER_ID: 'your-sender-id',
+    FIREBASE_APP_ID: 'your-app-id',
+    
+    // Google Apps Script URLs
+    GAS_API_URL: 'https://script.google.com/macros/s/YOUR_PRODUCTION_DEPLOYMENT_ID/exec',
+    GAS_API_URL_SANTRI: 'https://script.google.com/macros/s/YOUR_PRODUCTION_DEPLOYMENT_ID/exec',
+    GAS_API_URL_KELAS: 'https://script.google.com/macros/s/YOUR_PRODUCTION_DEPLOYMENT_ID/exec',
+    
+    // reCAPTCHA
+    RECAPTCHA_SITE_KEY: 'your-production-recaptcha-site-key',
+    
+    // WordPress
+    WORDPRESS_SITE: 'lazismumuallimin.wordpress.com',
+    
+    // Rate Limiting
+    RATE_LIMIT_MAX_REQUESTS: '5',
+    RATE_LIMIT_WINDOW_MINUTES: '15',
+    
+    // Other settings
+    NEWS_PER_PAGE: '6'
+  };
+</script>
+
+<!-- 
+  USAGE IN YOUR HTML:
+  
+  1. For development (using defaults):
+     - Don't include this script
+     - The application will use default values from env-config.js
+  
+  2. For production (using custom values):
+     - Include this script BEFORE your application scripts
+     - Update the values above with your production configuration
+     - OR use your hosting platform's environment variable system
+  
+  Example in index.html:
+  <head>
+    ...
+    <!-- Load environment variables first -->
+    <script src="env-config-production.js"></script>
+    
+    <!-- Then load your application scripts -->
+    <script src="data-santri.js" defer></script>
+    <script src="data-kelas.js" defer></script>
+    <script type="module" src="js/main.js"></script>
+  </head>
+-->
+
+<!-- 
+  SECURITY NOTES:
+  
+  1. NEVER commit actual production values to Git
+  2. Use your hosting platform's secrets management when possible
+  3. For Firebase config, it's safe to expose client config as it's protected by Firestore rules
+  4. For GAS URLs, consider using a proxy to hide the actual endpoint
+  5. Keep reCAPTCHA secret key server-side only (in GAS backend)
+  6. Rotate keys periodically
+  7. Monitor usage for anomalies
+-->
+
+<!-- 
+  HOSTING PLATFORM EXAMPLES:
+  
+  Netlify:
+    - Use Netlify's environment variables UI
+    - Reference them in build command or snippet injection
+  
+  Vercel:
+    - Add environment variables in project settings
+    - Use build-time replacement
+  
+  Firebase Hosting:
+    - Use Firebase functions for dynamic configuration
+    - Or deploy with environment-specific builds
+  
+  GitHub Pages:
+    - Use GitHub Actions to inject environment variables during build
+    - Or use separate branches for different environments
+-->

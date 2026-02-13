@@ -5,3 +5,9 @@ test-security-integration.html
 *.backup
 *.bak
 *.tmp
+
+# Environment variables - NEVER commit these files
+.env
+.env.local
+.env.production
+.env.development

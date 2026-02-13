@@ -1,21 +1,29 @@
 // config.js
+// 
+// SECURITY NOTICE:
+// This file now imports configuration from env-config.js which supports
+// environment variables. To use custom values:
+// 1. Set window.ENV object before loading this module
+// 2. Or use the default values provided in env-config.js
+//
+// For production deployments, consider setting up environment variables
+// through your build process or deployment pipeline.
 
-// --- KONFIGURASI API & SERVER ---
-export const GAS_API_URL = "https://script.google.com/macros/s/AKfycbydrhNmtJEk-lHLfrAzI8dG_uOZEKk72edPAEeL9pzVCna6br_hY2dAqDr-t8V5ost4/exec";
-export const WORDPRESS_SITE = 'lazismumuallimin.wordpress.com';
-export const NEWS_PER_PAGE = 6;
+import {
+    firebaseConfig,
+    GAS_API_URL,
+    RECAPTCHA_SITE_KEY,
+    WORDPRESS_SITE,
+    NEWS_PER_PAGE
+} from './js/env-config.js';
 
-// --- KONFIGURASI RECAPTCHA ---
-export const RECAPTCHA_SITE_KEY = "6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6";
-
-// --- KONFIGURASI FIREBASE ---
-export const firebaseConfig = {
-    apiKey: "AIzaSyAWPIcS8h3kE6kJYBxjeVFdSprgrMzOFo8",
-    authDomain: "lazismu-auth.firebaseapp.com",
-    projectId: "lazismu-auth",
-    storageBucket: "lazismu-auth.firebasestorage.app",
-    messagingSenderId: "398570239500",
-    appId: "1:398570239500:web:0b3e96109a4bf304ebe029"
+// Re-export all configuration for backward compatibility
+export { 
+    firebaseConfig,
+    GAS_API_URL,
+    RECAPTCHA_SITE_KEY,
+    WORDPRESS_SITE,
+    NEWS_PER_PAGE
 };
 
 // --- KONFIGURASI LANGKAH WIZARD DONASI ---

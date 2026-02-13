@@ -1,6 +1,8 @@
 // File: data-kelas.js
-
-const API_BASE_URL_KELAS = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
+// Use global ENV if available, otherwise use default
+const API_BASE_URL_KELAS = (typeof window !== 'undefined' && window.ENV && window.ENV.GAS_API_URL_KELAS)
+    ? window.ENV.GAS_API_URL_KELAS
+    : "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
 
 // [PERBAIKAN] Gunakan window.classMetaData
 window.classMetaData = {};
