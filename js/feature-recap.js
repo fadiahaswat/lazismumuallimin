@@ -325,13 +325,13 @@ function renderRekapTable(cls) {
             // Hanya hitung donasi yang sudah Terverifikasi
             if (d.Status !== 'Terverifikasi') return;
             
-            const matchNama = (d.namaSantri || d.NamaSantri) && s.nama && (d.namaSantri || d.NamaSantri).trim() === s.nama.trim();
-            const matchKelas = (d.rombelSantri || d.KelasSantri) === s.rombel;
+            const matchNama = d.NamaSantri && s.nama && d.NamaSantri.trim() === s.nama.trim();
+            const matchKelas = d.KelasSantri === s.rombel || d.rombelSantri === s.rombel;
 
             if (matchNama && matchKelas) {
-                const nom = parseInt(d.nominal || d.Nominal) || 0;
-                if ((d.metode || d.MetodePembayaran) === 'QRIS') qris += nom;
-                else if ((d.metode || d.MetodePembayaran) === 'Transfer') transfer += nom;
+                const nom = parseInt(d.Nominal) || 0;
+                if (d.MetodePembayaran === 'QRIS') qris += nom;
+                else if (d.MetodePembayaran === 'Transfer') transfer += nom;
                 else tunai += nom;
             }
         });
