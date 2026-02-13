@@ -6,7 +6,7 @@ import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, ref
 import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.js';
 import { parseSantriData } from './santri-manager.js';
 import { copyText, showToast, logger } from './utils.js';
-import { qrisDatabase } from './config.js';
+import { qrisDatabase } from '../config.js';
 import { donasiData } from './state.js';
 import { formatInputRupiah, switchZakatMode, calculateZakat, applyZakatResult, handleManualZakatNext } from './zakat-calculator.js';
 

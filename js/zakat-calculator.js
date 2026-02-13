@@ -3,7 +3,7 @@
 import { donasiData } from './state.js';
 import { showToast } from './utils.js';
 import { goToStep } from './feature-donation.js';
-import { ZAKAT } from './constants.js';
+import { ZAKAT } from '../constants.js';
 
 /**
  * Format input field as Rupiah and update donation state
