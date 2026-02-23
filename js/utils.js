@@ -113,13 +113,6 @@ export function generateUniqueCode() {
     return Math.floor(Math.random() * 999) + 1;
 }
 
-export function formatHP(hp) {
-    let clean = String(hp || "").trim();
-    if (clean === "" || clean === "-") return "-";
-    if (!clean.startsWith('0')) return '0' + clean;
-    return clean;
-}
-
 export function terbilang(angka) {
     const bil = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
     angka = parseInt(angka);
@@ -140,19 +133,6 @@ export function stripHtml(html) {
     let tmp = document.createElement("DIV");
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
-}
-
-// Debounce function for better performance
-export function debounce(func, wait = 300) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
 
 // Add visual validation feedback to input fields

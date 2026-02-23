@@ -1,13 +1,5 @@
 // Application-wide constants and configuration values
 
-// Cache configuration
-export const CACHE = {
-    KEY: 'santri_data_cache',
-    TIME_KEY: 'santri_data_time',
-    EXPIRY_HOURS: 24,
-    MILLISECONDS_PER_HOUR: 60 * 60 * 1000
-};
-
 // Zakat calculation constants
 // Updated based on SK Lazismu Wilayah DIY No. 005.BP/KEP/II.19/B/2026
 export const ZAKAT = {
@@ -31,20 +23,3 @@ export const VALIDATION = {
     PHONE_PATTERN: /^[0-9+\-\s()]+$/  // Allow digits, +, -, spaces, and parentheses
 };
 
-// Animation and UI timing (in milliseconds)
-export const DELAYS = {
-    PRELOADER: 50,
-    DOM_READY: 100,          // Wait for DOM to be ready
-    CASCADE_SELECT: 200,     // Wait for cascading select options to populate
-    MODAL_TRANSITION: 200,
-    TOAST: 500,
-    LOADING_TEXT: 800
-};
-
-// Loading text messages
-export const LOADING_TEXTS = [
-    "Menghubungkan ke Server...",
-    "Mengambil Data Santri...",
-    "Menyiapkan Data Kelas...",
-    "Hampir Selesai..."
-];
