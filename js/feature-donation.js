@@ -1201,15 +1201,15 @@ export function setupWizardLogic() {
                             
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div onclick="openQrisModal('bni')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-orange-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
-                                    <div class="h-8 flex items-center mb-3"><img src="bank-bni.png" class="h-full object-contain"></div>
+                                    <div class="h-8 flex items-center mb-3"><img src="assets/images/bank-bni.png" class="h-full object-contain"></div>
                                     <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition">Lihat QR</button>
                                 </div>
                                 <div onclick="openQrisModal('bsi')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-teal-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
-                                    <div class="h-10 flex items-center mb-3"><img src="bank-bsi.png" class="h-full object-contain"></div>
+                                    <div class="h-10 flex items-center mb-3"><img src="assets/images/bank-bsi.png" class="h-full object-contain"></div>
                                     <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition">Lihat QR</button>
                                 </div>
                                 <div onclick="openQrisModal('bpd')" class="group cursor-pointer border border-slate-200 rounded-2xl p-4 hover:border-blue-500 hover:shadow-md transition-all text-center flex flex-col items-center justify-between h-full bg-slate-50/50 hover:bg-white">
-                                    <div class="h-8 flex items-center mb-3"><img src="bank-bpd.png" class="h-full object-contain"></div>
+                                    <div class="h-8 flex items-center mb-3"><img src="assets/images/bank-bpd.png" class="h-full object-contain"></div>
                                     <button class="w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wide group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition">Lihat QR</button>
                                 </div>
                             </div>
@@ -1227,7 +1227,7 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-orange-200 hover:bg-orange-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="bank-bni.png" class="w-full h-full object-contain">
+                                        <img src="assets/images/bank-bni.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
                                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
@@ -1242,7 +1242,7 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-teal-200 hover:bg-teal-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="bank-bsi.png" class="w-full h-full object-contain">
+                                        <img src="assets/images/bank-bsi.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
                                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
@@ -1257,7 +1257,7 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="bank-bpd.png" class="w-full h-full object-contain">
+                                        <img src="assets/images/bank-bpd.png" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
                                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
