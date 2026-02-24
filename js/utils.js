@@ -1,4 +1,5 @@
 // utils.js
+import { UI } from '../constants.js';
 
 // Development mode check
 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -45,8 +46,8 @@ export function showToast(message, type = 'warning') {
 
     setTimeout(() => {
         toast.style.animation = 'fadeOut 0.3s ease-out forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        setTimeout(() => toast.remove(), UI.TOAST_ANIMATION);
+    }, UI.TOAST_DURATION);
 }
 
 export function copyText(text) {

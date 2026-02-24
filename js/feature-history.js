@@ -1,5 +1,5 @@
 import { riwayatData, currentUser, timeFilterState, setTimeFilterState } from './state.js';
-import { GAS_API_URL } from '../config.js';
+import { GAS_API_URL, UI_AVATARS_BASE_URL, SANTRI_AVATAR_OPTIONS } from '../config.js';
 import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
@@ -966,7 +966,7 @@ export async function loadPersonalDashboard(userEmail) {
 function updateDashboardUI() {
     const user = currentUser; 
     if (user) {
-        if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
+        if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = user.photoURL || `${UI_AVATARS_BASE_URL}?name=${encodeURIComponent(user.displayName)}&${SANTRI_AVATAR_OPTIONS}`;
         if(document.getElementById('dash-name')) {
             const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
             document.getElementById('dash-name').innerText = firstName;

@@ -6,8 +6,9 @@ import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, ref
 import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.js';
 import { parseSantriData } from './santri-manager.js';
 import { copyText, showToast, logger } from './utils.js';
-import { qrisDatabase } from '../config.js';
+import { qrisDatabase, CACHE, LOADING_TEXTS } from '../config.js';
 import { donasiData } from './state.js';
+import { UI } from '../constants.js';
 import { formatInputRupiah, switchZakatMode, calculateZakat, applyZakatResult, handleManualZakatNext } from './zakat-calculator.js';
 
 // --- LOGIKA MODAL QRIS ---
@@ -44,9 +45,9 @@ function closeQrisModal() {
 }
 
 // Cache configuration constants (must match data-santri.js)
-const CACHE_KEY = 'santri_data_cache';
-const CACHE_TIME_KEY = 'santri_data_time';
-const CACHE_EXPIRY_HOURS = 24;
+const CACHE_KEY = CACHE.KEY;
+const CACHE_TIME_KEY = CACHE.TIME_KEY;
+const CACHE_EXPIRY_HOURS = CACHE.EXPIRY_HOURS;
 
 // Helper function to check if valid cache exists
 function hasCachedData() {
@@ -81,12 +82,6 @@ async function init() {
     }
 
     // A. JALANKAN TEKS LOADING BERJALAN (only if showing preloader)
-    const loadingTexts = [
-        "Menghubungkan ke Server...",
-        "Mengambil Data Santri...",
-        "Menyiapkan Data Kelas...",
-        "Hampir Selesai..."
-    ];
     let textIdx = 0;
     let textInterval = null;
     
@@ -94,8 +89,8 @@ async function init() {
         const loaderText = document.getElementById('loader-text');
         if (loaderText) {
             textInterval = setInterval(() => {
-                textIdx = (textIdx + 1) % loadingTexts.length;
-                loaderText.innerText = loadingTexts[textIdx];
+                textIdx = (textIdx + 1) % LOADING_TEXTS.length;
+                loaderText.innerText = LOADING_TEXTS[textIdx];
             }, 800);
         }
     } 
@@ -169,7 +164,7 @@ async function init() {
 // Header Scroll Effect
 window.addEventListener('scroll', () => {
     const header = document.getElementById('main-header');
-    if (window.scrollY > 50) {
+    if (window.scrollY > UI.SCROLL_THRESHOLD) {
         header.classList.add('shadow-md', 'bg-white/95');
         header.classList.remove('bg-white/80');
     } else {

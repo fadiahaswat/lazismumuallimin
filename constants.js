@@ -12,7 +12,8 @@ export const ZAKAT = {
 
 // Donation limits
 export const DONATION = {
-    MAX_AMOUNT: 10000000,    // Maximum donation amount per transaction (10 million IDR)
+    MAX_AMOUNT: 10000000,        // Maximum donation amount per transaction (10 million IDR)
+    MIN_NOMINAL_INFAQ: 1000,     // Minimum infaq/donation amount (Rp 1.000)
     WA_CONTACT: '6281196961918'  // WhatsApp contact for donations above limit
 };
 
@@ -21,5 +22,17 @@ export const VALIDATION = {
     MIN_PHONE_LENGTH: 10,    // Minimum phone number length
     EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,  // Basic email validation pattern
     PHONE_PATTERN: /^[0-9+\-\s()]+$/  // Allow digits, +, -, spaces, and parentheses
+};
+
+// Session / LocalStorage key constants
+export const SESSION = {
+    SANTRI_KEY: 'lazismu_user_santri'  // LocalStorage key for santri login session
+};
+
+// UI behavior constants
+export const UI = {
+    TOAST_DURATION: 3000,       // Toast notification display duration in ms
+    TOAST_ANIMATION: 300,       // Toast fade-out animation duration in ms
+    SCROLL_THRESHOLD: 50        // Scroll Y position to trigger header shadow effect
 };
 

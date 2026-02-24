@@ -1,7 +1,8 @@
 // firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { firebaseConfig } from '../config.js';
+import { firebaseConfig, UI_AVATARS_BASE_URL, SANTRI_AVATAR_OPTIONS } from '../config.js';
+import { SESSION } from '../constants.js';
 import { SantriManager, santriDB } from './santri-manager.js';
 import { currentUser, setCurrentUser, donasiData } from './state.js';
 import { showToast } from './utils.js';
@@ -15,17 +16,17 @@ export const provider = new GoogleAuthProvider();
 // Listen for Auth Changes
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        localStorage.removeItem('lazismu_user_santri');
+        localStorage.removeItem(SESSION.SANTRI_KEY);
         updateUIForLogin(user);
     } else {
-        const santriSession = localStorage.getItem('lazismu_user_santri');
+        const santriSession = localStorage.getItem(SESSION.SANTRI_KEY);
         if (santriSession) {
             try {
                 const santriUser = JSON.parse(santriSession);
                 updateUIForLogin(santriUser);
             } catch (error) {
                 console.error("Failed to parse santri session:", error);
-                localStorage.removeItem('lazismu_user_santri');
+                localStorage.removeItem(SESSION.SANTRI_KEY);
                 updateUIForLogout();
             }
         } else {
@@ -62,7 +63,7 @@ export async function loginWithGoogle() {
                     linkedEmail: googleUser.email
                 };
                 
-                localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
+                localStorage.setItem(SESSION.SANTRI_KEY, JSON.stringify(mockUser));
                 updateUIForLogin(mockUser);
                 showToast(`Login via Google berhasil (Terhubung ke NIS ${linkedNIS})`, 'success');
                 return; 
@@ -93,7 +94,7 @@ export function loginWithNIS() {
         const validPassword = prefs.password ? (prefs.password === passInput) : (String(santri.nis) === passInput);
 
         if (validPassword) {
-            const avatarUrl = prefs.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(santri.nama)}&background=10b981&color=fff`;
+            const avatarUrl = prefs.avatar || `${UI_AVATARS_BASE_URL}?name=${encodeURIComponent(santri.nama)}&${SANTRI_AVATAR_OPTIONS}`;
 
             const mockUser = {
                 uid: "nis_" + santri.nis,
@@ -106,7 +107,7 @@ export function loginWithNIS() {
                 linkedEmail: prefs.linkedEmail
             };
 
-            localStorage.setItem('lazismu_user_santri', JSON.stringify(mockUser));
+            localStorage.setItem(SESSION.SANTRI_KEY, JSON.stringify(mockUser));
             updateUIForLogin(mockUser);
             renderDashboardProfil(santri.nis); 
             window.closeLoginModal();
@@ -123,7 +124,7 @@ export function loginWithNIS() {
 
 export function doLogout() {
     signOut(auth).then(() => {
-        localStorage.removeItem('lazismu_user_santri');
+        localStorage.removeItem(SESSION.SANTRI_KEY);
         showToast("Berhasil keluar", 'success');
         updateUIForLogout(); 
         window.location.hash = "#home";
@@ -312,7 +313,7 @@ export async function linkGoogleAccount() {
         SantriManager.savePrefs(currentUser.nis, { linkedEmail: user.email });
         
         currentUser.linkedEmail = user.email;
-        localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+        localStorage.setItem(SESSION.SANTRI_KEY, JSON.stringify(currentUser));
         
         updateUIForLogin(currentUser);
         showToast("Akun Google berhasil dihubungkan!", "success");

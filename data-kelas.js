@@ -1,6 +1,5 @@
 // File: data-kelas.js
-
-const API_BASE_URL_KELAS = "https://script.google.com/macros/s/AKfycbw-URYAsLTWCdnGurQhM1ZXa9N8vm-GBlHwtetDlin73-Ma8G0aAbFoboGGUI8GgVDl/exec";
+import { GAS_SANTRI_API_URL } from './config.js';
 
 // [PERBAIKAN] Gunakan window.classMetaData
 window.classMetaData = {};
@@ -9,7 +8,7 @@ async function loadClassData() {
     try {
         console.log("Sedang mengambil data Wali Kelas & Musyrif...");
         
-        const response = await fetch(API_BASE_URL_KELAS + "?type=kelas");
+        const response = await fetch(GAS_SANTRI_API_URL + "?type=kelas");
         
         if (!response.ok) throw new Error("Gagal koneksi ke spreadsheet kelas");
 
