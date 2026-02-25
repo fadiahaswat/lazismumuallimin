@@ -113,3 +113,28 @@ export const LOADING_TEXTS = [
     "Menyiapkan Data Kelas...",
     "Hampir Selesai..."
 ];
+
+// --- KONTAK RESMI LAZISMU MUALLIMIN ---
+export const CONTACT = {
+    WA_NUMBER: '6281196961918',       // Nomor WhatsApp (format internasional, tanpa +)
+    WA_DISPLAY: '0811-9696-1918',     // Format tampilan nomor WhatsApp
+    EMAIL: 'lazismumuallimin@gmail.com',
+    ADDRESS: 'Jl. Letjend S. Parman No.68, Patangpuluhan, Wirobrajan, Yogyakarta',
+    WA_CONSULT_TEXT: "Assalamu'alaikum, saya ingin berkonsultasi tentang program kebaikan ZIS."
+};
+
+// --- LINK MEDIA SOSIAL ---
+export const SOCIAL_LINKS = {
+    instagram: 'https://instagram.com/lazismu_muallimin',
+    youtube: 'https://youtube.com/@lazismumuallimin',
+    tiktok: 'https://tiktok.com/@lazismu_muallimin',
+    twitter: 'https://x.com/lazismuallimin',
+    facebook: 'https://facebook.com/lazismumuallimin',
+    facebookPage: 'https://facebook.com/kl.lazismumuallimin'
+};
+
+// --- NOMINAL PAKET DONASI (Homepage Beautification Section) ---
+export const DONATION_PACKAGES = [100000, 500000, 1000000]; // Paket: Bronze, Silver, Gold
+
+// --- NOMINAL CEPAT (Tombol Pilihan di Wizard Donasi Step 2) ---
+export const QUICK_NOMINALS = [50000, 100000, 250000, 500000, 1000000, 2000000];

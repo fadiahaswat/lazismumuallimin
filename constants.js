@@ -3,7 +3,8 @@
 // Zakat calculation constants
 // Updated based on SK Lazismu Wilayah DIY No. 005.BP/KEP/II.19/B/2026
 export const ZAKAT = {
-    NISAB_TAHUN: 171912500,  // Nisab threshold: 85 gram x Rp 2.022.500 = Rp 171.912.500
+    NISAB_TAHUN: 171912500,                          // Nisab threshold: 85 gram x Rp 2.022.500 = Rp 171.912.500
+    get NISAB_BULAN() { return Math.round(this.NISAB_TAHUN / 12); }, // Nisab bulanan: dihitung dari NISAB_TAHUN
     RATE: 0.025,             // 2.5% zakat rate
     MIN_NOMINAL: 10000,      // Minimum donation amount
     FITRAH: 40000,           // Update 2026: Rp 40.000/jiwa (range Rp 35.000-40.000)
