@@ -1,5 +1,5 @@
 import { newsState } from './state.js';
-import { WORDPRESS_SITE, NEWS_PER_PAGE } from '../config.js';
+import { WORDPRESS_SITE, NEWS_PER_PAGE, PLACEHOLDER_IMAGE } from '../config.js';
 import { copyText, stripHtml, showToast } from './utils.js';
 import { showPage } from './ui-navigation.js';
 
@@ -106,7 +106,7 @@ export function renderNewsGrid(postsToRender, appendMode) {
 
     postsToRender.forEach((post, i) => {
         const globalIndex = startIndex + i;
-        const img = post.featured_image || 'https://via.placeholder.com/600x400?text=Lazismu+Update';
+        const img = post.featured_image || PLACEHOLDER_IMAGE.NEWS_CARD;
 
         const dateObj = new Date(post.date);
         const day = dateObj.toLocaleDateString('id-ID', {
@@ -200,10 +200,10 @@ export function openNewsModal(index) {
         month: 'long',
         year: 'numeric'
     });
-    const img = post.featured_image || 'https://via.placeholder.com/1200x600?text=Lazismu+Update';
+    const img = post.featured_image || PLACEHOLDER_IMAGE.NEWS_MODAL;
     const category = post.categories ? Object.values(post.categories)[0].name : 'Berita';
     const author = post.author.name || 'Admin Lazismu';
-    const avatar = post.author.avatar_URL || 'https://ui-avatars.com/api/?name=Admin+Lazismu&background=random';
+    const avatar = post.author.avatar_URL || PLACEHOLDER_IMAGE.ADMIN_AVATAR;
 
     container.innerHTML = `
         <div class="relative h-[40vh] md:h-[50vh] w-full group overflow-hidden">
@@ -217,7 +217,7 @@ export function openNewsModal(index) {
                     ${post.title}
                 </h2>
                 <div class="flex items-center gap-3 text-white/90">
-                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}" onerror="this.src='https://ui-avatars.com/api/?name=Admin'">
+                    <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/50 shadow-sm" alt="${author}" onerror="this.src='${PLACEHOLDER_IMAGE.ADMIN_AVATAR_FALLBACK}'">
                     <div class="text-xs md:text-sm font-medium">
                         <span>${author}</span> • <span class="opacity-80">${date}</span>
                     </div>

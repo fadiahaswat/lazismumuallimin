@@ -3,6 +3,7 @@ import { loadRiwayat } from './feature-history.js';
 import { fetchNews } from './feature-news.js'; // Hapus newsState dari sini
 import { currentUser, newsState } from './state.js'; // Tambahkan newsState di sini
 import { SantriManager } from './santri-manager.js';
+import { SESSION } from '../constants.js';
 
 // Flag to prevent duplicate hashchange listeners
 let hashchangeListenerAdded = false;
@@ -209,7 +210,7 @@ export function saveAvatar(emoji) {
     currentUser.photoURL = avatarUrl;
     
     try {
-        localStorage.setItem('lazismu_user_santri', JSON.stringify(currentUser));
+        localStorage.setItem(SESSION.SANTRI_KEY, JSON.stringify(currentUser));
     } catch (error) {
         logger.error("Failed to save user to localStorage:", error);
         showToast("Avatar berhasil diganti, tetapi gagal menyimpan ke cache", "warning");

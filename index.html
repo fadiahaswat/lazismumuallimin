@@ -61,8 +61,7 @@
     
     <link rel="stylesheet" href="style.css">
     
-    <!-- Google reCAPTCHA v3 -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdhLGIsAAAAAOFfE86013kZqCZvZwVTTBPZTdp6"></script>
+    <!-- Google reCAPTCHA v3 - Key diinjeksikan oleh js/html-init.js dari config.js -->
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -106,6 +105,9 @@
 <script>
     // Immediately check cache and hide preloader if data exists
     // This prevents the flash of preloader on page refresh when cache is available
+    // NOTE: Nilai-nilai di bawah ini HARUS sama dengan config.js::CACHE
+    // (CACHE.KEY, CACHE.TIME_KEY, CACHE.EXPIRY_HOURS)
+    // Script ini berjalan sebelum modul ES dimuat, sehingga tidak bisa import config.js
     (function() {
         const CACHE_KEY = 'santri_data_cache';
         const CACHE_TIME_KEY = 'santri_data_time';
@@ -176,7 +178,7 @@
 
             <div class="space-y-4">
                 
-                <a href="https://wa.me/6281196961918?text=Assalamu'alaikum%2C%20saya%20ingin%20berkonsultasi%20tentang%20program%20kebaikan%20ZIS." target="_blank" class="group flex items-center p-4 bg-white border border-emerald-100 rounded-2xl hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer relative overflow-hidden">
+                <a data-wa-link data-wa-type="consult" href="https://wa.me/6281196961918" target="_blank" class="group flex items-center p-4 bg-white border border-emerald-100 rounded-2xl hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer relative overflow-hidden">
                     <div class="absolute inset-0 bg-emerald-50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                     
                     <div class="relative z-10 flex items-center w-full">
@@ -1444,9 +1446,9 @@
                         <img src="assets/images/bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
+                            <h3 data-bank-display="bni" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">3440 000 348</h3>
                         </div>
-                        <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
+                        <button data-bank-copy="bni" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
                         </button>
                     </div>
@@ -1476,9 +1478,9 @@
                         <img src="assets/images/bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
+                            <h3 data-bank-display="bsi" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">7930 030 303</h3>
                         </div>
-                        <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
+                        <button data-bank-copy="bsi" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
                         </button>
                     </div>
@@ -1508,9 +1510,9 @@
                         <img src="assets/images/bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
+                            <h3 data-bank-display="bpd" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter">801 241 004 624</h3>
                         </div>
-                        <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
+                        <button data-bank-copy="bpd" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
                             <i class="far fa-copy"></i> Salin No. Rek
                         </button>
                     </div>
@@ -2464,8 +2466,8 @@
                         <div class="text-center mb-6">
                             <img src="assets/images/bank-bni.png" alt="BNI" class="h-8 mx-auto mb-4 object-contain">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (009)</p>
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">3440 000 348</h3>
-                            <button onclick="copyText('3440000348')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
+                            <h3 data-bank-display="bni" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">3440 000 348</h3>
+                            <button data-bank-copy="bni" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-600 text-xs font-bold hover:bg-orange-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
                             </button>
                         </div>
@@ -2485,8 +2487,8 @@
                         <div class="text-center mb-6">
                             <img src="assets/images/bank-bsi.png" alt="BSI" class="h-10 mx-auto mb-2 object-contain">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (451)</p>
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">7930 030 303</h3>
-                            <button onclick="copyText('7930030303')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
+                            <h3 data-bank-display="bsi" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">7930 030 303</h3>
+                            <button data-bank-copy="bsi" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-600 text-xs font-bold hover:bg-teal-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
                             </button>
                         </div>
@@ -2506,8 +2508,8 @@
                         <div class="text-center mb-6">
                             <img src="assets/images/bank-bpd.png" alt="BPD DIY" class="h-8 mx-auto mb-4 object-contain">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nomor Rekening (112)</p>
-                            <h3 class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">801 241 004 624</h3>
-                            <button onclick="copyText('801241004624')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
+                            <h3 data-bank-display="bpd" class="text-3xl md:text-4xl font-mono font-black text-slate-800 tracking-tighter mb-2">801 241 004 624</h3>
+                            <button data-bank-copy="bpd" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition active:scale-95">
                                 <i class="far fa-copy"></i> Salin No. Rek
                             </button>
                         </div>
@@ -3236,7 +3238,7 @@
             <i class="fas fa-utensils"></i>
         </div>
         <h4 class="font-black text-lg text-slate-700 group-hover:text-indigo-700 mb-2">Fidyah</h4>
-        <p class="text-xs text-slate-500 group-hover:text-indigo-700/80 leading-relaxed font-medium">Pengganti puasa bagi yang berhalangan (Rp 65rb/hari).</p>
+        <p class="text-xs text-slate-500 group-hover:text-indigo-700/80 leading-relaxed font-medium">Pengganti puasa bagi yang berhalangan (<span data-zakat-fidyah>Rp 50.000</span>/hari).</p>
         
         <div class="mt-auto pt-4 opacity-0 group-[.active]:opacity-100 transition-opacity">
             <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-600 text-white px-2 py-1 rounded-md"><i class="fas fa-check"></i> Terpilih</span>
@@ -3303,7 +3305,7 @@
                             <input type="number" id="fitrah-jumlah-orang" class="w-full p-4 rounded-xl border-0 bg-white shadow-sm focus:ring-2 focus:ring-emerald-500 font-bold text-slate-700 placeholder:font-normal" placeholder="Jml Jiwa">
                             <input type="text" id="fitrah-total" class="w-full p-4 rounded-xl bg-emerald-100 font-black text-emerald-700 text-center border-transparent cursor-default" value="Rp 0" readonly>
                         </div>
-                        <p class="text-xs text-emerald-600 mt-3 ml-1">*Besaran Zakat Fitrah: <strong>Rp 40.000</strong> / jiwa (SK Lazismu DIY 2026: Rp 35.000-40.000).</p>
+                        <p class="text-xs text-emerald-600 mt-3 ml-1">*Besaran Zakat Fitrah: <strong data-zakat-fitrah>Rp 40.000</strong> / jiwa (SK Lazismu DIY 2026: Rp 35.000-40.000).</p>
                         <button id="btn-fitrah-next" class="mt-6 w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
                             Lanjut Data Diri <i class="fas fa-arrow-right"></i>
                         </button>
@@ -3318,7 +3320,7 @@
         <input type="number" id="fidyah-jumlah-hari" class="w-full p-4 rounded-xl border-0 bg-white shadow-sm focus:ring-2 focus:ring-sky-500 font-bold text-slate-700 placeholder:font-normal" placeholder="Jml (Hari x Jiwa)">
         <input type="text" id="fidyah-total" class="w-full p-4 rounded-xl bg-sky-100 font-black text-sky-700 border-0" value="Rp 0" readonly>
     </div>
-    <p class="text-xs text-sky-600 mt-3 ml-1">*Nominal Rp 50.000 per jiwa per hari (SK Lazismu DIY 2026: makanan siap saji Rp 30.000-50.000)</p>
+    <p class="text-xs text-sky-600 mt-3 ml-1">*Nominal <span data-zakat-fidyah>Rp 50.000</span> per jiwa per hari (SK Lazismu DIY 2026: makanan siap saji Rp 30.000-50.000)</p>
     
     <div class="mt-4 pt-4 border-t border-sky-200/50 flex justify-end">
         <button id="btn-fidyah-next" class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-sky-500/30 flex items-center gap-2">
@@ -3425,7 +3427,7 @@
                     <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">
                         Nisab Per Tahun
                     </p>
-                    <p class="text-xl font-black text-emerald-700 tracking-tight">
+                    <p data-zakat-nisab-tahun class="text-xl font-black text-emerald-700 tracking-tight">
                         Rp 171.912.500
                     </p>
                 </div>
@@ -3439,7 +3441,7 @@
                     <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">
                         Nisab Per Bulan
                     </p>
-                    <p class="text-xl font-black text-emerald-700 tracking-tight">
+                    <p data-zakat-nisab-bulan class="text-xl font-black text-emerald-700 tracking-tight">
                         Rp 14.326.042
                     </p>
                 </div>
@@ -3541,7 +3543,7 @@
                 </div>
                 <h5 class="font-bold text-slate-800 text-lg mb-2">Belum Mencapai Nisab</h5>
                 <p class="text-sm text-slate-500 mb-8 leading-relaxed max-w-sm mx-auto">
-                    Total harta bersih Anda belum mencapai Nisab tahunan (Rp 171.912.500). Anda tidak diwajibkan berzakat, namun sangat dianjurkan untuk tetap <strong>Berinfaq</strong>.
+                    Total harta bersih Anda belum mencapai Nisab tahunan (<span data-zakat-nisab-tahun>Rp 171.912.500</span>). Anda tidak diwajibkan berzakat, namun sangat dianjurkan untuk tetap <strong>Berinfaq</strong>.
                 </p>
                 <button onclick="applyZakatResult()" class="inline-flex items-center gap-2 text-sm font-bold text-amber-600 hover:text-amber-700 hover:bg-amber-50 px-6 py-3 rounded-xl transition-all border border-transparent hover:border-amber-200">
                     Lanjut Infaq Seikhlasnya <i class="fas fa-heart text-amber-500"></i>
@@ -3560,12 +3562,12 @@
 
                 <div id="donasi-step-2" class="donasi-step-container hidden">
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="50000">Rp 50rb</button>
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="100000">Rp 100rb</button>
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="250000">Rp 250rb</button>
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="500000">Rp 500rb</button>
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="1000000">Rp 1 Juta</button>
-                        <button class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95" data-nominal="2000000">Rp 2 Juta</button>
+                        <button data-quick-nominal="0" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 50rb</button>
+                        <button data-quick-nominal="1" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 100rb</button>
+                        <button data-quick-nominal="2" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 250rb</button>
+                        <button data-quick-nominal="3" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 500rb</button>
+                        <button data-quick-nominal="4" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 1 Juta</button>
+                        <button data-quick-nominal="5" class="nominal-btn selection-btn bg-white border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-600 hover:border-orange-500 hover:bg-orange-50 transition active:scale-95">Rp 2 Juta</button>
                     </div>
                     
                     <div class="mb-10">
@@ -4269,32 +4271,32 @@
     </h5>
     
     <div class="grid grid-cols-2 gap-3">
-        <a href="https://instagram.com/lazismu_muallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-pink-600 hover:border-pink-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-600/20">
+        <a data-social="instagram" href="https://instagram.com/lazismu_muallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-pink-600 hover:border-pink-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-600/20">
             <i class="fab fa-instagram text-lg text-slate-400 group-hover:text-white transition-colors"></i>
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Instagram</span>
         </a>
 
-        <a href="https://youtube.com/@lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-red-600 hover:border-red-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-600/20">
+        <a data-social="youtube" href="https://youtube.com/@lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-red-600 hover:border-red-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-600/20">
             <i class="fab fa-youtube text-lg text-slate-400 group-hover:text-white transition-colors"></i>
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">YouTube</span>
         </a>
 
-        <a href="https://tiktok.com/@lazismu_muallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-teal-500 hover:border-teal-400 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/20">
+        <a data-social="tiktok" href="https://tiktok.com/@lazismu_muallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-teal-500 hover:border-teal-400 hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/20">
             <i class="fab fa-tiktok text-lg text-slate-400 group-hover:text-white transition-colors"></i>
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">TikTok</span>
         </a>
 
-        <a href="https://x.com/lazismuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-black hover:border-slate-600 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10">
+        <a data-social="twitter" href="https://x.com/lazismuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-black hover:border-slate-600 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10">
             <img src="assets/images/x.png" alt="X" class="w-4 h-4 object-contain brightness-0 invert opacity-60 group-hover:opacity-100 transition-opacity">
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Twitter / X</span>
         </a>
 
-        <a href="https://facebook.com/lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-blue-600 hover:border-blue-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-600/20">
+        <a data-social="facebook" href="https://facebook.com/lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-blue-600 hover:border-blue-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-600/20">
             <img src="assets/images/facebook.png" alt="FB" class="w-5 h-5 object-contain brightness-0 invert opacity-60 group-hover:opacity-100 transition-opacity">
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Akun Facebook</span>
         </a>
 
-        <a href="https://facebook.com/kl.lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-blue-800 hover:border-blue-600 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-800/20">
+        <a data-social="facebookPage" href="https://facebook.com/kl.lazismumuallimin" target="_blank" class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-300 hover:bg-blue-800 hover:border-blue-600 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-800/20">
             <i class="fas fa-flag text-lg text-slate-400 group-hover:text-white transition-colors"></i>
             <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">Halaman Facebook</span>
         </a>
@@ -4322,7 +4324,7 @@
                         </div>
                         <div class="text-sm">
                             <span class="block font-bold text-slate-300 mb-0.5">WhatsApp</span>
-                            <a href="https://wa.me/6281196961918" target="_blank" class="text-slate-400 hover:text-green-400 transition decoration-green-500/30 hover:underline">0811-9696-1918</a>
+                            <a data-wa-link data-wa-display href="https://wa.me/6281196961918" target="_blank" class="text-slate-400 hover:text-green-400 transition decoration-green-500/30 hover:underline">0811-9696-1918</a>
                         </div>
                     </li>
                     <li class="flex items-center gap-4 group">
@@ -4564,8 +4566,9 @@
 
 </div>
 
-    <script src="data-santri.js" defer></script>
-    <script src="data-kelas.js" defer></script>
+    <script type="module" src="data-santri.js"></script>
+    <script type="module" src="data-kelas.js"></script>
+    <script type="module" src="js/html-init.js"></script>
     <script type="module" src="js/main.js"></script>
 
 </body>

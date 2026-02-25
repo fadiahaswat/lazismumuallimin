@@ -1,6 +1,6 @@
 import { donasiData, currentUser } from './state.js';
 import { formatRupiah, showToast, generateUniqueCode, validateInput, clearValidation } from './utils.js';
-import { STEP_TITLES, GAS_API_URL, RECAPTCHA_SITE_KEY } from '../config.js';
+import { STEP_TITLES, GAS_API_URL, RECAPTCHA_SITE_KEY, BANK_ACCOUNTS } from '../config.js';
 import { santriDB } from './santri-manager.js';
 import { showPage } from './ui-navigation.js';
 import { DONATION, VALIDATION, ZAKAT } from '../constants.js';
@@ -602,8 +602,8 @@ export function setupWizardLogic() {
     const btnNextStep3 = document.querySelector('[data-next-step="3"]');
     if (btnNextStep3) {
         btnNextStep3.onclick = () => {
-            if (donasiData.nominal < 1000) {
-                showToast("Nominal minimal Rp 1.000");
+            if (donasiData.nominal < DONATION.MIN_NOMINAL_INFAQ) {
+                showToast(`Nominal minimal Rp ${DONATION.MIN_NOMINAL_INFAQ.toLocaleString('id-ID')}`);
             } else if (donasiData.nominal > DONATION.MAX_AMOUNT) {
                 showDonationLimitModal(donasiData.nominal);
             } else {
@@ -1227,14 +1227,14 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-orange-200 hover:bg-orange-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="assets/images/bank-bni.png" class="w-full h-full object-contain">
+                                        <img src="${BANK_ACCOUNTS.bni.logo}" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank BNI</p>
-                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">3440 000 348</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${BANK_ACCOUNTS.bni.name}</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-orange-600 transition-colors">${BANK_ACCOUNTS.bni.displayNumber}</p>
                                     </div>
                                 </div>
-                                <button onclick="copyText('3440000348')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                <button onclick="copyText('${BANK_ACCOUNTS.bni.accountNumber}')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
                                     <i class="far fa-copy"></i> Salin
                                 </button>
                             </div>
@@ -1242,14 +1242,14 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-teal-200 hover:bg-teal-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="assets/images/bank-bsi.png" class="w-full h-full object-contain">
+                                        <img src="${BANK_ACCOUNTS.bsi.logo}" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BSI (Syariah)</p>
-                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">7930 030 303</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${BANK_ACCOUNTS.bsi.name}</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-teal-600 transition-colors">${BANK_ACCOUNTS.bsi.displayNumber}</p>
                                     </div>
                                 </div>
-                                <button onclick="copyText('7930030303')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-teal-500 hover:text-white hover:border-teal-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                <button onclick="copyText('${BANK_ACCOUNTS.bsi.accountNumber}')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-teal-500 hover:text-white hover:border-teal-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
                                     <i class="far fa-copy"></i> Salin
                                 </button>
                             </div>
@@ -1257,14 +1257,14 @@ export function setupWizardLogic() {
                             <div class="flex flex-col sm:flex-row items-center justify-between p-4 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/30 transition-all gap-4 group">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
                                     <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-2 shadow-sm">
-                                        <img src="assets/images/bank-bpd.png" class="w-full h-full object-contain">
+                                        <img src="${BANK_ACCOUNTS.bpd.logo}" class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-left">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BPD DIY Syariah</p>
-                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">801 241 004 624</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${BANK_ACCOUNTS.bpd.name}</p>
+                                        <p class="text-lg font-black text-slate-700 tracking-tight group-hover:text-blue-600 transition-colors">${BANK_ACCOUNTS.bpd.displayNumber}</p>
                                     </div>
                                 </div>
-                                <button onclick="copyText('801241004624')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-blue-500 hover:text-white hover:border-blue-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                <button onclick="copyText('${BANK_ACCOUNTS.bpd.accountNumber}')" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-blue-500 hover:text-white hover:border-blue-500 transition flex items-center justify-center gap-2 shadow-sm active:scale-95">
                                     <i class="far fa-copy"></i> Salin
                                 </button>
                             </div>
@@ -1299,7 +1299,7 @@ export function setupWizardLogic() {
                 
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) {
-                    btnWa.href = `https://wa.me/6281196961918?text=${encodeURIComponent(waMsg)}`;
+                    btnWa.href = `https://wa.me/${DONATION.WA_CONTACT}?text=${encodeURIComponent(waMsg)}`;
                     
                     // --- HIMBAUAN KONFIRMASI ---
                     const waContainer = btnWa.parentElement; 
