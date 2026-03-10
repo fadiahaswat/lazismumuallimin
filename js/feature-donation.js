@@ -1295,21 +1295,40 @@ export function setupWizardLogic() {
                 if (paymentInstr) paymentInstr.classList.remove('hidden');
 
                 // --- 6. SET UP WHATSAPP ---
+                const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
                 const today = new Date();
-                const tanggal = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+                const tanggal = `${today.getDate()} ${BULAN_ID[today.getMonth()]} ${today.getFullYear()}`;
+
+                // Format phone: ensure leading 0, then add dashes (0xxx-xxxx-xxxx)
+                const hpRaw = donasiData.hp.replace(/\D/g, '');
+                const hpNorm = hpRaw.startsWith('0') ? hpRaw : `0${hpRaw}`;
+                const hpFormatted = hpNorm.replace(/^(\d{4})(\d{4})(\d+)$/, '$1-$2-$3');
 
                 let santriLine = '';
                 if (donasiData.donaturTipe === 'santri' && donasiData.namaSantri) {
-                    santriLine = `\n🎓 Melalui Santri  : ${donasiData.namaSantri}`;
+                    santriLine = `\n🎓 Melalui Santri : ${donasiData.namaSantri}`;
                 } else if (donasiData.isAlumni && donasiData.alumniTahun) {
-                    santriLine = `\n🎓 Alumni Tahun    : ${donasiData.alumniTahun}`;
+                    santriLine = `\n🎓 Alumni Tahun   : ${donasiData.alumniTahun}`;
                 }
 
                 const kodeUnikLine = donasiData.kodeUnik > 0
-                    ? `\n\n⚠️ *Kode Unik:* ${donasiData.kodeUnik} (3 digit terakhir nominal pembayaran)`
+                    ? `\n\n⚠️ *Kode Unik : ${donasiData.kodeUnik}*\n_(3 digit terakhir nominal pembayaran)_`
                     : '';
 
-                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nKonfirmasi donasi:\n\n🗓 Tanggal         : ${tanggal}\n👤 Nama Donatur    : ${donasiData.nama}${santriLine}\n📱 No. HP          : ${donasiData.hp}\n💰 Nominal         : *${formatRupiah(donasiData.nominalTotal)}*\n📋 Program         : ${donasiData.subType || donasiData.type}\n💳 Metode          : ${donasiData.metode}${kodeUnikLine}\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
+                const metode = donasiData.metode || '';
+                const isTunai = metode.toLowerCase().includes('tunai');
+                let closingLine;
+                if (isTunai) {
+                    if (donasiData.donaturTipe === 'santri' && donasiData.namaSantri) {
+                        closingLine = `Donasi dititipkan melalui ananda *${donasiData.namaSantri}* dan insyaAllah akan diserahkan kepada musyrifnya ketika kembali ke asrama.`;
+                    } else {
+                        closingLine = `Donasi akan diserahkan secara langsung ke kantor Lazismu Mu'allimin.`;
+                    }
+                } else {
+                    closingLine = `Bersama ini saya lampirkan bukti transfer/pembayaran.`;
+                }
+
+                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nBerikut *konfirmasi donasi* yang telah saya salurkan:\n\n🗓 Tanggal        : ${tanggal}\n👤 Nama Donatur   : ${donasiData.nama}${santriLine}\n📱 No. HP         : ${hpFormatted}\n💰 Nominal        : *${formatRupiah(donasiData.nominalTotal)}*\n📋 Program        : ${donasiData.subType || donasiData.type}\n💳 Metode         : ${metode}${kodeUnikLine}\n\n${closingLine}\nMohon berkenan untuk dilakukan verifikasi agar status donasi dapat diperbarui menjadi *DITERIMA*. Terima kasih.\n\nWassalamu'alaikum warahmatullahi wabarakatuh.`;
                 
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) {
