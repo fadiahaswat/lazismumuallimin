@@ -1295,10 +1295,21 @@ export function setupWizardLogic() {
                 if (paymentInstr) paymentInstr.classList.remove('hidden');
 
                 // --- 6. SET UP WHATSAPP ---
+                const today = new Date();
+                const tanggal = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+                let santriLine = '';
+                if (donasiData.donaturTipe === 'santri' && donasiData.namaSantri) {
+                    santriLine = `\n🎓 Melalui Santri  : ${donasiData.namaSantri}`;
+                } else if (donasiData.isAlumni && donasiData.alumniTahun) {
+                    santriLine = `\n🎓 Alumni Tahun    : ${donasiData.alumniTahun}`;
+                }
+
                 const kodeUnikLine = donasiData.kodeUnik > 0
-                    ? `\n• Kode Unik: *${donasiData.kodeUnik}* (3 digit terakhir nominal pembayaran)`
+                    ? `\n\n⚠️ *Kode Unik:* ${donasiData.kodeUnik} (3 digit terakhir nominal pembayaran)`
                     : '';
-                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nSaya telah melakukan pembayaran donasi:\n\n• Nama: *${donasiData.nama}*\n• No. HP: ${donasiData.hp}\n• Jenis: ${donasiData.subType || donasiData.type}\n• Metode: ${donasiData.metode}\n• Nominal: *${formatRupiah(donasiData.nominalTotal)}*${kodeUnikLine}\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
+
+                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nKonfirmasi donasi:\n\n🗓 Tanggal         : ${tanggal}\n👤 Nama Donatur    : ${donasiData.nama}${santriLine}\n📱 No. HP          : ${donasiData.hp}\n💰 Nominal         : *${formatRupiah(donasiData.nominalTotal)}*\n📋 Program         : ${donasiData.subType || donasiData.type}\n💳 Metode          : ${donasiData.metode}${kodeUnikLine}\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
                 
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) {
