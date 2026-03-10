@@ -1304,11 +1304,15 @@ export function setupWizardLogic() {
                 const hpNorm = hpRaw.startsWith('0') ? hpRaw : `0${hpRaw}`;
                 const hpFormatted = hpNorm.replace(/^(\d{4})(\d{4})(\d+)$/, '$1-$2-$3');
 
+                const kelasSuffix = (donasiData.donaturTipe === 'santri' && donasiData.rombelSantri)
+                    ? ` (Kelas ${donasiData.rombelSantri})`
+                    : '';
+
                 let santriLine = '';
                 if (donasiData.donaturTipe === 'santri' && donasiData.namaSantri) {
-                    santriLine = `\n🎓 Melalui Santri : ${donasiData.namaSantri}`;
+                    santriLine = `\n🎓 Melalui Santri : ${donasiData.namaSantri}${kelasSuffix}`;
                 } else if (donasiData.isAlumni && donasiData.alumniTahun) {
-                    santriLine = `\n🎓 Alumni Tahun   : ${donasiData.alumniTahun}`;
+                    santriLine = `\n🎓 Alumni         : Angkatan ${donasiData.alumniTahun}`;
                 }
 
                 const kodeUnikLine = donasiData.kodeUnik > 0
@@ -1320,7 +1324,7 @@ export function setupWizardLogic() {
                 let closingLine;
                 if (isTunai) {
                     if (donasiData.donaturTipe === 'santri' && donasiData.namaSantri) {
-                        closingLine = `Donasi dititipkan melalui ananda *${donasiData.namaSantri}* dan insyaAllah akan diserahkan kepada musyrifnya ketika kembali ke asrama.`;
+                        closingLine = `Donasi dititipkan melalui ananda *${donasiData.namaSantri}${kelasSuffix}* dan insyaAllah akan diserahkan kepada musyrifnya ketika kembali ke asrama.`;
                     } else {
                         closingLine = `Donasi akan diserahkan secara langsung ke kantor Lazismu Mu'allimin.`;
                     }
