@@ -1295,7 +1295,10 @@ export function setupWizardLogic() {
                 if (paymentInstr) paymentInstr.classList.remove('hidden');
 
                 // --- 6. SET UP WHATSAPP ---
-                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nSaya telah melakukan transfer donasi:\n\n• Nama: *${donasiData.nama}*\n• Jenis: ${donasiData.subType || donasiData.type}\n• Nominal: *${formatRupiah(donasiData.nominalTotal)}*\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
+                const kodeUnikLine = donasiData.kodeUnik > 0
+                    ? `\n• Kode Unik: *${donasiData.kodeUnik}* (3 digit terakhir nominal pembayaran)`
+                    : '';
+                const waMsg = `Assalamu'alaikum Admin Lazismu Mu'allimin,\n\nSaya telah melakukan pembayaran donasi:\n\n• Nama: *${donasiData.nama}*\n• No. HP: ${donasiData.hp}\n• Jenis: ${donasiData.subType || donasiData.type}\n• Metode: ${donasiData.metode}\n• Nominal: *${formatRupiah(donasiData.nominalTotal)}*${kodeUnikLine}\n\nMohon diverifikasi agar status donasi saya berubah menjadi *DITERIMA*. Terima kasih.`;
                 
                 const btnWa = document.getElementById('btn-wa-confirm');
                 if (btnWa) {
