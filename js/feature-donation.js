@@ -950,9 +950,18 @@ export function setupWizardLogic() {
             const santriRow = document.getElementById('summary-santri-row');
             if (donasiData.namaSantri && donasiData.donaturTipe === 'santri') {
                 santriRow.classList.remove('hidden');
-                document.getElementById('summary-santri').innerText = `${donasiData.namaSantri} (${donasiData.rombelSantri})`;
+                const kelasPart = donasiData.rombelSantri ? ` (${donasiData.rombelSantri})` : '';
+                document.getElementById('summary-santri').innerText = `${donasiData.namaSantri}${kelasPart}`;
             } else {
                 santriRow.classList.add('hidden');
+            }
+
+            const alumniRow = document.getElementById('summary-alumni-row');
+            if (donasiData.isAlumni && donasiData.alumniTahun) {
+                alumniRow.classList.remove('hidden');
+                document.getElementById('summary-alumni-tahun').innerText = `Angkatan ${donasiData.alumniTahun}`;
+            } else {
+                alumniRow.classList.add('hidden');
             }
 
             goToStep(5);

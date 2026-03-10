@@ -869,7 +869,14 @@ export function renderRiwayatList() {
 
         const alumniYear = item.DetailAlumni || item.detailAlumni || item.detail_alumni || null;
         const alumniBadge = alumniYear ?
-            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${escapeHtml(String(alumniYear))}"><i class="fas fa-graduation-cap mr-1"></i> ${escapeHtml(String(alumniYear))}</span>` : '';
+            `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-white border border-slate-600" title="Alumni ${escapeHtml(String(alumniYear))}"><i class="fas fa-graduation-cap mr-1" aria-hidden="true"></i> Angkatan ${escapeHtml(String(alumniYear))}</span>` : '';
+
+        const santriNama = item.NamaSantri || item.namaSantri || '';
+        const santriRombel = item.KelasSantri || item.rombelSantri || '';
+        const donaturTipe = item.donaturTipe || item.DonaturTipe || '';
+        const santriLine = (donaturTipe === 'santri' && santriNama)
+            ? `<div class="mt-1 text-[11px] text-slate-500 font-medium"><i class="fas fa-user-graduate mr-1 text-orange-400" aria-hidden="true"></i>Melalui santri: <span class="font-bold text-slate-700">${escapeHtml(santriNama)}${santriRombel ? ` (Kelas ${escapeHtml(santriRombel)})` : ''}</span></div>`
+            : '';
 
         let metodeBadge = 'bg-slate-100 text-slate-500 border-slate-200';
         if (paymentMethod === 'QRIS') metodeBadge = 'bg-blue-50 text-blue-600 border-blue-200';
@@ -898,6 +905,7 @@ export function renderRiwayatList() {
                             <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
                             <span class="text-[10px] px-2 py-0.5 rounded border ${metodeBadge} font-bold uppercase tracking-wider">${paymentMethod}</span>
                         </div>
+                        ${santriLine}
                     </div>
                 </div>
 
