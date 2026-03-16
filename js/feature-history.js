@@ -1,6 +1,6 @@
 import { riwayatData, currentUser, timeFilterState, setTimeFilterState } from './state.js';
 import { GAS_API_URL, UI_AVATARS_BASE_URL, SANTRI_AVATAR_OPTIONS } from '../config.js';
-import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast } from './utils.js';
+import { formatRupiah, timeAgo, animateValue, escapeHtml, showToast, logger } from './utils.js';
 import { showPage } from './ui-navigation.js';
 import { renderGlobalLeaderboard } from './feature-recap.js';
 

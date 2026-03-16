@@ -90,7 +90,7 @@
         </div>
         
         <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-8 animate-fade-in-up">
-            <i class="fas fa-circle-notch fa-spin text-orange-500"></i>
+            <i class="fas fa-spinner fa-spin text-orange-500"></i>
             <p id="loader-text" class="text-sm text-slate-600 font-medium w-48 text-center">Menghubungkan ke Server...</p>
         </div>
 
@@ -155,7 +155,7 @@
             <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mb-10 -ml-10"></div>
             
             <button id="hubungi-modal-close" aria-label="Tutup modal" class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white transition-all duration-300 group">
-                <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
+                <i class="fas fa-xmark group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
         </div>
 
@@ -222,7 +222,7 @@
             <h3 class="text-xl font-black text-slate-800">Masuk Akun</h3>
             <p class="text-xs text-slate-500 mt-1">Pilih metode masuk untuk melanjutkan</p>
             <button onclick="closeLoginModal()" aria-label="Tutup modal login" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition">
-                <i class="fas fa-times text-xl"></i>
+                <i class="fas fa-xmark text-xl"></i>
             </button>
         </div>
 
@@ -272,7 +272,7 @@
 
         <div class="absolute top-4 right-4 z-50">
             <button onclick="closeNewsModal()" aria-label="Tutup berita" class="w-10 h-10 bg-slate-900 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:rotate-90 transform hover:scale-110 border-2 border-white/20">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-xmark"></i>
             </button>
         </div>
 
@@ -330,7 +330,7 @@
     <div id="login-btn-wrapper">
         <button onclick="doLogin()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-lg shadow-slate-900/20 active:scale-95 flex items-center gap-2 group">
             <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
-                <i class="fas fa-sign-in-alt text-xs"></i>
+                <i class="fas fa-arrow-right-to-bracket text-xs"></i>
             </div>
             <span id="label-login">Masuk Akun</span>
         </button>
@@ -404,7 +404,7 @@
 
             <div class="px-2 pb-1">
                 <button onclick="doLogout()" aria-label="Keluar dari akun" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 flex items-center gap-3 transition group">
-                    <div class="w-7 h-7 rounded-md bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-100 transition"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="w-7 h-7 rounded-md bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-100 transition"><i class="fas fa-arrow-right-from-bracket"></i></div>
                     <span class="text-xs font-bold text-red-500 group-hover:text-red-600">Keluar Akun</span>
                 </button>
             </div>
@@ -503,11 +503,11 @@
                 <span class="group-hover:text-slate-300 transition">Profesional</span>
             </div>
             <div class="flex items-center gap-2 group cursor-default">
-                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition"><i class="fas fa-search-dollar"></i></div>
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition"><i class="fas fa-magnifying-glass-dollar"></i></div>
                 <span class="group-hover:text-slate-300 transition">Transparan</span>
             </div>
             <div class="flex items-center gap-2 group cursor-default">
-                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition"><i class="fas fa-sync-alt"></i></div>
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition"><i class="fas fa-arrows-rotate"></i></div>
                 <span class="group-hover:text-slate-300 transition">Akuntabel</span>
             </div>
         </div>
@@ -1350,11 +1350,11 @@
                 
                 <div class="relative h-full p-6 bg-slate-950/80 backdrop-blur-xl rounded-[22px] border border-white/5 group-hover:border-blue-500/30 transition-colors overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="fas fa-chalkboard-teacher text-8xl text-blue-500 -mr-4 -mt-4 transform rotate-12"></i>
+                        <i class="fas fa-chalkboard-user text-8xl text-blue-500 -mr-4 -mt-4 transform rotate-12"></i>
                     </div>
 
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl mb-4 shadow-lg shadow-blue-900/50">
-                        <i class="fas fa-chalkboard-teacher"></i>
+                        <i class="fas fa-chalkboard-user"></i>
                     </div>
                     <h4 class="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Infaq Peduli Guru</h4>
                     <p class="text-slate-400 text-sm leading-relaxed">Tanda cinta untuk kesejahteraan ustadz, pamong, dan karyawan.</p>
@@ -1401,11 +1401,11 @@
                 
                 <div class="relative h-full p-6 bg-slate-950/80 backdrop-blur-xl rounded-[22px] border border-white/5 group-hover:border-cyan-500/30 transition-colors overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="fas fa-globe-asia text-8xl text-cyan-500 -mr-4 -mt-4 transform rotate-12"></i>
+                        <i class="fas fa-earth-asia text-8xl text-cyan-500 -mr-4 -mt-4 transform rotate-12"></i>
                     </div>
 
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xl mb-4 shadow-lg shadow-cyan-900/50">
-                        <i class="fas fa-globe-asia"></i>
+                        <i class="fas fa-earth-asia"></i>
                     </div>
                     <h4 class="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Infaq Muballigh</h4>
                     <p class="text-slate-400 text-sm leading-relaxed">Support dakwah santri ke pelosok negeri (3T) dan kancah internasional.</p>
@@ -1655,7 +1655,7 @@
             <div class="lg:col-span-5 flex flex-col gap-6">
                 <div class="flex-1 bg-gradient-to-br from-red-50 to-white p-8 rounded-[2rem] border border-red-100 hover:shadow-lg transition duration-300 group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300"><i class="fas fa-heart-broken"></i></div>
+                        <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300"><i class="fas fa-heart-crack"></i></div>
                         <span class="text-6xl font-black text-red-100 group-hover:text-red-50 transition-colors select-none">01</span>
                     </div>
                     <h4 class="font-bold text-slate-800 mb-2">Realitas Sosial</h4>
@@ -1663,7 +1663,7 @@
                 </div>
                 <div class="flex-1 bg-gradient-to-br from-green-50 to-white p-8 rounded-[2rem] border border-green-100 hover:shadow-lg transition duration-300 group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:bg-green-500 group-hover:text-white transition-colors duration-300"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:bg-green-500 group-hover:text-white transition-colors duration-300"><i class="fas fa-hand-holding-dollar"></i></div>
                         <span class="text-6xl font-black text-green-100 group-hover:text-green-50 transition-colors select-none">02</span>
                     </div>
                     <h4 class="font-bold text-slate-800 mb-2">Potensi Zakat</h4>
@@ -1775,7 +1775,7 @@
                     <p class="text-[10px] text-slate-500 mt-1">Dampak besar bagi mustahik.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
-                    <i class="fas fa-balance-scale-right text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
+                    <i class="fas fa-scale-unbalanced-flip text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Keadilan</h5>
                     <p class="text-[10px] text-slate-500 mt-1">Perlakuan setara.</p>
                 </div>
@@ -1800,7 +1800,7 @@
                     <p class="text-[10px] text-slate-500 mt-1">Kompetensi tinggi.</p>
                 </div>
                 <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-300 transition group cursor-default">
-                    <i class="fas fa-search-dollar text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
+                    <i class="fas fa-magnifying-glass-dollar text-orange-500 text-2xl mb-3 group-hover:scale-110 transition block"></i>
                     <h5 class="font-bold text-slate-800 text-sm">Transparansi</h5>
                     <p class="text-[10px] text-slate-500 mt-1">Terbuka & Kredibel.</p>
                 </div>
@@ -2445,7 +2445,7 @@
     </div>
 </div>
             
-    <div id="qris-section" class="py-20 relative overflow-hidden bg-slate-50">
+    <div id="qris-section-sedayu" class="py-20 relative overflow-hidden bg-slate-50">
         <div class="absolute inset-0 opacity-30 pointer-events-none">
             <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
             <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100 rounded-full mix-blend-multiply filter blur-[80px]" style="animation-delay: 2s"></div>
@@ -2674,7 +2674,7 @@
                 
                 <div id="news-filter-container" class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 px-2 no-scrollbar mask-gradient-right">
                     <button data-slug="" onclick="filterNews('')" class="news-filter-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition shadow-lg shadow-slate-900/20 transform active:scale-95">
-                        <i class="fas fa-th-large mr-2"></i>Semua
+                        <i class="fas fa-table-cells-large mr-2"></i>Semua
                     </button>
                     <div class="animate-pulse bg-slate-100 h-10 w-24 rounded-xl"></div>
                     <div class="animate-pulse bg-slate-100 h-10 w-24 rounded-xl"></div>
@@ -2691,7 +2691,7 @@
                         </div>
                     </div>
                     <button id="btn-refresh-news" onclick="refreshNews()" class="px-4 py-3 rounded-xl bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center group" title="Refresh data berita">
-                        <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                        <i class="fas fa-arrows-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                     </button>
                 </div>
             </div>
@@ -2737,7 +2737,7 @@
         <div class="text-center mt-8 pb-10">
             <button id="btn-news-load-more" onclick="loadMoreNews()" class="hidden group relative bg-white hover:bg-slate-900 text-slate-700 hover:text-white px-8 py-4 rounded-full font-bold transition-all duration-300 shadow-lg shadow-slate-200/50 hover:shadow-slate-900/30 border border-slate-100 hover:border-slate-900 transform hover:-translate-y-1">
                 <span class="relative z-10 flex items-center gap-2">
-                    Muat Lebih Banyak <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                    Muat Lebih Banyak <i class="fas fa-arrows-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                 </span>
             </button>
         </div>
@@ -2960,10 +2960,10 @@
 
                     <div class="lg:col-span-2 flex gap-2 justify-end">
                         <button id="btn-refresh-riwayat" onclick="refreshRiwayat()" class="px-4 py-3 rounded-xl bg-purple-50 hover:bg-purple-500 text-purple-600 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center justify-center group" title="Refresh data laporan">
-                            <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                            <i class="fas fa-arrows-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                         </button>
                         <button id="btn-reset-filter" class="flex-1 bg-red-50 hover:bg-red-100 text-red-500 px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 group">
-                            <i class="fas fa-undo group-hover:-rotate-180 transition duration-500"></i> Reset
+                            <i class="fas fa-arrow-rotate-left group-hover:-rotate-180 transition duration-500"></i> Reset
                         </button>
                     </div>
                 </div>
@@ -3069,7 +3069,7 @@
 
                     <div class="w-full md:w-auto md:ml-auto flex gap-2">
                         <button id="btn-refresh-rekap" onclick="refreshRekap()" class="px-4 py-3.5 rounded-xl bg-teal-50 hover:bg-teal-500 text-teal-600 hover:text-white transition-all shadow-sm hover:shadow-lg flex items-center justify-center group" title="Refresh data rekapitulasi">
-                            <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                            <i class="fas fa-arrows-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                         </button>
                         <button id="btn-export-pdf" disabled class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:bg-red-50 disabled:hover:text-red-500 disabled:cursor-not-allowed group">
                             <i class="fas fa-file-pdf text-lg group-hover:scale-110 transition-transform"></i>
@@ -3085,7 +3085,7 @@
             <div id="rekap-summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up">
                 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-indigo-200 transition">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition">
-                        <i class="fas fa-chalkboard-teacher text-6xl text-indigo-600 rotate-12"></i>
+                        <i class="fas fa-chalkboard-user text-6xl text-indigo-600 rotate-12"></i>
                     </div>
                     <div class="flex items-center gap-4 mb-3">
                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-user-graduate"></i></div>
@@ -3877,7 +3877,7 @@
                 </a>
 
                 <button onclick="location.reload()" class="w-full bg-white text-slate-500 hover:text-slate-800 font-bold text-sm py-4 rounded-xl border-2 border-slate-100 hover:border-slate-300 transition-all duration-300 flex items-center justify-center gap-2 group">
-                    <i class="fas fa-undo-alt group-hover:-rotate-180 transition-transform duration-500 text-slate-400 group-hover:text-slate-600"></i>
+                    <i class="fas fa-arrow-rotate-left group-hover:-rotate-180 transition-transform duration-500 text-slate-400 group-hover:text-slate-600"></i>
                     Kembali ke Beranda
                 </button>
             </div>
@@ -3959,7 +3959,7 @@
                         <i class="fas fa-heart text-lg text-red-500 group-hover/btn:text-white transition-colors"></i> Donasi Baru
                     </button>
                     <button onclick="doLogout()" class="w-full px-6 py-4 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 group/out shadow-sm hover:shadow-md">
-                        <i class="fas fa-sign-out-alt group-hover/out:-translate-x-1 transition-transform"></i> Keluar
+                        <i class="fas fa-arrow-right-from-bracket group-hover/out:-translate-x-1 transition-transform"></i> Keluar
                     </button>
                 </div>
             </div>
@@ -3971,7 +3971,7 @@
                 
                 <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-6">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 text-orange-600 flex items-center justify-center text-xl shadow-inner">
-                        <i class="fas fa-id-card-alt"></i>
+                        <i class="fas fa-id-card-clip"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-xl text-slate-800 leading-none">Biodata Santri</h3>
@@ -4144,7 +4144,7 @@
                     Riwayat Transaksi
                 </h3>
                 <button onclick="refreshDashboard()" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50 transition-all shadow-sm active:scale-95 text-xs font-bold uppercase tracking-wider" title="Muat Ulang Data">
-                    <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Refresh
+                    <i class="fas fa-arrows-rotate group-hover:rotate-180 transition-transform duration-500"></i> Refresh
                 </button>
             </div>
             
@@ -4404,7 +4404,7 @@
                     <span id="qris-modal-title">Scan QRIS</span>
                 </h3>
                 <button onclick="closeQrisModal()" class="text-slate-400 hover:text-red-500 transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-xmark text-xl"></i>
                 </button>
             </div>
 
@@ -4431,7 +4431,7 @@
                     <h3 class="text-xl font-black text-slate-800">Riwayat Kebaikan Saya</h3>
                     <p class="text-xs text-slate-500">Daftar donasi yang tercatat atas email Anda.</p>
                 </div>
-                <button onclick="document.getElementById('my-history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-red-100 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
+                <button onclick="document.getElementById('my-history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-red-100 hover:text-red-500 transition"><i class="fas fa-xmark"></i></button>
             </div>
             <div id="my-history-content" class="p-6 overflow-y-auto custom-scrollbar space-y-4 bg-slate-50 flex-1">
                 <p class="text-center text-slate-400">Memuat data...</p>

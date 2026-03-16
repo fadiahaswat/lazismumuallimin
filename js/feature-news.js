@@ -62,7 +62,7 @@ export async function fetchNews(isLoadMore = false) {
                     <h3 class="text-xl font-bold text-slate-700 mb-2">Ups, Belum Ada Kabar</h3>
                     <p class="text-slate-400 max-w-xs mx-auto mb-8">${pesanKosong}</p>
                     <button onclick="window.resetNewsFilter()" class="bg-white border border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md">
-                        <i class="fas fa-undo mr-2"></i> Reset Filter
+                        <i class="fas fa-arrow-rotate-left mr-2"></i> Reset Filter
                     </button>
                 </div>`;
             }
@@ -72,7 +72,7 @@ export async function fetchNews(isLoadMore = false) {
 
         const btnMore = document.getElementById('btn-news-load-more');
         if (btnMore) {
-            btnMore.innerHTML = 'Muat Lebih Banyak <i class="fas fa-sync-alt ml-2"></i>';
+            btnMore.innerHTML = 'Muat Lebih Banyak <i class="fas fa-arrows-rotate ml-2"></i>';
             if (newsState.hasMore) btnMore.classList.remove('hidden');
             else btnMore.classList.add('hidden');
         }

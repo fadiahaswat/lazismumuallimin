@@ -1,6 +1,6 @@
 import { santriDB } from './santri-manager.js';
 import { riwayatData } from './state.js';
-import { showToast, formatRupiah } from './utils.js';
+import { showToast, formatRupiah, escapeHtml } from './utils.js';
 import { loadRiwayat } from './feature-history.js';
 
 export function setupRekapLogic() {
@@ -92,14 +92,14 @@ function toggleRekapDisplay(showDetail) {
     const btnExport = document.getElementById('btn-export-pdf');
 
     if (showDetail) {
-        ph.classList.add('hidden'); 
-        sum.classList.remove('hidden');
-        tbl.classList.remove('hidden');
+        if (ph) ph.classList.add('hidden'); 
+        if (sum) sum.classList.remove('hidden');
+        if (tbl) tbl.classList.remove('hidden');
         if (btnExport) btnExport.disabled = false;
     } else {
-        ph.classList.remove('hidden'); 
-        sum.classList.add('hidden');
-        tbl.classList.add('hidden');
+        if (ph) ph.classList.remove('hidden'); 
+        if (sum) sum.classList.add('hidden');
+        if (tbl) tbl.classList.add('hidden');
         if (btnExport) btnExport.disabled = true;
         renderGlobalLeaderboard(); 
     }
@@ -157,7 +157,7 @@ export function renderGlobalLeaderboard() {
 
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
-        const percent = (item.total / maxVal) * 100;
+        const percent = maxVal > 0 ? (item.total / maxVal) * 100 : 0;
         
         const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || { 
             wali: '-', 
@@ -217,10 +217,10 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
-                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${item.kelas}</h5>
+                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${escapeHtml(item.kelas)}</h5>
                         <div class="text-xs text-slate-500 space-y-1">
-                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${meta.wali}</p>
-                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${meta.musyrif}</p>
+                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${escapeHtml(meta.wali)}</p>
+                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${escapeHtml(meta.musyrif)}</p>
                         </div>
                     </div>
 
@@ -240,8 +240,8 @@ export function renderGlobalLeaderboard() {
 
                     <div class="flex-1 text-center md:text-left w-full">
                         <div class="flex items-center justify-center md:justify-start gap-2">
-                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h5>
-                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${meta.wali}</span>
+                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${escapeHtml(item.kelas)}</h5>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${escapeHtml(meta.wali)}</span>
                         </div>
                         
                         <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -317,13 +317,16 @@ function renderRekapTable(cls) {
 
     if (students.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Data belum tersedia.</td></tr>';
-        document.getElementById('rekap-wali').innerText = "-";
-        document.getElementById('rekap-musyrif').innerText = "-";
-        document.getElementById('rekap-total-kelas').innerText = "Rp 0";
+        const elWali = document.getElementById('rekap-wali');
+        const elMusyrif = document.getElementById('rekap-musyrif');
+        const elTotal = document.getElementById('rekap-total-kelas');
+        if (elWali) elWali.innerText = "-";
+        if (elMusyrif) elMusyrif.innerText = "-";
+        if (elTotal) elTotal.innerText = "Rp 0";
         return;
     }
 
-    students.sort((a, b) => a.nama.localeCompare(b.nama));
+    students.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
     let totalKelas = 0;
 
     students.forEach((s, index) => {
@@ -348,11 +351,11 @@ function renderRekapTable(cls) {
         totalKelas += subtotal;
 
         const badgeKelas = cls.startsWith('tahfizh-') ? 
-            `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${s.rombel}</span>` : '';
+            `<span class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded ml-2 font-bold">${escapeHtml(s.rombel)}</span>` : '';
 
         let labelTahfizh = '';
         if (s.musyrifKhusus) {
-             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${s.musyrifKhusus}"><i class="fas fa-quran"></i> Tahfizh</span>`;
+             labelTahfizh = `<span class="ml-1 text-[10px] text-teal-600 bg-teal-50 px-1.5 rounded border border-teal-100" title="Musyrif: ${escapeHtml(s.musyrifKhusus)}"><i class="fas fa-quran"></i> Tahfizh</span>`;
         }
 
         let labelMujanib = '';
@@ -363,7 +366,7 @@ function renderRekapTable(cls) {
         const kodeAsrama = asramaStr.split(' -')[0].trim();
 
         if (kelasStr.startsWith('4') && (kodeAsrama === '1' || kodeAsrama === '10')) {
-            labelMujanib = `<span class="ml-1 text-[10px] text-purple-600 bg-purple-50 px-1.5 rounded border border-purple-100" title="Asrama: ${asramaStr}"><i class="fas fa-user-shield"></i> Mujanib</span>`;
+            labelMujanib = `<span class="ml-1 text-[10px] text-purple-600 bg-purple-50 px-1.5 rounded border border-purple-100" title="Asrama: ${escapeHtml(asramaStr)}"><i class="fas fa-user-shield"></i> Mujanib</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -371,7 +374,7 @@ function renderRekapTable(cls) {
         tr.innerHTML = `
             <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
             <td class="px-6 py-4 font-bold text-slate-700 whitespace-nowrap">
-                ${s.nama} ${badgeKelas} ${labelTahfizh} ${labelMujanib}
+                ${escapeHtml(s.nama)} ${badgeKelas} ${labelTahfizh} ${labelMujanib}
             </td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${qris > 0 ? formatRupiah(qris) : '-'}</td>
             <td class="px-6 py-4 text-right font-mono text-slate-500 whitespace-nowrap">${transfer > 0 ? formatRupiah(transfer) : '-'}</td>

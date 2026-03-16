@@ -37,7 +37,7 @@ export function showToast(message, type = 'warning') {
 
     let icon = 'fa-exclamation-triangle text-orange-500';
     if (type === 'success') icon = 'fa-check-circle text-green-500';
-    if (type === 'error') icon = 'fa-times-circle text-red-500';
+    if (type === 'error') icon = 'fa-circle-xmark text-red-500';
 
     // Escape the message to prevent XSS
     const escapedMessage = escapeHtml(String(message));
