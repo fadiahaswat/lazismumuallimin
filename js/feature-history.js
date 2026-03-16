@@ -338,6 +338,13 @@ function calculateStats() {
     renderAlumniLeaderboard();
 }
 
+// Helper to normalize display type - handles empty, dash, or invalid values
+function normalizeDisplayType(rawType) {
+    if (!rawType) return "Donasi Umum";
+    const trimmed = rawType.trim();
+    return (!trimmed || trimmed === '-') ? "Donasi Umum" : trimmed;
+}
+
 // Menampilkan 6 donasi terbaru di halaman depan (Home)
 export function renderHomeLatestDonations() {
     const container = document.getElementById('home-latest-donations');
@@ -359,12 +366,7 @@ export function renderHomeLatestDonations() {
 
         const type = item.JenisDonasi || item.type || "";
         const subType = item.SubJenis || item.subType || "";
-        let displayType = subType || type;
-
-        // Handle empty, dash, or invalid displayType
-        if (!displayType || displayType.trim() === '-' || displayType.trim() === '') {
-            displayType = "Donasi Umum";
-        }
+        const displayType = normalizeDisplayType(subType || type);
 
         let labelSebutan = "Donatur"; 
 
@@ -815,12 +817,7 @@ export function renderRiwayatList() {
 
         const type = item.JenisDonasi || item.type || "";
         const subType = item.SubJenis || item.subType || "";
-        let displayType = subType || type;
-
-        // Handle empty, dash, or invalid displayType
-        if (!displayType || displayType.trim() === '-' || displayType.trim() === '') {
-            displayType = "Donasi Umum";
-        }
+        const displayType = normalizeDisplayType(subType || type);
 
         const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
         const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
