@@ -173,32 +173,40 @@ export function renderGlobalLeaderboard() {
                     badge: "bg-yellow-500 text-white",
                     icon: "fa-crown animate-bounce",
                     text: "text-yellow-700",
+                    barColor: "bg-yellow-500",
                     glow: "shadow-[0_20px_50px_-12px_rgba(234,179,8,0.3)]",
-                    col: "md:col-span-1 md:-mt-8 order-1 md:order-2 z-20" 
+                    col: "md:col-span-1 md:-mt-8 order-1 md:order-2 z-20",
+                    rankLabel: "Juara 1"
                 };
             } else if (rank === 2) {
                 theme = {
-                    bg: "bg-white border-slate-300",
-                    badge: "bg-slate-400 text-white",
+                    bg: "bg-white border-slate-300 ring-2 ring-slate-200/50",
+                    badge: "bg-slate-500 text-white",
                     icon: "fa-medal",
                     text: "text-slate-600",
+                    barColor: "bg-slate-500",
                     glow: "shadow-xl",
-                    col: "md:col-span-1 order-2 md:order-1 z-10" 
+                    col: "md:col-span-1 order-2 md:order-1 z-10",
+                    rankLabel: "Juara 2"
                 };
             } else {
                 theme = {
-                    bg: "bg-white border-orange-200",
-                    badge: "bg-orange-700 text-white",
-                    icon: "fa-medal",
-                    text: "text-orange-800",
+                    bg: "bg-white border-orange-300 ring-2 ring-orange-200/50",
+                    badge: "bg-orange-600 text-white",
+                    icon: "fa-award",
+                    text: "text-orange-700",
+                    barColor: "bg-orange-500",
                     glow: "shadow-xl",
-                    col: "md:col-span-1 order-3 md:order-3 z-10" 
+                    col: "md:col-span-1 order-3 md:order-3 z-10",
+                    rankLabel: "Juara 3"
                 };
             }
 
             html += `
-                <div class="${theme.col} relative flex flex-col items-center text-center p-6 rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
+                <div class="${theme.col} relative flex flex-col items-center text-center p-6 pt-8 rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
                     
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">${theme.rankLabel}</span>
+
                     <div class="w-16 h-16 rounded-2xl ${theme.badge} flex items-center justify-center text-2xl shadow-lg mb-4 rotate-3">
                         <i class="fas ${theme.icon}"></i>
                     </div>
@@ -217,7 +225,7 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
-                        <div class="h-full ${rank === 1 ? 'bg-yellow-500' : 'bg-slate-800'} w-full" style="width: ${percent}%"></div>
+                        <div class="h-full ${theme.barColor}" style="width: ${percent}%"></div>
                     </div>
                 </div>
             `;

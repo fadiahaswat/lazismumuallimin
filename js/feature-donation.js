@@ -42,7 +42,7 @@ function showDonationLimitModal(amount) {
                     <div class="bg-orange-50 border border-orange-100 rounded-2xl p-5 mb-6">
                         <div class="flex items-center gap-3 mb-3">
                             <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
-                                <i class="fas fa-shield-alt"></i>
+                                <i class="fas fa-shield-halved"></i>
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-orange-800 uppercase tracking-wide">Untuk Keamanan</p>

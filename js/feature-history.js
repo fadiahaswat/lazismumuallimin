@@ -277,6 +277,18 @@ function calculateStats() {
     const elDetFidyah = document.getElementById('stat-detail-fidyah');
     if (elDetFidyah) animateValue(elDetFidyah, 0, totalFidyah, 1500, true);
 
+    // Update progress bars for donation types (relative to max)
+    const maxDonationType = Math.max(totalFitrah, totalMaal, totalInfaq, totalFidyah) || 1;
+    const fitrahBar = document.getElementById('stat-bar-fitrah');
+    const maalBar = document.getElementById('stat-bar-maal');
+    const infaqBar = document.getElementById('stat-bar-infaq');
+    const fidyahBar = document.getElementById('stat-bar-fidyah');
+
+    if (fitrahBar) setTimeout(() => fitrahBar.style.width = `${(totalFitrah / maxDonationType) * 100}%`, 100);
+    if (maalBar) setTimeout(() => maalBar.style.width = `${(totalMaal / maxDonationType) * 100}%`, 200);
+    if (infaqBar) setTimeout(() => infaqBar.style.width = `${(totalInfaq / maxDonationType) * 100}%`, 300);
+    if (fidyahBar) setTimeout(() => fidyahBar.style.width = `${(totalFidyah / maxDonationType) * 100}%`, 400);
+
     // Update statistics for each grade level (1-6)
     for (let grade = 1; grade <= 6; grade++) {
         const classMax = getMax(classMapByGrade[grade]);
@@ -347,7 +359,12 @@ export function renderHomeLatestDonations() {
 
         const type = item.JenisDonasi || item.type || "";
         const subType = item.SubJenis || item.subType || "";
-        const displayType = subType || type;
+        let displayType = subType || type;
+
+        // Handle empty, dash, or invalid displayType
+        if (!displayType || displayType.trim() === '-' || displayType.trim() === '') {
+            displayType = "Donasi Umum";
+        }
 
         let labelSebutan = "Donatur"; 
 
@@ -582,30 +599,30 @@ export function renderAlumniLeaderboard() {
     const maxTotal = leaderboard[0].total;
 
     // === BUILD HTML ===
-    let html = `<div class="space-y-16 animate-fade-in-up">`;
+    let html = `<div class="space-y-12 animate-fade-in-up">`;
 
     // A. STATISTIK GLOBAL (2 KARTU)
     html += `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            <div class="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 flex items-center gap-5 relative overflow-hidden group hover:border-emerald-500/50 transition-all">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20 shrink-0">
                     <i class="fas fa-hand-holding-heart"></i>
                 </div>
-                <div class="relative z-10">
+                <div class="relative z-10 min-w-0">
                     <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
-                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${formatRupiah(grandTotalAlumni)}</h3>
+                    <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight truncate">${formatRupiah(grandTotalAlumni)}</h3>
                 </div>
             </div>
 
-            <div class="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-blue-500/50 transition-all">
+            <div class="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 flex items-center gap-5 relative overflow-hidden group hover:border-blue-500/50 transition-all">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
-                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-3xl shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20">
+                <div class="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20 shrink-0">
                     <i class="fas fa-users"></i>
                 </div>
-                <div class="relative z-10">
+                <div class="relative z-10 min-w-0">
                     <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Total Partisipan</p>
-                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-lg font-bold text-slate-500">Orang</span></h3>
+                    <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-lg font-bold text-slate-500">Orang</span></h3>
                 </div>
             </div>
         </div>
@@ -613,7 +630,7 @@ export function renderAlumniLeaderboard() {
 
     // B. PODIUM (TOP 3) - Logika Order CSS
     if (top3.length > 0) {
-        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto relative pt-10">`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end max-w-4xl mx-auto relative">`;
         
         // Kita render Top 3 sesuai urutan array (Juara 1, 2, 3) tapi pakai CSS order untuk posisi visual
         top3.forEach((item, index) => {
@@ -625,42 +642,37 @@ export function renderAlumniLeaderboard() {
             
             // Konfigurasi Tampilan per Ranking
             if (rank === 1) {
-                // Juara 1: Tengah di Desktop (Order 2), Paling Atas di HP (Order 1)
                 orderClass = "order-1 md:order-2"; 
-                cardHeight = "h-full md:h-[340px]"; // Lebih tinggi
+                cardHeight = "h-full md:h-[320px]";
                 colorTheme = "from-yellow-500/20 to-amber-600/10 border-yellow-500/50 shadow-[0_0_40px_-10px_rgba(234,179,8,0.3)]";
                 icon = "fa-crown";
             } else if (rank === 2) {
-                // Juara 2: Kiri di Desktop (Order 1), Kedua di HP (Order 2)
                 orderClass = "order-2 md:order-1";
-                cardHeight = "h-full md:h-[280px]";
+                cardHeight = "h-full md:h-[270px]";
                 colorTheme = "from-slate-400/20 to-slate-600/10 border-slate-500/50";
                 icon = "fa-medal";
             } else {
-                // Juara 3: Kanan di Desktop (Order 3), Ketiga di HP (Order 3)
                 orderClass = "order-3 md:order-3";
-                cardHeight = "h-full md:h-[260px]";
+                cardHeight = "h-full md:h-[250px]";
                 colorTheme = "from-orange-700/20 to-orange-900/10 border-orange-700/50";
-                icon = "fa-medal";
+                icon = "fa-award";
             }
 
             const badgeColor = rank === 1 ? "bg-yellow-500 text-slate-900" : (rank === 2 ? "bg-slate-300 text-slate-900" : "bg-orange-700 text-white");
             const textColor = rank === 1 ? "text-yellow-400" : (rank === 2 ? "text-slate-300" : "text-orange-400");
 
             html += `
-            <div class="${orderClass} relative flex flex-col items-center justify-end p-6 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight} z-10">
+            <div class="${orderClass} relative flex flex-col items-center justify-end p-6 pt-8 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight}">
                 
-                <div class="absolute -top-6">
-                    <div class="w-12 h-12 ${badgeColor} rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg rotate-6 transform hover:rotate-0 transition-all duration-300">
-                        <i class="fas ${icon}"></i>
-                    </div>
+                <div class="w-12 h-12 ${badgeColor} rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg mb-4">
+                    <i class="fas ${icon}"></i>
                 </div>
 
-                <div class="text-center mt-8 w-full">
+                <div class="text-center w-full">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block opacity-70">Peringkat ${rank}</span>
                     <h3 class="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">${item.year}</h3>
                     
-                    <div class="w-full h-px bg-white/10 my-4"></div>
+                    <div class="w-full h-px bg-white/10 my-3"></div>
                     
                     <p class="text-xs text-slate-400 mb-1 font-medium">Total Donasi</p>
                     <p class="text-xl md:text-2xl font-bold ${textColor}">${formatRupiah(item.total)}</p>
@@ -803,7 +815,13 @@ export function renderRiwayatList() {
 
         const type = item.JenisDonasi || item.type || "";
         const subType = item.SubJenis || item.subType || "";
-        const displayType = subType || type;
+        let displayType = subType || type;
+
+        // Handle empty, dash, or invalid displayType
+        if (!displayType || displayType.trim() === '-' || displayType.trim() === '') {
+            displayType = "Donasi Umum";
+        }
+
         const paymentMethod = item.MetodePembayaran || item.metode || "Tunai";
         const donaturName = escapeHtml(item.NamaDonatur || item.nama) || 'Hamba Allah';
         const nominal = parseInt(item.Nominal || item.nominal) || 0;
@@ -1266,7 +1284,7 @@ const TIER_DATA = [
         name: "Ksatria Dermawan",
         min: 1000000,
         color: "from-blue-400 to-indigo-600",
-        icon: "fas fa-shield-alt",
+        icon: "fas fa-shield-halved",
         benefits: ["Semua Benefit Level 1", "Exclusive Goodybag Lazismu"]
     },
     {
