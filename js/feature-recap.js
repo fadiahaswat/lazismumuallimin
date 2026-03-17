@@ -152,7 +152,7 @@ export function renderGlobalLeaderboard() {
                 </h3>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-6 items-end pt-4">
     `;
 
     leaderboard.forEach((item, index) => {
@@ -189,7 +189,7 @@ export function renderGlobalLeaderboard() {
                 theme = {
                     bg: "bg-white border-orange-200",
                     badge: "bg-orange-700 text-white",
-                    icon: "fa-medal",
+                    icon: "fa-award",
                     text: "text-orange-800",
                     glow: "shadow-xl",
                     col: "md:col-span-1 order-3 md:order-3 z-10" 
@@ -217,7 +217,7 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
-                        <div class="h-full ${rank === 1 ? 'bg-yellow-500' : 'bg-slate-800'} w-full" style="width: ${percent}%"></div>
+                        <div class="h-full max-w-full ${rank === 1 ? 'bg-yellow-500' : rank === 2 ? 'bg-slate-500' : 'bg-orange-600'} rounded-full" style="width: ${percent}%"></div>
                     </div>
                 </div>
             `;

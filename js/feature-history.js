@@ -322,6 +322,18 @@ function calculateStats() {
     if (transferBar) setTimeout(() => transferBar.style.width = `${(totalTransfer / maxPayment) * 100}%`, 200);
     if (tunaiBar) setTimeout(() => tunaiBar.style.width = `${(totalTunai / maxPayment) * 100}%`, 300);
 
+    // Update progress bars for donation types (synchronized with actual totals)
+    const maxDonationType = Math.max(totalFitrah, totalMaal, totalInfaq, totalFidyah) || 1;
+    const fitrahBar = document.getElementById('stat-detail-fitrah-bar');
+    const maalBar = document.getElementById('stat-detail-maal-bar');
+    const infaqBar = document.getElementById('stat-detail-infaq-bar');
+    const fidyahBar = document.getElementById('stat-detail-fidyah-bar');
+
+    if (fitrahBar) setTimeout(() => fitrahBar.style.width = `${(totalFitrah / maxDonationType) * 100}%`, 100);
+    if (maalBar) setTimeout(() => maalBar.style.width = `${(totalMaal / maxDonationType) * 100}%`, 200);
+    if (infaqBar) setTimeout(() => infaqBar.style.width = `${(totalInfaq / maxDonationType) * 100}%`, 300);
+    if (fidyahBar) setTimeout(() => fidyahBar.style.width = `${(totalFidyah / maxDonationType) * 100}%`, 400);
+
     // Render alumni leaderboard
     renderAlumniLeaderboard();
 }
@@ -613,7 +625,7 @@ export function renderAlumniLeaderboard() {
 
     // B. PODIUM (TOP 3) - Logika Order CSS
     if (top3.length > 0) {
-        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto relative pt-10">`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-y-6 items-end max-w-4xl mx-auto relative pt-14">`;
         
         // Kita render Top 3 sesuai urutan array (Juara 1, 2, 3) tapi pakai CSS order untuk posisi visual
         top3.forEach((item, index) => {
@@ -627,41 +639,43 @@ export function renderAlumniLeaderboard() {
             if (rank === 1) {
                 // Juara 1: Tengah di Desktop (Order 2), Paling Atas di HP (Order 1)
                 orderClass = "order-1 md:order-2"; 
-                cardHeight = "h-full md:h-[340px]"; // Lebih tinggi
+                cardHeight = "min-h-[280px] md:h-[340px]"; // Lebih tinggi
                 colorTheme = "from-yellow-500/20 to-amber-600/10 border-yellow-500/50 shadow-[0_0_40px_-10px_rgba(234,179,8,0.3)]";
                 icon = "fa-crown";
             } else if (rank === 2) {
                 // Juara 2: Kiri di Desktop (Order 1), Kedua di HP (Order 2)
                 orderClass = "order-2 md:order-1";
-                cardHeight = "h-full md:h-[280px]";
+                cardHeight = "min-h-[220px] md:h-[280px]";
                 colorTheme = "from-slate-400/20 to-slate-600/10 border-slate-500/50";
                 icon = "fa-medal";
             } else {
                 // Juara 3: Kanan di Desktop (Order 3), Ketiga di HP (Order 3)
                 orderClass = "order-3 md:order-3";
-                cardHeight = "h-full md:h-[260px]";
+                cardHeight = "min-h-[200px] md:h-[260px]";
                 colorTheme = "from-orange-700/20 to-orange-900/10 border-orange-700/50";
-                icon = "fa-medal";
+                icon = "fa-award";
             }
 
+            const zClass = rank === 1 ? "z-30" : (rank === 2 ? "z-20" : "z-10");
             const badgeColor = rank === 1 ? "bg-yellow-500 text-slate-900" : (rank === 2 ? "bg-slate-300 text-slate-900" : "bg-orange-700 text-white");
             const textColor = rank === 1 ? "text-yellow-400" : (rank === 2 ? "text-slate-300" : "text-orange-400");
 
             html += `
-            <div class="${orderClass} relative flex flex-col items-center justify-end p-6 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight} z-10">
+            <div class="${orderClass} relative flex flex-col items-center justify-between p-6 pt-10 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight} ${zClass}">
                 
-                <div class="absolute -top-6">
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2">
                     <div class="w-12 h-12 ${badgeColor} rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg rotate-6 transform hover:rotate-0 transition-all duration-300">
                         <i class="fas ${icon}"></i>
                     </div>
                 </div>
 
-                <div class="text-center mt-8 w-full">
+                <div class="text-center w-full">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block opacity-70">Peringkat ${rank}</span>
                     <h3 class="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">${item.year}</h3>
-                    
-                    <div class="w-full h-px bg-white/10 my-4"></div>
-                    
+                </div>
+
+                <div class="text-center w-full mt-4">
+                    <div class="w-full h-px bg-white/10 mb-4"></div>
                     <p class="text-xs text-slate-400 mb-1 font-medium">Total Donasi</p>
                     <p class="text-xl md:text-2xl font-bold ${textColor}">${formatRupiah(item.total)}</p>
                 </div>
@@ -1104,8 +1118,8 @@ export function renderPersonalHistoryTable() {
                 <div class="text-xs text-slate-400">${timeAgo(item.Timestamp)}</div>
             </td>
             <td class="p-5">
-                <div class="font-bold text-slate-700">${item.JenisDonasi}</div>
-                <div class="text-xs text-slate-500">${item.SubJenis || '-'}</div>
+                <div class="font-bold text-slate-700">${item.JenisDonasi || item.type || '-'}</div>
+                <div class="text-xs text-slate-500">${item.SubJenis || item.subType || item.Keterangan || ''}</div>
             </td>
             <td class="p-5 font-bold text-slate-700">
                 ${formatRupiah(item.Nominal)}
@@ -1266,7 +1280,7 @@ const TIER_DATA = [
         name: "Ksatria Dermawan",
         min: 1000000,
         color: "from-blue-400 to-indigo-600",
-        icon: "fas fa-shield-alt",
+        icon: "fas fa-shield-halved",
         benefits: ["Semua Benefit Level 1", "Exclusive Goodybag Lazismu"]
     },
     {
