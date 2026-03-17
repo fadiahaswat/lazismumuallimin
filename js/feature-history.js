@@ -1559,7 +1559,7 @@ export function renderDoaSection() {
 
         listEl.innerHTML = `
             <div class="doa-scroll-wrapper overflow-hidden relative" style="mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
-                <div class="doa-scroll-track flex gap-4 py-2" style="width: max-content; animation: doaScroll ${Math.max(20, withDoa.length * DOA_SCROLL_SECONDS_PER_CARD)}s linear infinite;">
+                <div class="doa-scroll-track flex gap-4 py-4" style="width: max-content; animation: doaScroll ${Math.max(20, withDoa.length * DOA_SCROLL_SECONDS_PER_CARD)}s linear infinite;">
                     ${trackContent}
                 </div>
             </div>
