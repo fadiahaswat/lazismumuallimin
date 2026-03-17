@@ -598,60 +598,60 @@ export function renderAlumniLeaderboard() {
 
     // A. STATISTIK GLOBAL (2 KARTU)
     html += `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+        <div class="grid grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+            <div class="bg-slate-800/60 border border-emerald-500/30 rounded-2xl md:rounded-3xl p-4 md:p-6 flex items-center gap-3 md:gap-6 relative overflow-hidden group hover:border-emerald-500/50 transition-all">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20">
+                <div class="w-10 h-10 md:w-16 md:h-16 flex-shrink-0 rounded-xl md:rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl md:text-3xl shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20">
                     <i class="fas fa-hand-holding-heart"></i>
                 </div>
-                <div class="relative z-10">
-                    <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
-                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${formatRupiah(grandTotalAlumni)}</h3>
+                <div class="relative z-10 min-w-0">
+                    <p class="text-[10px] md:text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Donasi Alumni</p>
+                    <h3 class="text-base sm:text-2xl md:text-4xl font-black text-white tracking-tight">${formatRupiah(grandTotalAlumni)}</h3>
                 </div>
             </div>
 
-            <div class="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 flex items-center gap-6 relative overflow-hidden group hover:border-blue-500/50 transition-all">
+            <div class="bg-slate-800/60 border border-blue-500/30 rounded-2xl md:rounded-3xl p-4 md:p-6 flex items-center gap-3 md:gap-6 relative overflow-hidden group hover:border-blue-500/50 transition-all">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
-                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-3xl shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20">
+                <div class="w-10 h-10 md:w-16 md:h-16 flex-shrink-0 rounded-xl md:rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl md:text-3xl shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20">
                     <i class="fas fa-users"></i>
                 </div>
-                <div class="relative z-10">
-                    <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Total Partisipan</p>
-                    <h3 class="text-3xl md:text-4xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-lg font-bold text-slate-500">Orang</span></h3>
+                <div class="relative z-10 min-w-0">
+                    <p class="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Total Partisipan</p>
+                    <h3 class="text-lg sm:text-2xl md:text-4xl font-black text-white tracking-tight">${uniqueAlumni.size} <span class="text-sm md:text-lg font-bold text-slate-500">Orang</span></h3>
                 </div>
             </div>
         </div>
     `;
 
-    // B. PODIUM (TOP 3) - Logika Order CSS
+    // B. PODIUM (TOP 3) - Responsive: rank 1 spans full width on mobile, side-by-side desktop
     if (top3.length > 0) {
-        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-y-6 items-end max-w-4xl mx-auto relative pt-14">`;
+        html += `<div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-x-6 items-end max-w-4xl mx-auto relative md:pt-14">`;
         
         // Kita render Top 3 sesuai urutan array (Juara 1, 2, 3) tapi pakai CSS order untuk posisi visual
         top3.forEach((item, index) => {
             const rank = index + 1;
+            let colClass = "";
             let orderClass = "";
-            let cardHeight = "";
             let colorTheme = "";
             let icon = "";
             
             // Konfigurasi Tampilan per Ranking
             if (rank === 1) {
-                // Juara 1: Tengah di Desktop (Order 2), Paling Atas di HP (Order 1)
-                orderClass = "order-1 md:order-2"; 
-                cardHeight = "min-h-[280px] md:h-[340px]"; // Lebih tinggi
+                // Juara 1: Full width on mobile (2 cols), tengah di Desktop (Order 2)
+                colClass = "col-span-2 md:col-span-1";
+                orderClass = "order-1 md:order-2 md:-mt-8";
                 colorTheme = "from-yellow-500/20 to-amber-600/10 border-yellow-500/50 shadow-[0_0_40px_-10px_rgba(234,179,8,0.3)]";
                 icon = "fa-crown";
             } else if (rank === 2) {
                 // Juara 2: Kiri di Desktop (Order 1), Kedua di HP (Order 2)
+                colClass = "col-span-1";
                 orderClass = "order-2 md:order-1";
-                cardHeight = "min-h-[220px] md:h-[280px]";
                 colorTheme = "from-slate-400/20 to-slate-600/10 border-slate-500/50";
                 icon = "fa-medal";
             } else {
                 // Juara 3: Kanan di Desktop (Order 3), Ketiga di HP (Order 3)
-                orderClass = "order-3 md:order-3";
-                cardHeight = "min-h-[200px] md:h-[260px]";
+                colClass = "col-span-1";
+                orderClass = "order-3";
                 colorTheme = "from-orange-700/20 to-orange-900/10 border-orange-700/50";
                 icon = "fa-award";
             }
@@ -659,25 +659,28 @@ export function renderAlumniLeaderboard() {
             const zClass = rank === 1 ? "z-30" : (rank === 2 ? "z-20" : "z-10");
             const badgeColor = rank === 1 ? "bg-yellow-500 text-slate-900" : (rank === 2 ? "bg-slate-300 text-slate-900" : "bg-orange-700 text-white");
             const textColor = rank === 1 ? "text-yellow-400" : (rank === 2 ? "text-slate-300" : "text-orange-400");
+            // For rank 1 on mobile: larger text; for rank 2/3 on mobile: compact text
+            const yearTextClass = rank === 1 ? "text-4xl md:text-5xl" : "text-2xl md:text-4xl";
+            const totalTextClass = rank === 1 ? "text-base sm:text-xl md:text-2xl" : "text-sm md:text-xl";
 
             html += `
-            <div class="${orderClass} relative flex flex-col items-center justify-between p-6 pt-10 rounded-[2.5rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${cardHeight} ${zClass}">
+            <div class="${colClass} ${orderClass} relative flex flex-col items-center justify-between p-4 md:p-6 pt-9 md:pt-10 rounded-[2rem] border bg-gradient-to-b ${colorTheme} backdrop-blur-sm transition-transform hover:scale-[1.02] ${zClass}">
                 
-                <div class="absolute -top-6 left-1/2 -translate-x-1/2">
-                    <div class="w-12 h-12 ${badgeColor} rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg rotate-6 transform hover:rotate-0 transition-all duration-300">
-                        <i class="fas ${icon}"></i>
+                <div class="absolute -top-5 left-1/2 -translate-x-1/2">
+                    <div class="w-10 h-10 md:w-12 md:h-12 ${badgeColor} rounded-xl md:rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold shadow-lg rotate-6 transform hover:rotate-0 transition-all duration-300">
+                        <i class="fas ${icon} ${rank === 1 ? 'animate-bounce' : ''}"></i>
                     </div>
                 </div>
 
                 <div class="text-center w-full">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block opacity-70">Peringkat ${rank}</span>
-                    <h3 class="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">${item.year}</h3>
+                    <span class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block opacity-70">Peringkat ${rank}</span>
+                    <h3 class="${yearTextClass} font-black text-white mb-2 tracking-tight">${item.year}</h3>
                 </div>
 
-                <div class="text-center w-full mt-4">
-                    <div class="w-full h-px bg-white/10 mb-4"></div>
-                    <p class="text-xs text-slate-400 mb-1 font-medium">Total Donasi</p>
-                    <p class="text-xl md:text-2xl font-bold ${textColor}">${formatRupiah(item.total)}</p>
+                <div class="text-center w-full mt-2 md:mt-4">
+                    <div class="w-full h-px bg-white/10 mb-3 md:mb-4"></div>
+                    <p class="text-[10px] md:text-xs text-slate-400 mb-1 font-medium">Total Donasi</p>
+                    <p class="${totalTextClass} font-bold ${textColor}">${formatRupiah(item.total)}</p>
                 </div>
                 
                 ${rank === 1 ? '<div class="absolute inset-x-10 bottom-0 h-1 bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.8)] rounded-t-full"></div>' : ''}
