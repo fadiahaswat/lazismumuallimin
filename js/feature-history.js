@@ -8,12 +8,10 @@ import { renderGlobalLeaderboard } from './feature-recap.js';
 export async function loadRiwayat(forceRefresh = false) {
     // Prevent concurrent calls with better locking
     if (!forceRefresh && (riwayatData.isLoaded || riwayatData.isLoading)) {
-        // Data already loaded; re-render doa/map sections if they are still in loading state
+        // Data already loaded; re-render doa section if it is still in loading state
         if (riwayatData.isLoaded) {
             const doaLoading = document.getElementById('doa-loading');
-            const mapLoading = document.getElementById('donation-map-loading');
             if (doaLoading && !doaLoading.classList.contains('hidden')) renderDoaSection();
-            if (mapLoading && !mapLoading.classList.contains('hidden')) renderDonationMap();
         }
         return;
     }
@@ -46,9 +44,8 @@ export async function loadRiwayat(forceRefresh = false) {
             try { renderRiwayatList(); } catch (err) { console.error('renderRiwayatList error:', err); }
             try { renderGlobalLeaderboard(); } catch (err) { console.error('renderGlobalLeaderboard error:', err); }
 
-            // Render doa dan peta donasi
+            // Render doa
             renderDoaSection();
-            renderDonationMap(); // async, tidak perlu di-await agar tidak memblokir UI
 
             if (loader) loader.classList.add('hidden');
             if (content) content.classList.remove('hidden');
@@ -60,15 +57,11 @@ export async function loadRiwayat(forceRefresh = false) {
         }
     } catch (e) {
         if (loader) loader.innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
-        // Clear loading states for doa and map sections so they don't spin indefinitely
+        // Clear loading states for doa section so it doesn't spin indefinitely
         const doaLoading = document.getElementById('doa-loading');
         const doaNoData = document.getElementById('doa-no-data');
         if (doaLoading) doaLoading.classList.add('hidden');
         if (doaNoData) doaNoData.classList.remove('hidden');
-        const mapLoading = document.getElementById('donation-map-loading');
-        const mapNoData = document.getElementById('donation-map-no-data');
-        if (mapLoading) mapLoading.classList.add('hidden');
-        if (mapNoData) mapNoData.classList.remove('hidden');
     } finally {
         riwayatData.isLoading = false; 
     }
@@ -1488,210 +1481,8 @@ window.switchTab = function(tabName) {
     }
 };
 
-// ============================================================================
-// PETA SEBARAN DONASI
-// ============================================================================
-
-const GEOCODE_CACHE_KEY = 'lazismu_geocode_cache_v1';
-// Limit geocoding to avoid long waits; each address takes ~1.1 s due to Nominatim rate limiting
-const MAX_GEOCODE_ADDRESSES = 50;
-// Nominatim ToS requires max 1 request per second; 1100 ms gives a safe margin
-const NOMINATIM_RATE_LIMIT_MS = 1100;
 // Seconds allocated per doa card for the infinite-scroll animation speed
 const DOA_SCROLL_SECONDS_PER_CARD = 5;
-// Marker icon size breakpoints and sizes (px)
-const MARKER_SIZE_LARGE = 44;   // count > 5
-const MARKER_SIZE_MEDIUM = 36;  // count > 2
-const MARKER_SIZE_SMALL = 28;   // count <= 2
-const MARKER_COUNT_LARGE = 5;
-const MARKER_COUNT_MEDIUM = 2;
-let donationMapInstance = null;
-
-function loadGeocodeCache() {
-    try {
-        const raw = sessionStorage.getItem(GEOCODE_CACHE_KEY);
-        return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-        return {};
-    }
-}
-
-function saveGeocodeCache(cache) {
-    try {
-        sessionStorage.setItem(GEOCODE_CACHE_KEY, JSON.stringify(cache));
-    } catch (e) {
-        // sessionStorage might be full; ignore
-    }
-}
-
-async function geocodeAddress(address, cache) {
-    if (cache[address]) return cache[address];
-    try {
-        const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=id&q=' + encodeURIComponent(address);
-        const res = await fetch(url, { headers: { 'Accept-Language': 'id' } });
-        if (!res.ok) return null;
-        const data = await res.json();
-        if (data && data.length > 0) {
-            const result = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), display: data[0].display_name };
-            cache[address] = result;
-            saveGeocodeCache(cache);
-            return result;
-        }
-    } catch (e) {
-        // network error or Nominatim unavailable
-    }
-    return null;
-}
-
-export async function renderDonationMap() {
-    const loadingEl = document.getElementById('donation-map-loading');
-    const mapEl = document.getElementById('donation-map');
-    const noDataEl = document.getElementById('donation-map-no-data');
-    const statsEl = document.getElementById('donation-map-stats');
-    const totalPinsEl = document.getElementById('map-total-pins');
-    const totalDonorsEl = document.getElementById('map-total-donors');
-
-    if (!mapEl) {
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (noDataEl) noDataEl.classList.remove('hidden');
-        return;
-    }
-
-    // Reset state to loading
-    if (loadingEl) loadingEl.classList.remove('hidden');
-    if (mapEl) mapEl.classList.add('hidden');
-    if (noDataEl) noDataEl.classList.add('hidden');
-    if (statsEl) statsEl.classList.add('hidden');
-
-    try {
-        // Get verified donations with a non-empty address
-        const verified = riwayatData.allData.filter(d =>
-            d.Status === 'Terverifikasi' && (d.alamat || d.Alamat)
-        );
-
-        const withAddress = verified.filter(d => {
-            const addr = (d.alamat || d.Alamat || '').trim();
-            return addr && addr !== '-';
-        });
-
-        if (withAddress.length === 0) {
-            if (loadingEl) loadingEl.classList.add('hidden');
-            if (noDataEl) noDataEl.classList.remove('hidden');
-            return;
-        }
-
-        // Group donations by unique address (to reduce geocoding calls)
-        const addressGroups = {};
-        withAddress.forEach(d => {
-            const addr = (d.alamat || d.Alamat || '').trim();
-            if (!addressGroups[addr]) {
-                addressGroups[addr] = { count: 0, total: 0, donors: [] };
-            }
-            const nom = parseInt(d.Nominal || d.nominal) || 0;
-            addressGroups[addr].count++;
-            addressGroups[addr].total += nom;
-            const name = escapeHtml(d.NamaDonatur || d.nama || 'Hamba Allah');
-            if (addressGroups[addr].donors.length < 3) {
-                addressGroups[addr].donors.push(name);
-            }
-        });
-
-        const uniqueAddresses = Object.keys(addressGroups).slice(0, MAX_GEOCODE_ADDRESSES);
-
-        // Initialize Leaflet map (destroy previous instance if exists)
-        if (donationMapInstance) {
-            donationMapInstance.remove();
-            donationMapInstance = null;
-        }
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (mapEl) mapEl.classList.remove('hidden');
-
-        // Center on Indonesia / Yogyakarta
-        const map = window.L.map('donation-map', { scrollWheelZoom: false }).setView([-7.797068, 110.370529], 7);
-        donationMapInstance = map;
-
-        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-            maxZoom: 18
-        }).addTo(map);
-
-        // Load cache
-        const cache = loadGeocodeCache();
-        let pinsAdded = 0;
-        let donorsCounted = 0;
-
-        // Create custom marker icon
-        function createMarkerIcon(count) {
-            const size = count > MARKER_COUNT_LARGE ? MARKER_SIZE_LARGE : count > MARKER_COUNT_MEDIUM ? MARKER_SIZE_MEDIUM : MARKER_SIZE_SMALL;
-            return window.L.divIcon({
-                className: '',
-                html: `<div style="width:${size}px;height:${size}px;background:linear-gradient(135deg,#14b8a6,#0891b2);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 12px rgba(20,184,166,0.5);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);color:white;font-weight:900;font-size:${count > 9 ? 10 : 12}px;">${count}</span></div>`,
-                iconSize: [size, size],
-                iconAnchor: [size / 2, size]
-            });
-        }
-
-        // Update stats display
-        function updateMapStats() {
-            if (statsEl) statsEl.classList.remove('hidden');
-            if (totalPinsEl) totalPinsEl.textContent = pinsAdded;
-            if (totalDonorsEl) totalDonorsEl.textContent = donorsCounted;
-        }
-
-        // Process cached addresses immediately, then geocode the rest
-        const uncachedAddresses = [];
-        for (const addr of uniqueAddresses) {
-            if (cache[addr]) {
-                const coords = cache[addr];
-                const group = addressGroups[addr];
-                const donorNames = group.donors.join(', ') + (group.count > 3 ? `, +${group.count - 3} lainnya` : '');
-                const popup = `<div style="font-family:sans-serif;min-width:180px"><b style="font-size:13px;color:#0f172a">${group.count} Donasi</b><br><span style="font-size:11px;color:#64748b">${escapeHtml(addr)}</span><br><span style="font-size:11px;color:#14b8a6;font-weight:700">Total: ${(group.total).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}</span><br><span style="font-size:11px;color:#64748b">Donatur: ${donorNames}</span></div>`;
-                window.L.marker([coords.lat, coords.lng], { icon: createMarkerIcon(group.count) })
-                    .addTo(map)
-                    .bindPopup(popup);
-                pinsAdded++;
-                donorsCounted += group.count;
-            } else {
-                uncachedAddresses.push(addr);
-            }
-        }
-
-        if (pinsAdded > 0) updateMapStats();
-
-        // Geocode remaining addresses with rate limiting (1 req/sec for Nominatim ToS)
-        for (const addr of uncachedAddresses) {
-            await new Promise(resolve => setTimeout(resolve, NOMINATIM_RATE_LIMIT_MS));
-            const coords = await geocodeAddress(addr, cache);
-            if (coords) {
-                const group = addressGroups[addr];
-                const donorNames = group.donors.join(', ') + (group.count > 3 ? `, +${group.count - 3} lainnya` : '');
-                const popup = `<div style="font-family:sans-serif;min-width:180px"><b style="font-size:13px;color:#0f172a">${group.count} Donasi</b><br><span style="font-size:11px;color:#64748b">${escapeHtml(addr)}</span><br><span style="font-size:11px;color:#14b8a6;font-weight:700">Total: ${(group.total).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 })}</span><br><span style="font-size:11px;color:#64748b">Donatur: ${donorNames}</span></div>`;
-                window.L.marker([coords.lat, coords.lng], { icon: createMarkerIcon(group.count) })
-                    .addTo(map)
-                    .bindPopup(popup);
-                pinsAdded++;
-                donorsCounted += group.count;
-                updateMapStats();
-            }
-        }
-
-        // Fit map to markers if any were added
-        if (pinsAdded === 0) {
-            if (mapEl) mapEl.classList.add('hidden');
-            if (noDataEl) noDataEl.classList.remove('hidden');
-        }
-    } catch (err) {
-        // Ensure loading state is always cleared on unexpected errors
-        console.error('Error rendering donation map:', err);
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (mapEl) mapEl.classList.add('hidden');
-        if (noDataEl) noDataEl.classList.remove('hidden');
-        if (donationMapInstance) {
-            donationMapInstance.remove();
-            donationMapInstance = null;
-        }
-    }
-}
 
 // ============================================================================
 // DOA PARA DONATUR
