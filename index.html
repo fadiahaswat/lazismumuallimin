@@ -63,8 +63,12 @@
     
     <!-- Google reCAPTCHA v3 - Key diinjeksikan oleh js/html-init.js dari config.js -->
     
+    <!-- Leaflet.js for donation map (bundled locally) -->
+    <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="./vendor/leaflet/leaflet.js"></script>
 </head>
 <body class="text-slate-600 flex flex-col min-h-screen font-sans antialiased">
     <div id="app-preloader" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500 overflow-hidden font-sans">
@@ -2915,6 +2919,54 @@
                     <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                         <div id="stat-payment-tunai-bar" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation Map Section -->
+        <div id="donation-map-section" class="mb-8 animate-fade-in-up" style="animation-delay: 0.3s">
+            <div class="text-center mb-6">
+                <span class="inline-block py-1 px-3 rounded-full bg-teal-100 text-teal-700 text-xs font-black tracking-widest uppercase mb-3 border border-teal-200">
+                    <i class="fas fa-map-marker-alt mr-1"></i> Peta Sebaran
+                </span>
+                <h3 class="text-2xl font-black text-slate-800 mb-2">Peta Sebaran Donasi</h3>
+                <p class="text-slate-500 text-sm">Visualisasi asal daerah para donatur yang telah terverifikasi</p>
+            </div>
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                <div id="donation-map-loading" class="py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
+                    <i class="fas fa-circle-notch fa-spin text-3xl text-teal-400"></i>
+                    <p class="text-sm font-medium">Memuat peta donasi...</p>
+                </div>
+                <div id="donation-map" class="hidden" style="height: 420px; border-radius: 0 0 1rem 1rem;"></div>
+                <div id="donation-map-no-data" class="hidden py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
+                    <i class="fas fa-map-marked-alt text-4xl text-slate-300"></i>
+                    <p class="text-sm font-medium">Belum ada data alamat donatur.</p>
+                </div>
+                <div id="donation-map-stats" class="hidden px-6 py-4 border-t border-slate-100 flex flex-wrap gap-4 text-sm bg-slate-50 rounded-b-[2rem]">
+                    <span class="font-bold text-slate-600"><i class="fas fa-map-pin text-teal-500 mr-1"></i> <span id="map-total-pins">0</span> lokasi terpetakan</span>
+                    <span class="font-bold text-slate-600"><i class="fas fa-users text-blue-500 mr-1"></i> <span id="map-total-donors">0</span> donatur</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doa Donatur Section -->
+        <div id="doa-section" class="mb-8 animate-fade-in-up" style="animation-delay: 0.4s">
+            <div class="text-center mb-6">
+                <span class="inline-block py-1 px-3 rounded-full bg-amber-100 text-amber-700 text-xs font-black tracking-widest uppercase mb-3 border border-amber-200">
+                    <i class="fas fa-hands-praying mr-1"></i> Untaian Doa
+                </span>
+                <h3 class="text-2xl font-black text-slate-800 mb-2">Doa Para Donatur</h3>
+                <p class="text-slate-500 text-sm">Doa dan harapan yang dikirimkan oleh para donatur yang mulia</p>
+            </div>
+            <div id="doa-container" class="relative overflow-hidden">
+                <div id="doa-loading" class="py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
+                    <i class="fas fa-circle-notch fa-spin text-3xl text-amber-400"></i>
+                    <p class="text-sm font-medium">Memuat doa donatur...</p>
+                </div>
+                <div id="doa-list" class="hidden"></div>
+                <div id="doa-no-data" class="hidden py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
+                    <i class="fas fa-hands-praying text-4xl text-slate-300"></i>
+                    <p class="text-sm font-medium">Belum ada doa yang dikirimkan.</p>
                 </div>
             </div>
         </div>

@@ -483,3 +483,15 @@ button:disabled {
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
 }
+
+/* =========================================
+   DOA DONATUR - INFINITE SCROLL ANIMATION
+   ========================================= */
+@keyframes doaScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.doa-scroll-wrapper:hover .doa-scroll-track {
+    animation-play-state: paused;
+}
