@@ -186,26 +186,26 @@ export function renderGlobalLeaderboard() {
 
     let summaryHtml = `
         <div class="max-w-5xl mx-auto px-4 font-sans mb-10">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] p-6 md:p-8 shadow-2xl shadow-slate-900/30 text-white border border-slate-700">
-                <div class="flex flex-col md:flex-row gap-6 items-start">
-                    <div class="flex-1">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] p-5 md:p-8 shadow-2xl shadow-slate-900/30 text-white border border-slate-700">
+                <div class="flex flex-col md:flex-row gap-5 md:gap-6 items-start">
+                    <div class="flex-1 min-w-0">
                         <span class="inline-block py-1 px-3 rounded-lg bg-orange-500/20 text-orange-300 text-xs font-bold tracking-widest mb-3 uppercase border border-orange-500/30">
                             <i class="fas fa-chart-pie mr-1"></i> Perolehan Keseluruhan
                         </span>
-                        <h3 class="text-4xl md:text-5xl font-black text-white tracking-tight mb-1">${formatRupiah(grandTotal)}</h3>
+                        <h3 class="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-1">${formatRupiah(grandTotal)}</h3>
                         <p class="text-slate-400 text-sm">Total dari <strong class="text-white">${totalActiveClasses}</strong> kelas aktif</p>
-                        <div class="flex flex-wrap gap-3 mt-4">
-                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
-                                <div class="text-2xl font-black text-orange-300">${totalActiveClasses}</div>
-                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Kelas Aktif</div>
+                        <div class="grid grid-cols-3 gap-2 mt-4">
+                            <div class="bg-white/10 rounded-xl px-2 md:px-4 py-2 text-center">
+                                <div class="text-xl md:text-2xl font-black text-orange-300">${totalActiveClasses}</div>
+                                <div class="text-slate-400 text-[9px] md:text-[10px] uppercase tracking-wider">Kelas Aktif</div>
                             </div>
-                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
-                                <div class="text-2xl font-black text-teal-300">${classesWithNoDonation.length}</div>
-                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Belum Himpun</div>
+                            <div class="bg-white/10 rounded-xl px-2 md:px-4 py-2 text-center">
+                                <div class="text-xl md:text-2xl font-black text-teal-300">${classesWithNoDonation.length}</div>
+                                <div class="text-slate-400 text-[9px] md:text-[10px] uppercase tracking-wider">Belum Himpun</div>
                             </div>
-                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
-                                <div class="text-2xl font-black text-yellow-300">${totalDonors}</div>
-                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Total Donatur</div>
+                            <div class="bg-white/10 rounded-xl px-2 md:px-4 py-2 text-center">
+                                <div class="text-xl md:text-2xl font-black text-yellow-300">${totalDonors}</div>
+                                <div class="text-slate-400 text-[9px] md:text-[10px] uppercase tracking-wider">Total Donatur</div>
                             </div>
                         </div>
                     </div>
@@ -223,14 +223,14 @@ export function renderGlobalLeaderboard() {
     // ============================================================
     let html = `
         <div class="max-w-5xl mx-auto px-4 font-sans">
-            <div class="text-center mb-12">
+            <div class="text-center mb-8 md:mb-12">
                 <span class="inline-block py-1 px-3 rounded-lg bg-slate-900 text-white text-xs font-bold tracking-widest mb-3 uppercase">Realtime Leaderboard</span>
-                <h3 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase">
+                <h3 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase">
                     Klasemen <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500">Donasi</span>
                 </h3>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-6 items-end pt-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-x-4 md:gap-y-6 items-end md:pt-4">
     `;
 
     leaderboard.forEach((item, index) => {
@@ -264,7 +264,8 @@ export function renderGlobalLeaderboard() {
                     icon: "fa-crown animate-bounce",
                     text: "text-yellow-700",
                     glow: "shadow-[0_20px_50px_-12px_rgba(234,179,8,0.3)]",
-                    col: "md:col-span-1 md:-mt-8 order-1 md:order-2 z-20" 
+                    col: "col-span-2 md:col-span-1 md:-mt-8 order-1 md:order-2 z-20",
+                    metaVisible: ""
                 };
             } else if (rank === 2) {
                 theme = {
@@ -273,7 +274,8 @@ export function renderGlobalLeaderboard() {
                     icon: "fa-medal",
                     text: "text-slate-600",
                     glow: "shadow-xl",
-                    col: "md:col-span-1 order-2 md:order-1 z-10" 
+                    col: "col-span-1 md:col-span-1 order-2 md:order-1 z-10",
+                    metaVisible: "hidden md:block"
                 };
             } else {
                 theme = {
@@ -282,32 +284,37 @@ export function renderGlobalLeaderboard() {
                     icon: "fa-award",
                     text: "text-orange-800",
                     glow: "shadow-xl",
-                    col: "md:col-span-1 order-3 md:order-3 z-10" 
+                    col: "col-span-1 md:col-span-1 order-3 md:order-3 z-10",
+                    metaVisible: "hidden md:block"
                 };
             }
 
             html += `
-                <div class="${theme.col} relative flex flex-col items-center text-center p-6 rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
+                <div class="${theme.col} relative flex flex-col items-center text-center p-3 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border-2 ${theme.bg} ${theme.glow} transition-transform hover:scale-[1.02]">
                     
-                    <div class="w-16 h-16 rounded-2xl ${theme.badge} flex items-center justify-center text-2xl shadow-lg mb-4 rotate-3">
+                    <div class="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${theme.badge} flex items-center justify-center text-lg md:text-2xl shadow-lg mb-3 rotate-3">
                         <i class="fas ${theme.icon}"></i>
                     </div>
 
-                    <div class="mb-4">
-                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Terkumpul</span>
-                        <h4 class="text-3xl font-black ${theme.text} tracking-tight">${formatRupiah(item.total)}</h4>
+                    <div class="mb-3 md:mb-4">
+                        <span class="block text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Terkumpul</span>
+                        <h4 class="text-xl md:text-3xl font-black ${theme.text} tracking-tight">${formatRupiah(item.total)}</h4>
                     </div>
 
-                    <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
-                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${escapeHtml(item.kelas)}</h5>
+                    <div class="${theme.metaVisible} w-full bg-slate-50 rounded-xl p-2 md:p-4 border border-slate-100">
+                        <h5 class="text-base md:text-xl font-black text-slate-800 mb-1 md:mb-2">Kelas ${escapeHtml(item.kelas)}</h5>
                         <div class="text-xs text-slate-500 space-y-1">
                             <p><i class="fas fa-user-tie w-4 text-center"></i> ${escapeHtml(meta.wali)}</p>
                             <p><i class="fas fa-user-shield w-4 text-center"></i> ${escapeHtml(meta.musyrif)}</p>
                         </div>
                         <div class="mt-2 flex justify-center">${participationBadge}</div>
                     </div>
+                    <div class="block md:hidden text-center mt-1 mb-1">
+                        <span class="font-black text-slate-800 text-sm">Kelas ${escapeHtml(item.kelas)}</span>
+                        <div class="flex justify-center mt-1">${participationBadge}</div>
+                    </div>
 
-                    <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
+                    <div class="w-full bg-slate-100 h-1.5 md:h-2 rounded-full mt-3 md:mt-6 overflow-hidden">
                         <div class="h-full max-w-full ${rank === 1 ? 'bg-yellow-500' : rank === 2 ? 'bg-slate-500' : 'bg-orange-600'} rounded-full" style="width: ${percent}%"></div>
                     </div>
                 </div>
@@ -315,7 +322,7 @@ export function renderGlobalLeaderboard() {
         } 
         else {
             html += `
-                <div class="md:col-span-3 order-last group bg-white p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow-sm flex flex-col md:flex-row items-center gap-4 transition-all hover:bg-slate-50">
+                <div class="col-span-2 md:col-span-3 order-last group bg-white p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow-sm flex flex-col md:flex-row items-center gap-4 transition-all hover:bg-slate-50">
                     
                     <div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-sm border border-slate-200">
                         #${rank}
