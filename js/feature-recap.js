@@ -1,6 +1,6 @@
 import { santriDB } from './santri-manager.js';
 import { riwayatData } from './state.js';
-import { showToast, formatRupiah } from './utils.js';
+import { showToast, formatRupiah, escapeHtml } from './utils.js';
 import { loadRiwayat } from './feature-history.js';
 
 export function setupRekapLogic() {
@@ -119,21 +119,49 @@ export function renderGlobalLeaderboard() {
         return;
     }
 
+    // Hitung total per kelas dan donatur unik per kelas
     const classTotals = {};
+    const classActiveDonors = {};
+    const typeTotals = {};
+    let grandTotal = 0;
+
     riwayatData.allData.forEach(d => {
-        // Hanya hitung donasi yang sudah Terverifikasi
         if (d.Status !== 'Terverifikasi') return;
-        
         const rombel = d.KelasSantri || d.rombelSantri;
+        const nama = (d.NamaSantri || d.namaSantri || '').trim();
+        const val = parseInt(d.Nominal) || 0;
+        const jenis = d.JenisDonasi || 'Lainnya';
+
         if (rombel) {
-            const val = parseInt(d.Nominal) || 0;
             classTotals[rombel] = (classTotals[rombel] || 0) + val;
+            if (nama) {
+                if (!classActiveDonors[rombel]) classActiveDonors[rombel] = new Set();
+                classActiveDonors[rombel].add(nama);
+            }
         }
+
+        grandTotal += val;
+        typeTotals[jenis] = (typeTotals[jenis] || 0) + val;
     });
+
+    // Kumpulkan semua kelas terdaftar dari santriDB
+    const allRegisteredClasses = {};
+    Object.keys(santriDB).forEach(level => {
+        Object.keys(santriDB[level]).forEach(cls => {
+            allRegisteredClasses[cls] = santriDB[level][cls].length;
+        });
+    });
+
+    // Kelas terdaftar yang belum ada penghimpunan sama sekali
+    const classesWithNoDonation = Object.keys(allRegisteredClasses)
+        .filter(cls => !classTotals[cls])
+        .sort();
 
     const leaderboard = Object.keys(classTotals).map(key => ({
         kelas: key,
-        total: classTotals[key]
+        total: classTotals[key],
+        activeDonors: classActiveDonors[key] ? classActiveDonors[key].size : 0,
+        totalStudents: allRegisteredClasses[key] || 0
     })).sort((a, b) => b.total - a.total);
 
     if (leaderboard.length === 0) {
@@ -142,7 +170,57 @@ export function renderGlobalLeaderboard() {
     }
 
     const maxVal = leaderboard[0].total;
+    const totalActiveClasses = leaderboard.length;
+    const totalDonors = Object.values(classActiveDonors).reduce((a, s) => a + s.size, 0);
 
+    // ============================================================
+    // BAGIAN 1: RINGKASAN PEROLEHAN KESELURUHAN
+    // ============================================================
+    const typeEntries = Object.entries(typeTotals).sort((a, b) => b[1] - a[1]);
+    let typeBreakdownHtml = typeEntries.map(([jenis, total]) => `
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-700/40 last:border-0">
+            <span class="text-slate-300 text-xs">${escapeHtml(jenis)}</span>
+            <span class="text-white font-bold text-xs font-mono">${formatRupiah(total)}</span>
+        </div>
+    `).join('');
+
+    let summaryHtml = `
+        <div class="max-w-5xl mx-auto px-4 font-sans mb-10">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] p-6 md:p-8 shadow-2xl shadow-slate-900/30 text-white border border-slate-700">
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="flex-1">
+                        <span class="inline-block py-1 px-3 rounded-lg bg-orange-500/20 text-orange-300 text-xs font-bold tracking-widest mb-3 uppercase border border-orange-500/30">
+                            <i class="fas fa-chart-pie mr-1"></i> Perolehan Keseluruhan
+                        </span>
+                        <h3 class="text-4xl md:text-5xl font-black text-white tracking-tight mb-1">${formatRupiah(grandTotal)}</h3>
+                        <p class="text-slate-400 text-sm">Total dari <strong class="text-white">${totalActiveClasses}</strong> kelas aktif</p>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
+                                <div class="text-2xl font-black text-orange-300">${totalActiveClasses}</div>
+                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Kelas Aktif</div>
+                            </div>
+                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
+                                <div class="text-2xl font-black text-teal-300">${classesWithNoDonation.length}</div>
+                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Belum Himpun</div>
+                            </div>
+                            <div class="bg-white/10 rounded-xl px-4 py-2 text-center">
+                                <div class="text-2xl font-black text-yellow-300">${totalDonors}</div>
+                                <div class="text-slate-400 text-[10px] uppercase tracking-wider">Total Donatur</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-64 bg-white/5 rounded-2xl p-4 border border-slate-700/50 flex-shrink-0">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Rincian per Jenis</h4>
+                        ${typeBreakdownHtml || '<p class="text-slate-500 text-xs">Tidak ada data</p>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // ============================================================
+    // BAGIAN 2: LEADERBOARD KELAS
+    // ============================================================
     let html = `
         <div class="max-w-5xl mx-auto px-4 font-sans">
             <div class="text-center mb-12">
@@ -158,11 +236,23 @@ export function renderGlobalLeaderboard() {
     leaderboard.forEach((item, index) => {
         const rank = index + 1;
         const percent = (item.total / maxVal) * 100;
+        const participationPct = item.totalStudents > 0
+            ? Math.round((item.activeDonors / item.totalStudents) * 100)
+            : 0;
+        const participationColor = participationPct >= 75 ? 'text-green-600 bg-green-50' :
+                                   participationPct >= 40 ? 'text-yellow-600 bg-yellow-50' :
+                                   'text-red-500 bg-red-50';
         
         const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || { 
             wali: '-', 
             musyrif: '-' 
         };
+
+        const participationBadge = item.totalStudents > 0 ? `
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${participationColor} border border-current/20 mt-1" title="Keaktifan: ${item.activeDonors} dari ${item.totalStudents} santri">
+                <i class="fas fa-users"></i> ${item.activeDonors}/${item.totalStudents} (${participationPct}%)
+            </span>
+        ` : '';
 
         if (rank <= 3) {
             let theme = {};
@@ -209,11 +299,12 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="w-full bg-slate-50 rounded-xl p-4 border border-slate-100">
-                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${item.kelas}</h5>
+                        <h5 class="text-xl font-black text-slate-800 mb-2">Kelas ${escapeHtml(item.kelas)}</h5>
                         <div class="text-xs text-slate-500 space-y-1">
-                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${meta.wali}</p>
-                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${meta.musyrif}</p>
+                            <p><i class="fas fa-user-tie w-4 text-center"></i> ${escapeHtml(meta.wali)}</p>
+                            <p><i class="fas fa-user-shield w-4 text-center"></i> ${escapeHtml(meta.musyrif)}</p>
                         </div>
+                        <div class="mt-2 flex justify-center">${participationBadge}</div>
                     </div>
 
                     <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
@@ -231,9 +322,10 @@ export function renderGlobalLeaderboard() {
                     </div>
 
                     <div class="flex-1 text-center md:text-left w-full">
-                        <div class="flex items-center justify-center md:justify-start gap-2">
-                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${item.kelas}</h5>
-                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${meta.wali}</span>
+                        <div class="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                            <h5 class="font-bold text-slate-800 text-lg">Kelas ${escapeHtml(item.kelas)}</h5>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200 truncate max-w-[150px]">${escapeHtml(meta.wali)}</span>
+                            ${participationBadge}
                         </div>
                         
                         <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -250,13 +342,54 @@ export function renderGlobalLeaderboard() {
     });
 
     html += `
-            </div> <div class="mt-8 text-center text-slate-400 text-xs font-mono">
-                *Data diurutkan berdasarkan nominal tertinggi
             </div>
+            <div class="mt-8 text-center text-slate-400 text-xs font-mono">*Data diurutkan berdasarkan nominal tertinggi</div>
         </div>
     `;
 
-    container.innerHTML = html;
+    // ============================================================
+    // BAGIAN 3: KELAS BELUM ADA PENGHIMPUNAN
+    // ============================================================
+    let noDonasiHtml = '';
+    if (classesWithNoDonation.length > 0) {
+        const kelasItems = classesWithNoDonation.map(cls => {
+            const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[cls] : null) || { wali: '-' };
+            const jumlahSantri = allRegisteredClasses[cls] || 0;
+            return `
+                <div class="flex items-center gap-3 bg-white border border-red-100 rounded-xl px-4 py-3 shadow-sm">
+                    <div class="w-9 h-9 rounded-lg bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-800 text-sm">Kelas ${escapeHtml(cls)}</div>
+                        <div class="text-xs text-slate-400 truncate">${escapeHtml(meta.wali)} &bull; ${jumlahSantri} santri</div>
+                    </div>
+                    <span class="flex-shrink-0 text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">Belum Ada</span>
+                </div>
+            `;
+        }).join('');
+
+        noDonasiHtml = `
+            <div class="max-w-5xl mx-auto px-4 font-sans mt-10">
+                <div class="bg-red-50/60 border border-red-200 rounded-[2rem] p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-black text-slate-800 text-lg leading-tight">Kelas Belum Ada Penghimpunan</h4>
+                            <p class="text-slate-500 text-xs">${classesWithNoDonation.length} kelas terdaftar belum memiliki donasi terverifikasi</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        ${kelasItems}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    container.innerHTML = summaryHtml + html + noDonasiHtml;
     container.classList.remove('hidden');
 }
 
