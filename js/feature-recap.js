@@ -522,7 +522,7 @@ function renderRekapTable(cls) {
     if (elTotal) elTotal.innerText = formatRupiah(totalKelas);
 }
 
-export function exportRekapDashboardPDF() {
+export async function exportRekapDashboardPDF() {
     if (!window.jspdf) {
         showToast("Library PDF belum dimuat.", "error");
         return;
@@ -542,24 +542,38 @@ export function exportRekapDashboardPDF() {
         }
     });
 
-    setTimeout(() => {
-        try {
-            _doExportDashboardPDF();
-        } catch (e) {
-            console.error(e);
-            showToast("Gagal membuat PDF. Silakan coba lagi.", "error");
-        } finally {
-            btns.forEach(btn => {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i><span>Export PDF</span>';
-                }
-            });
-        }
-    }, 60);
+    // Small delay so spinner renders before heavy work starts
+    await new Promise(r => setTimeout(r, 60));
+
+    try {
+        await _doExportDashboardPDF();
+    } catch (e) {
+        console.error(e);
+        showToast("Gagal membuat PDF. Silakan coba lagi.", "error");
+    } finally {
+        btns.forEach(btn => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i><span>Export PDF</span>';
+            }
+        });
+    }
 }
 
-function _doExportDashboardPDF() {
+async function _doExportDashboardPDF() {
+    // --- Load logo (non-critical: PDF still works without it) ---
+    let logoDataUrl = null;
+    try {
+        const resp = await fetch('assets/logos/logo.png');
+        const blob = await resp.blob();
+        logoDataUrl = await new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result);
+            reader.onerror = rej;
+            reader.readAsDataURL(blob);
+        });
+    } catch (_) { /* logo not critical */ }
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const META_FALLBACK = { wali: '-', musyrif: '-' };
@@ -633,33 +647,46 @@ function _doExportDashboardPDF() {
 
     // === HEADER BLOCK ===
     doc.setFillColor(30, 41, 59);
-    doc.rect(0, 0, pageW, 28, 'F');
+    doc.rect(0, 0, pageW, 32, 'F');
+
+    // Logo: logo.png 293×200 (aspect ≈1.465) — placed on right side
+    if (logoDataUrl) {
+        const logoH = 22;
+        const logoW = logoH * (293 / 200);
+        doc.addImage(logoDataUrl, 'PNG', pageW - margin - logoW, 5, logoW, logoH);
+    }
 
     doc.setFontSize(13);
     doc.setTextColor(241, 90, 34);
     doc.setFont('helvetica', 'bold');
-    doc.text("LAZISMU MUALLIMIN YOGYAKARTA", margin, 11);
+    doc.text("KANTOR LAYANAN LAZISMU", margin, 12);
 
     doc.setFontSize(8.5);
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'normal');
-    doc.text("Pondok Pesantren Muallimin Muhammadiyah Yogyakarta", margin, 18);
-    doc.text("Jl. Letjen S. Parman No.68, Wirobrajan, Yogyakarta", margin, 23.5);
+    doc.text("Madrasah Mu'allimin Muhammadiyah Yogyakarta", margin, 19.5);
+    doc.text("Jl. Letjen S. Parman No.68, Wirobrajan, Yogyakarta", margin, 25.5);
 
     // === TITLE ===
-    doc.setFontSize(16);
+    const TITLE_TEXT = "REKAPITULASI PENGHIMPUNAN ZAKAT INFAQ SHADAQAH RAMADAN 1447 HIJRIAH";
+    doc.setFontSize(13);
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'bold');
-    doc.text("REKAPITULASI PENGHIMPUNAN ZIS", margin, 40);
+    const titleLines = doc.splitTextToSize(TITLE_TEXT, pageW - margin * 2);
+    const titleY = 43;
+    doc.text(titleLines, margin, titleY);
+    const titleEndY = titleY + (titleLines.length - 1) * 6.5;
 
     doc.setDrawColor(241, 90, 34);
     doc.setLineWidth(0.5);
-    doc.line(margin, 44, pageW - margin, 44);
+    const sepY = titleEndY + 5;
+    doc.line(margin, sepY, pageW - margin, sepY);
 
     doc.setFontSize(8.5);
     doc.setTextColor(100, 116, 139);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Tanggal Export: ${dateStr}   Pukul: ${timeStr} WIB`, margin, 50);
+    const dateLineY = sepY + 6;
+    doc.text(`Tanggal Export: ${dateStr}   Pukul: ${timeStr} WIB`, margin, dateLineY);
 
     // === SUMMARY TABLE ===
     const activeClassPct = totalRegisteredClasses > 0 ? Math.round((totalActiveClasses / totalRegisteredClasses) * 100) : 0;
@@ -667,10 +694,10 @@ function _doExportDashboardPDF() {
     const donorPct = totalRegisteredStudents > 0 ? Math.round((totalDonors / totalRegisteredStudents) * 100) : 0;
 
     doc.autoTable({
-        startY: 55,
+        startY: dateLineY + 5,
         head: [['RINGKASAN UTAMA', '']],
         body: [
-            ['Total Keseluruhan Donasi', formatRupiah(grandTotal)],
+            ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
             ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
             ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
             ['Total Santri Aktif Berdonasi', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
@@ -738,7 +765,7 @@ function _doExportDashboardPDF() {
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 41, 59);
-    doc.text("TABEL RANKING SELURUH KELAS", margin, legendY + 16);
+    doc.text("TABEL PERINGKAT KESELURUHAN KELAS", margin, legendY + 16);
 
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
@@ -824,11 +851,11 @@ function _doExportDashboardPDF() {
         doc.setFontSize(7.5);
         doc.setTextColor(160, 160, 160);
         doc.setFont('helvetica', 'normal');
-        doc.text(`LAZISMU MUALLIMIN YOGYAKARTA — Dicetak: ${dateStr} ${timeStr} WIB`, margin, 292);
+        doc.text(`Lazismu Mu'allimin \u2014 Dicetak: ${dateStr} ${timeStr} WIB`, margin, 292);
         doc.text(`Halaman ${i} dari ${pageCount}`, pageW - margin, 292, { align: 'right' });
     }
 
-    doc.save(`rekap_donasi_${isoDate}.pdf`);
+    doc.save(`rekap_zisra_${isoDate}.pdf`);
 }
 
 export function exportRekapPDF() {
