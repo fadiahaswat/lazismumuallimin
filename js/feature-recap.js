@@ -522,6 +522,342 @@ function renderRekapTable(cls) {
     if (elTotal) elTotal.innerText = formatRupiah(totalKelas);
 }
 
+export async function exportRekapDashboardPDF() {
+    if (!window.jspdf) {
+        showToast("Library PDF belum dimuat.", "error");
+        return;
+    }
+    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+        showToast("Data belum siap. Tunggu sebentar lalu coba lagi.", "warning");
+        return;
+    }
+
+    const btns = [
+        document.getElementById('btn-export-rekap-pdf')
+    ];
+    btns.forEach(btn => {
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Memproses...</span>';
+        }
+    });
+
+    // Small delay so spinner renders before heavy work starts
+    await new Promise(r => setTimeout(r, 60));
+
+    try {
+        await _doExportDashboardPDF();
+    } catch (e) {
+        console.error(e);
+        showToast("Gagal membuat PDF. Silakan coba lagi.", "error");
+    } finally {
+        btns.forEach(btn => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i><span>Export PDF</span>';
+            }
+        });
+    }
+}
+
+async function _doExportDashboardPDF() {
+    // --- Load logo (non-critical: PDF still works without it) ---
+    let logoDataUrl = null;
+    try {
+        const resp = await fetch('assets/logos/logo.png');
+        const blob = await resp.blob();
+        logoDataUrl = await new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result);
+            reader.onerror = rej;
+            reader.readAsDataURL(blob);
+        });
+    } catch (_) { /* logo not critical */ }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const META_FALLBACK = { wali: '-', musyrif: '-' };
+
+    // === Compute stats from in-memory state ===
+    const classTotals = {};
+    const classActiveDonors = {};
+    const typeTotals = {};
+    let grandTotal = 0;
+
+    riwayatData.allData.forEach(d => {
+        if (d.Status !== 'Terverifikasi') return;
+        const rombel = d.KelasSantri || d.rombelSantri;
+        const nama = (d.NamaSantri || d.namaSantri || '').trim();
+        const val = parseInt(d.Nominal) || 0;
+        const jenis = d.JenisDonasi || 'Lainnya';
+
+        if (rombel) {
+            classTotals[rombel] = (classTotals[rombel] || 0) + val;
+            if (nama) {
+                if (!classActiveDonors[rombel]) classActiveDonors[rombel] = new Set();
+                classActiveDonors[rombel].add(nama);
+            }
+        }
+        grandTotal += val;
+        typeTotals[jenis] = (typeTotals[jenis] || 0) + val;
+    });
+
+    const allRegisteredClasses = {};
+    Object.keys(santriDB).forEach(level => {
+        Object.keys(santriDB[level]).forEach(cls => {
+            allRegisteredClasses[cls] = santriDB[level][cls].length;
+        });
+    });
+
+    const classesWithNoDonation = Object.keys(allRegisteredClasses)
+        .filter(cls => !classTotals[cls])
+        .sort();
+
+    // Leaderboard: classes with donations sorted desc, then classes with no donations
+    const leaderboard = Object.keys(classTotals).map(key => ({
+        kelas: key,
+        total: classTotals[key],
+        activeDonors: classActiveDonors[key] ? classActiveDonors[key].size : 0,
+        totalStudents: allRegisteredClasses[key] || 0
+    })).sort((a, b) => b.total - a.total);
+
+    classesWithNoDonation.forEach(cls => {
+        leaderboard.push({
+            kelas: cls,
+            total: 0,
+            activeDonors: 0,
+            totalStudents: allRegisteredClasses[cls] || 0
+        });
+    });
+
+    const totalActiveClasses = leaderboard.filter(x => x.total > 0).length;
+    const totalRegisteredClasses = Object.keys(allRegisteredClasses).length;
+    const totalDonors = Object.values(classActiveDonors).reduce((a, s) => a + s.size, 0);
+    const totalRegisteredStudents = Object.values(allRegisteredClasses).reduce((a, v) => a + v, 0);
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const isoDate = now.toISOString().split('T')[0];
+
+    const ORANGE = [241, 90, 34];
+    const DARK = [30, 41, 59];
+    const pageW = 210;
+    const margin = 14;
+
+    // === HEADER BLOCK ===
+    doc.setFillColor(30, 41, 59);
+    doc.rect(0, 0, pageW, 32, 'F');
+
+    // Logo: logo.png 293×200 (aspect ≈1.465) — placed on right side
+    if (logoDataUrl) {
+        const logoH = 22;
+        const logoW = logoH * (293 / 200);
+        doc.addImage(logoDataUrl, 'PNG', pageW - margin - logoW, 5, logoW, logoH);
+    }
+
+    doc.setFontSize(13);
+    doc.setTextColor(241, 90, 34);
+    doc.setFont('helvetica', 'bold');
+    doc.text("KANTOR LAYANAN LAZISMU", margin, 12);
+
+    doc.setFontSize(8.5);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.text("Madrasah Mu'allimin Muhammadiyah Yogyakarta", margin, 19.5);
+    doc.text("Jl. Letjen S. Parman No.68, Wirobrajan, Yogyakarta", margin, 25.5);
+
+    // === TITLE ===
+    const TITLE_TEXT = "REKAPITULASI PENGHIMPUNAN ZAKAT INFAQ SHADAQAH RAMADAN 1447 HIJRIAH";
+    doc.setFontSize(13);
+    doc.setTextColor(30, 41, 59);
+    doc.setFont('helvetica', 'bold');
+    const titleLines = doc.splitTextToSize(TITLE_TEXT, pageW - margin * 2);
+    const titleY = 43;
+    doc.text(titleLines, margin, titleY);
+    const titleEndY = titleY + (titleLines.length - 1) * 6.5;
+
+    doc.setDrawColor(241, 90, 34);
+    doc.setLineWidth(0.5);
+    const sepY = titleEndY + 5;
+    doc.line(margin, sepY, pageW - margin, sepY);
+
+    doc.setFontSize(8.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    const dateLineY = sepY + 6;
+    doc.text(`Tanggal Export: ${dateStr}   Pukul: ${timeStr} WIB`, margin, dateLineY);
+
+    // === SUMMARY TABLE ===
+    const activeClassPct = totalRegisteredClasses > 0 ? Math.round((totalActiveClasses / totalRegisteredClasses) * 100) : 0;
+    const inactiveClassPct = 100 - activeClassPct;
+    const donorPct = totalRegisteredStudents > 0 ? Math.round((totalDonors / totalRegisteredStudents) * 100) : 0;
+
+    doc.autoTable({
+        startY: dateLineY + 5,
+        head: [['RINGKASAN UTAMA', '']],
+        body: [
+            ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
+            ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
+            ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
+            ['Total Santri Aktif Berdonasi', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
+        ],
+        headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
+        columnStyles: {
+            0: { fontStyle: 'bold', cellWidth: 85 },
+            1: { fontStyle: 'bold', textColor: ORANGE }
+        },
+        styles: { fontSize: 9, cellPadding: 3.5 },
+        margin: { left: margin, right: margin },
+        tableWidth: pageW - margin * 2,
+    });
+
+    // === RINCIAN JENIS DONASI TABLE ===
+    const typeEntries = Object.entries(typeTotals).sort((a, b) => b[1] - a[1]);
+    const typeRows = typeEntries.map(([jenis, total]) => {
+        const pct = grandTotal > 0 ? ((total / grandTotal) * 100).toFixed(1) : '0';
+        return [jenis, formatRupiah(total), `${pct}%`];
+    });
+
+    if (typeRows.length > 0) {
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 7,
+            head: [['Jenis Donasi', 'Total', 'Persentase']],
+            body: typeRows,
+            headStyles: { fillColor: ORANGE, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
+            columnStyles: {
+                0: { cellWidth: 85 },
+                1: { halign: 'right', fontStyle: 'bold' },
+                2: { halign: 'center' }
+            },
+            styles: { fontSize: 9, cellPadding: 3 },
+            margin: { left: margin, right: margin },
+        });
+    }
+
+    // === COLOR LEGEND ===
+    const legendY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text("Legenda Warna Keaktifan:", margin, legendY);
+
+    const legendItems = [
+        { color: [198, 239, 206], border: [70, 180, 100], label: '>= 75% (Sangat Aktif)' },
+        { color: [255, 235, 156], border: [200, 165, 0],  label: '50-74% (Aktif)' },
+        { color: [255, 204, 128], border: [210, 130, 0],  label: '25-49% (Cukup Aktif)' },
+        { color: [255, 199, 206], border: [200, 60, 60],  label: '< 25% (Perlu Perhatian)' },
+    ];
+    let lx = margin;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    legendItems.forEach(item => {
+        doc.setFillColor(...item.color);
+        doc.setDrawColor(...item.border);
+        doc.setLineWidth(0.3);
+        doc.rect(lx, legendY + 3, 5, 4, 'FD');
+        doc.setTextColor(50, 50, 50);
+        doc.text(item.label, lx + 7, legendY + 6.5);
+        lx += 47;
+    });
+
+    // === RANKING TABLE ===
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text("TABEL PERINGKAT KESELURUHAN KELAS", margin, legendY + 16);
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 116, 139);
+    doc.text(`${leaderboard.length} kelas terdaftar`, margin, legendY + 21);
+
+    const tableRows = leaderboard.map((item, index) => {
+        const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || META_FALLBACK;
+        const pctDonor = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
+        const pctContrib = grandTotal > 0 ? ((item.total / grandTotal) * 100).toFixed(1) : '0';
+        return [
+            index + 1,
+            `Kelas ${item.kelas}`,
+            meta.wali || '-',
+            meta.musyrif || '-',
+            item.totalStudents,
+            item.activeDonors,
+            `${pctDonor}%`,
+            formatRupiah(item.total),
+            `${pctContrib}%`
+        ];
+    });
+
+    function getRowFill(pct) {
+        if (pct >= 75) return [198, 239, 206];
+        if (pct >= 50) return [255, 235, 156];
+        if (pct >= 25) return [255, 204, 128];
+        return [255, 199, 206];
+    }
+
+    function getBarColor(pct) {
+        if (pct >= 75) return [46, 160, 67];
+        if (pct >= 50) return [200, 155, 0];
+        if (pct >= 25) return [210, 120, 0];
+        return [200, 50, 50];
+    }
+
+    doc.autoTable({
+        startY: legendY + 25,
+        head: [['#', 'Kelas', 'Wali Kelas', 'Musyrif', 'Siswa', 'Aktif', '% Aktif', 'Total Donasi', '% Kontrib']],
+        body: tableRows,
+        headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
+        styles: { fontSize: 7, cellPadding: 2.5, overflow: 'linebreak' },
+        columnStyles: {
+            0: { cellWidth: 8,  halign: 'center' },
+            1: { cellWidth: 20, fontStyle: 'bold' },
+            2: { cellWidth: 36 },
+            3: { cellWidth: 30 },
+            4: { cellWidth: 12, halign: 'center' },
+            5: { cellWidth: 11, halign: 'center' },
+            6: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+            7: { cellWidth: 30, halign: 'right', fontStyle: 'bold' },
+            8: { cellWidth: 15, halign: 'center' },
+        },
+        margin: { left: margin, right: margin },
+        didParseCell(data) {
+            if (data.section === 'body') {
+                const item = leaderboard[data.row.index];
+                if (!item) return;
+                const pct = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
+                data.cell.styles.fillColor = getRowFill(pct);
+            }
+        },
+        willDrawCell(data) {
+            if (data.section === 'body' && data.column.index === 6) {
+                const item = leaderboard[data.row.index];
+                if (!item) return;
+                const pct = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
+                const barW = Math.max(0, (data.cell.width - 3) * (pct / 100));
+                const barX = data.cell.x + 1.5;
+                const barY = data.cell.y + data.cell.height - 2.2;
+                doc.setFillColor(...getBarColor(pct));
+                doc.rect(barX, barY, barW, 1.4, 'F');
+            }
+        },
+        pageBreak: 'auto',
+    });
+
+    // === PAGE FOOTER ===
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(7.5);
+        doc.setTextColor(160, 160, 160);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Lazismu Mu'allimin \u2014 Dicetak: ${dateStr} ${timeStr} WIB`, margin, 292);
+        doc.text(`Halaman ${i} dari ${pageCount}`, pageW - margin, 292, { align: 'right' });
+    }
+
+    doc.save(`rekap_zisra_${isoDate}.pdf`);
+}
+
 export function exportRekapPDF() {
     if (!window.jspdf) {
         showToast("Library PDF belum dimuat.", "error");
