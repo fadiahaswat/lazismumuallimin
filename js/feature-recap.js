@@ -561,16 +561,34 @@ export async function exportRekapDashboardPDF() {
 }
 
 async function _doExportDashboardPDF() {
-    // --- Load logo (non-critical: PDF still works without it) ---
+    // --- Load logo and convert to white version for dark header background ---
     let logoDataUrl = null;
     try {
         const resp = await fetch('assets/logos/logo.png');
         const blob = await resp.blob();
-        logoDataUrl = await new Promise((res, rej) => {
+        const originalDataUrl = await new Promise((res, rej) => {
             const reader = new FileReader();
             reader.onload = () => res(reader.result);
             reader.onerror = rej;
             reader.readAsDataURL(blob);
+        });
+        // Convert logo to white so it is visible on the dark header background
+        logoDataUrl = await new Promise((res) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                // Fill canvas white, then clip to the logo's non-transparent pixels
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'destination-in';
+                ctx.drawImage(img, 0, 0);
+                res(canvas.toDataURL('image/png'));
+            };
+            img.onerror = () => res(null);
+            img.src = originalDataUrl;
         });
     } catch (_) { /* logo not critical */ }
 
