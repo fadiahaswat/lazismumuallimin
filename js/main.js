@@ -3,7 +3,7 @@ import { showPage, scrollToSection, setupNavigation, setupModalLogic, toggleUser
 import { setupWizardLogic, goToStep, startBeautificationDonation, confirmPackageChoice } from './feature-donation.js';
 import { setupHistoryLogic, loadRiwayat, loadPersonalDashboard, openReceiptWindow, refreshDashboard, refreshRiwayat } from './feature-history.js';
 import { fetchNews, filterNews, loadMoreNews, openNewsModal, closeNewsModal, refreshNews } from './feature-news.js';
-import { setupRekapLogic, exportRekapPDF, refreshRekap } from './feature-recap.js';
+import { setupRekapLogic, exportRekapPDF, exportRekapDashboardPDF, refreshRekap } from './feature-recap.js';
 import { parseSantriData } from './santri-manager.js';
 import { copyText, showToast, logger } from './utils.js';
 import { qrisDatabase, CACHE, LOADING_TEXTS } from '../config.js';
@@ -240,6 +240,7 @@ window.refreshNews = refreshNews;
 
 // Recap & Utils
 window.exportRekapPDF = exportRekapPDF;
+window.exportRekapDashboardPDF = exportRekapDashboardPDF;
 window.refreshRekap = refreshRekap;
 window.copyText = copyText;
 window.openQrisModal = openQrisModal;
