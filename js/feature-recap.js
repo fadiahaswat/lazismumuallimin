@@ -686,7 +686,7 @@ async function _doExportDashboardPDF() {
     doc.text("Jl. Letjen S. Parman No.68, Wirobrajan, Yogyakarta", margin, 25.5);
 
     // === TITLE ===
-    const TITLE_TEXT = "REKAPITULASI PENGHIMPUNAN ZAKAT INFAQ SHADAQAH RAMADAN 1447 HIJRIAH";
+    const TITLE_TEXT = "REKAPITULASI PENGHIMPUNAN ZAKAT INFAQ SHADAQAH RAMADAN 1447 HIJRIAH - MADRASAH MU'ALLIMIN MUHAMMADIYAH YOGYAKARTA";
     doc.setFontSize(13);
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'bold');
@@ -718,7 +718,7 @@ async function _doExportDashboardPDF() {
             ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
             ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
             ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
-            ['Total Santri Aktif Berdonasi', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
+            ['Total Santri Aktif Menghimpun', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
         ],
         headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
         columnStyles: {
@@ -758,7 +758,7 @@ async function _doExportDashboardPDF() {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 41, 59);
-    doc.text("Legenda Warna Keaktifan:", margin, legendY);
+    doc.text("Keterangan Warna Keaktifan:", margin, legendY);
 
     const legendItems = [
         { color: [198, 239, 206], border: [70, 180, 100], label: '>= 75% (Sangat Aktif)' },
@@ -823,7 +823,7 @@ async function _doExportDashboardPDF() {
 
     doc.autoTable({
         startY: legendY + 25,
-        head: [['#', 'Kelas', 'Wali Kelas', 'Musyrif', 'Siswa', 'Aktif', '% Aktif', 'Total Donasi', '% Kontrib']],
+        head: [['No.', 'Kelas', 'Wali Kelas', 'Musyrif', 'Siswa', 'Aktif', '% Aktif', 'Total Donasi', '% Kontrib']],
         body: tableRows,
         headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
         styles: { fontSize: 7, cellPadding: 2.5, overflow: 'linebreak' },
