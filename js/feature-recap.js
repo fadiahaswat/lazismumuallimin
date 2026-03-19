@@ -564,7 +564,7 @@ async function _doExportDashboardPDF() {
     // --- Load logo and convert to white version for dark header background ---
     let logoDataUrl = null;
     try {
-        const resp = await fetch('assets/logos/logo.png');
+        const resp = await fetch('assets/photos/logountukpdf.webp');
         const blob = await resp.blob();
         const originalDataUrl = await new Promise((res, rej) => {
             const reader = new FileReader();
