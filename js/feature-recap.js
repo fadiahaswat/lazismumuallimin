@@ -242,17 +242,16 @@ export function renderGlobalLeaderboard() {
         const participationColor = participationPct >= 75 ? 'text-green-600 bg-green-50' :
                                    participationPct >= 40 ? 'text-yellow-600 bg-yellow-50' :
                                    'text-red-500 bg-red-50';
-        
-        const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || { 
-            wali: '-', 
-            musyrif: '-' 
-        };
-
         const participationBadge = item.totalStudents > 0 ? `
             <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${participationColor} border border-current/20 mt-1" title="Keaktifan: ${item.activeDonors} dari ${item.totalStudents} santri">
                 <i class="fas fa-users"></i> ${item.activeDonors}/${item.totalStudents} (${participationPct}%)
             </span>
         ` : '';
+
+        const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || { 
+            wali: '-', 
+            musyrif: '-' 
+        };
 
         if (rank <= 3) {
             let theme = {};
@@ -651,7 +650,6 @@ async function _doExportDashboardPDF() {
     const totalActiveClasses = leaderboard.filter(x => x.total > 0).length;
     const totalRegisteredClasses = Object.keys(allRegisteredClasses).length;
     const totalDonors = Object.values(classActiveDonors).reduce((a, s) => a + s.size, 0);
-    const totalRegisteredStudents = Object.values(allRegisteredClasses).reduce((a, v) => a + v, 0);
 
     const now = new Date();
     const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -709,7 +707,6 @@ async function _doExportDashboardPDF() {
     // === SUMMARY TABLE ===
     const activeClassPct = totalRegisteredClasses > 0 ? Math.round((totalActiveClasses / totalRegisteredClasses) * 100) : 0;
     const inactiveClassPct = 100 - activeClassPct;
-    const donorPct = totalRegisteredStudents > 0 ? Math.round((totalDonors / totalRegisteredStudents) * 100) : 0;
 
     doc.autoTable({
         startY: dateLineY + 5,
@@ -718,7 +715,7 @@ async function _doExportDashboardPDF() {
             ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
             ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
             ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
-            ['Total Santri Aktif Menghimpun', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
+            ['Total Santri Aktif Menghimpun', `${totalDonors} santri`],
         ],
         headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
         columnStyles: {
