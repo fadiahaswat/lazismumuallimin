@@ -242,17 +242,16 @@ export function renderGlobalLeaderboard() {
         const participationColor = participationPct >= 75 ? 'text-green-600 bg-green-50' :
                                    participationPct >= 40 ? 'text-yellow-600 bg-yellow-50' :
                                    'text-red-500 bg-red-50';
-        
+        const participationBadge = item.totalStudents > 0 ? `
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${participationColor} border border-current/20 mt-1">
+                <i class="fas fa-users"></i> ${participationPct}%
+            </span>
+        ` : '';
+
         const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || { 
             wali: '-', 
             musyrif: '-' 
         };
-
-        const participationBadge = item.totalStudents > 0 ? `
-            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${participationColor} border border-current/20 mt-1" title="Keaktifan: ${item.activeDonors} dari ${item.totalStudents} santri">
-                <i class="fas fa-users"></i> ${item.activeDonors}/${item.totalStudents} (${participationPct}%)
-            </span>
-        ` : '';
 
         if (rank <= 3) {
             let theme = {};
@@ -651,7 +650,6 @@ async function _doExportDashboardPDF() {
     const totalActiveClasses = leaderboard.filter(x => x.total > 0).length;
     const totalRegisteredClasses = Object.keys(allRegisteredClasses).length;
     const totalDonors = Object.values(classActiveDonors).reduce((a, s) => a + s.size, 0);
-    const totalRegisteredStudents = Object.values(allRegisteredClasses).reduce((a, v) => a + v, 0);
 
     const now = new Date();
     const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -709,7 +707,6 @@ async function _doExportDashboardPDF() {
     // === SUMMARY TABLE ===
     const activeClassPct = totalRegisteredClasses > 0 ? Math.round((totalActiveClasses / totalRegisteredClasses) * 100) : 0;
     const inactiveClassPct = 100 - activeClassPct;
-    const donorPct = totalRegisteredStudents > 0 ? Math.round((totalDonors / totalRegisteredStudents) * 100) : 0;
 
     doc.autoTable({
         startY: dateLineY + 5,
@@ -718,7 +715,7 @@ async function _doExportDashboardPDF() {
             ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
             ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
             ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
-            ['Total Santri Aktif Menghimpun', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
+            ['Total Santri Aktif Menghimpun', `${totalDonors} santri`],
         ],
         headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
         columnStyles: {
@@ -799,8 +796,6 @@ async function _doExportDashboardPDF() {
             `Kelas ${item.kelas}`,
             meta.wali || '-',
             meta.musyrif || '-',
-            item.totalStudents,
-            item.activeDonors,
             `${pctDonor}%`,
             formatRupiah(item.total),
             `${pctContrib}%`
@@ -814,29 +809,20 @@ async function _doExportDashboardPDF() {
         return [255, 199, 206];
     }
 
-    function getBarColor(pct) {
-        if (pct >= 75) return [46, 160, 67];
-        if (pct >= 50) return [200, 155, 0];
-        if (pct >= 25) return [210, 120, 0];
-        return [200, 50, 50];
-    }
-
     doc.autoTable({
         startY: legendY + 25,
-        head: [['No.', 'Kelas', 'Wali Kelas', 'Musyrif', 'Siswa', 'Aktif', '% Aktif', 'Total Donasi', '% Kontrib']],
+        head: [['No.', 'Kelas', 'Wali Kelas', 'Musyrif', '% Aktif', 'Total Donasi', '% Kontrib']],
         body: tableRows,
         headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
         styles: { fontSize: 7, cellPadding: 2.5, overflow: 'linebreak' },
         columnStyles: {
             0: { cellWidth: 8,  halign: 'center' },
             1: { cellWidth: 20, fontStyle: 'bold' },
-            2: { cellWidth: 36 },
-            3: { cellWidth: 30 },
-            4: { cellWidth: 12, halign: 'center' },
-            5: { cellWidth: 11, halign: 'center' },
-            6: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
-            7: { cellWidth: 30, halign: 'right', fontStyle: 'bold' },
-            8: { cellWidth: 15, halign: 'center' },
+            2: { cellWidth: 46 },
+            3: { cellWidth: 38 },
+            4: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+            5: { cellWidth: 30, halign: 'right', fontStyle: 'bold' },
+            6: { cellWidth: 15, halign: 'center' },
         },
         margin: { left: margin, right: margin },
         didParseCell(data) {
@@ -845,18 +831,6 @@ async function _doExportDashboardPDF() {
                 if (!item) return;
                 const pct = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
                 data.cell.styles.fillColor = getRowFill(pct);
-            }
-        },
-        willDrawCell(data) {
-            if (data.section === 'body' && data.column.index === 6) {
-                const item = leaderboard[data.row.index];
-                if (!item) return;
-                const pct = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
-                const barW = Math.max(0, (data.cell.width - 3) * (pct / 100));
-                const barX = data.cell.x + 1.5;
-                const barY = data.cell.y + data.cell.height - 2.2;
-                doc.setFillColor(...getBarColor(pct));
-                doc.rect(barX, barY, barW, 1.4, 'F');
             }
         },
         pageBreak: 'auto',
