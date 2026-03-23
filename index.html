@@ -3057,7 +3057,11 @@
                     Monitoring perolehan dana ZISKA per kelas secara transparan dan real-time.
                 </p>
             </div>
-            <div class="flex justify-center mt-4 md:absolute md:top-0 md:right-0 md:mt-0">
+            <div class="flex justify-center gap-2 mt-4 md:absolute md:top-0 md:right-0 md:mt-0">
+                <button id="btn-export-all-classes-pdf" onclick="exportAllClassesByStudentPDF()" class="bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg hover:shadow-violet-500/30 flex items-center gap-2 group">
+                    <i class="fas fa-layer-group text-base group-hover:scale-110 transition-transform"></i>
+                    <span>Ekspor per Kelas</span>
+                </button>
                 <button id="btn-export-rekap-pdf" onclick="exportRekapDashboardPDF()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg hover:shadow-red-500/30 flex items-center gap-2 group">
                     <i class="fas fa-file-pdf text-base group-hover:scale-110 transition-transform"></i>
                     <span>Export PDF</span>
