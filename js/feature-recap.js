@@ -926,6 +926,444 @@ export function exportRekapPDF() {
     doc.save(`Rekap ZIS_Kelas ${cls}_${date}.pdf`);
 }
 
+export async function exportAllClassesByStudentPDF() {
+    if (!window.jspdf) {
+        showToast("Library PDF belum dimuat.", "error");
+        return;
+    }
+    if (!riwayatData.isLoaded || riwayatData.allData.length === 0) {
+        showToast("Data belum siap. Tunggu sebentar lalu coba lagi.", "warning");
+        return;
+    }
+
+    const btn = document.getElementById('btn-export-all-classes-pdf');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Memproses...</span>';
+    }
+
+    await new Promise(r => setTimeout(r, 60));
+
+    try {
+        await _doExportAllClassesByStudentPDF();
+    } catch (e) {
+        console.error(e);
+        showToast("Gagal membuat PDF. Silakan coba lagi.", "error");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-layer-group mr-2"></i><span>Ekspor per Kelas</span>';
+        }
+    }
+}
+
+async function _doExportAllClassesByStudentPDF() {
+    // Load and convert logo to white for dark header
+    let logoDataUrl = null;
+    try {
+        const resp = await fetch('assets/photos/logountukpdf.webp');
+        const blob = await resp.blob();
+        const originalDataUrl = await new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result);
+            reader.onerror = rej;
+            reader.readAsDataURL(blob);
+        });
+        logoDataUrl = await new Promise((res) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'destination-in';
+                ctx.drawImage(img, 0, 0);
+                res(canvas.toDataURL('image/png'));
+            };
+            img.onerror = () => res(null);
+            img.src = originalDataUrl;
+        });
+    } catch (_) { /* logo not critical */ }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const META_FALLBACK = { wali: '-', musyrif: '-' };
+
+    const ORANGE = [241, 90, 34];
+    const DARK = [30, 41, 59];
+    const PURPLE = [109, 40, 217];
+    const pageW = 210;
+    const margin = 14;
+
+    // === Compute global stats ===
+    const classTotals = {};
+    const classActiveDonors = {};
+    const typeTotals = {};
+    // Per-class, per-student donation map: donorMap[rombel][nama] = total
+    const donorMap = {};
+    // Per-class, per-student type breakdown: typeMap[rombel][nama][jenis] = total
+    const typeMap = {};
+    let grandTotal = 0;
+
+    riwayatData.allData.forEach(d => {
+        if (d.Status !== 'Terverifikasi') return;
+        const rombel = d.KelasSantri || d.rombelSantri;
+        const nama = (d.NamaSantri || d.namaSantri || '').trim();
+        const val = parseInt(d.Nominal) || 0;
+        const jenis = d.JenisDonasi || 'Lainnya';
+
+        if (rombel) {
+            classTotals[rombel] = (classTotals[rombel] || 0) + val;
+            if (nama) {
+                if (!classActiveDonors[rombel]) classActiveDonors[rombel] = new Set();
+                classActiveDonors[rombel].add(nama);
+                if (!donorMap[rombel]) donorMap[rombel] = {};
+                donorMap[rombel][nama] = (donorMap[rombel][nama] || 0) + val;
+                if (!typeMap[rombel]) typeMap[rombel] = {};
+                if (!typeMap[rombel][nama]) typeMap[rombel][nama] = {};
+                typeMap[rombel][nama][jenis] = (typeMap[rombel][nama][jenis] || 0) + val;
+            }
+        }
+        grandTotal += val;
+        typeTotals[jenis] = (typeTotals[jenis] || 0) + val;
+    });
+
+    const allRegisteredClasses = {};
+    Object.keys(santriDB).forEach(level => {
+        Object.keys(santriDB[level]).forEach(cls => {
+            allRegisteredClasses[cls] = santriDB[level][cls].length;
+        });
+    });
+
+    const classesWithNoDonation = Object.keys(allRegisteredClasses)
+        .filter(cls => !classTotals[cls])
+        .sort();
+
+    const leaderboard = Object.keys(classTotals).map(key => ({
+        kelas: key,
+        total: classTotals[key],
+        activeDonors: classActiveDonors[key] ? classActiveDonors[key].size : 0,
+        totalStudents: allRegisteredClasses[key] || 0
+    })).sort((a, b) => b.total - a.total);
+
+    classesWithNoDonation.forEach(cls => {
+        leaderboard.push({ kelas: cls, total: 0, activeDonors: 0, totalStudents: allRegisteredClasses[cls] || 0 });
+    });
+
+    const totalActiveClasses = leaderboard.filter(x => x.total > 0).length;
+    const totalRegisteredClasses = Object.keys(allRegisteredClasses).length;
+    const totalDonors = Object.values(classActiveDonors).reduce((a, s) => a + s.size, 0);
+    const totalRegisteredStudents = Object.values(allRegisteredClasses).reduce((a, v) => a + v, 0);
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const isoDate = now.toISOString().split('T')[0];
+
+    // Helper: draw page header block
+    function drawPageHeader(doc, isFirstPage) {
+        doc.setFillColor(...DARK);
+        doc.rect(0, 0, pageW, 32, 'F');
+
+        if (logoDataUrl) {
+            const logoH = 22;
+            const logoW = logoH * (293 / 200);
+            doc.addImage(logoDataUrl, 'PNG', pageW - margin - logoW, 5, logoW, logoH);
+        }
+
+        doc.setFontSize(13);
+        doc.setTextColor(...ORANGE);
+        doc.setFont('helvetica', 'bold');
+        doc.text("KANTOR LAYANAN LAZISMU", margin, 12);
+
+        doc.setFontSize(8.5);
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'normal');
+        doc.text("Madrasah Mu'allimin Muhammadiyah Yogyakarta", margin, 19.5);
+        doc.text("Jl. Letjen S. Parman No.68, Wirobrajan, Yogyakarta", margin, 25.5);
+    }
+
+    // Helper: draw page footer
+    function drawFooter(doc, pageNum, totalPages) {
+        doc.setFontSize(7.5);
+        doc.setTextColor(160, 160, 160);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Lazismu Mu'allimin \u2014 Dicetak: ${dateStr} ${timeStr} WIB`, margin, 292);
+        doc.text(`Halaman ${pageNum} dari ${totalPages}`, pageW - margin, 292, { align: 'right' });
+    }
+
+    // ====== PAGE 1: GENERAL OVERVIEW ======
+    drawPageHeader(doc, true);
+
+    const TITLE_TEXT = "REKAPITULASI PENGHIMPUNAN ZAKAT INFAQ SHADAQAH RAMADAN 1447 HIJRIAH - MADRASAH MU'ALLIMIN MUHAMMADIYAH YOGYAKARTA";
+    doc.setFontSize(13);
+    doc.setTextColor(...DARK);
+    doc.setFont('helvetica', 'bold');
+    const titleLines = doc.splitTextToSize(TITLE_TEXT, pageW - margin * 2);
+    const titleY = 43;
+    doc.text(titleLines, margin, titleY);
+    const titleEndY = titleY + (titleLines.length - 1) * 6.5;
+
+    doc.setDrawColor(...ORANGE);
+    doc.setLineWidth(0.5);
+    const sepY = titleEndY + 5;
+    doc.line(margin, sepY, pageW - margin, sepY);
+
+    doc.setFontSize(8.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    const dateLineY = sepY + 6;
+    doc.text(`Tanggal Export: ${dateStr}   Pukul: ${timeStr} WIB`, margin, dateLineY);
+
+    // Badge: "Rekap Per Santri Per Kelas"
+    doc.setFillColor(...PURPLE);
+    doc.roundedRect(margin, dateLineY + 4, 60, 6, 1.5, 1.5, 'F');
+    doc.setFontSize(7);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text("REKAP PER SANTRI PER KELAS", margin + 30, dateLineY + 8, { align: 'center' });
+
+    const activeClassPct = totalRegisteredClasses > 0 ? Math.round((totalActiveClasses / totalRegisteredClasses) * 100) : 0;
+    const inactiveClassPct = 100 - activeClassPct;
+    const donorPct = totalRegisteredStudents > 0 ? Math.round((totalDonors / totalRegisteredStudents) * 100) : 0;
+
+    doc.autoTable({
+        startY: dateLineY + 14,
+        head: [['RINGKASAN UTAMA', '']],
+        body: [
+            ['Total Keseluruhan ZIS', formatRupiah(grandTotal)],
+            ['Kelas Aktif', `${totalActiveClasses} kelas (${activeClassPct}%)`],
+            ['Kelas Belum Menghimpun', `${classesWithNoDonation.length} kelas (${inactiveClassPct}%)`],
+            ['Total Santri Aktif Menghimpun', `${totalDonors} santri (${donorPct}% dari ${totalRegisteredStudents})`],
+        ],
+        headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
+        columnStyles: {
+            0: { fontStyle: 'bold', cellWidth: 85 },
+            1: { fontStyle: 'bold', textColor: ORANGE }
+        },
+        styles: { fontSize: 9, cellPadding: 3.5 },
+        margin: { left: margin, right: margin },
+        tableWidth: pageW - margin * 2,
+    });
+
+    const typeEntries = Object.entries(typeTotals).sort((a, b) => b[1] - a[1]);
+    const typeRows = typeEntries.map(([jenis, total]) => {
+        const pct = grandTotal > 0 ? ((total / grandTotal) * 100).toFixed(1) : '0';
+        return [jenis, formatRupiah(total), `${pct}%`];
+    });
+
+    if (typeRows.length > 0) {
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 7,
+            head: [['Jenis Donasi', 'Total', 'Persentase']],
+            body: typeRows,
+            headStyles: { fillColor: ORANGE, textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
+            columnStyles: {
+                0: { cellWidth: 85 },
+                1: { halign: 'right', fontStyle: 'bold' },
+                2: { halign: 'center' }
+            },
+            styles: { fontSize: 9, cellPadding: 3 },
+            margin: { left: margin, right: margin },
+        });
+    }
+
+    // Ranking table (compact) on first page
+    const legendY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...DARK);
+    doc.text("RINGKASAN PERINGKAT KELAS", margin, legendY);
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 116, 139);
+    doc.text(`${leaderboard.length} kelas \u2014 detail per santri tersedia di halaman berikutnya`, margin, legendY + 5);
+
+    function getRowFill(pct) {
+        if (pct >= 75) return [198, 239, 206];
+        if (pct >= 50) return [255, 235, 156];
+        if (pct >= 25) return [255, 204, 128];
+        return [255, 199, 206];
+    }
+
+    const summaryRows = leaderboard.map((item, idx) => {
+        const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[item.kelas] : null) || META_FALLBACK;
+        const pctDonor = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
+        const pctContrib = grandTotal > 0 ? ((item.total / grandTotal) * 100).toFixed(1) : '0';
+        return [
+            idx + 1,
+            `Kelas ${item.kelas}`,
+            meta.wali || '-',
+            item.totalStudents,
+            item.activeDonors,
+            `${pctDonor}%`,
+            formatRupiah(item.total),
+            `${pctContrib}%`
+        ];
+    });
+
+    doc.autoTable({
+        startY: legendY + 9,
+        head: [['No.', 'Kelas', 'Wali Kelas', 'Siswa', 'Aktif', '% Aktif', 'Total Donasi', '% Kontrib']],
+        body: summaryRows,
+        headStyles: { fillColor: DARK, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
+        styles: { fontSize: 7, cellPadding: 2.5, overflow: 'linebreak' },
+        columnStyles: {
+            0: { cellWidth: 8,  halign: 'center' },
+            1: { cellWidth: 20, fontStyle: 'bold' },
+            2: { cellWidth: 45 },
+            3: { cellWidth: 12, halign: 'center' },
+            4: { cellWidth: 11, halign: 'center' },
+            5: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+            6: { cellWidth: 35, halign: 'right', fontStyle: 'bold' },
+            7: { cellWidth: 15, halign: 'center' },
+        },
+        margin: { left: margin, right: margin },
+        didParseCell(data) {
+            if (data.section === 'body') {
+                const item = leaderboard[data.row.index];
+                if (!item) return;
+                const pct = item.totalStudents > 0 ? Math.round((item.activeDonors / item.totalStudents) * 100) : 0;
+                data.cell.styles.fillColor = getRowFill(pct);
+            }
+        },
+        pageBreak: 'auto',
+    });
+
+    // ====== PER-CLASS PAGES ======
+    // Collect all classes in sorted order: level asc, then class name asc
+    const sortedClasses = [];
+    const levels = Object.keys(santriDB).sort((a, b) => +a - +b);
+    levels.forEach(level => {
+        Object.keys(santriDB[level]).sort().forEach(cls => {
+            sortedClasses.push({ level, cls });
+        });
+    });
+
+    for (const { level, cls } of sortedClasses) {
+        doc.addPage();
+        drawPageHeader(doc, false);
+
+        const meta = (typeof window.classMetaData !== 'undefined' ? window.classMetaData[cls] : null) || META_FALLBACK;
+        const students = santriDB[level][cls] || [];
+        const clsDonorMap = donorMap[cls] || {};
+        const clsTypeMap = typeMap[cls] || {};
+        const clsTotal = classTotals[cls] || 0;
+        const activeCount = classActiveDonors[cls] ? classActiveDonors[cls].size : 0;
+        const pctActive = students.length > 0 ? Math.round((activeCount / students.length) * 100) : 0;
+
+        // Class title bar
+        doc.setFillColor(...PURPLE);
+        doc.rect(margin, 36, pageW - margin * 2, 8, 'F');
+        doc.setFontSize(11);
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`KELAS ${cls}`, margin + 4, 41.5);
+
+        // Class info line
+        doc.setFontSize(8.5);
+        doc.setTextColor(...DARK);
+        doc.setFont('helvetica', 'normal');
+        const infoY = 52;
+        doc.text(`Wali Kelas : ${meta.wali}`, margin, infoY);
+        doc.text(`Musyrif    : ${meta.musyrif}`, margin + 90, infoY);
+        doc.text(`Total Santri: ${students.length}  |  Aktif: ${activeCount} (${pctActive}%)  |  Total Donasi: ${formatRupiah(clsTotal)}`, margin, infoY + 6);
+
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.3);
+        doc.line(margin, infoY + 9, pageW - margin, infoY + 9);
+
+        // Build per-student rows
+        // Merge registered students with donors not in santriDB
+        const studentRows = [];
+        const processedNames = new Set();
+
+        students.forEach((s, idx) => {
+            const nama = (s.nama || '').trim();
+            processedNames.add(nama);
+            const total = clsDonorMap[nama] || 0;
+            const types = clsTypeMap[nama] || {};
+            studentRows.push([
+                idx + 1,
+                nama,
+                types['Zakat'] ? formatRupiah(types['Zakat']) : '-',
+                types['Infaq'] ? formatRupiah(types['Infaq']) : '-',
+                types['Shadaqah'] ? formatRupiah(types['Shadaqah']) : '-',
+                total > 0 ? formatRupiah(total) : '-',
+                total > 0 ? 'Aktif' : 'Belum'
+            ]);
+        });
+
+        // Include donors found in riwayat but not in santriDB list
+        let extraIdx = students.length;
+        Object.keys(clsDonorMap).forEach(nama => {
+            if (!processedNames.has(nama)) {
+                const types = clsTypeMap[nama] || {};
+                studentRows.push([
+                    ++extraIdx,
+                    nama,
+                    types['Zakat'] ? formatRupiah(types['Zakat']) : '-',
+                    types['Infaq'] ? formatRupiah(types['Infaq']) : '-',
+                    types['Shadaqah'] ? formatRupiah(types['Shadaqah']) : '-',
+                    formatRupiah(clsDonorMap[nama]),
+                    'Aktif'
+                ]);
+            }
+        });
+
+        doc.autoTable({
+            startY: infoY + 12,
+            head: [['No.', 'Nama Santri', 'Zakat', 'Infaq', 'Shadaqah', 'Total', 'Status']],
+            body: studentRows,
+            headStyles: { fillColor: PURPLE, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
+            styles: { fontSize: 7.5, cellPadding: 2.5, overflow: 'linebreak' },
+            columnStyles: {
+                0: { cellWidth: 10, halign: 'center' },
+                1: { cellWidth: 55 },
+                2: { cellWidth: 27, halign: 'right' },
+                3: { cellWidth: 27, halign: 'right' },
+                4: { cellWidth: 27, halign: 'right' },
+                5: { cellWidth: 30, halign: 'right', fontStyle: 'bold' },
+                6: { cellWidth: 16, halign: 'center' },
+            },
+            margin: { left: margin, right: margin },
+            didParseCell(data) {
+                if (data.section === 'body' && data.column.index === 6) {
+                    const val = data.cell.raw;
+                    if (val === 'Aktif') {
+                        data.cell.styles.textColor = [22, 101, 52];
+                        data.cell.styles.fontStyle = 'bold';
+                    } else {
+                        data.cell.styles.textColor = [153, 27, 27];
+                    }
+                }
+            },
+            pageBreak: 'auto',
+        });
+
+        // Class total footer line
+        const finalY = doc.lastAutoTable.finalY + 5;
+        if (finalY < 280) {
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...DARK);
+            doc.text(`Total Perolehan Kelas ${cls}: ${formatRupiah(clsTotal)}`, pageW - margin, finalY, { align: 'right' });
+        }
+    }
+
+    // === PAGE FOOTER on all pages ===
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        drawFooter(doc, i, pageCount);
+    }
+
+    doc.save(`rekap_per_santri_${isoDate}.pdf`);
+}
+
 export async function refreshRekap() {
     const btnRefresh = document.getElementById('btn-refresh-rekap');
     const icon = btnRefresh ? btnRefresh.querySelector('i') : null;
